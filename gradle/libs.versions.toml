@@ -1,6 +1,6 @@
 [versions]
 # https://developer.android.com/reference/tools/gradle-api
-gradle-plugin = "8.13.2"
+gradle-plugin = "9.0.0"
 # https://kotlinlang.org/docs/releases.html#release-details
 kotlin = "2.3.20-RC"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
@@ -161,7 +161,6 @@ detekt = "io.gitlab.arturbosch.detekt:1.23.8"
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 google-services = "com.google.gms.google-services:4.4.4"
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle-plugin" }
