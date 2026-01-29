@@ -5,7 +5,6 @@ import common.testImplementation
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.provideDelegate
@@ -16,8 +15,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 class KotlinAndroidConventionPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        project.apply(plugin = project.libs.plugins.kotlin.android.get().pluginId)
-
         val appId: String by project
 
         project.extensions.configure(CommonExtension::class.java) {
