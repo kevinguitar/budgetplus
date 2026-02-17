@@ -90,7 +90,7 @@ firebase-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.re
 firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase-kmp" }
 firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-kmp" }
 firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
-google-ads = "com.google.android.gms:play-services-ads:24.9.0"
+google-ads = "com.google.android.gms:play-services-ads:25.0.0"
 google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.21.0.1"
 google-billing = "com.android.billingclient:billing-ktx:8.3.0"
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.2.0"
