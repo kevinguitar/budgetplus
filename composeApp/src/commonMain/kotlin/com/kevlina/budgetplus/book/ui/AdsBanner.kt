@@ -67,6 +67,7 @@ internal fun AdsBanner(bannerId: String) {
 
 private const val LOADER_SCALE = 2.5F
 
+//TODO: Seems like it shows all white on iOS
 @Composable
 private fun AdsBannerLoader() {
     val composition by rememberLottieComposition { loadLottieSpec("img_loader") }
