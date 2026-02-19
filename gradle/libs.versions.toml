@@ -39,7 +39,7 @@ datastore = "1.2.0"
 # https://github.com/icerockdev/moko-permissions/releases
 permissions = "0.20.1"
 # https://github.com/alexzhirkevich/compottie/releases
-compottie = "2.0.2"
+compottie = "2.0.3"
 
 compileAndroidSdk = "36"
 minAndroidSdk = "26"
