@@ -2,7 +2,7 @@
 # https://developer.android.com/reference/tools/gradle-api
 gradle-plugin = "8.13.2"
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.3.20-Beta2"
+kotlin = "2.3.20-RC"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
 coroutines = "1.10.2"
 # https://github.com/coil-kt/coil/releases
