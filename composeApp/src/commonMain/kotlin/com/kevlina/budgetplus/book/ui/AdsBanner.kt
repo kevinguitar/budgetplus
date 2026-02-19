@@ -49,25 +49,23 @@ internal fun AdsBanner(bannerId: String) {
             .fillMaxWidth()
     ) {
         var adBannerState by remember { mutableStateOf(AdBannerState.Loading) }
-        when (adBannerState) {
-            AdBannerState.Loading -> AdsBannerLoader()
-            AdBannerState.NotAvailable -> AdsBannerNotAvailable()
-            AdBannerState.Loaded -> Unit
-        }
-
         val adHandler by rememberBannerAd(
             adUnitId = bannerId,
             adSize = AdSize.BANNER,
             onLoad = { adBannerState = AdBannerState.Loaded },
             onFailure = { adBannerState = AdBannerState.NotAvailable },
         )
-        BannerAd(adHandler)
+
+        when (adBannerState) {
+            AdBannerState.Loading -> AdsBannerLoader()
+            AdBannerState.NotAvailable -> AdsBannerNotAvailable()
+            AdBannerState.Loaded -> BannerAd(adHandler)
+        }
     }
 }
 
 private const val LOADER_SCALE = 2.5F
 
-//TODO: Seems like it shows all white on iOS
 @Composable
 private fun AdsBannerLoader() {
     val composition by rememberLottieComposition { loadLottieSpec("img_loader") }
