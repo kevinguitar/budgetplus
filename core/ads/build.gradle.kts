@@ -3,14 +3,11 @@ plugins {
     alias(budgetplus.plugins.metro)
 }
 
+//TODO: Remove this module
 kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.data)
-        }
-        androidMain.dependencies {
-            implementation(libs.google.ads)
-            runtimeOnly(libs.google.ads.mediation.meta)
         }
     }
 }

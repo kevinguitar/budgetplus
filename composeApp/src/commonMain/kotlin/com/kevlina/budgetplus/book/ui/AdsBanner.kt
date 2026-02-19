@@ -20,6 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.lexilabs.basic.ads.AdSize
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
+import app.lexilabs.basic.ads.composable.rememberBannerAd
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ads_not_available
 import com.kevlina.budgetplus.core.lottie.loadLottieSpec
@@ -35,18 +39,15 @@ import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(DependsOnGoogleMobileAds::class)
 @Composable
-internal fun AdsBanner(
-    isAdMobInitialized: Boolean,
-    bannerId: String,
-) {
+internal fun AdsBanner(bannerId: String) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .height(50.dp)
             .fillMaxWidth()
     ) {
-
         var adBannerState by remember { mutableStateOf(AdBannerState.Loading) }
         when (adBannerState) {
             AdBannerState.Loading -> AdsBannerLoader()
@@ -54,11 +55,13 @@ internal fun AdsBanner(
             AdBannerState.Loaded -> Unit
         }
 
-        AdmobViewWrapper(
-            isAdMobInitialized = isAdMobInitialized,
-            bannerId = bannerId,
-            onStateUpdate = { adBannerState = it }
+        val adHandler by rememberBannerAd(
+            adUnitId = bannerId,
+            adSize = AdSize.BANNER,
+            onLoad = { adBannerState = AdBannerState.Loaded },
+            onFailure = { adBannerState = AdBannerState.NotAvailable },
         )
+        BannerAd(adHandler)
     }
 }
 

@@ -12,7 +12,7 @@ import budgetplus.core.common.generated.resources.menu_invite_to_book
 import budgetplus.core.common.generated.resources.permission_hint
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
-import com.kevlina.budgetplus.core.ads.FullScreenAdsLoader
+import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.common.MutableEventFlow
@@ -55,7 +55,7 @@ class RecordViewModel(
     private val recordRepo: RecordRepo,
     private val bubbleRepo: BubbleRepo,
     private val authManager: AuthManager,
-    private val fullScreenAdsLoader: FullScreenAdsLoader,
+    private val interstitialAdsHandler: InterstitialAdsHandler,
     private val inAppReviewManager: InAppReviewManager,
     private val snackbarSender: SnackbarSender,
     private val shareHelper: ShareHelper,
@@ -187,7 +187,7 @@ class RecordViewModel(
      */
     private suspend fun onRecordCreated() {
         when ((recordCount.first() ?: 0) % RECORD_COUNT_CYCLE) {
-            RECORD_SHOW_AD -> fullScreenAdsLoader.showAd()
+            RECORD_SHOW_AD -> interstitialAdsHandler.showAd()
             RECORD_REQUEST_PERMISSION -> requestPermissionEvent.sendEvent()
             // Request the in-app review when almost reach the next fullscreen ad,
             // just to have a better UX while user reviewing.

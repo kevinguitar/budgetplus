@@ -11,8 +11,8 @@ interface BudgetPlusIosAppModule {
 
     @Provides
     fun provideAdUnitId(): AdUnitId = AdUnitId(
-        banner = "ca-app-pub-3940256099942544/6300978111",
-        interstitial = "ca-app-pub-3940256099942544/1033173712"
+        banner = "ca-app-pub-5636675608309788/1982646025",
+        interstitial = "ca-app-pub-5636675608309788/3378219950"
     )
 
     @Provides

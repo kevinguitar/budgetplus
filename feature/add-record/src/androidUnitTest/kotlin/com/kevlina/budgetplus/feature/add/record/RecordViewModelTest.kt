@@ -6,7 +6,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
 import com.google.common.truth.Truth.assertThat
-import com.kevlina.budgetplus.core.ads.FullScreenAdsLoader
+import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.RecordType
@@ -124,7 +124,7 @@ class RecordViewModelTest {
         calculatorVm.input("1")
         calculatorVm.evaluate()
 
-        verify(exactly = 1) { fullScreenAdsLoader.showAd() }
+        verify(exactly = 1) { interstitialAdsHandler.showAd() }
     }
 
     @Test
@@ -158,7 +158,7 @@ class RecordViewModelTest {
         setCategory("Test category")
     }
 
-    private val fullScreenAdsLoader = mockk<FullScreenAdsLoader>(relaxed = true)
+    private val interstitialAdsHandler = mockk<InterstitialAdsHandler>(relaxed = true)
 
     private fun createModel(
         recordCount: Int = 0,
@@ -169,7 +169,7 @@ class RecordViewModelTest {
         recordRepo = FakeRecordRepo,
         bubbleRepo = FakeBubbleRepo(),
         authManager = FakeAuthManager(),
-        fullScreenAdsLoader = fullScreenAdsLoader,
+        interstitialAdsHandler = interstitialAdsHandler,
         inAppReviewManager = FakeInAppReviewManager(),
         snackbarSender = FakeSnackbarSender,
         shareHelper = FakeShareHelper,

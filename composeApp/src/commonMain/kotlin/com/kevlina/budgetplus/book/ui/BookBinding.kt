@@ -21,6 +21,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import app.lexilabs.basic.ads.BasicAds
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.InterstitialAd
+import app.lexilabs.basic.ads.composable.rememberInterstitialAd
 import com.kevlina.budgetplus.book.BookViewModel
 import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.consumeEach
@@ -31,6 +35,7 @@ import com.kevlina.budgetplus.core.ui.bubble.Bubble
 import com.kevlina.budgetplus.core.ui.thenIf
 import kotlinx.coroutines.flow.launchIn
 
+@OptIn(DependsOnGoogleMobileAds::class)
 @Composable
 internal fun BookBinding(
     vm: BookViewModel,
@@ -38,12 +43,15 @@ internal fun BookBinding(
     val navController = vm.navController
 
     val showBottomNav by vm.showBottomNav.collectAsStateWithLifecycle()
-    val showAds by vm.showAds.collectAsStateWithLifecycle()
-    val isAdMobInitialized by vm.isAdMobInitialized.collectAsStateWithLifecycle()
+    val showBannerAd by vm.showBannerAd.collectAsStateWithLifecycle()
+    val isEligibleForInterstitialAds by vm.isEligibleForInterstitialAds.collectAsStateWithLifecycle()
     val previewColors by vm.themeManager.previewColors.collectAsStateWithLifecycle()
     val bubbleDest by vm.bubbleViewModel.destination.collectAsStateWithLifecycle()
 
     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
+
+    // Initialize admob sdk
+    BasicAds.Initialize()
 
     LaunchedEffect(vm) {
         vm.snackbarSender.snackbarEvent
@@ -87,11 +95,8 @@ internal fun BookBinding(
                         .background(color = previewColors?.light ?: LocalAppColors.current.light)
                 )
 
-                if (showAds) {
-                    AdsBanner(
-                        isAdMobInitialized = isAdMobInitialized,
-                        bannerId = vm.bannerAdUnitId
-                    )
+                if (showBannerAd) {
+                    AdsBanner(bannerId = vm.adUnitId.banner)
                 }
             }
         }
@@ -100,5 +105,23 @@ internal fun BookBinding(
             dest = bubbleDest,
             dismissBubble = vm.bubbleViewModel::dismissBubble
         )
+
+        if (isEligibleForInterstitialAds) {
+            val interstitialAd by rememberInterstitialAd(adUnitId = vm.adUnitId.interstitial)
+            var showInterstitialAd by remember { mutableStateOf(false) }
+
+            LaunchedEffect(vm) {
+                vm.interstitialAdsHandler.showAdEvent
+                    .consumeEach { showInterstitialAd = true }
+                    .launchIn(this)
+            }
+
+            if (showInterstitialAd) {
+                InterstitialAd(
+                    loadedAd = interstitialAd,
+                    onDismissed = { showInterstitialAd = false }
+                )
+            }
+        }
     }
 }

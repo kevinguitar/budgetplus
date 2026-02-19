@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Budget+</string>
-    <string name="admob_application_id" translatable="false">ca-app-pub-5636675608309788~9761727103</string>
 </resources>
