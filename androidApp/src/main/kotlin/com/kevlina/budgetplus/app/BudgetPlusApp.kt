@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.app
 import android.app.Application
 import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
-import com.kevlina.budgetplus.core.ads.AdMobInitializer
 import com.kevlina.budgetplus.core.common.ActivityProviderImpl
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.di.HasServiceProvider
@@ -17,7 +16,6 @@ import dev.zacsweers.metro.createGraphFactory
 
 class BudgetPlusApp : Application(), HasServiceProvider {
 
-    @Inject lateinit var adMobInitializer: AdMobInitializer
     @Inject lateinit var activityProvider: ActivityProviderImpl
     @Inject lateinit var appStartActions: Set<AppStartAction>
     @Inject @Named("is_debug") var isDebug: Boolean = false
@@ -29,9 +27,6 @@ class BudgetPlusApp : Application(), HasServiceProvider {
     override fun onCreate() {
         appGraph.inject(this)
         super.onCreate()
-
-        // Initialize AdMob asap after app starts
-        adMobInitializer.initialize()
 
         registerActivityLifecycleCallbacks(activityProvider)
 

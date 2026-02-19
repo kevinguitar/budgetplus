@@ -40,12 +40,15 @@ datastore = "1.2.0"
 permissions = "0.20.1"
 # https://github.com/alexzhirkevich/compottie/releases
 compottie = "2.0.3"
+# https://github.com/LexiLabs-App/basic-ads/releases
+admob-kmp = "1.1.0"
 
 compileAndroidSdk = "36"
 minAndroidSdk = "26"
 jvmTarget = "21"
 
 [libraries]
+admob-kmp = { module = "app.lexilabs.basic:basic-ads", version.ref = "admob-kmp" }
 android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity" }
 android-activity = { module = "androidx.activity:activity-ktx", version.ref = "android-activity" }
 android-appcompat = "androidx.appcompat:appcompat:1.7.1"

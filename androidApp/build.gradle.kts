@@ -9,8 +9,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
 
-    implementation(libs.profile.installer)
     implementation(libs.coil.okhttp)
+    implementation(libs.profile.installer)
 
     implementation(projects.composeApp)
 }

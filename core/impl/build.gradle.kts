@@ -6,6 +6,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.ads)
             implementation(projects.core.data)
             implementation(projects.core.inappUpdate)
             implementation(projects.core.inappReview)

@@ -17,5 +17,9 @@
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+
+    <!-- Admob SDK -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-5636675608309788~9761727103</string>
 </dict>
 </plist>

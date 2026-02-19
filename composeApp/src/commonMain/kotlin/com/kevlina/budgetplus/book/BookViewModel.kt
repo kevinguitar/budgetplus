@@ -6,11 +6,12 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_join_success
 import co.touchlab.kermit.Logger
-import com.kevlina.budgetplus.core.ads.AdMobInitializer
 import com.kevlina.budgetplus.core.ads.AdUnitId
+import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NAV_COLORS_PATH
@@ -47,10 +48,10 @@ class BookViewModel(
     val themeManager: ThemeManager,
     val navigation: NavigationFlow,
     val bubbleViewModel: BubbleViewModel,
+    val adUnitId: AdUnitId,
+    val interstitialAdsHandler: InterstitialAdsHandler,
     private val bookRepo: BookRepo,
     @Named("welcome") private val welcomeNavigationAction: NavigationAction,
-    private val adUnitId: AdUnitId,
-    adMobInitializer: AdMobInitializer,
     authManager: AuthManager,
 ) : ViewModel() {
 
@@ -63,16 +64,14 @@ class BookViewModel(
         .map { it !in hideBottomNavDestinations }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
-    val showAds = combine(
+    val showBannerAd = combine(
         authManager.isPremium,
         currentNavKeyFlow
     ) { isPremium, currentNavKey ->
         !isPremium && currentNavKey !in hideAdsDestinations
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    val isAdMobInitialized = adMobInitializer.isInitialized
-
-    val bannerAdUnitId get() = adUnitId.banner
+    val isEligibleForInterstitialAds = authManager.isPremium.mapState { !it }
 
     init {
         //TODO: Looks like this doesn't work on iOS, investigate this.

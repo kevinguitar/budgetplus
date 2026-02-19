@@ -19,6 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.admob.kmp)
             implementation(libs.compottie)
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.auth)
@@ -54,6 +55,7 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.google.ads)
+            runtimeOnly(libs.google.ads.mediation.meta)
         }
     }
 }

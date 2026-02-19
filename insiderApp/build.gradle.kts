@@ -8,6 +8,7 @@ dependencies {
     implementation(enforcedPlatform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.android.activity)
     implementation(libs.navigation3.ui)

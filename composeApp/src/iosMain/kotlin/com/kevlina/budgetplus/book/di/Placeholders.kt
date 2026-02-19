@@ -1,35 +1,12 @@
 package com.kevlina.budgetplus.book.di
 
-import com.kevlina.budgetplus.core.ads.AdMobInitializer
-import com.kevlina.budgetplus.core.ads.FullScreenAdsLoader
 import com.kevlina.budgetplus.core.billing.BillingController
 import com.kevlina.budgetplus.core.billing.PurchaseState
 import com.kevlina.budgetplus.feature.speak.record.RecordActor
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecord
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
-@ContributesBinding(AppScope::class)
-class AdMobInitializerImpl : AdMobInitializer {
-    override val isInitialized: StateFlow<Boolean>
-        get() = MutableStateFlow(true)
-
-    override fun initialize() {
-    }
-
-    override suspend fun ensureInitialized() {
-
-    }
-}
-
-@ContributesBinding(AppScope::class)
-class FullScreenAdsLoaderImpl : FullScreenAdsLoader {
-    override fun showAd() {
-        TODO("Not yet implemented")
-    }
-}
 
 @ContributesBinding(AppScope::class)
 class SpeakToRecordImpl : SpeakToRecord {
