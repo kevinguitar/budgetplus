@@ -21,5 +21,14 @@
     <!-- Admob SDK -->
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-5636675608309788~9761727103</string>
+
+    <!-- Firebase Messaging -->
+    <key>NSExtension</key>
+    <dict>
+        <key>NSExtensionPointIdentifier</key>
+        <string>com.apple.usernotifications.service</string>
+        <key>NSExtensionPrincipalClass</key>
+        <string>$(PRODUCT_MODULE_NAME).NotificationService</string>
+    </dict>
 </dict>
 </plist>

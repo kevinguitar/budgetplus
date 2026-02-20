@@ -31,8 +31,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let userInfo = response.notification.request.content.userInfo
-        if let deeplink = userInfo["url"] as? String {
-            // Handle deeplink by Swift or forward to Kotlin shared navigation
+
+        // Try to get deeplink from userInfo, which may have been set by NotificationService extension
+        if let deeplink = userInfo["deeplink"] as? String ?? userInfo["url"] as? String {
+            // TODO: Handle deeplink properly later
+            // Forward deeplink to the app's navigation system or Kotlin shared code
             // BudgetPlusIosAppGraphHolder.shared.graph.fcmServiceDelegate.onNotificationTapped(deeplink: deeplink)
             print("Notification tapped, deeplink: \(deeplink)")
         }
