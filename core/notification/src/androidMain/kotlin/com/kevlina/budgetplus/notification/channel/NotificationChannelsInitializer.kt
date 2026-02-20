@@ -11,6 +11,8 @@ import budgetplus.core.common.generated.resources.notification_channel_new_membe
 import budgetplus.core.common.generated.resources.notification_channel_new_member_desc
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
+import com.kevlina.budgetplus.notification.NotificationConstants.CHANNEL_GENERAL
+import com.kevlina.budgetplus.notification.NotificationConstants.CHANNEL_NEW_MEMBER
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import kotlinx.coroutines.CoroutineScope
@@ -54,10 +56,5 @@ class NotificationChannelsInitializer(
     ): NotificationChannel {
         return NotificationChannel(channelId, name, importance)
             .apply { description = descriptionText }
-    }
-
-    companion object {
-        const val CHANNEL_GENERAL = "general"
-        const val CHANNEL_NEW_MEMBER = "new_member"
     }
 }
