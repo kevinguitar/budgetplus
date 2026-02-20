@@ -1,7 +1,14 @@
+import Combine
 import ComposeApp
 import FirebaseCore
 import FirebaseFirestore
 import SwiftUI
+
+// DeeplinkManager to handle deeplink communication between AppDelegate and SwiftUI
+class DeeplinkManager: NSObject, ObservableObject {
+    @Published var deeplink: String?
+    static let shared = DeeplinkManager()
+}
 
 // For full explanation
 // https://firebase.google.com/docs/ios/learn-more?hl=en#swiftui
@@ -31,13 +38,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let userInfo = response.notification.request.content.userInfo
-
-        // Try to get deeplink from userInfo, which may have been set by NotificationService extension
-        if let deeplink = userInfo["deeplink"] as? String ?? userInfo["url"] as? String {
-            // TODO: Handle deeplink properly later
-            // Forward deeplink to the app's navigation system or Kotlin shared code
-            // BudgetPlusIosAppGraphHolder.shared.graph.fcmServiceDelegate.onNotificationTapped(deeplink: deeplink)
-            print("Notification tapped, deeplink: \(deeplink)")
+        if let deeplink = userInfo["deeplink"] as? String {
+            DeeplinkManager.shared.deeplink = deeplink
         }
         completionHandler()
     }
@@ -47,13 +49,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var deeplink: String?
+    @StateObject private var deeplinkManager = DeeplinkManager.shared
 
     var body: some Scene {
         WindowGroup {
-            ContentView(deeplink: deeplink)
+            ContentView(deeplink: deeplinkManager.deeplink)
                 .onOpenURL { url in
-                    deeplink = url.absoluteString
+                    deeplinkManager.deeplink = url.absoluteString
                 }
         }
     }

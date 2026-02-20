@@ -1,4 +1,10 @@
 import UserNotifications
+import UIKit
+import ComposeApp
+
+// Not nice duplication but it's the easy way for now
+private let APP_DEEPLINK = "https://budgetplus.cchi.tw"
+private let NAV_SETTINGS_PATH = "settings"
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -26,11 +32,17 @@ class NotificationService: UNNotificationServiceExtension {
             bestAttemptContent.body = body
         }
 
-        // TODO: Handle url deeplink properly later
-        // For now, store the deeplink in userInfo so it can be handled by the app delegate
-        if let url = userInfo["url"] as? String {
-            bestAttemptContent.userInfo["deeplink"] = url
+        // Handle url deeplink based on notification type
+        let type = userInfo["type"] as? String
+        let url: String
+
+        if type == "new_member" {
+            url = "\(APP_DEEPLINK)/\(NAV_SETTINGS_PATH)?showMembers=true"
+        } else {
+            url = (userInfo["url"] as? String) ?? BudgetPlusIosAppGraphHolder.shared.graph.defaultDeeplink
         }
+
+        bestAttemptContent.userInfo["deeplink"] = url
 
         // Try to load and attach the image
         loadAndAttachImage(
@@ -91,4 +103,3 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
 }
-
