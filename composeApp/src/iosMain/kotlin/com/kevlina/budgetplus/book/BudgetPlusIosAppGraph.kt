@@ -10,10 +10,8 @@ import com.kevlina.budgetplus.core.common.nav.NavigationFlow
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.theme.ThemeManager
-import com.kevlina.budgetplus.notification.FcmServiceDelegate
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.createGraph
@@ -22,7 +20,6 @@ import dev.zacsweers.metro.createGraph
 interface BudgetPlusIosAppGraph {
     // For app start
     val appStartActions: Set<AppStartAction>
-    val fcmServiceDelegate: FcmServiceDelegate
 
     // For UI rendering
     val viewModelGraphProvider: ViewModelGraphProvider
@@ -33,9 +30,6 @@ interface BudgetPlusIosAppGraph {
     // For navigation
     val navController: NavController<BookDest>
     val navigation: NavigationFlow
-
-    // For notification
-    @Named("default_deeplink") val defaultDeeplink: String
 
     @SingleIn(AppScope::class)
     @Provides

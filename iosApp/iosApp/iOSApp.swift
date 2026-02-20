@@ -2,6 +2,7 @@ import Combine
 import ComposeApp
 import FirebaseCore
 import FirebaseFirestore
+import FirebaseMessaging
 import SwiftUI
 
 // DeeplinkManager to handle deeplink communication between AppDelegate and SwiftUI
@@ -30,6 +31,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         application.registerForRemoteNotifications()
 
         return true
+    }
+
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        Messaging.messaging().apnsToken = deviceToken
     }
 
     func userNotificationCenter(

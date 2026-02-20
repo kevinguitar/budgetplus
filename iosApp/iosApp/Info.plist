@@ -4,31 +4,32 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-    <key>GIDClientID</key>
-    <string>919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt.apps.googleusercontent.com</string>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>com.googleusercontent.apps.919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt</string>
-            </array>
-        </dict>
-    </array>
-    <key>UIViewControllerBasedStatusBarAppearance</key>
-    <false/>
-
-    <!-- Admob SDK -->
-    <key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-5636675608309788~9761727103</string>
-
-    <!-- Firebase Messaging -->
-    <key>NSExtension</key>
-    <dict>
-        <key>NSExtensionPointIdentifier</key>
-        <string>com.apple.usernotifications.service</string>
-        <key>NSExtensionPrincipalClass</key>
-        <string>$(PRODUCT_MODULE_NAME).NotificationService</string>
-    </dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt</string>
+			</array>
+		</dict>
+	</array>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-5636675608309788~9761727103</string>
+	<key>GIDClientID</key>
+	<string>919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt.apps.googleusercontent.com</string>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.usernotifications.service</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>$(PRODUCT_MODULE_NAME).NotificationService</string>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>
