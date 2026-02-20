@@ -1,10 +1,10 @@
 import UserNotifications
 import UIKit
-import ComposeApp
 
 // Not nice duplication but it's the easy way for now
 private let APP_DEEPLINK = "https://budgetplus.cchi.tw"
 private let NAV_SETTINGS_PATH = "settings"
+private let DEFAULT_DEEPLINK = "\(APP_DEEPLINK)/record"
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -39,7 +39,7 @@ class NotificationService: UNNotificationServiceExtension {
         if type == "new_member" {
             url = "\(APP_DEEPLINK)/\(NAV_SETTINGS_PATH)?showMembers=true"
         } else {
-            url = (userInfo["url"] as? String) ?? BudgetPlusIosAppGraphHolder.shared.graph.defaultDeeplink
+            url = (userInfo["url"] as? String) ?? DEFAULT_DEEPLINK
         }
 
         bestAttemptContent.userInfo["deeplink"] = url
