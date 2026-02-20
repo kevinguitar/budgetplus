@@ -10,6 +10,7 @@ import com.kevlina.budgetplus.core.common.nav.NavigationFlow
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.theme.ThemeManager
+import com.kevlina.budgetplus.notification.FcmServiceDelegate
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -18,12 +19,17 @@ import dev.zacsweers.metro.createGraph
 
 @DependencyGraph(AppScope::class)
 interface BudgetPlusIosAppGraph {
+    // For app start
     val appStartActions: Set<AppStartAction>
+    val fcmServiceDelegate: FcmServiceDelegate
+
+    // For UI rendering
     val viewModelGraphProvider: ViewModelGraphProvider
     val themeManager: ThemeManager
     val authManager: AuthManager
     val bookRepo: BookRepo
 
+    // For navigation
     val navController: NavController<BookDest>
     val navigation: NavigationFlow
 
