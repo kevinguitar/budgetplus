@@ -21,7 +21,7 @@ class FakeAuthManager(
         error("Not yet implemented")
     }
 
-    override suspend fun markPremium() {
+    override suspend fun markPremium(isPremium: Boolean) {
         error("Not yet implemented")
     }
 

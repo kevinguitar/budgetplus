@@ -147,7 +147,6 @@
     <string name="premium_restore_purchase">Restore Purchase</string>
     <string name="premium_unlocked">Budget+ Premium unlocked!</string>
     <string name="premium_acknowledge_fail">Payment can't be acknowledged, please come back later.</string>
-    <string name="premium_payment_pending">Your payment is still pending, come back later.</string>
 
     <!-- Settings -->
     <string name="settings_title">%1$s's Settings</string>

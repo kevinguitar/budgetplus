@@ -146,7 +146,6 @@
     <string name="premium_restore_purchase">恢复购买</string>
     <string name="premium_unlocked">极简记帐进阶版，解锁！</string>
     <string name="premium_acknowledge_fail">无法确认款项，请稍后再试</string>
-    <string name="premium_payment_pending">您的款项正在处理中，请稍后再回来</string>
 
     <!-- Settings -->
     <string name="settings_title">%1$s设定</string>

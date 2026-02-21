@@ -1,10 +1,15 @@
 package com.kevlina.budgetplus.core.billing
 
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.premium_acknowledge_fail
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
+import com.kevlina.budgetplus.core.data.AuthManager
+import com.kevlina.budgetplus.core.data.PurchaseRepo
 import com.revenuecat.purchases.kmp.Purchases
+import com.revenuecat.purchases.kmp.models.CustomerInfo
 import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.models.PackageType
 import com.revenuecat.purchases.kmp.models.freePhase
@@ -21,6 +26,8 @@ import kotlinx.coroutines.launch
 class BillingControllerImpl(
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
+    private val authManager: AuthManager,
+    private val purchaseRepo: PurchaseRepo,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : BillingController {
 
@@ -28,6 +35,10 @@ class BillingControllerImpl(
 
     final override val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
         field = MutableStateFlow(PremiumPlan.entries.associateWith { null })
+
+    override fun onNewCustomerInfo(customerInfo: CustomerInfo) {
+        customerInfo.verifyEntitlements()
+    }
 
     override fun fetchPrices() {
         Purchases.sharedInstance.getOfferings(
@@ -81,10 +92,7 @@ class BillingControllerImpl(
                 }
             },
             onSuccess = { storeTransaction, customerInfo ->
-                if (customerInfo.entitlements["my_entitlement_identifier"]?.isActive == true) {
-                    //TODO: Unlock that great "pro" content
-                }
-                //TODO: write to purchase db
+                customerInfo.verifyEntitlements(storeTransaction.transactionId)
                 tracker.logEvent("buy_premium_success")
             }
         )
@@ -107,12 +115,33 @@ class BillingControllerImpl(
                     params = mapOf("reason" to error.code.description)
                 )
             },
-            onSuccess = { customerInfo ->
-                if (customerInfo.entitlements["my_entitlement_identifier"]?.isActive == true) {
-                    //TODO: Unlock that great "pro" content
-                }
-            }
+            onSuccess = { customerInfo -> customerInfo.verifyEntitlements() }
         )
         tracker.logEvent("restore_purchases_attempt")
+    }
+
+    private fun CustomerInfo.verifyEntitlements(transactionId: String? = null) {
+        if (entitlements.all.isEmpty()) return
+        if (!entitlements.verification.isVerified) {
+            Logger.e { "Entitlement verification failed for user ${authManager.userId}" }
+            appScope.launch { snackbarSender.send(Res.string.premium_acknowledge_fail) }
+            return
+        }
+
+        appScope.launch {
+            val entitlement = entitlements[PREMIUM_ENTITLEMENT]
+            if (entitlement?.isActive == true) {
+                if (transactionId != null) {
+                    purchaseRepo.recordPurchase(
+                        transactionId,
+                        entitlement.productIdentifier
+                    )
+                }
+                authManager.markPremium(true)
+            } else {
+                //TODO: Off boarding the user
+                authManager.markPremium(false)
+            }
+        }
     }
 }

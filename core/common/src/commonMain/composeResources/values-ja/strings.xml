@@ -147,7 +147,6 @@
     <string name="premium_restore_purchase">購入履歴の復元</string>
     <string name="premium_unlocked">ミニマリストな帳簿アプレミアム版、解除！</string>
     <string name="premium_acknowledge_fail">支払いを確認できません、後でもう一度試してください</string>
-    <string name="premium_payment_pending">お支払いは処理中です。しばらくお待ちください。</string>
 
     <!-- Settings -->
     <string name="settings_title">%1$s設定</string>

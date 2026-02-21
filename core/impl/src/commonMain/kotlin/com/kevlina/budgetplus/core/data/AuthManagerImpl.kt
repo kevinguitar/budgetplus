@@ -102,8 +102,8 @@ class AuthManagerImpl(
         tracker.value.logEvent("user_renamed")
     }
 
-    override suspend fun markPremium() {
-        val premiumUser = currentUser?.copy(premium = true) ?: return
+    override suspend fun markPremium(isPremium: Boolean) {
+        val premiumUser = currentUser?.copy(premium = isPremium) ?: return
         usersDb.value.document(premiumUser.id).set(premiumUser)
         setUserToPreference(premiumUser)
     }
