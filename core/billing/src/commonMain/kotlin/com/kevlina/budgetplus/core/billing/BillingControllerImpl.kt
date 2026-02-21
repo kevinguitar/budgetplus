@@ -12,6 +12,7 @@ import com.revenuecat.purchases.kmp.Purchases
 import com.revenuecat.purchases.kmp.models.CustomerInfo
 import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.models.PackageType
+import com.revenuecat.purchases.kmp.models.VerificationResult
 import com.revenuecat.purchases.kmp.models.freePhase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -122,7 +123,7 @@ class BillingControllerImpl(
 
     private fun CustomerInfo.verifyEntitlements(transactionId: String? = null) {
         if (entitlements.all.isEmpty()) return
-        if (!entitlements.verification.isVerified) {
+        if (entitlements.verification == VerificationResult.FAILED) {
             Logger.e { "Entitlement verification failed for user ${authManager.userId}" }
             appScope.launch { snackbarSender.send(Res.string.premium_acknowledge_fail) }
             return
@@ -136,10 +137,10 @@ class BillingControllerImpl(
                         transactionId,
                         entitlement.productIdentifier
                     )
+                    tracker.logEvent("buy_premium_success")
                 }
                 authManager.markPremium(true)
             } else {
-                //TODO: Off boarding the user
                 authManager.markPremium(false)
             }
         }

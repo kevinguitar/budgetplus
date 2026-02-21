@@ -11,8 +11,8 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 
 @ContributesIntoSet(AppScope::class)
 class RevenueCatInitializer(
@@ -22,22 +22,21 @@ class RevenueCatInitializer(
 ) : AppStartAction {
 
     override fun onAppStart() {
-        appScope.launch {
-            val user = authManager.userState
-                .filterNotNull()
-                .first()
-
-            Purchases.logLevel = LogLevel.DEBUG
-            Purchases.configure(apiKey = revenueCatApiKey) {
-                appUserId = user.id
-            }
-
-            Purchases.sharedInstance.getCustomerInfo(
-                onError = { error -> Logger.e { "Error fetching customer info: $error" } },
-                onSuccess = { customerInfo ->
-                    billingController.value.onNewCustomerInfo(customerInfo)
+        authManager.userState
+            .filterNotNull()
+            .map { user ->
+                Purchases.logLevel = LogLevel.DEBUG
+                Purchases.configure(apiKey = revenueCatApiKey) {
+                    appUserId = user.id
                 }
-            )
-        }
+
+                Purchases.sharedInstance.getCustomerInfo(
+                    onError = { error -> Logger.e { "Error fetching customer info: $error" } },
+                    onSuccess = { customerInfo ->
+                        billingController.value.onNewCustomerInfo(customerInfo)
+                    }
+                )
+            }
+            .launchIn(appScope)
     }
 }
