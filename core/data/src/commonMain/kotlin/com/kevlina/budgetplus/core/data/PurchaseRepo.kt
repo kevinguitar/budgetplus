@@ -13,7 +13,7 @@ class PurchaseRepo(
     @PurchasesDb private val purchasesDb: Lazy<CollectionReference>,
 ) {
     suspend fun recordPurchase(
-        orderId: String?,
+        orderId: String,
         productId: String,
     ) {
         try {
@@ -25,22 +25,6 @@ class PurchaseRepo(
             ))
         } catch (e: Exception) {
             Logger.e(e) { "Failed to record purchase for order $orderId" }
-        }
-    }
-
-    suspend fun hasPurchaseBelongsToCurrentUser(
-        productId: String,
-    ): Boolean {
-        val currentUserId = authManager.userId ?: return false
-        return try {
-            val purchases = purchasesDb.value
-                .where { "productId" equalTo productId }
-                .where { "userId" equalTo currentUserId }
-                .get()
-            purchases.documents.isNotEmpty()
-        } catch (e: Exception) {
-            Logger.e(e) { "Failed to check if user $currentUserId has purchased product $productId" }
-            false
         }
     }
 }

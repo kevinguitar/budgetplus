@@ -3,8 +3,10 @@ package com.kevlina.budgetplus.core.data
 import androidx.datastore.preferences.core.stringPreferencesKey
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.app_language
+import budgetplus.core.common.generated.resources.premium_unlocked
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.NavigationAction
@@ -46,6 +48,7 @@ class AuthManagerImpl(
     @Named("allow_update_fcm_token") private val allowUpdateFcmToken: Boolean,
     @Named("auth") private val authNavigationAction: NavigationAction,
     private val navigationFlow: NavigationFlow,
+    private val snackbarSender: SnackbarSender,
     @AppCoroutineScope private val appScope: CoroutineScope,
     @UsersDb private val usersDb: Lazy<CollectionReference>,
 ) : AuthManager {
@@ -102,10 +105,18 @@ class AuthManagerImpl(
         tracker.value.logEvent("user_renamed")
     }
 
-    override suspend fun markPremium() {
-        val premiumUser = currentUser?.copy(premium = true) ?: return
+    override suspend fun markPremium(isPremium: Boolean) {
+        if (currentUser?.premium == isPremium) return
+
+        val premiumUser = currentUser?.copy(premium = isPremium) ?: return
         usersDb.value.document(premiumUser.id).set(premiumUser)
         setUserToPreference(premiumUser)
+
+        if (isPremium) {
+            snackbarSender.send(Res.string.premium_unlocked)
+        } else {
+            //TODO: Off boarding the user when they lost the premium access.
+        }
     }
 
     override suspend fun updateFcmToken(newToken: String) {

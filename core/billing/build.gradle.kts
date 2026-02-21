@@ -7,9 +7,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.data)
-        }
-        androidMain.dependencies {
-            implementation(libs.google.billing)
+            implementation(libs.revenuecat.core)
         }
     }
 }

@@ -1,15 +1,15 @@
 package com.kevlina.budgetplus.core.billing
 
+import com.revenuecat.purchases.kmp.models.CustomerInfo
 import kotlinx.coroutines.flow.StateFlow
 
 interface BillingController {
 
-    val premiumPricing: StateFlow<String?>
+    val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
 
-    val purchaseState: StateFlow<PurchaseState>
+    fun onNewCustomerInfo(customerInfo: CustomerInfo)
 
-    fun buyPremium()
-
-    fun endConnection()
-
+    fun fetchPrices()
+    fun purchase(plan: PremiumPlan)
+    fun restorePurchases()
 }

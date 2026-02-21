@@ -139,17 +139,14 @@
     <string name="premium_unlock">Unlock Premium</string>
     <string name="premium_hide_ads">Hide Ads</string>
     <string name="premium_pricing">%1$s one-time payment to unlock these benefits</string>
-    <string name="premium_description">
-        ✔ Enjoy Ads-free experience
-        \n✔ Create up to 10 accounting books
-        \n✔ Batch record your regular expenses
-        \n✔ Unlock all color tones and custom picker
-        \n✔ Search records without period limitation
-    </string>
-    <string name="premium_unlock_cta">Get Premium</string>
+    <string name="premium_description">✔ Enjoy Ads-free experience\n✔ Create up to 10 accounting books\n✔ Batch record your regular expenses\n✔ Unlock all color tones and custom picker\n✔ Search records without period limitation</string>
+    <string name="premium_plan_monthly">Monthly</string>
+    <string name="premium_plan_annual">Annual</string>
+    <string name="premium_plan_lifetime">Lifetime</string>
+    <string name="premium_free_trial_cta">Free trial for %1$s days</string>
+    <string name="premium_restore_purchase">Restore Purchase</string>
     <string name="premium_unlocked">Budget+ Premium unlocked!</string>
     <string name="premium_acknowledge_fail">Payment can't be acknowledged, please come back later.</string>
-    <string name="premium_payment_pending">Your payment is still pending, come back later.</string>
 
     <!-- Settings -->
     <string name="settings_title">%1$s's Settings</string>

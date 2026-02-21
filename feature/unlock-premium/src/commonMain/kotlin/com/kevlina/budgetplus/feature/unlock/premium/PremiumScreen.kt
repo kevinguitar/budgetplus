@@ -16,7 +16,6 @@ import budgetplus.core.common.generated.resources.premium_unlock
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.utils.metroViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -25,19 +24,11 @@ import org.jetbrains.compose.resources.stringResource
 fun PremiumScreen(navController: NavController<BookDest>) {
 
     val vm = metroViewModel<PremiumViewModel>()
-    val premiumPricing by vm.premiumPricing.collectAsStateWithLifecycle()
-    val isPaymentProcessing by vm.isPaymentProcessing.collectAsStateWithLifecycle(initialValue = false)
-    val purchaseDone by vm.purchaseDoneFlow.collectAsStateWithLifecycle(initialValue = false)
+    val pricingMap by vm.pricingMap.collectAsStateWithLifecycle()
 
     // Close the screen in case user enters it from the deeplink
     LaunchedEffect(key1 = Unit) {
         if (vm.isPremium.value) {
-            navController.navigateUp()
-        }
-    }
-
-    LaunchedEffect(key1 = purchaseDone) {
-        if (purchaseDone) {
             navController.navigateUp()
         }
     }
@@ -47,7 +38,6 @@ fun PremiumScreen(navController: NavController<BookDest>) {
             .fillMaxSize()
             .background(LocalAppColors.current.light)
     ) {
-
         TopBar(
             title = stringResource(Res.string.premium_unlock),
             navigateUp = navController::navigateUp
@@ -60,13 +50,10 @@ fun PremiumScreen(navController: NavController<BookDest>) {
                 .fillMaxWidth()
         ) {
             PremiumContent(
-                premiumPricing = premiumPricing,
-                getPremium = vm::getPremium
+                pricingMap = pricingMap,
+                purchase = vm::purchase,
+                restorePurchases = vm::restorePurchases
             )
-
-            if (isPaymentProcessing) {
-                InfiniteCircularProgress()
-            }
         }
     }
 }

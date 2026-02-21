@@ -8,7 +8,6 @@ import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import dev.zacsweers.metro.ContributesIntoMap
 import kotlinx.cinterop.BetaInteropApi
-import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.reinterpret
@@ -105,7 +104,6 @@ actual class AuthViewModel(
         authorizationController.performRequests()
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     private fun generateNonce(): String {
         val buffer = ByteArray(32)
         val status = buffer.usePinned { pinned ->
@@ -115,7 +113,6 @@ actual class AuthViewModel(
         return buffer.toHexString()
     }
 
-    @OptIn(ExperimentalForeignApi::class)
     private fun sha256(input: String): String {
         val data = input.encodeToByteArray()
         val hash = ByteArray(CC_SHA256_DIGEST_LENGTH)

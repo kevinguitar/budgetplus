@@ -44,10 +44,4 @@ interface BudgetPlusIosAppGraph {
 
 object BudgetPlusIosAppGraphHolder {
     val graph by lazy { createGraph<BudgetPlusIosAppGraph>() }
-
-    init {
-        graph.appStartActions.forEach {
-            it.onAppStart()
-        }
-    }
 }

@@ -4,7 +4,6 @@ import com.kevlina.budgetplus.feature.overview.utils.CsvSaver
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import kotlinx.cinterop.BetaInteropApi
-import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +49,7 @@ class CsvSaverImpl : CsvSaver {
         }
     }
 
-    @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+    @OptIn(BetaInteropApi::class)
     private fun ByteArray.toNSData(): NSData {
         return usePinned { pinned ->
             NSData.create(

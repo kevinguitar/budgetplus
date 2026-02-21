@@ -13,7 +13,7 @@ interface AuthManager {
 
     suspend fun renameUser(newName: String)
 
-    suspend fun markPremium()
+    suspend fun markPremium(isPremium: Boolean)
 
     suspend fun updateFcmToken(newToken: String)
 

@@ -18,8 +18,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        FirebaseApp.configure()
-
         UNUserNotificationCenter.current().delegate = self
 
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -73,6 +71,14 @@ struct iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var deeplinkManager = DeeplinkManager.shared
+
+    init() {
+        FirebaseApp.configure()
+
+        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
+            (action as? CommonAppStartAction)?.onAppStart()
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
