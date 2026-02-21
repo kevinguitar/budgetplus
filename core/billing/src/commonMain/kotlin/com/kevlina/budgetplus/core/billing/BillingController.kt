@@ -10,10 +10,8 @@ interface BillingController {
     fun buyPremium()
     fun endConnection()
 
-    val monthlyPrice: StateFlow<String?>
-    val annualPrice: StateFlow<String?>
+    val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
 
-    fun buyMonthly()
-    fun buyAnnual()
+    fun purchase(plan: PremiumPlan)
     fun restorePurchases()
 }

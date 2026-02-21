@@ -140,7 +140,11 @@
     <string name="premium_hide_ads">隱藏廣告</string>
     <string name="premium_pricing">%1$s 一次性付款，解鎖進階功能\n無憂無慮用到天荒地老</string>
     <string name="premium_description">✔ 不受任何廣告打擾\n✔ 擴充至十本記帳本\n✔ 批次新增您的固定支出收入\n✔ 解鎖所有主題色調及調色盤\n✔ 檢視及搜尋任何時段的帳目</string>
-    <string name="premium_unlock_cta">取得進階版</string>
+    <string name="premium_plan_monthly">每月</string>
+    <string name="premium_plan_annual">每年</string>
+    <string name="premium_plan_lifetime">終生會員</string>
+    <string name="premium_free_trial_cta">免費試用 %1$s 天</string>
+    <string name="premium_restore_purchase">恢復購買</string>
     <string name="premium_unlocked">極簡記帳進階版，解鎖！</string>
     <string name="premium_acknowledge_fail">無法確認款項，請稍後再試</string>
     <string name="premium_payment_pending">您的款項正在處理中，請稍後再回來</string>

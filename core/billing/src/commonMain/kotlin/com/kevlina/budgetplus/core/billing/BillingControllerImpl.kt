@@ -4,10 +4,10 @@ import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.mapState
 import com.revenuecat.purchases.kmp.Purchases
 import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.models.PackageType
+import com.revenuecat.purchases.kmp.models.freePhase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import kotlinx.coroutines.CoroutineScope
@@ -28,13 +28,8 @@ class BillingControllerImpl(
 
     private val packages = MutableStateFlow<List<Package>?>(null)
 
-    override val monthlyPrice: StateFlow<String?> = packages.mapState { packages ->
-        packages?.find { it.packageType == PackageType.MONTHLY }?.storeProduct?.price?.formatted
-    }
-
-    override val annualPrice: StateFlow<String?> = packages.mapState { packages ->
-        packages?.find { it.packageType == PackageType.ANNUAL }?.storeProduct?.price?.formatted
-    }
+    final override val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
+        field = MutableStateFlow(PremiumPlan.entries.associateWith { null })
 
     init {
         fetchPrices()
@@ -47,23 +42,39 @@ class BillingControllerImpl(
                 Logger.e { "Error fetching prices: $error" }
             },
             onSuccess = { offerings ->
-                packages.value = offerings.current?.availablePackages.orEmpty()
+                val storePackages = offerings.current?.availablePackages.orEmpty()
                     .filter { it.storeProduct.id == "budgetplus.premium" }
+                packages.value = storePackages
+                parsePricingPlans(storePackages)
             }
         )
     }
 
+    private fun parsePricingPlans(storePackages: List<Package>) {
+        if (storePackages.isEmpty()) return
 
-    override fun buyMonthly() {
-        purchase(PackageType.MONTHLY)
+        pricingMap.value = PremiumPlan.entries.associateWith { plan ->
+            val pkg = when (plan) {
+                PremiumPlan.Monthly -> storePackages.find { it.packageType == PackageType.MONTHLY }
+                PremiumPlan.Annual -> storePackages.find { it.packageType == PackageType.ANNUAL }
+                PremiumPlan.Lifetime -> storePackages.find { it.packageType == PackageType.LIFETIME }
+            } ?: return@associateWith null
+
+            Pricing(
+                discountedPrice = null, //TODO: Figure this out
+                formattedPrice = pkg.storeProduct.price.formatted,
+                freeTrialDays = pkg.storeProduct.subscriptionOptions?.freeTrial?.freePhase?.billingPeriod?.value ?: 0
+            )
+        }
     }
 
-    override fun buyAnnual() {
-        purchase(PackageType.ANNUAL)
-    }
-
-    private fun purchase(type: PackageType) {
-        val packageToPurchase = packages.value?.find { it.packageType == type } ?: return
+    override fun purchase(plan: PremiumPlan) {
+        val packageType = when (plan) {
+            PremiumPlan.Monthly -> PackageType.MONTHLY
+            PremiumPlan.Annual -> PackageType.ANNUAL
+            PremiumPlan.Lifetime -> PackageType.LIFETIME
+        }
+        val packageToPurchase = packages.value?.find { it.packageType == packageType } ?: return
         Purchases.sharedInstance.purchase(
             packageToPurchase = packageToPurchase,
             onError = { error, userCancelled ->
@@ -84,6 +95,13 @@ class BillingControllerImpl(
                 tracker.logEvent("buy_premium_success")
             }
         )
+
+        val event = when (plan) {
+            PremiumPlan.Monthly -> "buy_premium_monthly_attempt"
+            PremiumPlan.Annual -> "buy_premium_annual_attempt"
+            PremiumPlan.Lifetime -> "buy_premium_lifetime_attempt"
+        }
+        tracker.logEvent(event)
     }
 
     override fun restorePurchases() {
@@ -102,5 +120,6 @@ class BillingControllerImpl(
                 }
             }
         )
+        tracker.logEvent("restore_purchases_attempt")
     }
 }
