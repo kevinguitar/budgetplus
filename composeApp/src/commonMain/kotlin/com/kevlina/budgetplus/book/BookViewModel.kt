@@ -95,8 +95,8 @@ class BookViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun handleDeeplink(url: String?) {
-        if (url == null || !url.startsWith(APP_DEEPLINK)) return
+    fun handleDeeplink(url: String?): DeeplinkType? {
+        if (url == null || !url.startsWith(APP_DEEPLINK)) return null
 
         val pathAndQuery = url.removePrefix(APP_DEEPLINK).removePrefix("/")
         val path = pathAndQuery.substringBefore("?")
@@ -111,7 +111,10 @@ class BookViewModel(
             }
 
         when (val firstSegment = segments.firstOrNull()) {
-            NAV_JOIN_PATH -> bookRepo.setPendingJoinRequest(segments.getOrNull(1))
+            NAV_JOIN_PATH -> {
+                bookRepo.setPendingJoinRequest(segments.getOrNull(1))
+                return DeeplinkType.JoinRequest
+            }
             NAV_RECORD_PATH -> navController.navigate(BookDest.Record)
             NAV_OVERVIEW_PATH -> navController.navigate(BookDest.Overview)
             NAV_UNLOCK_PREMIUM_PATH -> navController.navigate(BookDest.UnlockPremium)
@@ -128,6 +131,7 @@ class BookViewModel(
 
             else -> Logger.d { "Deeplink: Unknown segment $firstSegment. Url=$url" }
         }
+        return DeeplinkType.Normal
     }
 
     fun handleJoinRequest() {
@@ -149,4 +153,9 @@ class BookViewModel(
             }
         }
     }
+}
+
+enum class DeeplinkType {
+    Normal,
+    JoinRequest
 }

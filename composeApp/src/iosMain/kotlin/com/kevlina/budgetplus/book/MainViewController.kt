@@ -55,7 +55,10 @@ fun MainViewController(deeplink: String?): UIViewController = ComposeUIViewContr
         AppTheme(themeColors) {
             val vm = metroViewModel<BookViewModel>()
             LaunchedEffect(deeplink) {
-                vm.handleDeeplink(deeplink)
+                val type = vm.handleDeeplink(deeplink)
+                if (type == DeeplinkType.JoinRequest) {
+                    vm.handleJoinRequest()
+                }
             }
 
             BookBinding(vm = vm)
