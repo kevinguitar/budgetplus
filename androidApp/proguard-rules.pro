@@ -33,6 +33,7 @@
 -dontwarn android.media.LoudnessCodecController$OnLoudnessCodecUpdateListener
 -dontwarn android.media.LoudnessCodecController
 -dontwarn com.facebook.infer.annotation.Nullsafe
+-dontwarn com.facebook.infer.annotation.Nullsafe$Mode
 -dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
 -dontwarn org.apiguardian.api.API$Status
 -dontwarn org.apiguardian.api.API
