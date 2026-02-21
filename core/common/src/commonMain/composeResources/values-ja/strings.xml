@@ -139,13 +139,7 @@
     <string name="premium_unlock">プレミアム版を解除する</string>
     <string name="premium_hide_ads">広告を非表示にする</string>
     <string name="premium_pricing">%1$s 一括支払い、高度な機能を解除\n心から安心してご利用いただけます</string>
-    <string name="premium_description">
-        ✔ 広告の干渉を受けません
-        \n✔ 10 冊の帳簿に拡張する
-        \n✔ 固定の支出と収入を一括で追加する
-        \n✔ すべてのテーマカラーを解除する
-        \n✔ いつでも帳簿が見れて、調べられるよ
-    </string>
+    <string name="premium_description">✔ 広告の干渉を受けません\n✔ 10 冊の帳簿に拡張する\n✔ 固定の支出と収入を一括で追加する\n✔ すべてのテーマカラーを解除する\n✔ いつでも帳簿が見れて、調べられるよ</string>
     <string name="premium_unlock_cta">プレミアム版を入手する</string>
     <string name="premium_unlocked">ミニマリストな帳簿アプレミアム版、解除！</string>
     <string name="premium_acknowledge_fail">支払いを確認できません、後でもう一度試してください</string>
