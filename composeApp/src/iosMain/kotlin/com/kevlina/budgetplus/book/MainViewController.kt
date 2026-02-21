@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.book
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.window.ComposeUIViewController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,7 +20,7 @@ import platform.UIKit.UIViewController
 import platform.UIKit.setStatusBarStyle
 
 fun MainViewController(deeplink: String?): UIViewController = ComposeUIViewController {
-    val graph = remember { BudgetPlusIosAppGraphHolder.graph }
+    val graph = BudgetPlusIosAppGraphHolder.graph
     val themeColors by graph.themeManager.themeColors.collectAsStateWithLifecycle()
 
     LaunchedEffect(themeColors) {

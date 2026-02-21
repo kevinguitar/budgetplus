@@ -1,38 +1,7 @@
 package com.kevlina.budgetplus.core.billing
 
-import android.content.Context
-import androidx.activity.ComponentActivity
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.premium_payment_pending
-import co.touchlab.kermit.Logger
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PendingPurchasesParams
-import com.android.billingclient.api.ProductDetails
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.QueryProductDetailsParams
-import com.android.billingclient.api.QueryPurchasesParams
-import com.android.billingclient.api.acknowledgePurchase
-import com.android.billingclient.api.queryProductDetails
-import com.android.billingclient.api.queryPurchasesAsync
-import com.kevlina.budgetplus.core.common.ActivityProvider
-import com.kevlina.budgetplus.core.common.AppCoroutineScope
-import com.kevlina.budgetplus.core.common.mapState
-import com.kevlina.budgetplus.core.data.AuthManager
-import com.kevlina.budgetplus.core.data.PurchaseRepo
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.binding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
-
+//TODO: Remove when revenuecat is integrated
+/*
 @ContributesBinding(AppScope::class, binding = binding<BillingController>())
 class BillingControllerImpl(
     context: Context,
@@ -89,9 +58,11 @@ class BillingControllerImpl(
         billingClient.launchBillingFlow(activity, billingParams)
     }
 
-    /**
+    */
+/**
      * Called by the Billing Library when new purchases are detected.
-     */
+     *//*
+
     override fun onPurchasesUpdated(
         billingResult: BillingResult,
         purchases: MutableList<Purchase>?,
@@ -230,3 +201,4 @@ class BillingControllerImpl(
         const val PRODUCT_PREMIUM_ID: String = "budgetplus.premium"
     }
 }
+*/

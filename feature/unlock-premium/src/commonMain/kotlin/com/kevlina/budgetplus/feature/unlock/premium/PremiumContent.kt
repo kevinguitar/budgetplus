@@ -12,14 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.premium_description
-import budgetplus.core.common.generated.resources.premium_pricing
 import budgetplus.core.common.generated.resources.premium_unlock
-import budgetplus.core.common.generated.resources.premium_unlock_cta
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
@@ -31,8 +28,10 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PremiumContent(
-    premiumPricing: String?,
-    getPremium: () -> Unit,
+    monthlyPrice: String?,
+    annualPrice: String?,
+    buyMonthly: () -> Unit,
+    buyAnnual: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -55,22 +54,6 @@ fun PremiumContent(
             fontWeight = FontWeight.SemiBold
         )
 
-        if (premiumPricing == null) {
-            InfiniteCircularProgress(
-                modifier = Modifier.size(32.dp),
-                strokeWidth = 2.dp
-            )
-        } else {
-            Text(
-                text = stringResource(Res.string.premium_pricing, premiumPricing),
-                fontSize = FontSize.SemiLarge,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center,
-                lineHeight = 24.sp,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-        }
-
         Text(
             text = stringResource(Res.string.premium_description),
             fontSize = FontSize.SemiLarge,
@@ -78,20 +61,46 @@ fun PremiumContent(
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
         )
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            enabled = premiumPricing != null,
-            onClick = getPremium
-        ) {
-            Text(
-                text = stringResource(Res.string.premium_unlock_cta),
-                color = LocalAppColors.current.light,
-                fontSize = FontSize.Large,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(vertical = 8.dp)
+        if (monthlyPrice == null || annualPrice == null) {
+            InfiniteCircularProgress(
+                modifier = Modifier.size(32.dp),
+                strokeWidth = 2.dp
             )
+        } else {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                onClick = buyMonthly
+            ) {
+                Text(
+                    text = monthlyPrice,
+                    color = LocalAppColors.current.light,
+                    fontSize = FontSize.Large,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                onClick = buyAnnual
+            ) {
+                Text(
+                    text = annualPrice,
+                    color = LocalAppColors.current.light,
+                    fontSize = FontSize.Large,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun PremiumContent_Preview() = AppTheme {
+    PremiumContent(monthlyPrice = "$10", annualPrice = "$100", buyMonthly = {}, buyAnnual = {})
 }
