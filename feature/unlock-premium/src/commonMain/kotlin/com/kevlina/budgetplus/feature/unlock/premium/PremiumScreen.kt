@@ -13,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.premium_unlock
-import com.kevlina.budgetplus.core.billing.PremiumPlan
-import com.kevlina.budgetplus.core.billing.Pricing
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -52,13 +50,7 @@ fun PremiumScreen(navController: NavController<BookDest>) {
                 .fillMaxWidth()
         ) {
             PremiumContent(
-//                pricingMap = pricingMap,
-                //TODO: Remove test data
-                pricingMap = mapOf(
-                    PremiumPlan.Monthly to Pricing(null, "$49", 3),
-                    PremiumPlan.Annual to Pricing(null, "$499", 7),
-                    PremiumPlan.Lifetime to Pricing(null, "$999", null)
-                ),
+                pricingMap = pricingMap,
                 purchase = vm::purchase,
                 restorePurchases = vm::restorePurchases
             )

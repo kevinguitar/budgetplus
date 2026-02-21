@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,6 +86,7 @@ fun PremiumContent(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(56.dp)
                 .padding(horizontal = 16.dp),
             enabled = pricingMap[selectedPlan] != null,
             onClick = { purchase(selectedPlan) }
@@ -101,7 +103,8 @@ fun PremiumContent(
             Text(
                 text = text,
                 color = LocalAppColors.current.light,
-                fontSize = FontSize.Header,
+                fontSize = FontSize.Large,
+                fontWeight = FontWeight.Medium
             )
         }
 

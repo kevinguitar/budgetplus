@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.core.ui
 import androidx.compose.ui.unit.sp
 
 object FontSize {
-    val XSmall = 10.sp
     val Small = 12.sp
     val Normal = 14.sp
     val SemiLarge = 16.sp

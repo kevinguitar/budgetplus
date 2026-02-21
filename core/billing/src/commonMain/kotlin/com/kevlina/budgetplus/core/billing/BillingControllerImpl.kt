@@ -43,7 +43,6 @@ class BillingControllerImpl(
             },
             onSuccess = { offerings ->
                 val storePackages = offerings.current?.availablePackages.orEmpty()
-                    .filter { it.storeProduct.id == "budgetplus.premium" }
                 packages.value = storePackages
                 parsePricingPlans(storePackages)
             }
