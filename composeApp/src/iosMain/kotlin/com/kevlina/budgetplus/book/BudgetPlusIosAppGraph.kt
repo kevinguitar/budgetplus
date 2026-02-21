@@ -1,6 +1,7 @@
 package com.kevlina.budgetplus.book
 
 import androidx.lifecycle.SavedStateHandle
+import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.di.ViewModelGraphProvider
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
@@ -17,11 +18,16 @@ import dev.zacsweers.metro.createGraph
 
 @DependencyGraph(AppScope::class)
 interface BudgetPlusIosAppGraph {
+    // For app start
+    val appStartActions: Set<AppStartAction>
+
+    // For UI rendering
     val viewModelGraphProvider: ViewModelGraphProvider
     val themeManager: ThemeManager
     val authManager: AuthManager
     val bookRepo: BookRepo
 
+    // For navigation
     val navController: NavController<BookDest>
     val navigation: NavigationFlow
 
@@ -38,4 +44,10 @@ interface BudgetPlusIosAppGraph {
 
 object BudgetPlusIosAppGraphHolder {
     val graph by lazy { createGraph<BudgetPlusIosAppGraph>() }
+
+    init {
+        graph.appStartActions.forEach {
+            it.onAppStart()
+        }
+    }
 }

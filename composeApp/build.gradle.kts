@@ -35,6 +35,7 @@ kotlin {
             api(projects.core.data)
             api(projects.core.impl)
             api(projects.core.inappUpdate)
+            api(projects.core.notification)
             api(projects.core.settingsApi)
             api(projects.core.ui)
 
