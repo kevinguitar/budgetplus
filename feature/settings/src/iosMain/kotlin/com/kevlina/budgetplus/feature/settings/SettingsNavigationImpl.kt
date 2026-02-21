@@ -1,18 +1,23 @@
 package com.kevlina.budgetplus.feature.settings
 
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.cta_cancel
 import budgetplus.core.common.generated.resources.settings_contact_us
 import budgetplus.core.common.generated.resources.settings_no_email_app_found
+import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.Constants.APP_LANGUAGE_INITIALIZED_KEY
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.data.AuthManager
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Named
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDefaults
 import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyleCancel
 import platform.UIKit.UIAlertActionStyleDefault
 import platform.UIKit.UIAlertController
 import platform.UIKit.UIAlertControllerStyleActionSheet
@@ -23,6 +28,7 @@ class SettingsNavigationImpl(
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,
     @Named("contact_email") private val contactEmail: String,
+    @AppCoroutineScope private val appScope: CoroutineScope,
 ) : SettingsNavigation {
 
     override fun openLanguageSettings(onLanguageChanged: (String) -> Unit) {
@@ -56,7 +62,17 @@ class SettingsNavigationImpl(
             )
         }
 
-        rootViewController.presentViewController(alertController, animated = true, completion = null)
+        appScope.launch {
+            alertController.addAction(
+                UIAlertAction.actionWithTitle(
+                    title = getString(Res.string.cta_cancel),
+                    style = UIAlertActionStyleCancel,
+                    handler = null
+                )
+            )
+
+            rootViewController.presentViewController(alertController, animated = true, completion = null)
+        }
     }
 
     override suspend fun contactUs() {
