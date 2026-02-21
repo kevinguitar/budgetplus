@@ -19,6 +19,10 @@ class PremiumViewModel(
 
     val pricingMap = billingController.pricingMap
 
+    init {
+        billingController.fetchPrices()
+    }
+
     fun purchase(plan: PremiumPlan) {
         billingController.purchase(plan)
     }

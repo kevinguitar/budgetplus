@@ -97,7 +97,6 @@ firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = 
 firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
 google-ads = "com.google.android.gms:play-services-ads:25.0.0"
 google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.21.0.1"
-google-billing = "com.android.billingclient:billing-ktx:8.3.0"
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.2.0"
 google-play-review = "com.google.android.play:review-ktx:2.0.2"
 google-play-update = "com.google.android.play:app-update-ktx:2.1.0"

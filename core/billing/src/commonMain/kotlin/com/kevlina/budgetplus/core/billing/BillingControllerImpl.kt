@@ -10,32 +10,26 @@ import com.revenuecat.purchases.kmp.models.PackageType
 import com.revenuecat.purchases.kmp.models.freePhase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class BillingControllerImpl(
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : BillingController {
-    override val premiumPricing: StateFlow<String?> get() = TODO("Not yet implemented")
-    override val purchaseState: StateFlow<PurchaseState> get() = TODO("Not yet implemented")
-    override fun buyPremium() = TODO("Not yet implemented")
-    override fun endConnection() = TODO("Not yet implemented")
 
     private val packages = MutableStateFlow<List<Package>?>(null)
 
     final override val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
         field = MutableStateFlow(PremiumPlan.entries.associateWith { null })
 
-    init {
-        fetchPrices()
-    }
-
-    fun fetchPrices() {
+    override fun fetchPrices() {
         Purchases.sharedInstance.getOfferings(
             onError = { error ->
                 appScope.launch { snackbarSender.send(error.message) }

@@ -4,14 +4,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface BillingController {
 
-    //TODO: Stale fields, remove later
-    val premiumPricing: StateFlow<String?>
-    val purchaseState: StateFlow<PurchaseState>
-    fun buyPremium()
-    fun endConnection()
-
     val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
 
+    fun fetchPrices()
     fun purchase(plan: PremiumPlan)
     fun restorePurchases()
 }
