@@ -5,7 +5,7 @@
         <activity
             android:name=".WelcomeActivity"
             android:configChanges="colorMode|density|fontScale|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode|fontWeightAdjustment"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:theme="@style/ComposeActivityStyle" />
     </application>
 </manifest>

@@ -74,6 +74,12 @@ struct iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var deeplinkManager = DeeplinkManager.shared
 
+    init() {
+        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
+            (action as? CommonAppStartAction)?.onAppStart()
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView(deeplink: deeplinkManager.deeplink)

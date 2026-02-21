@@ -94,6 +94,12 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                         implementation(project(":core:unit-test"))
                     }
                 }
+
+                named { it.lowercase().startsWith("ios") }.configureEach {
+                    languageSettings {
+                        optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                    }
+                }
             }
 
             compilerOptions {
