@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.feature.settings
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.settings_contact_us
 import budgetplus.core.common.generated.resources.settings_no_email_app_found
+import com.kevlina.budgetplus.core.common.Constants.APP_LANGUAGE_INITIALIZED_KEY
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.data.AuthManager
 import dev.zacsweers.metro.AppScope
@@ -45,8 +46,10 @@ class SettingsNavigationImpl(
                     title = name,
                     style = UIAlertActionStyleDefault,
                     handler = {
-                        NSUserDefaults.standardUserDefaults.setObject(listOf(code), "AppleLanguages")
-                        NSUserDefaults.standardUserDefaults.synchronize()
+                        val userDefaults = NSUserDefaults.standardUserDefaults
+                        userDefaults.setObject(listOf(code), "AppleLanguages")
+                        userDefaults.setBool(true, APP_LANGUAGE_INITIALIZED_KEY)
+                        userDefaults.synchronize()
                         onLanguageChanged(code)
                     }
                 )
