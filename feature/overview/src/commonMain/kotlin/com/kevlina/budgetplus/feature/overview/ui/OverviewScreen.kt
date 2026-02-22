@@ -3,9 +3,6 @@ package com.kevlina.budgetplus.feature.overview.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FileDownload
-import androidx.compose.material.icons.rounded.FormatListNumbered
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +17,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.export_csv_confirmation
 import budgetplus.core.common.generated.resources.export_cta
+import budgetplus.core.common.generated.resources.ic_file_download
+import budgetplus.core.common.generated.resources.ic_format_list_numbered
 import budgetplus.core.common.generated.resources.overview_details_title
 import budgetplus.core.common.generated.resources.overview_title
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -44,6 +43,7 @@ import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.icerock.moko.permissions.storage.WRITE_STORAGE
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun OverviewScreen(navController: NavController<BookDest>) {
@@ -72,7 +72,7 @@ fun OverviewScreen(navController: NavController<BookDest>) {
             menuActions = {
                 MenuAction(
                     imageVector = when (mode) {
-                        OverviewMode.AllRecords -> Icons.Rounded.FormatListNumbered
+                        OverviewMode.AllRecords -> vectorResource(Res.drawable.ic_format_list_numbered)
                         OverviewMode.GroupByCategories -> chartMode.icon
                     },
                     description = stringResource(Res.string.overview_details_title),
@@ -88,7 +88,7 @@ fun OverviewScreen(navController: NavController<BookDest>) {
                 )
 
                 MenuAction(
-                    imageVector = Icons.Rounded.FileDownload,
+                    imageVector = vectorResource(Res.drawable.ic_file_download),
                     description = stringResource(Res.string.export_cta),
                     onClick = { isExportDialogShown = true },
                     modifier = Modifier.onPlaced {

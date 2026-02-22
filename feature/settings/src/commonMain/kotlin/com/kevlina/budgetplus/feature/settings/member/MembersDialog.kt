@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
+import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.members_confirm_remove
 import budgetplus.core.common.generated.resources.members_owner_label
 import budgetplus.core.common.generated.resources.members_title
@@ -49,6 +48,7 @@ import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.utils.metroViewModel
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun MembersDialog(
@@ -174,7 +174,7 @@ private fun MemberCard(
                     size = 40.dp
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Delete,
+                        imageVector = vectorResource(Res.drawable.ic_delete),
                         contentDescription = stringResource(Res.string.cta_delete),
                         tint = LocalAppColors.current.dark,
                         modifier = Modifier.size(20.dp)

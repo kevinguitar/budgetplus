@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
@@ -20,8 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_lock
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
+import org.jetbrains.compose.resources.vectorResource
 import androidx.compose.material3.DropdownMenu as MaterialDropdownMenu
 import androidx.compose.material3.DropdownMenuItem as MaterialDropdownMenuItem
 
@@ -108,7 +109,7 @@ private fun DropdownMenu_Preview() = AppTheme(themeColors = ThemeColors.Lavender
     ) {
         DropdownItem(
             name = "Item 1",
-            icon = Icons.Rounded.Lock,
+            icon = vectorResource(Res.drawable.ic_lock),
             onClick = {}
         )
         DropdownDivider()

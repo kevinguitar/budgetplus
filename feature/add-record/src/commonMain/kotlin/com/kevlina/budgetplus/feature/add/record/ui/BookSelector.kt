@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +21,9 @@ import budgetplus.core.common.generated.resources.book_name_placeholder
 import budgetplus.core.common.generated.resources.book_name_title
 import budgetplus.core.common.generated.resources.book_selection
 import budgetplus.core.common.generated.resources.cta_create
+import budgetplus.core.common.generated.resources.ic_arrow_drop_down
+import budgetplus.core.common.generated.resources.ic_check
+import budgetplus.core.common.generated.resources.ic_lock
 import budgetplus.core.common.generated.resources.menu_create_book
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -41,6 +40,7 @@ import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.BookSelectorViewModel
 import com.kevlina.budgetplus.feature.add.record.CreateBookBtnState
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun BookSelector(navController: NavController<BookDest>) {
@@ -73,7 +73,7 @@ fun BookSelector(navController: NavController<BookDest>) {
             )
 
             Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
+                imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
                 contentDescription = stringResource(Res.string.book_selection),
                 tint = LocalAppColors.current.light
             )
@@ -103,7 +103,7 @@ fun BookSelector(navController: NavController<BookDest>) {
 
                         if (bookState?.id == book.id) {
                             Icon(
-                                imageVector = Icons.Rounded.Check,
+                                imageVector = vectorResource(Res.drawable.ic_check),
                                 contentDescription = null,
                                 tint = LocalAppColors.current.dark,
                                 modifier = Modifier.padding(horizontal = 4.dp)
@@ -118,7 +118,7 @@ fun BookSelector(navController: NavController<BookDest>) {
             DropdownItem(
                 name = stringResource(Res.string.menu_create_book),
                 icon = if (createBookBtnState != CreateBookBtnState.Enabled) {
-                    Icons.Rounded.Lock
+                    vectorResource(Res.drawable.ic_lock)
                 } else {
                     null
                 },

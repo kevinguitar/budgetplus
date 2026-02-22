@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
-import androidx.compose.material.icons.rounded.Language
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_arrow_forward_ios
+import budgetplus.core.common.generated.resources.ic_language
 import com.kevlina.budgetplus.core.lottie.PremiumCrown
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -32,6 +32,7 @@ import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.resources.painterResource as jetbrainsPainterResource
 
 private val cornerRadius = 8.dp
@@ -115,7 +116,7 @@ internal fun SettingsItem(
 
             if (action == null) {
                 Image(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
+                    imageVector = vectorResource(Res.drawable.ic_arrow_forward_ios),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(LocalAppColors.current.dark),
                     modifier = Modifier
@@ -144,14 +145,14 @@ internal fun SettingsItem(
 private fun SettingsItem_Preview() = AppTheme {
     Column {
         SettingsItem(
-            icon = Icons.Rounded.Language,
+            icon = vectorResource(Res.drawable.ic_language),
             text = "語言",
             roundTop = true,
             onClick = {}
         )
 
         SettingsItem(
-            icon = Icons.Rounded.Language,
+            icon = vectorResource(Res.drawable.ic_language),
             text = "語言",
             description = "English, bla bla bla, some very long description, look it's on the 2nd line already.",
             roundBottom = true,

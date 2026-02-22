@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.Numbers
-import androidx.compose.material.icons.rounded.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +23,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.batch_record_start_date
 import budgetplus.core.common.generated.resources.batch_record_times
+import budgetplus.core.common.generated.resources.ic_arrow_drop_down
+import budgetplus.core.common.generated.resources.ic_numbers
+import budgetplus.core.common.generated.resources.ic_today
 import budgetplus.core.common.generated.resources.select_date
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
@@ -41,6 +40,7 @@ import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.batch.record.BatchRecordViewModel
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 internal val fontSize = FontSize.SemiLarge
 internal val iconModifier = Modifier
@@ -91,7 +91,7 @@ private fun DateSelector(
     ) {
 
         Icon(
-            imageVector = Icons.Rounded.Today,
+            imageVector = vectorResource(Res.drawable.ic_today),
             contentDescription = stringResource(Res.string.select_date),
             tint = LocalAppColors.current.dark,
             modifier = iconModifier
@@ -137,7 +137,7 @@ private fun TimesSelector(
     ) {
 
         Icon(
-            imageVector = Icons.Rounded.Numbers,
+            imageVector = vectorResource(Res.drawable.ic_numbers),
             tint = LocalAppColors.current.dark,
             modifier = iconModifier
         )
@@ -161,7 +161,7 @@ private fun TimesSelector(
             )
 
             Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
+                imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
                 tint = LocalAppColors.current.dark
             )
 

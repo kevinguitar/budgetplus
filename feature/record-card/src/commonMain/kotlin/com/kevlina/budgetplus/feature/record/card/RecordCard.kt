@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -28,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
 import budgetplus.core.common.generated.resources.cta_duplicate
+import budgetplus.core.common.generated.resources.ic_refresh
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.shortFormatted
@@ -44,6 +43,7 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun RecordCard(
@@ -86,7 +86,7 @@ fun RecordCard(
 
                     if (item.isBatched) {
                         Icon(
-                            imageVector = Icons.Rounded.Refresh,
+                            imageVector = vectorResource(Res.drawable.ic_refresh),
                             tint = LocalAppColors.current.primary,
                             modifier = Modifier.size(16.dp)
                         )

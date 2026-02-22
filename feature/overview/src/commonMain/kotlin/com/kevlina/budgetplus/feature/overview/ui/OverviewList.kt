@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -27,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_search
 import budgetplus.core.common.generated.resources.search_title
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -51,6 +50,7 @@ import com.kevlina.budgetplus.feature.record.card.RecordCardZeroCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun OverviewList(
@@ -218,7 +218,7 @@ internal fun OverviewList(
 
         Fab(
             isVisible = isSearchFabVisible,
-            icon = Icons.Rounded.Search,
+            icon = vectorResource(Res.drawable.ic_search),
             contentDescription = stringResource(Res.string.search_title),
             onClick = { navController.navigate(BookDest.Search(type)) }
         )

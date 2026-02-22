@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Colorize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_colorize
 import com.kevlina.budgetplus.core.theme.ColorTone
 import com.kevlina.budgetplus.core.theme.ThemeColorSemantic
 import com.kevlina.budgetplus.core.theme.ThemeColors
@@ -29,6 +29,7 @@ import com.kevlina.budgetplus.core.ui.TOP_BAR_DARKEN_FACTOR
 import com.kevlina.budgetplus.core.ui.clickableWithoutRipple
 import com.kevlina.budgetplus.core.ui.darken
 import com.kevlina.budgetplus.core.ui.rippleClick
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun ColorToneCard(
@@ -116,7 +117,7 @@ private fun RowScope.EditColorButton(
     ) {
 
         Icon(
-            imageVector = Icons.Rounded.Colorize,
+            imageVector = vectorResource(Res.drawable.ic_colorize),
             tint = color,
             modifier = Modifier
                 .align(Alignment.BottomEnd)

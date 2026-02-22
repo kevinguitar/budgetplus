@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.GroupAdd
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,6 +21,8 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.color_tone_preview_title
 import budgetplus.core.common.generated.resources.cta_invite
 import budgetplus.core.common.generated.resources.default_expense_categories
+import budgetplus.core.common.generated.resources.ic_group_add
+import budgetplus.core.common.generated.resources.ic_settings
 import budgetplus.core.common.generated.resources.record_note
 import budgetplus.core.common.generated.resources.record_note_placeholder_expense
 import budgetplus.core.common.generated.resources.settings_description
@@ -47,6 +46,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun TonePreview(
@@ -71,12 +71,12 @@ internal fun TonePreview(
             title = stringResource(Res.string.color_tone_preview_title),
             menuActions = {
                 MenuAction(
-                    imageVector = Icons.Rounded.GroupAdd,
+                    imageVector = vectorResource(Res.drawable.ic_group_add),
                     description = stringResource(Res.string.cta_invite),
                 )
 
                 MenuAction(
-                    imageVector = Icons.Rounded.Settings,
+                    imageVector = vectorResource(Res.drawable.ic_settings),
                     description = stringResource(Res.string.settings_description),
                 )
             },

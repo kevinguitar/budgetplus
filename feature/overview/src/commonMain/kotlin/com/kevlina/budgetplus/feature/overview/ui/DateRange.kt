@@ -4,10 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.rounded.ChevronLeft
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -16,6 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.date_to
+import budgetplus.core.common.generated.resources.ic_chevron_left
+import budgetplus.core.common.generated.resources.ic_chevron_right
+import budgetplus.core.common.generated.resources.ic_date_range
 import budgetplus.core.common.generated.resources.select_date
 import com.kevlina.budgetplus.core.common.fullFormatted
 import com.kevlina.budgetplus.core.common.mediumFormatted
@@ -25,6 +24,7 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.core.ui.thenIf
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun DateRange(
@@ -45,7 +45,7 @@ internal fun DateRange(
     ) {
         if (isOneDayPeriod) {
             Icon(
-                imageVector = Icons.Rounded.ChevronLeft,
+                imageVector = vectorResource(Res.drawable.ic_chevron_left),
                 tint = LocalAppColors.current.dark,
                 modifier = Modifier
                     .padding(arrowPadding)
@@ -54,7 +54,7 @@ internal fun DateRange(
         }
 
         Icon(
-            imageVector = Icons.Filled.DateRange,
+            imageVector = vectorResource(Res.drawable.ic_date_range),
             contentDescription = stringResource(Res.string.select_date),
             tint = LocalAppColors.current.dark
         )
@@ -75,7 +75,7 @@ internal fun DateRange(
 
         if (isOneDayPeriod) {
             Icon(
-                imageVector = Icons.Rounded.ChevronRight,
+                imageVector = vectorResource(Res.drawable.ic_chevron_right),
                 tint = LocalAppColors.current.dark,
                 modifier = Modifier
                     .padding(arrowPadding)

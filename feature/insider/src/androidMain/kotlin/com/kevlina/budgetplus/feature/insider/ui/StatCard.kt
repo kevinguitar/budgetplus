@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.People
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -20,10 +18,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
+import org.jetbrains.compose.resources.vectorResource
 import java.text.DecimalFormat
 
 @Composable
@@ -79,7 +79,7 @@ internal fun StatCard(
 private fun StatCard_Preview() = AppTheme {
     StatCard(
         title = "Total users",
-        icon = Icons.Rounded.People,
+        icon = vectorResource(Res.drawable.ic_people),
         number = 3429
     )
 }

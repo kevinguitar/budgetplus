@@ -6,13 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Abc
-import androidx.compose.material.icons.rounded.CalendarViewWeek
-import androidx.compose.material.icons.rounded.Landscape
-import androidx.compose.material.icons.rounded.RamenDining
-import androidx.compose.material.icons.rounded.Today
-import androidx.compose.material.icons.rounded.WorkspacePremium
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +32,7 @@ import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.insider.InsiderViewModel
 import com.kevlina.budgetplus.feature.insider.UsersOverviewData
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 private const val TYPE_LOADER = "loader"
 private const val TYPE_STAT = "stat"
@@ -76,7 +70,7 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
             item(contentType = TYPE_STAT) {
                 StatCard(
                     title = stringResource(Res.string.insider_total_premium_users),
-                    icon = Icons.Rounded.WorkspacePremium,
+                    icon = vectorResource(Res.drawable.ic_workspace_premium),
                     number = data.totalPremiumUsers
                 )
             }
@@ -84,7 +78,7 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
             item(contentType = TYPE_STAT) {
                 StatCard(
                     title = stringResource(Res.string.insider_daily_active_users),
-                    icon = Icons.Rounded.Today,
+                    icon = vectorResource(Res.drawable.ic_today),
                     number = data.dailyActiveUsers
                 )
             }
@@ -92,7 +86,7 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
             item(contentType = TYPE_STAT) {
                 StatCard(
                     title = stringResource(Res.string.insider_weekly_active_users),
-                    icon = Icons.Rounded.CalendarViewWeek,
+                    icon = vectorResource(Res.drawable.ic_calendar_view_week),
                     number = data.weeklyActiveUsers
                 )
             }
@@ -145,21 +139,21 @@ private fun LazyListScope.overviewSection(overviewData: UsersOverviewData?) {
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_en_users),
-                icon = Icons.Rounded.Abc,
+                icon = vectorResource(Res.drawable.ic_abc),
                 number = overviewData.totalEnglishUsers
             )
         }
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_ja_users),
-                icon = Icons.Rounded.RamenDining,
+                icon = vectorResource(Res.drawable.ic_ramen_dining),
                 number = overviewData.totalJapaneseUsers
             )
         }
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_cn_users),
-                icon = Icons.Rounded.Landscape,
+                icon = vectorResource(Res.drawable.ic_landscape),
                 number = overviewData.totalSimplifiedChineseUsers
             )
         }

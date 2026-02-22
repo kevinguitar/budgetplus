@@ -9,9 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.EventNote
-import androidx.compose.material.icons.rounded.Paid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,6 +21,8 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_event_note
+import budgetplus.core.common.generated.resources.ic_paid
 import budgetplus.core.common.generated.resources.overview_details_title
 import budgetplus.core.common.generated.resources.overview_sort_by_date
 import budgetplus.core.common.generated.resources.overview_sort_by_price
@@ -42,6 +41,7 @@ import com.kevlina.budgetplus.feature.record.card.RecordCardState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun RecordsScreen(
@@ -96,14 +96,14 @@ fun RecordsScreen(
 
                 when (sortMode) {
                     RecordsSortMode.Date -> MenuAction(
-                        imageVector = Icons.AutoMirrored.Rounded.EventNote,
+                        imageVector = vectorResource(Res.drawable.ic_event_note),
                         description = stringResource(Res.string.overview_sort_by_price),
                         onClick = { vm.setSortMode(RecordsSortMode.Price) },
                         modifier = modifier
                     )
 
                     RecordsSortMode.Price -> MenuAction(
-                        imageVector = Icons.Rounded.Paid,
+                        imageVector = vectorResource(Res.drawable.ic_paid),
                         description = stringResource(Res.string.overview_sort_by_date),
                         onClick = { vm.setSortMode(RecordsSortMode.Date) },
                         modifier = modifier

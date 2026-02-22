@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Backspace
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -31,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.cta_delete
+import budgetplus.core.common.generated.resources.ic_backspace
 import budgetplus.feature.add_record.generated.resources.Res
 import budgetplus.feature.add_record.generated.resources.ic_divide
 import budgetplus.feature.add_record.generated.resources.ic_equal
@@ -54,6 +53,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import budgetplus.core.common.generated.resources.Res as CommonRes
 
 enum class CalculatorButton(val text: Char) {
@@ -228,7 +228,7 @@ private fun ColumnScope.CalculatorBtn(
     ) {
         when (button) {
             CalculatorButton.Delete -> Icon(
-                imageVector = Icons.AutoMirrored.Rounded.Backspace,
+                imageVector = vectorResource(CommonRes.drawable.ic_backspace),
                 contentDescription = stringResource(CommonRes.string.cta_delete),
                 tint = LocalAppColors.current.light
             )

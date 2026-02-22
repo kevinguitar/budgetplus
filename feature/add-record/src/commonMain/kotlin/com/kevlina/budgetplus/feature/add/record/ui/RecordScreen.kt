@@ -3,9 +3,6 @@ package com.kevlina.budgetplus.feature.add.record.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.GroupAdd
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -19,6 +16,8 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_invite
+import budgetplus.core.common.generated.resources.ic_group_add
+import budgetplus.core.common.generated.resources.ic_settings
 import budgetplus.core.common.generated.resources.review_request_message
 import budgetplus.core.common.generated.resources.review_request_no
 import budgetplus.core.common.generated.resources.review_request_yes
@@ -37,6 +36,7 @@ import com.kevlina.budgetplus.feature.add.record.RecordViewModel
 import com.kevlina.budgetplus.feature.category.pills.toState
 import kotlinx.coroutines.flow.collect
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun RecordScreen(navController: NavController<BookDest>) {
@@ -62,7 +62,7 @@ fun RecordScreen(navController: NavController<BookDest>) {
             titleContent = { BookSelector(navController) },
             menuActions = {
                 MenuAction(
-                    imageVector = Icons.Rounded.GroupAdd,
+                    imageVector = vectorResource(Res.drawable.ic_group_add),
                     description = stringResource(Res.string.cta_invite),
                     onClick = vm::shareJoinLink,
                     modifier = Modifier.onPlaced {
@@ -76,7 +76,7 @@ fun RecordScreen(navController: NavController<BookDest>) {
                 )
 
                 MenuAction(
-                    imageVector = Icons.Rounded.Settings,
+                    imageVector = vectorResource(Res.drawable.ic_settings),
                     description = stringResource(Res.string.settings_description),
                     onClick = {
                         navController.navigate(BookDest.Settings())

@@ -3,8 +3,6 @@ package com.kevlina.budgetplus.core.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_today
 import budgetplus.core.common.generated.resources.select_date
 import budgetplus.core.common.generated.resources.today
 import budgetplus.core.common.generated.resources.tomorrow
@@ -26,6 +25,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun SingleDatePicker(
@@ -43,7 +43,7 @@ fun SingleDatePicker(
 
         if (showIcon) {
             Icon(
-                imageVector = Icons.Rounded.Today,
+                imageVector = vectorResource(Res.drawable.ic_today),
                 contentDescription = stringResource(Res.string.select_date),
                 tint = LocalAppColors.current.dark
             )

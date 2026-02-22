@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -31,6 +29,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_mic
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
@@ -47,6 +47,7 @@ import dev.icerock.moko.permissions.microphone.RECORD_AUDIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun ColumnScope.SpeakToRecordButton(
@@ -124,7 +125,7 @@ fun ColumnScope.SpeakToRecordButton(
             )
         } else {
             Icon(
-                imageVector = Icons.Rounded.Mic,
+                imageVector = vectorResource(Res.drawable.ic_mic),
                 tint = LocalAppColors.current.light
             )
         }

@@ -3,9 +3,6 @@ package com.kevlina.budgetplus.feature.overview.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.PersonSearch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_arrow_drop_down
+import budgetplus.core.common.generated.resources.ic_person_search
 import budgetplus.core.common.generated.resources.overview_author_anonymous
 import budgetplus.core.common.generated.resources.overview_author_everyone
 import com.kevlina.budgetplus.core.data.remote.User
@@ -25,6 +24,7 @@ import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun AuthorSelector(
@@ -43,7 +43,7 @@ internal fun AuthorSelector(
     ) {
 
         Icon(
-            imageVector = Icons.Rounded.PersonSearch,
+            imageVector = vectorResource(Res.drawable.ic_person_search),
             tint = LocalAppColors.current.dark
         )
 
@@ -79,7 +79,7 @@ internal fun AuthorSelector(
         }
 
         Icon(
-            imageVector = Icons.Rounded.ArrowDropDown,
+            imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
             contentDescription = null,
             tint = LocalAppColors.current.dark
         )

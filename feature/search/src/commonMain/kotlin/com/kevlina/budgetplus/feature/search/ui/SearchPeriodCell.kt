@@ -7,15 +7,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.RadioButtonChecked
-import androidx.compose.material.icons.rounded.RadioButtonUnchecked
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_radio_button_checked
+import budgetplus.core.common.generated.resources.ic_radio_button_unchecked
 import budgetplus.core.common.generated.resources.search_period_custom
 import budgetplus.core.common.generated.resources.search_period_custom_range
 import budgetplus.core.common.generated.resources.search_period_last_half_year
@@ -31,6 +30,7 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.search.ui.SearchPeriod.Companion.requiresPremium
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun SearchPeriodCell(
@@ -49,9 +49,9 @@ internal fun SearchPeriodCell(
     ) {
         Icon(
             imageVector = if (isSelected) {
-                Icons.Rounded.RadioButtonChecked
+                vectorResource(Res.drawable.ic_radio_button_checked)
             } else {
-                Icons.Rounded.RadioButtonUnchecked
+                vectorResource(Res.drawable.ic_radio_button_unchecked)
             },
             tint = LocalAppColors.current.dark,
             modifier = Modifier
