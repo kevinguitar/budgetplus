@@ -8,7 +8,7 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
 import com.kevlina.budgetplus.core.unit.test.SnapshotFlowRule
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorAction
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
-import io.mockk.mockk
+import com.kevlina.budgetplus.feature.freeze.fakeFreezeBookVm
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -72,7 +72,8 @@ class CalculatorViewModelTest {
     private val calculator = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
         snackbarSender = FakeSnackbarSender,
-        speakToRecordVm = mockk(),
+        speakToRecordVm = fakeSpeakToRecordVm,
+        freezeBookVm = fakeFreezeBookVm,
         expressionEvaluator = ExpressionEvaluator()
     )
 }

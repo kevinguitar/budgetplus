@@ -6,7 +6,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
 import com.google.common.truth.Truth.assertThat
-import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
+import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.RecordType
@@ -22,9 +22,12 @@ import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.ui.bubble.FakeBubbleRepo
 import com.kevlina.budgetplus.core.unit.test.MainDispatcherRule
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
+import com.kevlina.budgetplus.feature.freeze.fakeFreezeBookVm
+import com.kevlina.budgetplus.feature.speak.record.RecordActor
+import com.kevlina.budgetplus.feature.speak.record.SpeakToRecord
+import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordViewModel
 import com.kevlina.budgetplus.inapp.review.fixtures.FakeInAppReviewManager
-import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.test.runTest
@@ -124,7 +127,7 @@ class RecordViewModelTest {
         calculatorVm.input("1")
         calculatorVm.evaluate()
 
-        verify(exactly = 1) { interstitialAdsHandler.showAd() }
+        assertThat(interstitialAdsHandler.count).isEqualTo(1)
     }
 
     @Test
@@ -149,7 +152,8 @@ class RecordViewModelTest {
     private val calculatorVm = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
         snackbarSender = FakeSnackbarSender,
-        speakToRecordVm = mockk(relaxed = true),
+        speakToRecordVm = fakeSpeakToRecordVm,
+        freezeBookVm = fakeFreezeBookVm,
         expressionEvaluator = ExpressionEvaluator(),
     )
 
@@ -158,13 +162,14 @@ class RecordViewModelTest {
         setCategory("Test category")
     }
 
-    private val interstitialAdsHandler = mockk<InterstitialAdsHandler>(relaxed = true)
+    private val interstitialAdsHandler = FakeInterstitialAdsHandler()
 
     private fun createModel(
         recordCount: Int = 0,
     ) = RecordViewModel(
         calculatorVm = calculatorVm,
         categoriesVm = categoriesVm,
+        freezeBookVm = fakeFreezeBookVm,
         bookRepo = bookRepo,
         recordRepo = FakeRecordRepo,
         bubbleRepo = FakeBubbleRepo(),
@@ -182,3 +187,17 @@ class RecordViewModelTest {
 private suspend fun EventFlow<Unit>.awaitUnconsumedEvent() {
     assertThat(mapNotNull { it.consume() }.first()).isEqualTo(Unit)
 }
+
+val fakeSpeakToRecordVm = SpeakToRecordViewModel(
+    snackbarSender = FakeSnackbarSender,
+    speakToRecord = object : SpeakToRecord {
+        override val isAvailableOnDevice: Boolean
+            get() = true
+
+        override fun startRecording(): RecordActor = RecordActor(
+            statusFlow = emptyFlow(),
+            stopRecording = {}
+        )
+    },
+    bubbleRepo = FakeBubbleRepo()
+)
