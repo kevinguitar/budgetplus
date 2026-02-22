@@ -31,16 +31,21 @@ class FreezeBookViewModel(
     val activatedBookId = preference.of(activatedBookIdKey)
 
     val showFreezeDialog: StateFlow<Boolean> = combine(
-        authManager.userState,
-        bookRepo.booksState,
+        authManager.userState.filterNotNull(),
+        bookRepo.booksState.filterNotNull(),
         activatedBookId
     ) { user, books, activatedBookId ->
         // User already chose a book to continue recording.
-        if (activatedBookId != null) return@combine false
-        //TODO: Detect cases where the activated book is deleted.
+        if (activatedBookId != null) {
+            if (books.none { it.id == activatedBookId }) {
+                // The chosen book is deleted, reset the activated book id to let user choose again.
+                preference.remove(activatedBookIdKey)
+            }
+            return@combine false
+        }
 
-        val isFreeUser = user?.premium == false
-        val hasMultipleBooks = (books?.size ?: 0) > 1
+        val isFreeUser = user.premium == false
+        val hasMultipleBooks = books.size > 1
         val shouldShowDialog = isFreeUser && hasMultipleBooks
         shouldShowDialog
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
