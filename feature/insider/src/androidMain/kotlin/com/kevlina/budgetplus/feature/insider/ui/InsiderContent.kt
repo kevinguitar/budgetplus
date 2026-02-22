@@ -16,6 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_abc
+import budgetplus.core.common.generated.resources.ic_calendar_view_week
+import budgetplus.core.common.generated.resources.ic_landscape
+import budgetplus.core.common.generated.resources.ic_ramen_dining
+import budgetplus.core.common.generated.resources.ic_today
+import budgetplus.core.common.generated.resources.ic_workspace_premium
 import budgetplus.core.common.generated.resources.insider_active_premium_users
 import budgetplus.core.common.generated.resources.insider_daily_active_users
 import budgetplus.core.common.generated.resources.insider_new_users

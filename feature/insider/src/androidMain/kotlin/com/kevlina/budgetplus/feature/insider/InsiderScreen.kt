@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_add
+import budgetplus.core.common.generated.resources.ic_notification_add
 import budgetplus.core.common.generated.resources.insider_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.MenuAction
