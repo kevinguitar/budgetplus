@@ -46,6 +46,7 @@ import com.kevlina.budgetplus.core.ui.Surface
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
+import com.kevlina.budgetplus.feature.speak.record.isSpeakToRecordAvailable
 import com.kevlina.budgetplus.feature.speak.record.ui.SpeakToRecordButton
 import com.kevlina.budgetplus.feature.speak.record.ui.SpeakToRecordButtonState
 import kotlinx.coroutines.flow.Flow
@@ -131,22 +132,48 @@ internal fun Calculator(
 
                 when (index) {
                     0 -> {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(verticalSpacing),
-                            modifier = Modifier.weight(1F)
-                        ) {
-                            SpeakToRecordButton(
-                                state = state.speakToRecordButtonState,
-                                isAdaptive = adaptiveButton,
+                        val onClearClick = {
+                            vibrate()
+                            state.onCalculatorAction(CalculatorAction.Clear)
+                        }
+                        val clearText = @Composable {
+                            Text(
+                                text = "AC",
+                                textAlign = TextAlign.Center,
+                                fontSize = FontSize.Header,
+                                fontWeight = FontWeight.Bold,
+                                color = LocalAppColors.current.light
                             )
+                        }
+                        if (isSpeakToRecordAvailable) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(verticalSpacing),
+                                modifier = Modifier.weight(1F)
+                            ) {
+                                SpeakToRecordButton(
+                                    state = state.speakToRecordButtonState,
+                                    isAdaptive = adaptiveButton,
+                                )
 
-                            ClearBtn(
-                                isAdaptive = adaptiveButton,
-                                onClick = {
-                                    vibrate()
-                                    state.onCalculatorAction(CalculatorAction.Clear)
+                                CalculatorBtnContainer(
+                                    isAdaptive = adaptiveButton,
+                                    onClick = onClearClick,
+                                    color = LocalAppColors.current.dark
+                                ) {
+                                    clearText()
                                 }
-                            )
+                            }
+                        } else {
+                            Surface(
+                                onClick = onClearClick,
+                                modifier = Modifier
+                                    .weight(1F)
+                                    .fillMaxHeight(),
+                                shape = CircleShape,
+                                color = LocalAppColors.current.dark
+                            ) {
+                                clearText()
+                            }
                         }
                     }
 
