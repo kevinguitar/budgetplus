@@ -84,6 +84,7 @@ internal fun Calculator(
 ) {
     val needEvaluate by state.needEvaluate.collectAsStateWithLifecycle(initialValue = false)
     val vibrateOnInput by state.vibrateOnInput.collectAsStateWithLifecycle()
+    val isBookFrozen by state.isBookFrozen.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
 
     fun vibrate() {
@@ -179,6 +180,7 @@ internal fun Calculator(
 
                     1 -> DoneBtn(
                         needEvaluate = needEvaluate,
+                        enabled = !isBookFrozen,
                         onClick = {
                             vibrate()
                             state.onCalculatorAction(
@@ -291,6 +293,7 @@ private fun ColumnScope.ClearBtn(
 @Composable
 private fun RowScope.DoneBtn(
     needEvaluate: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit,
 ) {
     Surface(
@@ -298,6 +301,7 @@ private fun RowScope.DoneBtn(
         modifier = Modifier
             .weight(1F)
             .fillMaxHeight(),
+        enabled = enabled,
         shape = CircleShape,
         color = LocalAppColors.current.dark
     ) {
@@ -323,6 +327,7 @@ private fun RowScope.DoneBtn(
 internal data class CalculatorState(
     val needEvaluate: Flow<Boolean>,
     val vibrateOnInput: StateFlow<Boolean>,
+    val isBookFrozen: StateFlow<Boolean>,
     val speakToRecordButtonState: SpeakToRecordButtonState,
     val onInput: (CalculatorButton) -> Unit,
     val onCalculatorAction: (CalculatorAction) -> Unit,
@@ -331,6 +336,7 @@ internal data class CalculatorState(
         val preview = CalculatorState(
             needEvaluate = MutableStateFlow(false),
             vibrateOnInput = MutableStateFlow(true),
+            isBookFrozen = MutableStateFlow(false),
             speakToRecordButtonState = SpeakToRecordButtonState.preview,
             onInput = {},
             onCalculatorAction = {}
@@ -341,14 +347,15 @@ internal data class CalculatorState(
 internal fun CalculatorViewModel.toState() = CalculatorState(
     needEvaluate = needEvaluate,
     vibrateOnInput = vibrator.vibrateOnInput,
+    isBookFrozen = freezeBookVm.isBookFrozen,
     speakToRecordButtonState = SpeakToRecordButtonState(
-        onTap = speakToRecordViewModel::onButtonTap,
-        onReleased = speakToRecordViewModel::onButtonReleased,
+        onTap = speakToRecordVm::onButtonTap,
+        onReleased = speakToRecordVm::onButtonReleased,
         vibrateOnPress = vibrator.vibrateOnInput,
-        showLoader = speakToRecordViewModel.showLoader,
-        showRecordingDialog = speakToRecordViewModel.showRecordingDialog,
-        highlightRecordButton = speakToRecordViewModel::highlightRecordButton,
-        showRecordPermissionHint = speakToRecordViewModel::showRecordPermissionHint,
+        showLoader = speakToRecordVm.showLoader,
+        showRecordingDialog = speakToRecordVm.showRecordingDialog,
+        highlightRecordButton = speakToRecordVm::highlightRecordButton,
+        showRecordPermissionHint = speakToRecordVm::showRecordPermissionHint,
     ),
     onInput = ::onInput,
     onCalculatorAction = ::onCalculatorAction

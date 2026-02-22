@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.core.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,12 +34,17 @@ fun Surface(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val surfaceColor by animateColorAsState(
+        targetValue = if (enabled) color else color.copy(alpha = 0.4F),
+        label = "surface_color"
+    )
+
     MaterialSurface(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
         shape = shape,
-        color = color,
+        color = surfaceColor,
         border = border,
         shadowElevation = elevation,
         interactionSource = interactionSource,

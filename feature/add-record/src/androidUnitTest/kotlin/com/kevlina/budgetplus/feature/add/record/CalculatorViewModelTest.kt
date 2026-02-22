@@ -72,7 +72,7 @@ class CalculatorViewModelTest {
     private val calculator = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
         snackbarSender = FakeSnackbarSender,
-        speakToRecordViewModel = mockk(),
+        speakToRecordVm = mockk(),
         expressionEvaluator = ExpressionEvaluator()
     )
 }

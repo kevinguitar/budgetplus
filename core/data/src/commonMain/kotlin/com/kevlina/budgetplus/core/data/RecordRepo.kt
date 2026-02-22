@@ -27,7 +27,7 @@ interface RecordRepo {
     )
 
     /**
-     *  @return How many records were edited.
+     *  @return How many records were edited?
      */
     suspend fun editBatch(
         oldRecord: Record,
@@ -42,7 +42,7 @@ interface RecordRepo {
     fun deleteRecord(recordId: String)
 
     /**
-     *  @return How many records were deleted.
+     *  @return How many records were deleted?
      */
     suspend fun deleteBatch(record: Record): Int
 

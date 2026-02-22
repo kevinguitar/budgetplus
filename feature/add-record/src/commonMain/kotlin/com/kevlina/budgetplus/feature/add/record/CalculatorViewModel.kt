@@ -16,6 +16,7 @@ import com.kevlina.budgetplus.core.common.plainPriceString
 import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorAction
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
+import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordViewModel
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +27,8 @@ import kotlinx.coroutines.launch
 @Inject
 class CalculatorViewModel(
     val vibrator: VibratorManager,
-    val speakToRecordViewModel: SpeakToRecordViewModel,
+    val speakToRecordVm: SpeakToRecordViewModel,
+    val freezeBookVm: FreezeBookViewModel,
     private val snackbarSender: SnackbarSender,
     private val expressionEvaluator: ExpressionEvaluator,
 ) : ViewModel() {
