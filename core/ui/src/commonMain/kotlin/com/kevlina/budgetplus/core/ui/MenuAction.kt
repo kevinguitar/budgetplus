@@ -1,7 +1,5 @@
 package com.kevlina.budgetplus.core.ui
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ImageSearch
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,7 +7,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_edit_note
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import org.jetbrains.compose.resources.vectorResource
 
 private const val DISABLED_ALPHA = 0.5F
 
@@ -42,5 +43,5 @@ fun MenuAction(
 @Preview
 @Composable
 private fun MenuAction_Preview() = AppTheme {
-    MenuAction(imageVector = Icons.Rounded.ImageSearch, description = "")
+    MenuAction(imageVector = vectorResource(Res.drawable.ic_edit_note), description = "")
 }

@@ -119,7 +119,7 @@ class NavController<T : NavKey>(
             val stack = rootBackStacks[root] ?: return@forEach
             backStack.addAll(stack)
         }
-        Logger.d { "NavController: BackStack=${backStack.toList()}" }
+        Logger.i { "NavController: BackStack=${backStack.toList()}" }
 
         if (backStack.isEmpty()) {
             backStack.add(startRoot)

@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.FileDownload
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.export_cta
+import budgetplus.core.common.generated.resources.ic_file_download
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
@@ -51,6 +50,7 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.clickableWithoutRipple
 import com.kevlina.budgetplus.core.ui.isPreview
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun Bubble(
@@ -182,7 +182,7 @@ private fun Bubble_Preview(
 
     Box(modifier = Modifier.fillMaxSize()) {
         MenuAction(
-            imageVector = Icons.Rounded.FileDownload,
+            imageVector = vectorResource(Res.drawable.ic_file_download),
             description = stringResource(Res.string.export_cta),
             onClick = {},
             modifier = Modifier

@@ -12,8 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +24,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_search
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun SearchField(
@@ -53,7 +54,7 @@ fun SearchField(
     ) {
 
         Icon(
-            imageVector = Icons.Rounded.Search,
+            imageVector = vectorResource(Res.drawable.ic_search),
             tint = LocalAppColors.current.dark,
             modifier = Modifier.size(24.dp)
         )

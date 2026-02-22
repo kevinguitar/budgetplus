@@ -7,23 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
-import androidx.compose.material.icons.automirrored.rounded.ForwardToInbox
-import androidx.compose.material.icons.automirrored.rounded.Logout
-import androidx.compose.material.icons.automirrored.rounded.ShowChart
-import androidx.compose.material.icons.rounded.AccountCircle
-import androidx.compose.material.icons.rounded.ColorLens
-import androidx.compose.material.icons.rounded.CurrencyExchange
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.EditNote
-import androidx.compose.material.icons.rounded.Language
-import androidx.compose.material.icons.rounded.LockPerson
-import androidx.compose.material.icons.rounded.PrivacyTip
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.SupervisedUserCircle
-import androidx.compose.material.icons.rounded.Vibration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +24,23 @@ import budgetplus.core.common.generated.resources.batch_record_title
 import budgetplus.core.common.generated.resources.book_name_title
 import budgetplus.core.common.generated.resources.color_tone_picker_title
 import budgetplus.core.common.generated.resources.cta_rename
+import budgetplus.core.common.generated.resources.ic_account_circle
+import budgetplus.core.common.generated.resources.ic_color_lens
+import budgetplus.core.common.generated.resources.ic_currency_exchange
+import budgetplus.core.common.generated.resources.ic_delete
+import budgetplus.core.common.generated.resources.ic_directions_run
+import budgetplus.core.common.generated.resources.ic_edit_note
+import budgetplus.core.common.generated.resources.ic_forward_to_inbox
 import budgetplus.core.common.generated.resources.ic_instagram
+import budgetplus.core.common.generated.resources.ic_language
+import budgetplus.core.common.generated.resources.ic_lock_person
+import budgetplus.core.common.generated.resources.ic_logout
+import budgetplus.core.common.generated.resources.ic_privacy_tip
+import budgetplus.core.common.generated.resources.ic_share
+import budgetplus.core.common.generated.resources.ic_show_chart
+import budgetplus.core.common.generated.resources.ic_star
+import budgetplus.core.common.generated.resources.ic_supervised_user_circle
+import budgetplus.core.common.generated.resources.ic_vibration
 import budgetplus.core.common.generated.resources.premium_hide_ads
 import budgetplus.core.common.generated.resources.settings_allow_members_edit
 import budgetplus.core.common.generated.resources.settings_allow_members_edit_desc
@@ -79,6 +78,7 @@ import com.kevlina.budgetplus.core.ui.Switch
 import com.kevlina.budgetplus.core.ui.containerPadding
 import com.kevlina.budgetplus.feature.settings.member.MembersDialog
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 // A hack to recompose iOS UI when the language is changed
 internal val languageSelectionState = mutableStateOf<String?>(null)
@@ -136,27 +136,27 @@ internal fun SettingsContent(
 
         SettingsItem(
             text = stringResource(Res.string.settings_rename_user),
-            icon = Icons.Rounded.AccountCircle,
+            icon = vectorResource(Res.drawable.ic_account_circle),
             onClick = { isRenameUserDialogShown = true }
         )
 
         if (vm.canEditBook) {
             SettingsItem(
                 text = stringResource(Res.string.settings_rename_book),
-                icon = Icons.Rounded.EditNote,
+                icon = vectorResource(Res.drawable.ic_edit_note),
                 onClick = { isRenameBookDialogShown = true }
             )
 
             SettingsItem(
                 text = stringResource(Res.string.settings_edit_book_currency),
-                icon = Icons.Rounded.CurrencyExchange,
+                icon = vectorResource(Res.drawable.ic_currency_exchange),
                 onClick = { navController.navigate(BookDest.CurrencyPicker) }
             )
         }
 
         SettingsItem(
             text = stringResource(Res.string.settings_view_members),
-            icon = Icons.Rounded.SupervisedUserCircle,
+            icon = vectorResource(Res.drawable.ic_supervised_user_circle),
             roundBottom = !isBookOwner,
             onClick = { isMembersDialogShown = true }
         )
@@ -165,7 +165,7 @@ internal fun SettingsContent(
             SettingsItem(
                 text = stringResource(Res.string.settings_allow_members_edit),
                 description = stringResource(Res.string.settings_allow_members_edit_desc),
-                icon = Icons.Rounded.LockPerson,
+                icon = vectorResource(Res.drawable.ic_lock_person),
                 roundBottom = true,
                 action = {
                     Switch(
@@ -182,7 +182,7 @@ internal fun SettingsContent(
         if (canSelectLanguage) {
             SettingsItem(
                 text = stringResource(Res.string.settings_language),
-                icon = Icons.Rounded.Language,
+                icon = vectorResource(Res.drawable.ic_language),
                 roundTop = true,
                 onClick = {
                     vm.navigation.openLanguageSettings { languageCode ->
@@ -195,14 +195,14 @@ internal fun SettingsContent(
 
         SettingsItem(
             text = stringResource(Res.string.color_tone_picker_title),
-            icon = Icons.Rounded.ColorLens,
+            icon = vectorResource(Res.drawable.ic_color_lens),
             roundTop = !canSelectLanguage,
             onClick = { navController.navigate(BookDest.Colors()) }
         )
 
         SettingsItem(
             text = stringResource(Res.string.settings_input_vibration),
-            icon = Icons.Rounded.Vibration,
+            icon = vectorResource(Res.drawable.ic_vibration),
             verticalPadding = 4.dp,
             action = {
                 val hapticFeedback = LocalHapticFeedback.current
@@ -226,7 +226,7 @@ internal fun SettingsContent(
 
         SettingsItem(
             text = stringResource(Res.string.settings_chart_mode),
-            icon = Icons.AutoMirrored.Rounded.ShowChart,
+            icon = vectorResource(Res.drawable.ic_show_chart),
             onClick = { isChartModeDropdownShown = true },
             action = {
                 Box {
@@ -265,13 +265,13 @@ internal fun SettingsContent(
 
         SettingsItem(
             text = stringResource(Res.string.settings_share_app),
-            icon = Icons.Rounded.Share,
+            icon = vectorResource(Res.drawable.ic_share),
             onClick = vm.navigation::share
         )
 
         SettingsItem(
             text = stringResource(Res.string.settings_rate_us),
-            icon = Icons.Rounded.Star,
+            icon = vectorResource(Res.drawable.ic_star),
             onClick = vm.navigation::rateUs
         )
 
@@ -283,13 +283,13 @@ internal fun SettingsContent(
 
         SettingsItem(
             text = stringResource(Res.string.settings_contact_us),
-            icon = Icons.AutoMirrored.Rounded.ForwardToInbox,
+            icon = vectorResource(Res.drawable.ic_forward_to_inbox),
             onClick = vm.navigation::contactUs
         )
 
         SettingsItem(
             text = stringResource(Res.string.settings_privacy_policy),
-            icon = Icons.Rounded.PrivacyTip,
+            icon = vectorResource(Res.drawable.ic_privacy_tip),
             roundBottom = true,
             onClick = vm.navigation::viewPrivacyPolicy
         )
@@ -302,9 +302,9 @@ internal fun SettingsContent(
                 Res.string.settings_leave_book
             }),
             icon = if (isBookOwner) {
-                Icons.Rounded.Delete
+                vectorResource(Res.drawable.ic_delete)
             } else {
-                Icons.AutoMirrored.Rounded.DirectionsRun
+                vectorResource(Res.drawable.ic_directions_run)
             },
             roundTop = true,
             onClick = { isDeleteOrLeaveDialogShown = true }
@@ -312,7 +312,7 @@ internal fun SettingsContent(
 
         SettingsItem(
             text = stringResource(Res.string.settings_logout),
-            icon = Icons.AutoMirrored.Rounded.Logout,
+            icon = vectorResource(Res.drawable.ic_logout),
             roundBottom = true,
             onClick = vm.navigation::logout
         )

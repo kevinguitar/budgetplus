@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +20,7 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.category_edit_title
 import budgetplus.core.common.generated.resources.cta_save
+import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.unsaved_warning_message
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -34,6 +33,7 @@ import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.utils.metroViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
@@ -84,7 +84,7 @@ fun EditCategoryScreen(
             navigateUp = ::navigateUp,
             menuActions = {
                 MenuAction(
-                    imageVector = Icons.Rounded.Check,
+                    imageVector = vectorResource(Res.drawable.ic_check),
                     description = stringResource(Res.string.cta_save),
                     enabled = originalCategories != list,
                     modifier = Modifier.onPlaced {

@@ -1,10 +1,11 @@
 package com.kevlina.budgetplus.core.settings.api
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.BarChart
-import androidx.compose.material.icons.rounded.PieChart
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.datastore.preferences.core.stringPreferencesKey
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_bar_chart
+import budgetplus.core.common.generated.resources.ic_pie_chart
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.data.local.Preference
@@ -15,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.vectorResource
 
 @Serializable
 enum class ChartMode {
@@ -22,9 +24,10 @@ enum class ChartMode {
 }
 
 val ChartMode.icon: ImageVector
+    @Composable
     get() = when (this) {
-        ChartMode.BarChart -> Icons.Rounded.BarChart
-        ChartMode.PieChart -> Icons.Rounded.PieChart
+        ChartMode.BarChart -> vectorResource(Res.drawable.ic_bar_chart)
+        ChartMode.PieChart -> vectorResource(Res.drawable.ic_pie_chart)
     }
 
 @SingleIn(AppScope::class)

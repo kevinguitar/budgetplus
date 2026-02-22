@@ -10,9 +10,10 @@ import com.revenuecat.purchases.kmp.configure
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 
 @ContributesIntoSet(AppScope::class)
 class RevenueCatInitializer(
@@ -23,11 +24,12 @@ class RevenueCatInitializer(
 
     override fun onAppStart() {
         authManager.userState
-            .filterNotNull()
-            .map { user ->
+            .mapNotNull { it?.id }
+            .distinctUntilChanged()
+            .onEach { userId ->
                 Purchases.logLevel = LogLevel.DEBUG
-                Purchases.configure(apiKey = revenueCatApiKey) {
-                    appUserId = user.id
+                Purchases.configure(apiKey = BuildKonfig.revenuecatApiKey) {
+                    appUserId = userId
                 }
 
                 Purchases.sharedInstance.getCustomerInfo(

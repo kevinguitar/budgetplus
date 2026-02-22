@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +23,8 @@ import budgetplus.core.common.generated.resources.batch_record_frequency
 import budgetplus.core.common.generated.resources.batch_record_unit_day
 import budgetplus.core.common.generated.resources.batch_record_unit_month
 import budgetplus.core.common.generated.resources.batch_record_unit_week
+import budgetplus.core.common.generated.resources.ic_arrow_drop_down
+import budgetplus.core.common.generated.resources.ic_refresh
 import com.kevlina.budgetplus.core.data.BatchFrequency
 import com.kevlina.budgetplus.core.data.BatchUnit
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -37,6 +36,7 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 private const val DURATION_MIN = 1
 private const val DURATION_MAX = 12
@@ -55,7 +55,7 @@ internal fun FrequencySelector(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = Icons.Rounded.Refresh,
+            imageVector = vectorResource(Res.drawable.ic_refresh),
             tint = LocalAppColors.current.dark,
             modifier = iconModifier
         )
@@ -90,7 +90,7 @@ internal fun FrequencySelector(
             )
 
             Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
+                imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
                 tint = LocalAppColors.current.dark
             )
 
@@ -125,7 +125,7 @@ internal fun FrequencySelector(
             )
 
             Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
+                imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
                 tint = LocalAppColors.current.dark
             )
 

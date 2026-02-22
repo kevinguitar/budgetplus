@@ -74,16 +74,12 @@ class BookViewModel(
     val isEligibleForInterstitialAds = authManager.isPremium.mapState { !it }
 
     init {
-        //TODO: Looks like this doesn't work on iOS, investigate this.
-        if (bookRepo.currentBookId != null) {
-            bookRepo.bookState
-                .onEach { book ->
-                    if (book == null) {
-                        navigation.sendEvent(welcomeNavigationAction)
-                    }
-                }
-                .launchIn(viewModelScope)
-        }
+        // If the user has no active book, navigate them to the welcome screen to create or join a book.
+        combine(authManager.userState, bookRepo.booksState) { user, books ->
+            if (user?.id != null && books?.isEmpty() == true) {
+                navigation.sendEvent(welcomeNavigationAction)
+            }
+        }.launchIn(viewModelScope)
 
         currentNavKeyFlow
             .onEach { key ->
@@ -115,6 +111,7 @@ class BookViewModel(
                 bookRepo.setPendingJoinRequest(segments.getOrNull(1))
                 return DeeplinkType.JoinRequest
             }
+
             NAV_RECORD_PATH -> navController.navigate(BookDest.Record)
             NAV_OVERVIEW_PATH -> navController.navigate(BookDest.Overview)
             NAV_UNLOCK_PREMIUM_PATH -> navController.navigate(BookDest.UnlockPremium)

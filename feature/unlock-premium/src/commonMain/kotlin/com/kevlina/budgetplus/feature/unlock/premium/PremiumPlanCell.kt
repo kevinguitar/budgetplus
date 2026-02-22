@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.CheckCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_check_circle
+import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.premium_plan_monthly
 import com.kevlina.budgetplus.core.billing.Pricing
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -28,6 +27,7 @@ import com.kevlina.budgetplus.core.ui.Surface
 import com.kevlina.budgetplus.core.ui.Text
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun PremiumPlanCell(
@@ -53,9 +53,9 @@ internal fun PremiumPlanCell(
         ) {
             Icon(
                 imageVector = if (isSelected) {
-                    Icons.Rounded.CheckCircle
+                    vectorResource(Res.drawable.ic_check_circle)
                 } else {
-                    Icons.Rounded.CheckCircleOutline
+                    vectorResource(Res.drawable.ic_check_circle_outline)
                 },
                 tint = LocalAppColors.current.primary
             )

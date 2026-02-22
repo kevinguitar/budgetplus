@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.DriveFileRenameOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -25,6 +22,8 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.category_edit_title
 import budgetplus.core.common.generated.resources.cta_add
 import budgetplus.core.common.generated.resources.cta_edit
+import budgetplus.core.common.generated.resources.ic_add
+import budgetplus.core.common.generated.resources.ic_drive_file_rename_outline
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -34,6 +33,7 @@ import com.kevlina.budgetplus.core.ui.rippleClick
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun CategoriesGrid(
@@ -75,7 +75,7 @@ fun CategoriesGrid(
 
         if (state.onEditClicked != null) {
             CategoryActionButton(
-                icon = Icons.Rounded.DriveFileRenameOutline,
+                icon = vectorResource(Res.drawable.ic_drive_file_rename_outline),
                 name = stringResource(Res.string.cta_edit),
                 onClick = state.onEditClicked
             )
@@ -83,7 +83,7 @@ fun CategoriesGrid(
 
         if (state.onAddClicked != null) {
             CategoryActionButton(
-                icon = Icons.Rounded.Add,
+                icon = vectorResource(Res.drawable.ic_add),
                 name = stringResource(Res.string.cta_add),
                 onClick = state.onAddClicked
             )

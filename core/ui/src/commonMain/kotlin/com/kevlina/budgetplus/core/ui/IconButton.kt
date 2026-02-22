@@ -5,8 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,7 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_delete
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun IconButton(
@@ -55,7 +56,7 @@ private fun IconButton_Preview() = AppTheme {
             size = 40.dp
         ) {
             Icon(
-                imageVector = Icons.Rounded.Delete,
+                imageVector = vectorResource(Res.drawable.ic_delete),
                 contentDescription = null,
                 tint = LocalAppColors.current.dark,
                 modifier = Modifier.size(20.dp)

@@ -15,15 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.FormatListBulleted
-import androidx.compose.material.icons.rounded.PostAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_format_list_bulleted
+import budgetplus.core.common.generated.resources.ic_post_add
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -32,6 +32,7 @@ import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.rippleClick
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun BottomNav(
@@ -108,8 +109,8 @@ private fun RowScope.BottomNavItem(
 
         Icon(
             imageVector = when (tab) {
-                BottomNavTab.Add -> Icons.Rounded.PostAdd
-                BottomNavTab.History -> Icons.AutoMirrored.Rounded.FormatListBulleted
+                BottomNavTab.Add -> vectorResource(Res.drawable.ic_post_add)
+                BottomNavTab.History -> vectorResource(Res.drawable.ic_format_list_bulleted)
             },
             tint = if (isSelected) lightColor else darkColor,
             modifier = Modifier.size(28.dp)

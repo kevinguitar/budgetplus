@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +24,7 @@ import app.lexilabs.basic.ads.composable.BannerAd
 import app.lexilabs.basic.ads.composable.rememberBannerAd
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ads_not_available
+import budgetplus.core.common.generated.resources.ic_search_off
 import com.kevlina.budgetplus.core.lottie.loadLottieSpec
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
@@ -38,6 +37,7 @@ import io.github.alexzhirkevich.compottie.dynamic.rememberLottieDynamicPropertie
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @OptIn(DependsOnGoogleMobileAds::class)
 @Composable
@@ -101,7 +101,7 @@ private fun AdsBannerNotAvailable() {
     ) {
 
         Icon(
-            imageVector = Icons.Rounded.SearchOff,
+            imageVector = vectorResource(Res.drawable.ic_search_off),
             tint = LocalAppColors.current.dark,
             modifier = Modifier.size(20.dp)
         )

@@ -15,12 +15,14 @@ class PurchaseRepo(
     suspend fun recordPurchase(
         orderId: String,
         productId: String,
+        client: String,
     ) {
         try {
             purchasesDb.value.add(Purchase(
                 orderId = orderId,
                 productId = productId,
                 userId = authManager.userId,
+                client = client,
                 purchasedOn = Clock.System.now().toEpochMilliseconds()
             ))
         } catch (e: Exception) {

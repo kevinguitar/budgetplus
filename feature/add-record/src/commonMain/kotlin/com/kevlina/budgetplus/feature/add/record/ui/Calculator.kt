@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Backspace
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -31,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.cta_delete
+import budgetplus.core.common.generated.resources.ic_backspace
 import budgetplus.feature.add_record.generated.resources.Res
 import budgetplus.feature.add_record.generated.resources.ic_divide
 import budgetplus.feature.add_record.generated.resources.ic_equal
@@ -46,6 +45,7 @@ import com.kevlina.budgetplus.core.ui.Surface
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
+import com.kevlina.budgetplus.feature.speak.record.isSpeakToRecordAvailable
 import com.kevlina.budgetplus.feature.speak.record.ui.SpeakToRecordButton
 import com.kevlina.budgetplus.feature.speak.record.ui.SpeakToRecordButtonState
 import kotlinx.coroutines.flow.Flow
@@ -53,6 +53,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import budgetplus.core.common.generated.resources.Res as CommonRes
 
 enum class CalculatorButton(val text: Char) {
@@ -131,22 +132,48 @@ internal fun Calculator(
 
                 when (index) {
                     0 -> {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(verticalSpacing),
-                            modifier = Modifier.weight(1F)
-                        ) {
-                            SpeakToRecordButton(
-                                state = state.speakToRecordButtonState,
-                                isAdaptive = adaptiveButton,
+                        val onClearClick = {
+                            vibrate()
+                            state.onCalculatorAction(CalculatorAction.Clear)
+                        }
+                        val clearText = @Composable {
+                            Text(
+                                text = "AC",
+                                textAlign = TextAlign.Center,
+                                fontSize = FontSize.Header,
+                                fontWeight = FontWeight.Bold,
+                                color = LocalAppColors.current.light
                             )
+                        }
+                        if (isSpeakToRecordAvailable) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(verticalSpacing),
+                                modifier = Modifier.weight(1F)
+                            ) {
+                                SpeakToRecordButton(
+                                    state = state.speakToRecordButtonState,
+                                    isAdaptive = adaptiveButton,
+                                )
 
-                            ClearBtn(
-                                isAdaptive = adaptiveButton,
-                                onClick = {
-                                    vibrate()
-                                    state.onCalculatorAction(CalculatorAction.Clear)
+                                CalculatorBtnContainer(
+                                    isAdaptive = adaptiveButton,
+                                    onClick = onClearClick,
+                                    color = LocalAppColors.current.dark
+                                ) {
+                                    clearText()
                                 }
-                            )
+                            }
+                        } else {
+                            Surface(
+                                onClick = onClearClick,
+                                modifier = Modifier
+                                    .weight(1F)
+                                    .fillMaxHeight(),
+                                shape = CircleShape,
+                                color = LocalAppColors.current.dark
+                            ) {
+                                clearText()
+                            }
                         }
                     }
 
@@ -201,7 +228,7 @@ private fun ColumnScope.CalculatorBtn(
     ) {
         when (button) {
             CalculatorButton.Delete -> Icon(
-                imageVector = Icons.AutoMirrored.Rounded.Backspace,
+                imageVector = vectorResource(CommonRes.drawable.ic_backspace),
                 contentDescription = stringResource(CommonRes.string.cta_delete),
                 tint = LocalAppColors.current.light
             )
