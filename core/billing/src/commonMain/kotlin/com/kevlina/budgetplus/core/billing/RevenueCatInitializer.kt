@@ -28,7 +28,7 @@ class RevenueCatInitializer(
             .distinctUntilChanged()
             .onEach { userId ->
                 Purchases.logLevel = LogLevel.DEBUG
-                Purchases.configure(apiKey = revenueCatApiKey) {
+                Purchases.configure(apiKey = BuildKonfig.revenuecatApiKey) {
                     appUserId = userId
                 }
 
