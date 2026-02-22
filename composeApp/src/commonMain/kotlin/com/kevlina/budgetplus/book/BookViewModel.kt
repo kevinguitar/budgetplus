@@ -75,8 +75,8 @@ class BookViewModel(
 
     init {
         // If the user has no active book, navigate them to the welcome screen to create or join a book.
-        combine(authManager.userState, bookRepo.bookState) { user, book ->
-            if (user?.id != null && book == null) {
+        combine(authManager.userState, bookRepo.booksState) { user, books ->
+            if (user?.id != null && books?.isEmpty() == true) {
                 navigation.sendEvent(welcomeNavigationAction)
             }
         }.launchIn(viewModelScope)
