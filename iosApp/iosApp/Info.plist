@@ -30,14 +30,7 @@
 		<string>fetch</string>
 	</array>
 	<key>UILaunchScreen</key>
-	<dict>
-		<key>UIColorName</key>
-		<string>BackgroundColor</string>
-		<key>UIImageName</key>
-		<string>AppLogo</string>
-		<key>UILaunchScreen</key>
-		<dict/>
-	</dict>
+	<dict/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
