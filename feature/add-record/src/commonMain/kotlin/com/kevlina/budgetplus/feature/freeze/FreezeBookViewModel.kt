@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -22,7 +24,7 @@ import kotlinx.coroutines.launch
 @SingleIn(ViewModelScope::class)
 @Inject
 class FreezeBookViewModel(
-    private val authManager: AuthManager,
+    authManager: AuthManager,
     private val preference: Preference,
     bookRepo: BookRepo,
 ) : ViewModel() {
@@ -62,11 +64,13 @@ class FreezeBookViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     init {
-        viewModelScope.launch {
-            if (authManager.isPremium.value) {
-                preference.remove(activatedBookIdKey)
+        authManager.isPremium
+            .onEach { isPremium ->
+                if (isPremium) {
+                    preference.remove(activatedBookIdKey)
+                }
             }
-        }
+            .launchIn(viewModelScope)
     }
 
     fun activateBook(bookId: String) {
