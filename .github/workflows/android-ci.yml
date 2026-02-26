@@ -4,7 +4,7 @@ on:
   pull_request:
 
 concurrency:
-  group: 'ci-${{ github.event.merge_group.head_ref || github.head_ref }}-${{ github.workflow }}'
+  group: 'android-ci-${{ github.event.merge_group.head_ref || github.head_ref }}-${{ github.workflow }}'
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
@@ -70,7 +70,4 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew :androidApp:assemble --continue --quiet
-          ./gradlew :composeApp:compileKotlinIosSimulatorArm64 --continue --quiet
           ./gradlew test detekt lint --continue --quiet
-        # Disable temporarily
-        # run: ./gradlew build --continue --quiet
