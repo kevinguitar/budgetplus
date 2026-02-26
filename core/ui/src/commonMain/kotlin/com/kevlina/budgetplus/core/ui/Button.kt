@@ -39,7 +39,6 @@ fun Button(
     contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
     content: @Composable RowScope.() -> Unit,
 ) {
-
     val buttonColor by animateColorAsState(
         targetValue = if (enabled) color else color.copy(alpha = 0.4F),
         label = "button_color"

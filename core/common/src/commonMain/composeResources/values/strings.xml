@@ -31,6 +31,8 @@
     <string name="record_speech_recognition_format">Say the note and price</string>
     <string name="record_speech_recognition_not_supported">Feature is not supported on this device</string>
     <string name="record_speech_recognition_no_result">Cannot recognize, please try again</string>
+    <string name="record_freeze_book_title">Sad to see you go\nPlease choose a book to continue recording</string>
+    <string name="record_freeze_book_description">Don't worry! All your data will be preserved</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">Batch Record</string>

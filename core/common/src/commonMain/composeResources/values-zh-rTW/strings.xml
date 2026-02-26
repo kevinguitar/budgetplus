@@ -31,6 +31,8 @@
     <string name="record_speech_recognition_format">請說出內容＋金額</string>
     <string name="record_speech_recognition_not_supported">此裝置未支援語音功能</string>
     <string name="record_speech_recognition_no_result">無法辨識，請再說一次</string>
+    <string name="record_freeze_book_title">很遺憾您取消訂閱了\n請選擇一本帳本繼續記帳</string>
+    <string name="record_freeze_book_description">別擔心！您的所有帳本資料皆會保留</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">批次記帳</string>

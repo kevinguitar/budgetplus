@@ -36,6 +36,7 @@ import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel.Companion.RECORD_COUNT_CYCLE
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
+import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
 import com.kevlina.budgetplus.inapp.review.InAppReviewManager
 import dev.zacsweers.metro.ContributesIntoMap
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,6 +52,7 @@ import org.jetbrains.compose.resources.getString
 class RecordViewModel(
     val calculatorVm: CalculatorViewModel,
     val categoriesVm: CategoriesViewModel,
+    val freezeBookVm: FreezeBookViewModel,
     val bookRepo: BookRepo,
     private val recordRepo: RecordRepo,
     private val bubbleRepo: BubbleRepo,
@@ -86,7 +88,7 @@ class RecordViewModel(
             .consumeEach { record() }
             .launchIn(viewModelScope)
 
-        calculatorVm.speakToRecordViewModel.speakResultFlow
+        calculatorVm.speakToRecordVm.speakResultFlow
             .consumeEach {
                 note.setTextAndPlaceCursorAtEnd(it.name)
                 it.price?.let(calculatorVm::setPrice)

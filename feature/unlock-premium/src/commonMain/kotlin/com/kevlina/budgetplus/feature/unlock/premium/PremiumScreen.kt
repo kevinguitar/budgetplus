@@ -25,10 +25,10 @@ fun PremiumScreen(navController: NavController<BookDest>) {
 
     val vm = metroViewModel<PremiumViewModel>()
     val pricingMap by vm.pricingMap.collectAsStateWithLifecycle()
+    val isPremium by vm.isPremium.collectAsStateWithLifecycle()
 
-    // Close the screen in case user enters it from the deeplink
-    LaunchedEffect(key1 = Unit) {
-        if (vm.isPremium.value) {
+    LaunchedEffect(key1 = isPremium) {
+        if (isPremium) {
             navController.navigateUp()
         }
     }

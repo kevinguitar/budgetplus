@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_invite
 import budgetplus.core.common.generated.resources.ic_group_add
@@ -34,6 +35,7 @@ import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel
 import com.kevlina.budgetplus.feature.category.pills.toState
+import com.kevlina.budgetplus.feature.freeze.FreezeBookDialog
 import kotlinx.coroutines.flow.collect
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -43,6 +45,7 @@ fun RecordScreen(navController: NavController<BookDest>) {
 
     val vm = metroViewModel<RecordViewModel>()
 
+    val showFreezeBookDialog by vm.freezeBookVm.showFreezeDialog.collectAsStateWithLifecycle()
     var isRequestingReview by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = vm) {
@@ -56,7 +59,6 @@ fun RecordScreen(navController: NavController<BookDest>) {
             .fillMaxSize()
             .background(LocalAppColors.current.light)
     ) {
-
         TopBar(
             title = null,
             titleContent = { BookSelector(navController) },
@@ -128,6 +130,15 @@ fun RecordScreen(navController: NavController<BookDest>) {
                     vm.rejectReview()
                     isRequestingReview = false
                 }
+            )
+        }
+
+        if (showFreezeBookDialog) {
+            val books by vm.freezeBookVm.books.collectAsStateWithLifecycle()
+            FreezeBookDialog(
+                books = books,
+                unlockPremium = { navController.navigate(BookDest.UnlockPremium) },
+                activateBook = vm.freezeBookVm::activateBook,
             )
         }
     }

@@ -31,6 +31,8 @@
     <string name="record_speech_recognition_format">内容と金額</string>
     <string name="record_speech_recognition_not_supported">このデバイスは音声機能に対応していません。</string>
     <string name="record_speech_recognition_no_result">認識できませんでした。もう一度お話しください。</string>
+    <string name="record_freeze_book_title">解約は残念です。\n引き続き記帳する帳簿を1つお選びください。</string>
+    <string name="record_freeze_book_description">ご安心ください！これまでのデータはすべて残ります。</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">一括で記帳する</string>

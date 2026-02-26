@@ -1,7 +1,9 @@
 package com.kevlina.budgetplus.feature.unlock.premium
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_check_circle
 import budgetplus.core.common.generated.resources.ic_check_circle_outline
+import budgetplus.core.common.generated.resources.premium_plan_annual
+import budgetplus.core.common.generated.resources.premium_plan_lifetime
 import budgetplus.core.common.generated.resources.premium_plan_monthly
 import com.kevlina.budgetplus.core.billing.Pricing
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -92,13 +96,38 @@ internal fun PremiumPlanCell(
 @Preview
 @Composable
 private fun PremiumPlanCell_Preview() = AppTheme {
-    PremiumPlanCell(
-        planRes = Res.string.premium_plan_monthly,
-        isSelected = true,
-        pricing = Pricing(
-            discountedPrice = null,
-            formattedPrice = "$4.99",
-            freeTrialDays = 7,
-        ),
-    ) { }
+    Column(
+        modifier = Modifier
+            .background(LocalAppColors.current.light)
+            .padding(16.dp)
+    ) {
+        PremiumPlanCell(
+            planRes = Res.string.premium_plan_lifetime,
+            isSelected = false,
+            pricing = null,
+            onClick = {}
+        )
+
+        PremiumPlanCell(
+            planRes = Res.string.premium_plan_monthly,
+            isSelected = true,
+            pricing = Pricing(
+                discountedPrice = null,
+                formattedPrice = "$4.99",
+                freeTrialDays = 3,
+            ),
+            onClick = {}
+        )
+
+        PremiumPlanCell(
+            planRes = Res.string.premium_plan_annual,
+            isSelected = false,
+            pricing = Pricing(
+                discountedPrice = null,
+                formattedPrice = "$19.99",
+                freeTrialDays = 7,
+            ),
+            onClick = {}
+        )
+    }
 }
