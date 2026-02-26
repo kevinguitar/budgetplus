@@ -3,9 +3,10 @@ name: iOS CI
 on:
   pull_request:
 
+# Cancel any current or previous job from the same PR
 concurrency:
-  group: 'ios-ci-${{ github.event.merge_group.head_ref || github.head_ref }}-${{ github.workflow }}'
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ios-ci-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -46,16 +47,6 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-
-      - name: Generate Compose resources (iOS simulator)
-        run: ./gradlew :composeApp:iosSimulatorArm64AggregateResources
-
-      - name: Install XcodeGen
-        run: brew install xcodegen
-
-      - name: Generate Xcode project
-        run: xcodegen
-        working-directory: iosApp
 
       - name: Build iOS App
         run: |

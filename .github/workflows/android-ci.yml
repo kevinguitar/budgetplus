@@ -3,9 +3,10 @@ name: Android CI
 on:
   pull_request:
 
+# Cancel any current or previous job from the same PR
 concurrency:
-  group: 'android-ci-${{ github.event.merge_group.head_ref || github.head_ref }}-${{ github.workflow }}'
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: android-ci-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
