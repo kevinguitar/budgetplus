@@ -43,7 +43,7 @@ compottie = "2.0.2"
 # https://github.com/LexiLabs-App/basic-ads/releases
 admob-kmp = "1.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
-revenuecat-kmp = "2.6.0+17.41.0"
+revenuecat-kmp = "2.7.0+17.41.0"
 
 compileAndroidSdk = "36"
 minAndroidSdk = "26"
