@@ -39,6 +39,16 @@ jobs:
           echo REVENUECAT_API_KEY=$REVENUECAT_API_KEY > ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
+      - name: Cache SPM downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 

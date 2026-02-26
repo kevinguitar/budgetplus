@@ -37,10 +37,6 @@ jobs:
           echo REVENUECAT_API_KEY=$REVENUECAT_API_KEY > ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
-      - name: Build with Gradle
-        run: |
-          ./gradlew :composeApp:compileKotlinIosSimulatorArm64 --continue --quiet
-
       - name: Cache SPM downloads
         uses: actions/cache@v4
         with:
@@ -50,6 +46,14 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
+
+      - name: Prebuild Kotlin Multiplatform framework for Simulator
+        run: |
+          export CONFIGURATION=Debug
+          export SDK_NAME=iphonesimulator
+          export SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+          export ARCHS=x86_64
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode --continue --quiet
 
       - name: Build iOS App
         run: |
