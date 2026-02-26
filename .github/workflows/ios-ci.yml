@@ -37,8 +37,19 @@ jobs:
           echo REVENUECAT_API_KEY=$REVENUECAT_API_KEY > ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
-      - name: Generate Compose resources (iOS simulator)
-        run: ./gradlew :composeApp:iosSimulatorArm64AggregateResources
+      - name: Build with Gradle
+        run: |
+          ./gradlew :composeApp:compileKotlinIosSimulatorArm64 --continue --quiet
+
+      - name: Cache SPM downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
 
       - name: Build iOS App
         run: |
@@ -46,5 +57,8 @@ jobs:
             -scheme iosApp \
             -sdk iphonesimulator \
             -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             build \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=NO
