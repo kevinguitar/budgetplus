@@ -47,17 +47,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Prebuild Kotlin Multiplatform framework for Simulator
-        run: |
-          export CONFIGURATION=Debug
-          export SDK_NAME=iphonesimulator
-          export SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
-          export ARCHS=x86_64
-          export PLATFORM_NAME=iphonesimulator
-          export TARGET_DEVICE_FAMILY=1
-          export XCODE_VERSION_MAJOR=$(xcodebuild -version | grep Xcode | cut -d' ' -f2 | cut -d. -f1)
-          export BUILT_PRODUCTS_DIR=$(pwd)/composeApp/build/xcode-frameworks/Debug/iphonesimulator
-          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode --continue --stacktrace
+      - name: Generate Compose resources (iOS simulator)
+        run: ./gradlew :composeApp:iosSimulatorArm64AggregateResources
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen
+        working-directory: iosApp
 
       - name: Build iOS App
         run: |
