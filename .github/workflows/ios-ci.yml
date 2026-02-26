@@ -50,12 +50,16 @@ jobs:
 
       - name: Build iOS App
         run: |
-          xcodebuild -project iosApp/iosApp.xcodeproj \
-            -scheme iosApp \
-            -sdk iphonesimulator \
-            -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            build \
-            CODE_SIGNING_ALLOWED=NO \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            ONLY_ACTIVE_ARCH=NO
+          xcodebuild build \
+          -project iosApp/iosApp.xcodeproj \
+          -configuration Debug \
+          -scheme iosApp \
+          -sdk iphonesimulator \
+          -derivedDataPath ./build \
+          -verbose
+
+      - name: Upload app folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: iphonesimulator-app
+          path: build/Build/Products/Debug-iphonesimulator/*
