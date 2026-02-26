@@ -16,7 +16,7 @@ navigation3 = "1.0.1"
 # https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html#multiplatform-support
 navigation3-jb = "1.0.0-alpha06"
 # https://firebase.google.com/support/release-notes/android
-firebase-bom = "34.9.0"
+firebase-bom = "34.10.0"
 # https://mvnrepository.com/artifact/com.google.firebase/firebase-crashlytics-gradle
 firebase-crashlytics = "3.0.6"
 # https://github.com/GitLiveApp/firebase-kotlin-sdk/releases
