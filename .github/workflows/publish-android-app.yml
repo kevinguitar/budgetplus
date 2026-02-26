@@ -2,7 +2,8 @@ name: Publish Android app to Google Play
 
 on:
   release:
-    types: [ released ]
+    tags:
+      - '*-android'
 
 jobs:
   build-and-publish:
