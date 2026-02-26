@@ -53,6 +53,8 @@ jobs:
           export SDK_NAME=iphonesimulator
           export SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
           export ARCHS=x86_64
+          export PLATFORM_NAME=iphonesimulator
+          export TARGET_DEVICE_FAMILY=1
           ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode --continue --quiet
 
       - name: Build iOS App
