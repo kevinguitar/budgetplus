@@ -48,6 +48,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
+      - name: Prebuild composeApp framework (simulator)
+        run: |
+          SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+          export SDK_NAME="iphonesimulator${SDK_VERSION}"
+          export CONFIGURATION=Debug
+          export ARCHS="x86_64 arm64"
+          export TARGET_BUILD_DIR="$PWD/build/Build/Products/Debug-iphonesimulator"
+          export BUILT_PRODUCTS_DIR="$TARGET_BUILD_DIR"
+          export FRAMEWORKS_FOLDER_PATH=Frameworks
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode
+
       - name: Build iOS App
         run: |
           xcodebuild build \
