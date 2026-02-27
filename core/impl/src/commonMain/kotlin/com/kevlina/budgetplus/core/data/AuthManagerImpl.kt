@@ -57,7 +57,7 @@ class AuthManagerImpl(
     private val currentUserFlow = preference.of(currentUserKey, User.serializer())
 
     // Critical default value for app start
-    final override val userState: StateFlow<User?> = runBlocking {
+    override val userState: StateFlow<User?> = runBlocking {
         currentUserFlow
             .filterNotNull()
             .stateIn(
