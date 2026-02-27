@@ -44,10 +44,7 @@ class FcmService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        appScope.launch {
-            authManager.value.updateFcmToken(newToken = token)
-        }
-        Logger.d { "New fcm token: $token" }
+        authManager.value.updateFcmToken(newToken = token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

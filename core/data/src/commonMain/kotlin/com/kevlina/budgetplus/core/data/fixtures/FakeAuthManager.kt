@@ -25,7 +25,7 @@ class FakeAuthManager(
         error("Not yet implemented")
     }
 
-    override suspend fun updateFcmToken(newToken: String) {
+    override fun updateFcmToken(newToken: String) {
         error("Not yet implemented")
     }
 

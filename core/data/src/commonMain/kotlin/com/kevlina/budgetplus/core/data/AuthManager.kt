@@ -15,7 +15,7 @@ interface AuthManager {
 
     suspend fun markPremium(isPremium: Boolean)
 
-    suspend fun updateFcmToken(newToken: String)
+    fun updateFcmToken(newToken: String)
 
     suspend fun logout()
 

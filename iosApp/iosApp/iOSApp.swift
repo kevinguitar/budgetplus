@@ -13,11 +13,14 @@ class DeeplinkManager: NSObject, ObservableObject {
 
 // For full explanation
 // https://firebase.google.com/docs/ios/learn-more?hl=en#swiftui
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        FirebaseApp.configure()
+        Messaging.messaging().delegate = self
+
         UNUserNotificationCenter.current().delegate = self
 
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -27,6 +30,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         )
 
         application.registerForRemoteNotifications()
+
+        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
+            (action as? CommonAppStartAction)?.onAppStart()
+        }
 
         return true
     }
@@ -64,6 +71,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
         completionHandler()
     }
+
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        if let fcmToken = fcmToken {
+            BudgetPlusIosAppGraphHolder.shared.graph.authManager.updateFcmToken(newToken: fcmToken)
+        }
+    }
 }
 
 @main
@@ -71,14 +84,6 @@ struct iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var deeplinkManager = DeeplinkManager.shared
-
-    init() {
-        FirebaseApp.configure()
-
-        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
-            (action as? CommonAppStartAction)?.onAppStart()
-        }
-    }
 
     var body: some Scene {
         WindowGroup {

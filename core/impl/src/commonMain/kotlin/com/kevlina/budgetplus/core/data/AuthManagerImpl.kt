@@ -119,12 +119,19 @@ class AuthManagerImpl(
         }
     }
 
-    override suspend fun updateFcmToken(newToken: String) {
+    override fun updateFcmToken(newToken: String) {
+        Logger.d { "New fcm token: $newToken" }
         if (!allowUpdateFcmToken) return
+        if (currentUser?.fcmToken == newToken) {
+            Logger.d { "Fcm token is the same, skip the update." }
+            return
+        }
 
         val userWithNewToken = currentUser?.copy(fcmToken = newToken) ?: return
-        usersDb.value.document(userWithNewToken.id).set(userWithNewToken)
-        setUserToPreference(userWithNewToken)
+        appScope.launch {
+            usersDb.value.document(userWithNewToken.id).set(userWithNewToken)
+            setUserToPreference(userWithNewToken)
+        }
     }
 
     override suspend fun logout() {
