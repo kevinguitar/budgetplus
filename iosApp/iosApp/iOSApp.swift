@@ -5,12 +5,6 @@ import FirebaseFirestore
 import FirebaseMessaging
 import SwiftUI
 
-// DeeplinkManager to handle deeplink communication between AppDelegate and SwiftUI
-class DeeplinkManager: NSObject, ObservableObject {
-    @Published var deeplink: String?
-    static let shared = DeeplinkManager()
-}
-
 // For full explanation
 // https://firebase.google.com/docs/ios/learn-more?hl=en#swiftui
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
@@ -56,7 +50,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             return false
         }
 
-        DeeplinkManager.shared.deeplink = incomingURL.absoluteString
+        BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: incomingURL.absoluteString)
         return true
     }
 
@@ -75,7 +69,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     ) {
         let userInfo = response.notification.request.content.userInfo
         if let deeplink = userInfo["deeplink"] as? String {
-            DeeplinkManager.shared.deeplink = deeplink
+            print("Received deeplink from notification: \(deeplink)")
+            BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: deeplink)
         }
         completionHandler()
     }
@@ -91,13 +86,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject private var deeplinkManager = DeeplinkManager.shared
 
     var body: some Scene {
         WindowGroup {
-            ContentView(deeplink: deeplinkManager.deeplink)
+            ContentView()
                 .onOpenURL { url in
-                    deeplinkManager.deeplink = url.absoluteString
+                    BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: url.absoluteString)
                 }
         }
     }

@@ -2,7 +2,9 @@ package com.kevlina.budgetplus.book
 
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.di.ViewModelGraphProvider
+import com.kevlina.budgetplus.core.common.nav.DeeplinkFlow
 import com.kevlina.budgetplus.core.common.nav.NavigationFlow
+import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import dev.zacsweers.metro.AppScope
@@ -16,8 +18,13 @@ interface BudgetPlusIosAppGraph {
     val authManager: AuthManager
     val themeManager: ThemeManager
     val navigation: NavigationFlow
+    val deeplinkFlow: DeeplinkFlow
 }
 
 object BudgetPlusIosAppGraphHolder {
     val graph by lazy { createGraph<BudgetPlusIosAppGraph>() }
+
+    fun onNewDeeplink(deeplink: String?) {
+        graph.deeplinkFlow.sendEvent(deeplink)
+    }
 }

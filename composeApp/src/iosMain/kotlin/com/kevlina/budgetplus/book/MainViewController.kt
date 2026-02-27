@@ -18,7 +18,7 @@ import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.UIViewController
 import platform.UIKit.setStatusBarStyle
 
-fun MainViewController(deeplink: String?): UIViewController = ComposeUIViewController {
+fun MainViewController(): UIViewController = ComposeUIViewController {
     val graph = BudgetPlusIosAppGraphHolder.graph
     val themeColors by graph.themeManager.themeColors.collectAsStateWithLifecycle()
 
@@ -43,11 +43,14 @@ fun MainViewController(deeplink: String?): UIViewController = ComposeUIViewContr
     ) {
         AppTheme(themeColors) {
             val vm = metroViewModel<BookViewModel>()
-            LaunchedEffect(deeplink) {
-                val type = vm.handleDeeplink(deeplink)
-                if (type == DeeplinkType.JoinRequest) {
-                    vm.handleJoinRequest()
-                }
+
+            LaunchedEffect(graph.deeplinkFlow) {
+                graph.deeplinkFlow.consumeEach { url ->
+                    val type = vm.handleDeeplink(url)
+                    if (type == DeeplinkType.JoinRequest) {
+                        vm.handleJoinRequest()
+                    }
+                }.collect()
             }
 
             BookBinding(vm = vm)

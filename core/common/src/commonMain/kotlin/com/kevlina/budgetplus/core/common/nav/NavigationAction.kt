@@ -8,3 +8,4 @@ fun interface NavigationAction {
 }
 
 typealias NavigationFlow = MutableEventFlow<NavigationAction>
+typealias DeeplinkFlow = MutableEventFlow<String?>
