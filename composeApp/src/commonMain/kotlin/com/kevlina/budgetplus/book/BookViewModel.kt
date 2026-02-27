@@ -93,6 +93,7 @@ class BookViewModel(
 
     fun handleDeeplink(url: String?): DeeplinkType? {
         if (url == null || !url.startsWith(APP_DEEPLINK)) return null
+        Logger.i { "Handle Deeplink: $url" }
 
         val pathAndQuery = url.removePrefix(APP_DEEPLINK).removePrefix("/")
         val path = pathAndQuery.substringBefore("?")
