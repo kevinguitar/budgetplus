@@ -27,7 +27,7 @@ class ViewModelGraphProviderImpl(private val context: Context) : ViewModelGraphP
     }
 
     override fun buildViewModelGraph(extras: CreationExtras): ViewModelGraph =
-        context.resolveGraphExtensionFactory<ViewModelGraph.Factory>().create()
+        context.resolveGraphExtensionFactory<ViewModelGraph.Factory>().create(extras)
 }
 
 @ContributesTo(ViewModelScope::class)
