@@ -69,7 +69,7 @@ jobs:
           export TARGET_BUILD_DIR="$PWD/build/Build/Products/Debug-iphonesimulator"
           export BUILT_PRODUCTS_DIR="$TARGET_BUILD_DIR"
           export FRAMEWORKS_FOLDER_PATH=Frameworks
-          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode -Pcompose.ios.resources.sync=false
 
       - name: Build iOS App
         run: |
