@@ -67,5 +67,3 @@ jobs:
             ONLY_ACTIVE_ARCH=YES \
             -skipPackagePluginValidation \
             -quiet
-
-
