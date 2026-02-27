@@ -1,5 +1,6 @@
 import common.libs
 import dev.zacsweers.metro.gradle.DelicateMetroGradleApi
+import dev.zacsweers.metro.gradle.DiagnosticSeverity
 import dev.zacsweers.metro.gradle.MetroPluginExtension
 import dev.zacsweers.metro.gradle.OptionalBindingBehavior
 import org.gradle.api.Plugin
@@ -16,6 +17,7 @@ class MetroConventionPlugin : Plugin<Project> {
         project.configure<MetroPluginExtension> {
             enableSwitchingProviders.set(true)
             optionalBindingBehavior.set(OptionalBindingBehavior.DISABLED)
+            unusedGraphInputsSeverity.set(DiagnosticSeverity.NONE)
         }
     }
 }

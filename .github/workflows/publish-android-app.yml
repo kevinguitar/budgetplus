@@ -2,10 +2,12 @@ name: Publish Android app to Google Play
 
 on:
   release:
-    types: [ released ]
+    types: [published]
 
 jobs:
   build-and-publish:
+    # Only run for tags ending with '-android'
+    if: endsWith(github.event.release.tag_name, '-android')
     runs-on: ubuntu-latest
 
     steps:

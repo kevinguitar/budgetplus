@@ -5,19 +5,16 @@ import FirebaseFirestore
 import FirebaseMessaging
 import SwiftUI
 
-// DeeplinkManager to handle deeplink communication between AppDelegate and SwiftUI
-class DeeplinkManager: NSObject, ObservableObject {
-    @Published var deeplink: String?
-    static let shared = DeeplinkManager()
-}
-
 // For full explanation
 // https://firebase.google.com/docs/ios/learn-more?hl=en#swiftui
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        FirebaseApp.configure()
+        Messaging.messaging().delegate = self
+
         UNUserNotificationCenter.current().delegate = self
 
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -27,6 +24,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         )
 
         application.registerForRemoteNotifications()
+
+        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
+            (action as? CommonAppStartAction)?.onAppStart()
+        }
 
         return true
     }
@@ -49,8 +50,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             return false
         }
 
-        DeeplinkManager.shared.deeplink = incomingURL.absoluteString
+        BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: incomingURL.absoluteString)
         return true
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .list, .sound])
     }
 
     func userNotificationCenter(
@@ -60,9 +69,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     ) {
         let userInfo = response.notification.request.content.userInfo
         if let deeplink = userInfo["deeplink"] as? String {
-            DeeplinkManager.shared.deeplink = deeplink
+            print("Received deeplink from notification: \(deeplink)")
+            BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: deeplink)
         }
         completionHandler()
+    }
+
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        if let fcmToken = fcmToken {
+            BudgetPlusIosAppGraphHolder.shared.graph.authManager.updateFcmToken(newToken: fcmToken)
+        }
     }
 }
 
@@ -70,21 +86,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject private var deeplinkManager = DeeplinkManager.shared
-
-    init() {
-        FirebaseApp.configure()
-
-        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
-            (action as? CommonAppStartAction)?.onAppStart()
-        }
-    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView(deeplink: deeplinkManager.deeplink)
+            ContentView()
                 .onOpenURL { url in
-                    deeplinkManager.deeplink = url.absoluteString
+                    BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: url.absoluteString)
                 }
         }
     }
