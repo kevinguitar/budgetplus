@@ -79,6 +79,14 @@ jobs:
       - name: Set JAVA_HOME for Xcode build phase
         run: echo "export JAVA_HOME=$JAVA_HOME" > ./iosApp/.xcode.env
 
+      - name: Cache Kotlin/Native compiler and platform libs
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-konan-
+
       - name: Cache SPM packages
         uses: actions/cache@v4
         with:
