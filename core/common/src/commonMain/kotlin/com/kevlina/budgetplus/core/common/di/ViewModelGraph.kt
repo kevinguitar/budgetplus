@@ -52,7 +52,10 @@ interface ViewModelGraph {
     @ContributesTo(AppScope::class)
     @GraphExtension.Factory
     fun interface Factory {
-        fun create(@Provides extras: CreationExtras): ViewModelGraph
+        fun create(
+            @Provides @Suppress("UNUSED_GRAPH_INPUT_WARNING")
+            extras: CreationExtras,
+        ): ViewModelGraph
     }
 }
 
