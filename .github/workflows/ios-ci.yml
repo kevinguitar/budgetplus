@@ -38,7 +38,10 @@ jobs:
           echo REVENUECAT_API_KEY=$REVENUECAT_API_KEY > ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
-      - name: Cache SPM downloads
+      - name: Set JAVA_HOME for Xcode build phase
+        run: echo "export JAVA_HOME=$JAVA_HOME" > ./iosApp/.xcode.env
+
+      - name: Cache SPM packages
         uses: actions/cache@v4
         with:
           path: |
@@ -48,44 +51,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Prebuild composeApp framework (simulator)
-        run: |
-          SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
-          SDK_PATH=$(xcrun --sdk iphonesimulator --show-sdk-path)
-          XCODE_VERSION=$(xcodebuild -version | head -n 1 | awk '{print $2}')
-          XCODE_VERSION_MAJOR=$(printf "%s" "$XCODE_VERSION" | cut -d. -f1)
-          XCODE_VERSION_MINOR=$(printf "%s" "$XCODE_VERSION" | cut -d. -f2)
-
-          export SDK_NAME="iphonesimulator"
-          export PLATFORM_NAME="iphonesimulator"
-          export EFFECTIVE_PLATFORM_NAME="-iphonesimulator"
-          export SDKROOT="$SDK_PATH"
-          export XCODE_VERSION_ACTUAL="$XCODE_VERSION"
-          export XCODE_VERSION_MAJOR="$XCODE_VERSION_MAJOR"
-          export XCODE_VERSION_MINOR="$XCODE_VERSION_MINOR"
-
-          export CONFIGURATION=Debug
-          export ARCHS="x86_64 arm64"
-          export TARGET_BUILD_DIR="$PWD/build/Build/Products/Debug-iphonesimulator"
-          export BUILT_PRODUCTS_DIR="$TARGET_BUILD_DIR"
-          export FRAMEWORKS_FOLDER_PATH=Frameworks
-          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode -Pcompose.ios.resources.sync=false
-
-      - name: Build iOS App
+      - name: Build iOS App (simulator)
         run: |
           xcodebuild build \
-          -project iosApp/iosApp.xcodeproj \
-          -configuration Debug \
-          -scheme iosApp \
-          -sdk iphonesimulator \
-          -derivedDataPath ./build \
-          CODE_SIGNING_ALLOWED=NO \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGN_IDENTITY="" \
-          -verbose
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ./build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            -skipPackagePluginValidation \
+            -quiet
 
-      - name: Upload app folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: iphonesimulator-app
-          path: build/Build/Products/Debug-iphonesimulator/*
+
