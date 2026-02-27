@@ -22,5 +22,5 @@ class ViewModelGraphProviderImpl : ViewModelGraphProvider {
     }
 
     override fun buildViewModelGraph(extras: CreationExtras): ViewModelGraph =
-        (BudgetPlusIosAppGraphHolder.graph as ViewModelGraph.Factory).create()
+        (BudgetPlusIosAppGraphHolder.graph as ViewModelGraph.Factory).create(extras)
 }
