@@ -83,8 +83,12 @@ class CommonAuthViewModel(
 
     private suspend fun redirectUser(name: String) {
         isLoading.value = true
-        val message = getString(Res.string.auth_success, name)
-        toaster.showMessage(message)
+
+        if (name.isNotBlank()) {
+            val message = getString(Res.string.auth_success, name)
+            toaster.showMessage(message)
+        }
+
         val action = try {
             if (bookRepo.isUserHasBooks()) {
                 bookNavigationAction
