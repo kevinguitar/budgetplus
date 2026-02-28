@@ -42,7 +42,7 @@ jobs:
         run: echo "export JAVA_HOME=$JAVA_HOME" > ./iosApp/.xcode.env
 
       - name: Cache Kotlin/Native compiler and platform libs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.konan
           key: ${{ runner.os }}-konan-${{ hashFiles('gradle/libs.versions.toml') }}
@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-konan-
 
       - name: Cache SPM packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             build/SourcePackages
