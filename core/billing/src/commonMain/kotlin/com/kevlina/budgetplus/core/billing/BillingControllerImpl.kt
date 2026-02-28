@@ -12,6 +12,8 @@ import com.revenuecat.purchases.kmp.Purchases
 import com.revenuecat.purchases.kmp.models.CustomerInfo
 import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.models.PackageType
+import com.revenuecat.purchases.kmp.models.PeriodUnit
+import com.revenuecat.purchases.kmp.models.PricingPhase
 import com.revenuecat.purchases.kmp.models.VerificationResult
 import com.revenuecat.purchases.kmp.models.freePhase
 import dev.zacsweers.metro.AppScope
@@ -66,9 +68,9 @@ class BillingControllerImpl(
             } ?: return@associateWith null
 
             Pricing(
-                discountedPrice = null, //TODO: Figure this out
+                discountedPrice = null,
                 formattedPrice = pkg.storeProduct.price.formatted,
-                freeTrialDays = pkg.storeProduct.subscriptionOptions?.freeTrial?.freePhase?.billingPeriod?.value ?: 0
+                freeTrialDays = pkg.storeProduct.subscriptionOptions?.freeTrial?.freePhase?.days
             )
         }
     }
@@ -120,6 +122,15 @@ class BillingControllerImpl(
         )
         tracker.logEvent("restore_purchases_attempt")
     }
+
+    private val PricingPhase.days: Int
+        get() = when (billingPeriod.unit) {
+            PeriodUnit.DAY -> billingPeriod.value
+            PeriodUnit.WEEK -> billingPeriod.value * 7
+            PeriodUnit.MONTH -> billingPeriod.value * 30
+            PeriodUnit.YEAR -> billingPeriod.value * 365
+            PeriodUnit.UNKNOWN -> 0
+        }
 
     private fun CustomerInfo.verifyEntitlements(transactionId: String? = null) {
         if (entitlements.all.isEmpty()) return
