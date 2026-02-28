@@ -17,6 +17,7 @@
 		0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8332F36F8EC0058D721 /* FirebaseFirestore */; };
 		0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8352F36F8EC0058D721 /* FirebaseMessaging */; };
 		0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */; };
+		0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9A78A52F52CD5C0090916D /* StoreKit.framework */; };
 		0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619412F37503900F3C461 /* GoogleSignIn */; };
 		0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619432F37503900F3C461 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A9A78A52F52CD5C0090916D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		C6E1A353ED23D830AFC12840 /* Budget+.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Budget+.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -106,6 +108,7 @@
 				0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */,
 				0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */,
 				0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */,
+				0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */,
 				0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */,
 				0A3F62A22F49828C008A7161 /* PurchasesHybridCommon in Frameworks */,
 				0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */,
@@ -120,6 +123,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A9A78A42F52CD5C0090916D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0A9A78A52F52CD5C0090916D /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		2C03A3E98A73FC2B967E9F10 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,6 +146,7 @@
 				71E7052F54B8BB3AD6D9BF6C /* Configuration */,
 				DC4748B39A09E11CF6A64645 /* iosApp */,
 				0A3F62162F4899E9008A7161 /* NotificationServiceExtension */,
+				0A9A78A42F52CD5C0090916D /* Frameworks */,
 				2C03A3E98A73FC2B967E9F10 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -332,7 +344,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplusg.NotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus.NotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -365,7 +377,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplusg.NotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus.NotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -401,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplusg;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -561,7 +573,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplusg;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

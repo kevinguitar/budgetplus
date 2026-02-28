@@ -13,6 +13,7 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.launch
+import okio.ByteString.Companion.toByteString
 import platform.AuthenticationServices.ASAuthorization
 import platform.AuthenticationServices.ASAuthorizationAppleIDCredential
 import platform.AuthenticationServices.ASAuthorizationAppleIDProvider
@@ -24,9 +25,6 @@ import platform.AuthenticationServices.ASAuthorizationScopeFullName
 import platform.AuthenticationServices.ASPresentationAnchor
 import platform.CoreCrypto.CC_SHA256
 import platform.CoreCrypto.CC_SHA256_DIGEST_LENGTH
-import platform.Foundation.NSString
-import platform.Foundation.NSUTF8StringEncoding
-import platform.Foundation.create
 import platform.Security.SecRandomCopyBytes
 import platform.Security.errSecSuccess
 import platform.Security.kSecRandomDefault
@@ -79,10 +77,10 @@ actual class AuthViewModel(
                     val credential = didCompleteWithAuthorization.credential
                         as? ASAuthorizationAppleIDCredential ?: return
                     val idTokenData = credential.identityToken ?: return
-                    val idToken = NSString.create(data = idTokenData, encoding = NSUTF8StringEncoding) ?: return
+                    val idToken = idTokenData.toByteString().toByteArray().decodeToString()
 
                     viewModelScope.launch {
-                        commonAuthViewModel.proceedAppleSignIn(idToken.toString(), rawNonce)
+                        commonAuthViewModel.proceedAppleSignIn(idToken, rawNonce)
                     }
                 }
 

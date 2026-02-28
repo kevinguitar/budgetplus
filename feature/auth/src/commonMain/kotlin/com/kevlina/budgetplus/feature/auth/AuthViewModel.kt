@@ -59,7 +59,11 @@ class CommonAuthViewModel(
     suspend fun proceedAppleSignIn(idToken: String, rawNonce: String) {
         tracker.logEvent("sign_in_with_apple")
 
-        val credential = OAuthProvider.credential("apple.com", idToken, rawNonce, null)
+        val credential = OAuthProvider.credential(
+            providerId = "apple.com",
+            idToken = idToken,
+            rawNonce = rawNonce
+        )
         try {
             isLoading.value = true
             val result = auth.signInWithCredential(credential)
@@ -79,8 +83,12 @@ class CommonAuthViewModel(
 
     private suspend fun redirectUser(name: String) {
         isLoading.value = true
-        val message = getString(Res.string.auth_success, name)
-        toaster.showMessage(message)
+
+        if (name.isNotBlank()) {
+            val message = getString(Res.string.auth_success, name)
+            toaster.showMessage(message)
+        }
+
         val action = try {
             if (bookRepo.isUserHasBooks()) {
                 bookNavigationAction
