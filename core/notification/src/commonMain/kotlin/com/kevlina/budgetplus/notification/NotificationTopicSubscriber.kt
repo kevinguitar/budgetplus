@@ -1,13 +1,10 @@
 package com.kevlina.budgetplus.notification
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.local.Preference
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.messaging.messaging
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import kotlinx.coroutines.CoroutineScope
@@ -20,10 +17,11 @@ import kotlinx.serialization.Serializable
 class NotificationTopicSubscriber(
     private val authManager: AuthManager,
     private val preference: Preference,
+    private val topicMessaging: TopicMessaging,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : AppStartAction {
 
-    private val lastSubscribeInfoKey = stringPreferencesKey("lastInfo")
+    private val lastSubscribeInfoKey = stringPreferencesKey("lastSubscribeInfo")
     private val lastInfoFlow = preference.of(lastSubscribeInfoKey, SubscribeInfo.serializer())
 
     override fun onAppStart() {
@@ -35,39 +33,53 @@ class NotificationTopicSubscriber(
             .filterNotNull()
             .first()
 
-        val generalTopic = when (user.language) {
-            "zh-tw" -> "general_tw"
-            "zh-cn" -> "general_cn"
-            "ja" -> "general_ja"
-            else -> "general_en"
-        }
+        val isPremium = user.premium ?: false
         val lastInfo = lastInfoFlow.first()
-        if (lastInfo == SubscribeInfo(userId = user.id, topic = generalTopic)) {
-            // Avoid resubscribing the same topic
+        val currentInfo = SubscribeInfo(userId = user.id, language = user.language, premium = isPremium)
+        if (lastInfo == currentInfo) {
+            // Avoid resubscribing the same topics
             return
         }
 
-        lastInfo?.let { info ->
-            if (info.userId == user.id) {
-                Firebase.messaging.unsubscribeFromTopic(info.topic)
-            }
+        if (lastInfo != null && lastInfo.userId == user.id) {
+            // Clean up stale subscriptions
+            topicMessaging.unsubscribeFromTopic("general".toLocalizedTopicId(lastInfo.language))
+            topicMessaging.unsubscribeFromTopic(
+                (if (lastInfo.premium) "premium_user" else "free_user").toLocalizedTopicId(lastInfo.language)
+            )
         }
 
-        Firebase.messaging.subscribeToTopic(generalTopic)
-        Logger.d { "Notification: Subscribed to $generalTopic topic" }
+        val generalTopic = "general".toLocalizedTopicId(user.language)
+        val premiumUserTopic = "premium_user".toLocalizedTopicId(user.language)
+        val freeUserTopic = "free_user".toLocalizedTopicId(user.language)
+
+        topicMessaging.subscribeToTopic(generalTopic)
+
+        if (user.premium == true) {
+            topicMessaging.subscribeToTopic(premiumUserTopic)
+        } else {
+            topicMessaging.subscribeToTopic(freeUserTopic)
+        }
+
         preference.update(
             key = lastSubscribeInfoKey,
             serializer = SubscribeInfo.serializer(),
-            value = SubscribeInfo(
-                userId = user.id,
-                topic = generalTopic
-            )
+            value = currentInfo
         )
     }
+
+    private fun String.toLocalizedTopicId(language: String?): String =
+        when (language) {
+            "zh-tw" -> "${this}_tw"
+            "zh-cn" -> "${this}_cn"
+            "ja" -> "${this}_ja"
+            else -> "${this}_en"
+        }
 }
 
 @Serializable
 data class SubscribeInfo(
     val userId: String,
-    val topic: String,
+    val language: String?,
+    val premium: Boolean,
 )
