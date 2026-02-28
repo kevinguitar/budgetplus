@@ -25,7 +25,6 @@ buildkonfig {
     }
 
     targetConfigs {
-        // names in create should be the same as target names you specified
         create("android") {
             buildConfigField(
                 type = STRING,
