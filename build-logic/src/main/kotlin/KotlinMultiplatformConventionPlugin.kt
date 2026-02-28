@@ -82,6 +82,11 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                     }
                 }
 
+                commonTest.dependencies {
+                    implementation(kotlin("test"))
+                    implementation(project.libs.coroutines.test)
+                }
+
                 androidMain.dependencies {
                     implementation(project.libs.bundles.android)
                 }
