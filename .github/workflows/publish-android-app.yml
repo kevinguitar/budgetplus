@@ -49,8 +49,8 @@ jobs:
           echo KEYSTORE_PATH=./BudgetKey > ./local.properties
           echo KEYSTORE_ALIAS=$KEYSTORE_ALIAS >> ./local.properties
           echo KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD >> ./local.properties
-          echo REVENUECAT_ANDROID_API_KEY=$REVENUECAT_ANDROID_API_KEY > ./local.properties
-          echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY > ./local.properties
+          echo REVENUECAT_ANDROID_API_KEY=$REVENUECAT_ANDROID_API_KEY >> ./local.properties
+          echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
