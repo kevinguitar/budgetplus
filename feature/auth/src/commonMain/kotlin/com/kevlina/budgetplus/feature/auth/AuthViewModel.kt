@@ -59,7 +59,11 @@ class CommonAuthViewModel(
     suspend fun proceedAppleSignIn(idToken: String, rawNonce: String) {
         tracker.logEvent("sign_in_with_apple")
 
-        val credential = OAuthProvider.credential("apple.com", idToken, rawNonce, null)
+        val credential = OAuthProvider.credential(
+            providerId = "apple.com",
+            idToken = idToken,
+            rawNonce = rawNonce
+        )
         try {
             isLoading.value = true
             val result = auth.signInWithCredential(credential)
