@@ -60,12 +60,14 @@ jobs:
         env:
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+          REVENUECAT_ANDROID_API_KEY: ${{ secrets.REVENUECAT_ANDROID_API_KEY }}
+          REVENUECAT_IOS_API_KEY: ${{ secrets.REVENUECAT_IOS_API_KEY }}
         run: |
           echo KEYSTORE_PATH=./BudgetKey > ./local.properties
           echo KEYSTORE_ALIAS=$KEYSTORE_ALIAS >> ./local.properties
           echo KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD >> ./local.properties
-          echo REVENUECAT_API_KEY=$REVENUECAT_API_KEY >> ./local.properties
+          echo REVENUECAT_ANDROID_API_KEY=$REVENUECAT_ANDROID_API_KEY >> ./local.properties
+          echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
 
       - name: Build with Gradle
         run: ./gradlew :androidApp:assemble test detekt lint --continue --quiet

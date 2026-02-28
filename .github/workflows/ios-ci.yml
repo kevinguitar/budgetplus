@@ -32,10 +32,12 @@ jobs:
 
       - name: Setup Secrets
         env:
-          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+          REVENUECAT_ANDROID_API_KEY: ${{ secrets.REVENUECAT_ANDROID_API_KEY }}
+          REVENUECAT_IOS_API_KEY: ${{ secrets.REVENUECAT_IOS_API_KEY }}
           GOOGLE_SERVICES_PLIST: ${{ secrets.IOS_GOOGLE_SERVICES_PLIST }}
         run: |
-          echo REVENUECAT_API_KEY=$REVENUECAT_API_KEY > ./local.properties
+          echo REVENUECAT_ANDROID_API_KEY=$REVENUECAT_ANDROID_API_KEY > ./local.properties
+          echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY > ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
       - name: Set JAVA_HOME for Xcode build phase
