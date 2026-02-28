@@ -19,7 +19,27 @@ kotlin {
 buildkonfig {
     packageName = "com.kevlina.budgetplus.core.billing"
 
+    val revenuecatApiKey = "revenuecatApiKey"
     defaultConfigs {
-        buildConfigField(STRING, "revenuecatApiKey", localProperty("REVENUECAT_API_KEY"))
+        buildConfigField(STRING, revenuecatApiKey, "")
+    }
+
+    targetConfigs {
+        // names in create should be the same as target names you specified
+        create("android") {
+            buildConfigField(
+                type = STRING,
+                name = revenuecatApiKey,
+                value = localProperty("REVENUECAT_ANDROID_API_KEY")
+            )
+        }
+
+        create("ios") {
+            buildConfigField(
+                type = STRING,
+                name = revenuecatApiKey,
+                value = localProperty("REVENUECAT_IOS_API_KEY")
+            )
+        }
     }
 }
