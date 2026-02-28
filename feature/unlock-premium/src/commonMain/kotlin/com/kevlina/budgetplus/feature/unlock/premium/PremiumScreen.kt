@@ -4,10 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -16,20 +16,31 @@ import budgetplus.core.common.generated.resources.premium_unlock
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.utils.metroViewModel
+import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PremiumScreen(navController: NavController<BookDest>) {
 
     val vm = metroViewModel<PremiumViewModel>()
-    val pricingMap by vm.pricingMap.collectAsStateWithLifecycle()
+//    val pricingMap by vm.pricingMap.collectAsStateWithLifecycle()
     val isPremium by vm.isPremium.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = isPremium) {
         if (isPremium) {
             navController.navigateUp()
+        }
+    }
+
+    val options = remember {
+        PaywallOptions(
+            dismissRequest = navController::navigateUp,
+        ) {
+            listener = vm.listener
         }
     }
 
@@ -44,16 +55,25 @@ fun PremiumScreen(navController: NavController<BookDest>) {
         )
 
         Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .weight(1F)
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            PremiumContent(
-                pricingMap = pricingMap,
-                purchase = vm::purchase,
-                restorePurchases = vm::restorePurchases
-            )
+            InfiniteCircularProgress()
+
+            Paywall(options)
         }
+
+//        Box(
+//            contentAlignment = Alignment.Center,
+//            modifier = Modifier
+//                .weight(1F)
+//                .fillMaxWidth()
+//        ) {
+//            PremiumContent(
+//                pricingMap = pricingMap,
+//                purchase = vm::purchase,
+//                restorePurchases = vm::restorePurchases
+//            )
+//        }
     }
 }

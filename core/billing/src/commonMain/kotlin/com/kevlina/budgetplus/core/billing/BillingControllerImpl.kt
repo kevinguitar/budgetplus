@@ -14,8 +14,11 @@ import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.models.PackageType
 import com.revenuecat.purchases.kmp.models.PeriodUnit
 import com.revenuecat.purchases.kmp.models.PricingPhase
+import com.revenuecat.purchases.kmp.models.PurchasesError
+import com.revenuecat.purchases.kmp.models.StoreTransaction
 import com.revenuecat.purchases.kmp.models.VerificationResult
 import com.revenuecat.purchases.kmp.models.freePhase
+import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallListener
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -38,6 +41,33 @@ class BillingControllerImpl(
 
     final override val pricingMap: StateFlow<Map<PremiumPlan, Pricing?>>
         field = MutableStateFlow(PremiumPlan.entries.associateWith { null })
+
+    override val paywallListener = object : PaywallListener {
+        override fun onPurchaseStarted(rcPackage: Package) {
+            val event = when (rcPackage.packageType) {
+                PackageType.LIFETIME -> "buy_premium_lifetime_attempt"
+                PackageType.ANNUAL -> "buy_premium_annual_attempt"
+                PackageType.MONTHLY -> "buy_premium_monthly_attempt"
+                else -> "buy_premium_unknown_attempt"
+            }
+            tracker.logEvent(event)
+        }
+
+        override fun onPurchaseCompleted(customerInfo: CustomerInfo, storeTransaction: StoreTransaction) {
+            customerInfo.verifyEntitlements(storeTransaction.transactionId)
+        }
+
+        override fun onPurchaseError(error: PurchasesError) {
+            tracker.logEvent(
+                event = "buy_premium_fail",
+                params = mapOf("reason" to error.code.description)
+            )
+        }
+
+        override fun onRestoreStarted() {
+            tracker.logEvent("restore_purchases_attempt")
+        }
+    }
 
     override fun onNewCustomerInfo(customerInfo: CustomerInfo) {
         customerInfo.verifyEntitlements()
