@@ -23,12 +23,8 @@ interface CommonModule {
     fun provideAppPackage(): String = "com.kevlina.budgetplus"
 
     @Provides
-    @Named("google_play_url")
-    fun provideGooglePlayUrl(
-        @Named("app_package") appPackage: String,
-    ): String {
-        return "https://play.google.com/store/apps/details?id=$appPackage"
-    }
+    @Named("share_app_url")
+    fun provideGooglePlayUrl(): String = "$APP_DEEPLINK/get-app"
 
     @Provides
     @Named("instagram_url")

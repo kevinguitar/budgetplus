@@ -114,8 +114,6 @@ class AuthManagerImpl(
 
         if (isPremium) {
             snackbarSender.send(Res.string.premium_unlocked)
-        } else {
-            //TODO: Off boarding the user when they lost the premium access.
         }
     }
 

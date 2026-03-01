@@ -29,4 +29,14 @@ interface BudgetPlusIosAppModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDeeplinkFlow(): DeeplinkFlow = MutableEventFlow()
+
+    @Provides
+    @Named("app_id")
+    fun provideAppId(): String = "6759791430"
+
+    @Provides
+    @Named("store_review_url")
+    fun provideAppStoreUrl(@Named("app_id") appId: String): String {
+        return "https://apps.apple.com/app/id$appId?action=write-review"
+    }
 }
