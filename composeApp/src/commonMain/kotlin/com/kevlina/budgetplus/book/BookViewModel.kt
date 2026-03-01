@@ -57,8 +57,8 @@ class BookViewModel(
 
     private val currentNavKeyFlow = snapshotFlow { navController.backStack.lastOrNull() }.filterNotNull()
 
-    private val hideBottomNavDestinations = setOf(BookDest.Auth, BookDest.Welcome)
-    private val hideAdsDestinations = hideBottomNavDestinations + BookDest.UnlockPremium
+    private val hideBottomNavDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
+    private val hideAdsDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
 
     val showBottomNav = currentNavKeyFlow
         .map { it !in hideBottomNavDestinations }
