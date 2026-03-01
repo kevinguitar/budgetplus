@@ -44,6 +44,8 @@ compottie = "2.0.2"
 admob-kmp = "1.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
 revenuecat-kmp = "2.7.0+17.41.0"
+# https://github.com/ktorio/ktor/releases
+ktor = "3.4.0"
 
 compileAndroidSdk = "36"
 minAndroidSdk = "26"
@@ -67,7 +69,7 @@ build-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plug
 build-metro-gradle-plugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
-coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 colorpicker-compose = "com.github.skydoves:colorpicker-compose:1.1.3"
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
@@ -106,6 +108,8 @@ junit-core = "junit:junit:4.13.2"
 kermit = "co.touchlab:kermit:2.0.8"
 kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
+ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 mockk = "io.mockk:mockk:1.14.9"
 navigation-event = "org.jetbrains.androidx.navigationevent:navigationevent-compose:1.0.1"

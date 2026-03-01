@@ -17,6 +17,7 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                 commonMain.dependencies {
                     implementation(project.libs.bundles.compose)
                     implementation(project.libs.coil.compose)
+                    implementation(project.libs.coil.ktor)
                 }
                 commonTest.dependencies {
                     implementation(kotlin("test"))
@@ -24,6 +25,10 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                 androidMain.dependencies {
                     implementation(project.libs.android.activity.compose)
                     implementation(project.libs.compose.android.uiTooling)
+                    implementation(project.libs.ktor.android)
+                }
+                iosMain.dependencies {
+                    implementation(project.libs.ktor.ios)
                 }
             }
         }
