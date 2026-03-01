@@ -32,10 +32,10 @@ class CsvSaverImpl : CsvSaver {
             )
         }
 
-        val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
-            ?: return
-
         withContext(Dispatchers.Main) {
+            val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+                ?: return@withContext
+
             val activityViewController = UIActivityViewController(
                 activityItems = listOf(fileUrl),
                 applicationActivities = null
@@ -50,12 +50,7 @@ class CsvSaverImpl : CsvSaver {
     }
 
     @OptIn(BetaInteropApi::class)
-    private fun ByteArray.toNSData(): NSData {
-        return usePinned { pinned ->
-            NSData.create(
-                bytes = pinned.addressOf(0),
-                length = size.toULong()
-            )
-        }
+    private fun ByteArray.toNSData(): NSData = usePinned { pinned ->
+        NSData.create(bytes = pinned.addressOf(0), length = size.toULong())
     }
 }

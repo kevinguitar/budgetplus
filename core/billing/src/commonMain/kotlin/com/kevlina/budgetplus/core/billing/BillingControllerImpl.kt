@@ -70,13 +70,14 @@ class BillingControllerImpl(
             return
         }
 
+        val entitlement = entitlements[PREMIUM_ENTITLEMENT] ?: return
         appScope.launch {
-            val entitlement = entitlements[PREMIUM_ENTITLEMENT]
-            if (entitlement?.isActive == true) {
+            if (entitlement.isActive) {
                 if (transactionId != null) {
                     purchaseRepo.recordPurchase(
                         orderId = transactionId,
-                        productId = entitlement.productIdentifier,
+                        productId = entitlement.productPlanIdentifier
+                            ?: entitlement.productIdentifier,
                         client = purchasedClient
                     )
                     tracker.logEvent("buy_premium_success")

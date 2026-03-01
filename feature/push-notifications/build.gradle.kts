@@ -16,8 +16,6 @@ kotlin {
                 exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")
                 exclude(group = "com.google.protobuf", module = "protobuf-java")
             }
-            // Without this it crashes at grpc usages internally :/
-            project.dependencies.enforcedPlatform("io.grpc:grpc-bom:1.78.0")
         }
     }
 }

@@ -175,7 +175,7 @@
     <string name="settings_pie_chart">Pie Chart</string>
     <string name="settings_share_app">Share the app with friends</string>
     <string name="settings_share_app_message">I found an awesome budget app! Try it out!\n%1$s</string>
-    <string name="settings_rate_us">Rate Us on Google Play</string>
+    <string name="settings_rate_us">Rate Us on %1$s</string>
     <string name="settings_follow_on_instagram">Follow Us on Instagram</string>
     <string name="settings_contact_us">Contact Us</string>
     <string name="settings_privacy_policy">Privacy Policy</string>
@@ -246,42 +246,4 @@
     <string name="permission_hint">Turn on the permission in the settings if you change your mind</string>
     <string name="app_update_downloaded">The update is ready!</string>
     <string name="unsaved_warning_message">Do you want to leave without saving the changes?</string>
-
-    <!-- - - - - - - - -->
-    <!-- Internal Keys -->
-    <!-- - - - - - - - -->
-
-    <!-- Insider -->
-    <string name="insider_app_name" translatable="false">B+ Insider</string>
-    <string name="insider_title" translatable="false">商業機密</string>
-    <string name="insider_total_premium_users" translatable="false">付費用戶</string>
-    <string name="insider_daily_active_users" translatable="false">日活躍用戶</string>
-    <string name="insider_weekly_active_users" translatable="false">週活躍用戶</string>
-    <string name="insider_users_overview" translatable="false">用戶總覽</string>
-    <string name="insider_total_en_users" translatable="false">英文用戶總數</string>
-    <string name="insider_total_ja_users" translatable="false">日文用戶總數</string>
-    <string name="insider_total_cn_users" translatable="false">簡體中文用戶總數</string>
-    <string name="insider_new_users" translatable="false">新用戶</string>
-    <string name="insider_active_premium_users" translatable="false">活躍付費用戶</string>
-    <string name="insider_language_zh_tw" translatable="false">繁體中文</string>
-    <string name="insider_language_zh_cn" translatable="false">簡體中文</string>
-    <string name="insider_language_ja" translatable="false">日文</string>
-    <string name="insider_language_en" translatable="false">英文</string>
-    <string name="insider_user_created_on" translatable="false">創建時間：%1$s</string>
-    <string name="insider_user_last_active_on" translatable="false">最後上線：%1$s</string>
-
-    <!-- Push Notifications -->
-    <string name="push_notif_title" translatable="false">通知推播</string>
-    <string name="push_notif_language_zh_tw" translatable="false">繁體中文</string>
-    <string name="push_notif_language_zh_cn" translatable="false">簡體中文（自動翻譯）</string>
-    <string name="push_notif_language_ja" translatable="false">日文</string>
-    <string name="push_notif_language_en" translatable="false">英文</string>
-    <string name="push_notif_push_title" translatable="false">標題</string>
-    <string name="push_notif_push_description" translatable="false">內容</string>
-    <string name="push_notif_navigate_to_google_play" translatable="false">跳轉到 Google Play</string>
-    <string name="push_notif_deeplink" translatable="false">深層連結</string>
-    <string name="push_notif_send_to_internal_topic" translatable="false">發送到內部裝置</string>
-    <string name="push_notif_send_to_everyone" translatable="false">發送給所有人！</string>
-    <string name="push_notif_send_to_everyone_confirmation" translatable="false">確定要發送給所有人嗎？</string>
-    <string name="push_notif_sent_success" translatable="false">傳送成功！</string>
 </resources>

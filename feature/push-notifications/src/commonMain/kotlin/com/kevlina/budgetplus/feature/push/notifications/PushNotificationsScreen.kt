@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.push_notif_title
+import budgetplus.feature.push_notifications.generated.resources.Res
+import budgetplus.feature.push_notifications.generated.resources.push_notif_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.feature.push.notifications.ui.PushNotificationsContent

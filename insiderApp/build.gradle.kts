@@ -13,7 +13,6 @@ dependencies {
     implementation(libs.android.activity)
     implementation(libs.navigation3.ui)
     implementation(libs.navigation3.viewmodel)
-    implementation(libs.coil.okhttp)
 
     implementation(projects.core.data)
     implementation(projects.core.impl)
@@ -22,4 +21,8 @@ dependencies {
     implementation(projects.feature.auth)
     implementation(projects.feature.pushNotifications)
     implementation(projects.feature.insider)
+
+    // Without this it crashes at grpc usages internally :/
+    //noinspection UseTomlInstead
+    implementation(enforcedPlatform("io.grpc:grpc-bom:1.79.0"))
 }

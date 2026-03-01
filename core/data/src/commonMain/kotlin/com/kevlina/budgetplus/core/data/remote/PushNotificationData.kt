@@ -6,6 +6,7 @@ import kotlin.time.Clock
 @Serializable
 data class PushNotificationData(
     val internal: Boolean? = null,
+    val audienceTarget: String? = null,
     val titleTw: CharSequence? = null,
     val descTw: CharSequence? = null,
     val titleCn: CharSequence? = null,

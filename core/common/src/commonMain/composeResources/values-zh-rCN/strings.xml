@@ -174,7 +174,7 @@
     <string name="settings_pie_chart">圆饼图</string>
     <string name="settings_share_app">分享 App 给好友</string>
     <string name="settings_share_app_message">我发现了一款超好用的记帐 App，快下载来试试吧！\n%1$s</string>
-    <string name="settings_rate_us">在 Google Play 上评价</string>
+    <string name="settings_rate_us">在 %1$s 上评价</string>
     <string name="settings_follow_on_instagram">追踪我们的 Instagram</string>
     <string name="settings_contact_us">与我们联系</string>
     <string name="settings_privacy_policy">隐私权条款</string>

@@ -6,11 +6,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.push_notif_sent_success
+import budgetplus.feature.push_notifications.generated.resources.Res
+import budgetplus.feature.push_notifications.generated.resources.push_notif_sent_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.PushDbMediator
 import com.kevlina.budgetplus.core.data.local.Preference
@@ -30,12 +31,13 @@ import kotlin.time.Clock
 class PushNotificationsViewModel private constructor(
     private val preference: Preference,
     translator: Translator,
-    @Named("google_play_url") private val googlePlayUrl: String,
     @Named("default_deeplink") private val defaultDeeplink: String,
     private val pushDbMediator: PushDbMediator,
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,
 ) : ViewModel() {
+
+    val audienceTarget = MutableStateFlow(AudienceTarget.All)
 
     val titleTw = TextFieldState()
     val descTw = TextFieldState()
@@ -52,8 +54,7 @@ class PushNotificationsViewModel private constructor(
     val titleEn = TextFieldState()
     val descEn = TextFieldState()
 
-    val navigateToGooglePlay = MutableStateFlow(false)
-    val deeplink = TextFieldState()
+    val deeplinkPath = TextFieldState()
 
     private val cacheKey = stringPreferencesKey("pushNotificationCache")
 
@@ -103,6 +104,7 @@ class PushNotificationsViewModel private constructor(
                 }
                 pushDbMediator.recordPushNotification(PushNotificationData(
                     internal = isInternal,
+                    audienceTarget = audienceTarget.value.name,
                     titleTw = titleTw.text.trim(),
                     descTw = descTw.text.trim(),
                     titleCn = titleCn.text.trim().takeIf { sendToCn.value },
@@ -111,10 +113,10 @@ class PushNotificationsViewModel private constructor(
                     descJa = descJa.text.trim().takeIf { sendToJa.value },
                     titleEn = titleEn.text.trim().takeIf { sendToEn.value },
                     descEn = descEn.text.trim().takeIf { sendToEn.value },
-                    deeplink = when {
-                        navigateToGooglePlay.value -> googlePlayUrl
-                        deeplink.text.isNotBlank() -> deeplink.text.trim()
-                        else -> defaultDeeplink
+                    deeplink = if (deeplinkPath.text.isNotBlank()) {
+                        APP_DEEPLINK + "/" + deeplinkPath.text.trim()
+                    } else {
+                        defaultDeeplink
                     },
                     sentOn = Clock.System.now().toEpochMilliseconds()
                 ))
@@ -137,7 +139,7 @@ class PushNotificationsViewModel private constructor(
             descJa.setTextAndPlaceCursorAtEnd(cache.descriptionJa)
             titleEn.setTextAndPlaceCursorAtEnd(cache.titleEn)
             descEn.setTextAndPlaceCursorAtEnd(cache.descriptionEn)
-            deeplink.setTextAndPlaceCursorAtEnd(cache.deeplink)
+            deeplinkPath.setTextAndPlaceCursorAtEnd(cache.deeplinkPath)
         }
     }
 
@@ -150,7 +152,7 @@ class PushNotificationsViewModel private constructor(
                 descriptionJa = descJa.text.toString(),
                 titleEn = titleEn.text.toString(),
                 descriptionEn = descEn.text.toString(),
-                deeplink = deeplink.text.toString()
+                deeplinkPath = deeplinkPath.text.toString()
             )
             preference.update(cacheKey, PushNotificationCache.serializer(), newCache)
         }

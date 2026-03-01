@@ -270,7 +270,7 @@ internal fun SettingsContent(
         )
 
         SettingsItem(
-            text = stringResource(Res.string.settings_rate_us),
+            text = stringResource(Res.string.settings_rate_us, storeName),
             icon = vectorResource(Res.drawable.ic_star),
             onClick = vm.navigation::rateUs
         )

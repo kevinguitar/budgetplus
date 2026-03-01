@@ -24,4 +24,12 @@ interface AppModule {
             interstitial = context.getString(R.string.admob_interstitial_id)
         )
     }
+
+    @Provides
+    @Named("store_review_url")
+    fun provideGooglePlayUrl(
+        @Named("app_package") appPackage: String,
+    ): String {
+        return "https://play.google.com/store/apps/details?id=$appPackage"
+    }
 }

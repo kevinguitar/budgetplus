@@ -19,7 +19,8 @@ internal class SettingsNavigationViewModel(
     private val navigation: SettingsNavigation,
     private val shareHelper: ShareHelper,
     private val tracker: Tracker,
-    @Named("google_play_url") private val googlePlayUrl: String,
+    @Named("store_review_url") private val storeReviewUrl: String,
+    @Named("share_app_url") private val shareAppUrl: String,
     @Named("instagram_url") private val instagramUrl: String,
     @Named("privacy_policy_url") private val privacyPolicyUrl: String,
 ) : ViewModel() {
@@ -35,16 +36,14 @@ internal class SettingsNavigationViewModel(
         viewModelScope.launch {
             shareHelper.share(
                 title = Res.string.settings_share_app,
-                //TODO: Use a generic URL to redirect user to AppStore/ GooglePlay
-                text = getString(Res.string.settings_share_app_message, googlePlayUrl)
+                text = getString(Res.string.settings_share_app_message, shareAppUrl)
             )
             tracker.logEvent("settings_share_app_click")
         }
     }
 
     fun rateUs() {
-        //TODO: Provide an URL for app store
-        navigation.visitUrl(googlePlayUrl)
+        navigation.visitUrl(storeReviewUrl)
         tracker.logEvent("settings_rate_us_click")
     }
 

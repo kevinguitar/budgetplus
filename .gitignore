@@ -5,10 +5,8 @@
 /.kotlin
 /.idea
 .DS_Store
-/build
-*/build
+build
 */google-services.json
-*/*/build
 /captures
 .externalNativeBuild
 .cxx
@@ -18,7 +16,6 @@ xcuserdata
 bin
 .vscode
 iosApp/.xcode.env
-*.xcuserdatad
 composeApp/exportedNativeExample/.build
 composeApp/src/swift/nativeBridge/StartYourBridgeHere.swift
 GoogleService-Info.plist
