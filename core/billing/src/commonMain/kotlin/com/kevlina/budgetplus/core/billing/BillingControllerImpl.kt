@@ -76,7 +76,8 @@ class BillingControllerImpl(
                 if (transactionId != null) {
                     purchaseRepo.recordPurchase(
                         orderId = transactionId,
-                        productId = entitlement.productIdentifier,
+                        productId = entitlement.productPlanIdentifier
+                            ?: entitlement.productIdentifier,
                         client = purchasedClient
                     )
                     tracker.logEvent("buy_premium_success")
