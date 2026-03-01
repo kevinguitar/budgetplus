@@ -9,12 +9,26 @@
       }
     ]
   },
-  "identifier" : "D0A05259",
+  "identifier" : "DEF24F4A",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
-
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
+      "internalID" : "6759822008",
+      "localizations" : [
+        {
+          "description" : "不受任何廣告打擾、擴充至十本記帳本、批次新增您的固定支出收入、解鎖所有主題色調及調色盤",
+          "displayName" : "極簡記帳－進階版",
+          "locale" : "zh_Hant"
+        }
+      ],
+      "productID" : "budgetplus.premium.lifetime",
+      "referenceName" : "Budget+ Premium",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
     "_applicationInternalID" : "6759791430",
@@ -24,7 +38,7 @@
     "_developerTeamID" : "MU6R4JU7G8",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 793956149.39820099,
+    "_lastSynchronizedDate" : 794025065.662624,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
@@ -52,13 +66,22 @@
           "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "6759821669",
-          "introductoryOffer" : null,
+          "introductoryOffer" : {
+            "internalID" : "369EDCF1",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
-
+            {
+              "description" : "不受任何廣告打擾、擴充至十本記帳本、批次新增您的固定支出收入、解鎖所有主題色調及調色盤",
+              "displayName" : "極簡記帳－進階版",
+              "locale" : "zh_Hant"
+            }
           ],
           "productID" : "budgetplus.premium.annual",
           "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Annual",
+          "referenceName" : "Budget+ Premium Annual",
           "subscriptionGroupID" : "21954157",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
@@ -78,11 +101,15 @@
           "internalID" : "6759821347",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "不受任何廣告打擾、擴充至十本記帳本、批次新增您的固定支出收入、解鎖所有主題色調及調色盤",
+              "displayName" : "極簡記帳－進階版",
+              "locale" : "zh_Hant"
+            }
           ],
           "productID" : "budgetplus.premium.monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Monthly",
+          "referenceName" : "Budget+ Premium Monthly",
           "subscriptionGroupID" : "21954157",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
@@ -92,10 +119,6 @@
       ]
     }
   ],
-  "subscriptionOffersKeyPair" : {
-    "id" : "8CB0033E",
-    "privateKey" : "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg83Y4PlKmG170FlKn4n7ex5g1Lm1ZW0tb5wklKpRnTPGgCgYIKoZIzj0DAQehRANCAASIfb2/Yp49jqetuVrjCwr5jamDvgLU569q5gwYgecGg71n97f0EzlQPJaLW1/8VGUSSjZrVs0Dj5JpfSeicq1+"
-  },
   "version" : {
     "major" : 4,
     "minor" : 0
