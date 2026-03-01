@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
+		0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
 		0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3F61762F3DDC18008A7161 /* GoogleMobileAds */; };
 		0A3F621C2F4899E9008A7161 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */; };
@@ -48,6 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9A78A52F52CD5C0090916D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		C6E1A353ED23D830AFC12840 /* Budget+.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Budget+.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,6 +148,7 @@
 		34847EBF5FEB5CE02C7EDB98 = {
 			isa = PBXGroup;
 			children = (
+				0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */,
 				71E7052F54B8BB3AD6D9BF6C /* Configuration */,
 				DC4748B39A09E11CF6A64645 /* iosApp */,
 				0A3F62162F4899E9008A7161 /* NotificationServiceExtension */,
@@ -266,6 +270,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,6 +278,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,6 +486,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -547,6 +554,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
