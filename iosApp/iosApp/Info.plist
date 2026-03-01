@@ -19,6 +19,10 @@
 	<string>ca-app-pub-5636675608309788~9761727103</string>
 	<key>GIDClientID</key>
 	<string>919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt.apps.googleusercontent.com</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+	</array>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

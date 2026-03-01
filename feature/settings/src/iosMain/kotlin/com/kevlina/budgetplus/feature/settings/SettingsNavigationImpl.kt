@@ -14,8 +14,12 @@ import dev.zacsweers.metro.Named
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import platform.Foundation.NSCharacterSet
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDefaults
+import platform.Foundation.URLQueryAllowedCharacterSet
+import platform.Foundation.stringByAddingPercentEncodingWithAllowedCharacters
 import platform.UIKit.UIAlertAction
 import platform.UIKit.UIAlertActionStyleCancel
 import platform.UIKit.UIAlertActionStyleDefault
@@ -77,16 +81,20 @@ class SettingsNavigationImpl(
 
     override suspend fun contactUs() {
         val subject = getString(Res.string.settings_contact_us)
-            .replace(" ", "%20")
         val body = "User id: ${authManager.requireUserId()}\n\n"
-            .replace(" ", "%20")
-            .replace("\n", "%0A")
-
         val mailUrl = "mailto:$contactEmail?subject=$subject&body=$body"
-        val url = NSURL.URLWithString(mailUrl) ?: return
+
+        @Suppress("CAST_NEVER_SUCCEEDS")
+        val encodedUrl = (mailUrl as? NSString)
+            ?.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet)
+        val url = NSURL.URLWithString(encodedUrl ?: mailUrl) ?: return
 
         if (UIApplication.sharedApplication.canOpenURL(url)) {
-            UIApplication.sharedApplication.openURL(url)
+            UIApplication.sharedApplication.openURL(
+                url = url,
+                options = emptyMap<Any?, Any?>(),
+                completionHandler = null
+            )
         } else {
             snackbarSender.send(Res.string.settings_no_email_app_found)
         }
