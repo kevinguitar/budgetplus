@@ -12,11 +12,11 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.ImageLoader
-import com.kevlina.budgetplus.core.common.R
 import com.kevlina.budgetplus.core.common.di.resolveGraphExtensionFactory
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
 import com.kevlina.budgetplus.core.data.AuthManager
+import com.kevlina.budgetplus.core.notification.R
 import com.kevlina.budgetplus.notification.NotificationConstants.CHANNEL_GENERAL
 import com.kevlina.budgetplus.notification.NotificationConstants.CHANNEL_NEW_MEMBER
 import dev.zacsweers.metro.Inject
