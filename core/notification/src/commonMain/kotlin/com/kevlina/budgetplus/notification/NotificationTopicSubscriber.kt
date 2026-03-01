@@ -45,18 +45,18 @@ class NotificationTopicSubscriber(
             // Clean up stale subscriptions
             topicMessaging.unsubscribeFromTopic("general".toLocalizedTopicId(lastInfo.language))
             topicMessaging.unsubscribeFromTopic(
-                (if (lastInfo.premium) "premium_user" else "free_user").toLocalizedTopicId(lastInfo.language)
+                (if (lastInfo.premium) "paid_user" else "free_user").toLocalizedTopicId(lastInfo.language)
             )
         }
 
         val generalTopic = "general".toLocalizedTopicId(user.language)
-        val premiumUserTopic = "premium_user".toLocalizedTopicId(user.language)
+        val paidUserTopic = "paid_user".toLocalizedTopicId(user.language)
         val freeUserTopic = "free_user".toLocalizedTopicId(user.language)
 
         topicMessaging.subscribeToTopic(generalTopic)
 
         if (user.premium == true) {
-            topicMessaging.subscribeToTopic(premiumUserTopic)
+            topicMessaging.subscribeToTopic(paidUserTopic)
         } else {
             topicMessaging.subscribeToTopic(freeUserTopic)
         }

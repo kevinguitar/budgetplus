@@ -25,14 +25,14 @@ class NotificationTopicSubscriberTest {
     }
 
     @Test
-    fun `initial subscription for premium user`() = runTest {
+    fun `initial subscription for paid user`() = runTest {
         val user = User(id = "user1", language = "zh-tw", premium = true)
         authManager.userState.value = user
 
         createSubscriber().onAppStart()
         advanceUntilIdle()
 
-        assertEquals(setOf("general_tw", "premium_user_tw"), topicMessaging.subscriptions)
+        assertEquals(setOf("general_tw", "paid_user_tw"), topicMessaging.subscriptions)
         assertTrue(topicMessaging.unsubscriptions.isEmpty())
     }
 
@@ -97,7 +97,7 @@ class NotificationTopicSubscriberTest {
         advanceUntilIdle()
 
         assertEquals(setOf("general_en", "free_user_en"), topicMessaging.unsubscriptions)
-        assertEquals(setOf("general_en", "premium_user_en"), topicMessaging.subscriptions)
+        assertEquals(setOf("general_en", "paid_user_en"), topicMessaging.subscriptions)
     }
 
     @Test
