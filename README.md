@@ -1,5 +1,10 @@
-# Budget+ Android App（極簡記帳）
-Budget+ is an easy to use co-spending tracker to track expenses together with your friends and family.
+# Budget+ Multiplatform App（極簡記帳）
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Budget+ is an easy-to-use co-spending tracker to track expenses together with your friends and family.
+
+Now available on both Android and iOS!
 
 ## Feature Overview
 
@@ -7,36 +12,55 @@ Budget+ is an easy to use co-spending tracker to track expenses together with yo
 
 ![overview_2](https://github.com/user-attachments/assets/a480d869-a814-41f1-a258-e24e61e38f2e)
 
-### And some cool animated features! ✨
+### Some cool animated features!! ✨
 |                                                      Pie Chart                                                       |                                                  Color Tone Picker                                                   |                                                 Customize Color Tone                                                 |
 |:--------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------:| 
 | <video src="https://github.com/kevinguitar/budgetplus-android/assets/18852983/c2222bc4-f78e-42a2-a78b-ebdb78cc7c2e"> | <video src="https://github.com/kevinguitar/budgetplus-android/assets/18852983/82f6d3e9-8162-4554-809e-e2f81913e684"> | <video src="https://github.com/kevinguitar/budgetplus-android/assets/18852983/bece0f6d-2f49-4562-b24e-4ff51cf5d5a8"> |
 
 ## Download
-https://play.google.com/store/apps/details?id=com.kevlina.budgetplus
 
-## Tech stack
-- [Jetpack Compose](https://developer.android.com/develop/ui/compose) for UI + MVVM Architecture
-- [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html) for asynchronous work
+- **Android**: [Google Play Store](https://play.google.com/store/apps/details?id=com.kevlina.budgetplus)
+- **iOS**: (Coming soon to the App Store)
+
+---
+
+## Tech Stack
+
+### Business Logic and Core
+- [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) for shared logic across Android and iOS
+- [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) for shared UI + MVVM Architecture
+- [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html) for asynchronous operations
 - [Metro](https://zacsweers.github.io/metro/latest/) for dependency injection
-- [Lottie Compose](https://github.com/airbnb/lottie/blob/master/android-compose.md) for animation
 - [Navigation3](https://developer.android.com/guide/navigation/navigation-3) for Composable navigation
-- [Google Billing](https://developer.android.com/google/play/billing/integrate) for in-app purchases
-- [Admob](https://admob.google.com/home/) with meta audience network mediation for Ads
-- [Coil](https://github.com/coil-kt/coil) for image loading
-- [Kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization) for parsing JSON
-- [Firebase Firestore](https://firebase.google.com/docs/firestore) for database
-- Firebase [Authentication](https://firebase.google.com/docs/auth), [Analytics](https://firebase.google.com/docs/analytics), [Messaging](https://firebase.google.com/docs/cloud-messaging) and [Remote Config](https://firebase.google.com/docs/remote-config)
-- [In-app Review](https://developer.android.com/guide/playcore/in-app-review) and [In-app Update](https://developer.android.com/guide/playcore/in-app-updates) integration
-- [Baseline Profile](https://developer.android.com/topic/performance/baselineprofiles/overview) for speeding up app startup time
-- [Mockk](https://github.com/mockk/mockk) and [Truth](https://github.com/google/truth) for unit testing
+- [RevenueCat](https://github.com/RevenueCat/purchases-kmp) for in-app purchases and subscriptions
+- [AdMob](https://admob.google.com/home/) with Meta Audience Network mediation for ads
+- [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) for JSON parsing
+- [Kotlinx Datetime](https://github.com/Kotlin/kotlinx-datetime) for date and time handling
+- [Firebase](https://firebase.google.com/)
+  - [Firestore](https://firebase.google.com/docs/firestore) for real-time database
+  - [Authentication](https://firebase.google.com/docs/auth) for Google and Apple ID sign-in
+  - [Crashlytics](https://firebase.google.com/docs/crashlytics) for crash reporting
+  - [Analytics](https://firebase.google.com/docs/analytics), [Messaging](https://firebase.google.com/docs/cloud-messaging), and [Remote Config](https://firebase.google.com/docs/remote-config)
 
-### Other used open source libraries
-- [orchestra-colorpicker](https://github.com/skydoves/Orchestra?tab=readme-ov-file#colorpicker) for color picker view
-- [reorderable](https://github.com/Calvin-LL/Reorderable) for reorder items in compose
-- [kotlin-csv-jvm](https://github.com/jsoizo/kotlin-csv) for exporting data as csv file
-- [detekt](https://github.com/detekt/detekt) for Kotlin static code analysis
-- [exp4j](https://github.com/fasseg/exp4j?tab=readme-ov-file) for math expression evaluation
+### Open-Source Libraries for KMP
+- [Basic-ads](https://github.com/LexiLabs-App/basic-ads) for AdMob KMP integration
+- [Coil3](https://github.com/coil-kt/coil) for image loading with KMP support
+- [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for color picking
+- [Compottie](https://github.com/alexzhirkevich/compottie) for Lottie animations in Compose Multiplatform
+- [Csv](https://github.com/sergejsha/csv) for exporting data as CSV (KMP)
+- [Detekt](https://github.com/detekt/detekt) for Kotlin static code analysis
+- [Firebase Kotlin SDK](https://github.com/GitLiveApp/firebase-kotlin-sdk) for KMP support
+- [Kermit](https://github.com/touchlab/Kermit) for logging
+- [Keval](https://github.com/notKamui/Keval) for mathematical expression evaluation
+- [MockK](https://github.com/mockk/mockk) for mocking classes in unit tests
+- [Moko-permissions](https://github.com/icerockdev/moko-permissions) for KMP permission handling
+- [Reorderable](https://github.com/Calvin-LL/Reorderable) for reordering items in Compose
+
+### Android Specific
+- [In-App Review](https://developer.android.com/guide/playcore/in-app-review) and [In-App Update](https://developer.android.com/guide/playcore/in-app-updates) integration
+- [Baseline Profile](https://developer.android.com/topic/performance/baselineprofiles/overview) for improving app startup time
+
+---
 
 ## Supported Deeplinks
 - Home screen: https://budgetplus.cchi.tw/record
@@ -46,30 +70,41 @@ https://play.google.com/store/apps/details?id=com.kevlina.budgetplus
 - Settings with members dialog: https://budgetplus.cchi.tw/settings?showMembers=true
 - Sharing customized color tones: https://budgetplus.cchi.tw/colors?hex=cff1ff%3bdaf2cb%3b84c18f%3b596980
 
-## Baseline Profile
-The project uses [baseline profile](https://developer.android.com/topic/performance/baselineprofiles/overview) 
-to speed up the app start up time.
+---
 
-How to run?
+## Performance Optimization (Baseline Profile)
+
+The project uses [Baseline Profiles](https://developer.android.com/topic/performance/baselineprofiles/overview) to improve startup performance.
+
+### Generating a Profile
+To run the generator:
 ```bash
 ./gradlew :benchmark:connectedReleaseAndroidTest -P android.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
 ```
 
-Locate it in the build folder of the module you generated the profile in: [module]/build/outputs/connected_android_test_additional_output/release/connected/[device].
+The output can be found in: `[module]/build/outputs/connected_android_test_additional_output/release/connected/[device]`.
 
-Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` directory of your app module
+Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` directory of your app module.
 
-For Macrobenchmark:
+### Running Macrobenchmarks
 ```bash
 ./gradlew :benchmark:connectedReleaseAndroidTest -P android.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=Macrobenchmark
 ```
 
-## Firebase Cloud Functions
-Database interactions and push notifications are all implemented with [Firebase Cloud Functions](https://firebase.google.com/docs/functions), 
-the repo is opened source as well: https://github.com/kevinguitar/budgetplus-cloud-functions
+---
+
+## Backend: Firebase Cloud Functions
+
+Database interactions and push notifications are implemented using [Firebase Cloud Functions](https://firebase.google.com/docs/functions). 
+
+The backend repository is also open-sourced: [budgetplus-cloud-functions](https://github.com/kevinguitar/budgetplus-cloud-functions)
+
+---
 
 ## License
-![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
+
+This project is licensed under the MIT License.
+
 ```
 Copyright (c) 2024 kevinguitar
 
