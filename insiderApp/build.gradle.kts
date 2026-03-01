@@ -22,4 +22,8 @@ dependencies {
     implementation(projects.feature.auth)
     implementation(projects.feature.pushNotifications)
     implementation(projects.feature.insider)
+
+    // Without this it crashes at grpc usages internally :/
+    //noinspection UseTomlInstead
+    implementation(enforcedPlatform("io.grpc:grpc-bom:1.79.0"))
 }
