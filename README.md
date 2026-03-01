@@ -1,10 +1,15 @@
 # Budget+ Multiplatform App（極簡記帳）
 
+[![Android CI](https://github.com/kevinguitar/budgetplus/actions/workflows/android-ci.yml/badge.svg)](https://github.com/kevinguitar/budgetplus/actions/workflows/android-ci.yml)
+[![iOS CI](https://github.com/kevinguitar/budgetplus/actions/workflows/ios-ci.yml/badge.svg)](https://github.com/kevinguitar/budgetplus/actions/workflows/ios-ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Budget+ is an easy-to-use co-spending tracker to track expenses together with your friends and family.
 
-Now available on both Android and iOS!
+### Now available on both Android and iOS!
+
+[![Android](https://img.shields.io/badge/Android-Google%20Play-green.svg?logo=android)](https://play.google.com/store/apps/details?id=com.kevlina.budgetplus)
+[![iOS](https://img.shields.io/badge/iOS-App%20Store-black.svg?logo=apple)](https://apps.apple.com/app/id6759791430)
 
 ## Feature Overview
 
@@ -16,11 +21,6 @@ Now available on both Android and iOS!
 |                                                      Pie Chart                                                       |                                                  Color Tone Picker                                                   |                                                 Customize Color Tone                                                 |
 |:--------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------:| 
 | <video src="https://github.com/kevinguitar/budgetplus-android/assets/18852983/c2222bc4-f78e-42a2-a78b-ebdb78cc7c2e"> | <video src="https://github.com/kevinguitar/budgetplus-android/assets/18852983/82f6d3e9-8162-4554-809e-e2f81913e684"> | <video src="https://github.com/kevinguitar/budgetplus-android/assets/18852983/bece0f6d-2f49-4562-b24e-4ff51cf5d5a8"> |
-
-## Download
-
-- **Android**: [Google Play Store](https://play.google.com/store/apps/details?id=com.kevlina.budgetplus)
-- **iOS**: (Coming soon to the App Store)
 
 ---
 
