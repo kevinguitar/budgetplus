@@ -43,6 +43,16 @@ class WelcomeViewModel(
     val isCreatingBook: StateFlow<Boolean>
         field = MutableStateFlow(false)
 
+    init {
+        viewModelScope.launch {
+            bookRepo.bookState.collect { book ->
+                if (book != null) {
+                    navigation.sendEvent(bookNavigationAction)
+                }
+            }
+        }
+    }
+
     fun createBook() {
         if (createBookJob?.isActive == true) {
             return
@@ -54,8 +64,6 @@ class WelcomeViewModel(
             try {
                 bookRepo.createBook(name = name, source = "welcome")
                 toaster.showMessage(getString(Res.string.book_create_success, name))
-
-                navigation.sendEvent(bookNavigationAction)
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             } finally {
