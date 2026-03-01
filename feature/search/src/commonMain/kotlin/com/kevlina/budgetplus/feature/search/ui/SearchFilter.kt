@@ -26,7 +26,6 @@ import budgetplus.core.common.generated.resources.record_expense
 import budgetplus.core.common.generated.resources.record_income
 import budgetplus.core.common.generated.resources.search_all_categories
 import com.kevlina.budgetplus.core.common.RecordType
-import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppDialog
@@ -36,7 +35,6 @@ import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.ModalBottomSheet
 import com.kevlina.budgetplus.feature.category.pills.CategoriesGrid
-import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -193,7 +191,6 @@ internal fun SearchFilter(
         DateRangePickerDialog(
             startDate = (period as? SearchPeriod.Custom)?.from,
             endDate = (period as? SearchPeriod.Custom)?.until,
-            maxDate = LocalDate.now(),
             onDismiss = { isCustomDateRangePickerShown = false },
             onRangePicked = { from, until ->
                 isCustomDateRangePickerShown = false
