@@ -83,9 +83,9 @@ class SettingsNavigationImpl(
             .replace("\n", "%0A")
 
         val mailUrl = "mailto:$contactEmail?subject=$subject&body=$body"
-        val url = NSURL.URLWithString(mailUrl)
+        val url = NSURL.URLWithString(mailUrl) ?: return
 
-        if (url != null && UIApplication.sharedApplication.canOpenURL(url)) {
+        if (UIApplication.sharedApplication.canOpenURL(url)) {
             UIApplication.sharedApplication.openURL(url)
         } else {
             snackbarSender.send(Res.string.settings_no_email_app_found)
@@ -93,9 +93,11 @@ class SettingsNavigationImpl(
     }
 
     override fun visitUrl(url: String) {
-        val nsUrl = NSURL.URLWithString(url)
-        if (nsUrl != null && UIApplication.sharedApplication.canOpenURL(nsUrl)) {
-            UIApplication.sharedApplication.openURL(nsUrl)
-        }
+        val nsUrl = NSURL.URLWithString(url) ?: return
+        UIApplication.sharedApplication.openURL(
+            url = nsUrl,
+            options = emptyMap<Any?, Any?>(),
+            completionHandler = null
+        )
     }
 }
