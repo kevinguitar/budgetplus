@@ -12,6 +12,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.data)
             implementation(libs.revenuecat.core)
+            implementation(libs.revenuecat.ui)
         }
     }
 }
