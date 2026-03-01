@@ -1,9 +1,9 @@
 package com.kevlina.budgetplus.feature.push.notifications
 
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.push_notif_target_audience_all
-import budgetplus.core.common.generated.resources.push_notif_target_audience_free_users
-import budgetplus.core.common.generated.resources.push_notif_target_audience_paid_users
+import budgetplus.feature.push_notifications.generated.resources.Res
+import budgetplus.feature.push_notifications.generated.resources.push_notif_target_audience_all
+import budgetplus.feature.push_notifications.generated.resources.push_notif_target_audience_free_users
+import budgetplus.feature.push_notifications.generated.resources.push_notif_target_audience_paid_users
 import org.jetbrains.compose.resources.StringResource
 
 enum class AudienceTarget {

@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.push_notif_language_ja
-import budgetplus.core.common.generated.resources.push_notif_language_zh_tw
-import budgetplus.core.common.generated.resources.push_notif_push_description
-import budgetplus.core.common.generated.resources.push_notif_push_title
+import budgetplus.feature.push_notifications.generated.resources.Res
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_ja
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_tw
+import budgetplus.feature.push_notifications.generated.resources.push_notif_push_description
+import budgetplus.feature.push_notifications.generated.resources.push_notif_push_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize

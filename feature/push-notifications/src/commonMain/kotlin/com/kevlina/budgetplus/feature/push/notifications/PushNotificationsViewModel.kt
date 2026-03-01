@@ -6,8 +6,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.push_notif_sent_success
+import budgetplus.feature.push_notifications.generated.resources.Res
+import budgetplus.feature.push_notifications.generated.resources.push_notif_sent_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope

@@ -15,22 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_abc
 import budgetplus.core.common.generated.resources.ic_calendar_view_week
 import budgetplus.core.common.generated.resources.ic_landscape
 import budgetplus.core.common.generated.resources.ic_ramen_dining
 import budgetplus.core.common.generated.resources.ic_today
 import budgetplus.core.common.generated.resources.ic_workspace_premium
-import budgetplus.core.common.generated.resources.insider_active_premium_users
-import budgetplus.core.common.generated.resources.insider_daily_active_users
-import budgetplus.core.common.generated.resources.insider_new_users
-import budgetplus.core.common.generated.resources.insider_total_cn_users
-import budgetplus.core.common.generated.resources.insider_total_en_users
-import budgetplus.core.common.generated.resources.insider_total_ja_users
-import budgetplus.core.common.generated.resources.insider_total_premium_users
-import budgetplus.core.common.generated.resources.insider_users_overview
-import budgetplus.core.common.generated.resources.insider_weekly_active_users
+import budgetplus.feature.insider.generated.resources.Res
+import budgetplus.feature.insider.generated.resources.insider_active_premium_users
+import budgetplus.feature.insider.generated.resources.insider_daily_active_users
+import budgetplus.feature.insider.generated.resources.insider_new_users
+import budgetplus.feature.insider.generated.resources.insider_total_cn_users
+import budgetplus.feature.insider.generated.resources.insider_total_en_users
+import budgetplus.feature.insider.generated.resources.insider_total_ja_users
+import budgetplus.feature.insider.generated.resources.insider_total_premium_users
+import budgetplus.feature.insider.generated.resources.insider_users_overview
+import budgetplus.feature.insider.generated.resources.insider_weekly_active_users
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
@@ -39,6 +39,7 @@ import com.kevlina.budgetplus.feature.insider.InsiderViewModel
 import com.kevlina.budgetplus.feature.insider.UsersOverviewData
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import budgetplus.core.common.generated.resources.Res as CommonRes
 
 private const val TYPE_LOADER = "loader"
 private const val TYPE_STAT = "stat"
@@ -76,7 +77,7 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
             item(contentType = TYPE_STAT) {
                 StatCard(
                     title = stringResource(Res.string.insider_total_premium_users),
-                    icon = vectorResource(Res.drawable.ic_workspace_premium),
+                    icon = vectorResource(CommonRes.drawable.ic_workspace_premium),
                     number = data.totalPremiumUsers
                 )
             }
@@ -84,7 +85,7 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
             item(contentType = TYPE_STAT) {
                 StatCard(
                     title = stringResource(Res.string.insider_daily_active_users),
-                    icon = vectorResource(Res.drawable.ic_today),
+                    icon = vectorResource(CommonRes.drawable.ic_today),
                     number = data.dailyActiveUsers
                 )
             }
@@ -92,7 +93,7 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
             item(contentType = TYPE_STAT) {
                 StatCard(
                     title = stringResource(Res.string.insider_weekly_active_users),
-                    icon = vectorResource(Res.drawable.ic_calendar_view_week),
+                    icon = vectorResource(CommonRes.drawable.ic_calendar_view_week),
                     number = data.weeklyActiveUsers
                 )
             }
@@ -145,21 +146,21 @@ private fun LazyListScope.overviewSection(overviewData: UsersOverviewData?) {
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_en_users),
-                icon = vectorResource(Res.drawable.ic_abc),
+                icon = vectorResource(CommonRes.drawable.ic_abc),
                 number = overviewData.totalEnglishUsers
             )
         }
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_ja_users),
-                icon = vectorResource(Res.drawable.ic_ramen_dining),
+                icon = vectorResource(CommonRes.drawable.ic_ramen_dining),
                 number = overviewData.totalJapaneseUsers
             )
         }
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_cn_users),
-                icon = vectorResource(Res.drawable.ic_landscape),
+                icon = vectorResource(CommonRes.drawable.ic_landscape),
                 number = overviewData.totalSimplifiedChineseUsers
             )
         }

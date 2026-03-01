@@ -1,0 +1,19 @@
+<resources>
+    <string name="push_notif_title" translatable="false">通知推播</string>
+    <string name="push_notif_language_zh_tw" translatable="false">繁體中文</string>
+    <string name="push_notif_language_zh_cn" translatable="false">簡體中文（自動翻譯）</string>
+    <string name="push_notif_language_ja" translatable="false">日文</string>
+    <string name="push_notif_language_en" translatable="false">英文</string>
+    <string name="push_notif_push_title" translatable="false">標題</string>
+    <string name="push_notif_push_description" translatable="false">內容</string>
+    <string name="push_notif_navigate_to_google_play" translatable="false">跳轉到 Google Play</string>
+    <string name="push_notif_deeplink" translatable="false">深層連結</string>
+    <string name="push_notif_target_audience" translatable="false">目標受眾</string>
+    <string name="push_notif_target_audience_all" translatable="false">所有用戶</string>
+    <string name="push_notif_target_audience_free_users" translatable="false">免費用戶</string>
+    <string name="push_notif_target_audience_paid_users" translatable="false">付費用戶</string>
+    <string name="push_notif_send_to_internal_topic" translatable="false">發送到內部裝置</string>
+    <string name="push_notif_send_to_everyone" translatable="false">發送給所有人！</string>
+    <string name="push_notif_send_to_everyone_confirmation" translatable="false">確定要發送給所有人嗎？</string>
+    <string name="push_notif_sent_success" translatable="false">傳送成功！</string>
+</resources>

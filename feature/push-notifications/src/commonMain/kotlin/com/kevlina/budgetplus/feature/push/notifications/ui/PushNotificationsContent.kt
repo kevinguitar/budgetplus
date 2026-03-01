@@ -22,18 +22,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_selection
 import budgetplus.core.common.generated.resources.ic_arrow_drop_down
-import budgetplus.core.common.generated.resources.push_notif_deeplink
-import budgetplus.core.common.generated.resources.push_notif_language_en
-import budgetplus.core.common.generated.resources.push_notif_language_ja
-import budgetplus.core.common.generated.resources.push_notif_language_zh_cn
-import budgetplus.core.common.generated.resources.push_notif_language_zh_tw
-import budgetplus.core.common.generated.resources.push_notif_send_to_everyone
-import budgetplus.core.common.generated.resources.push_notif_send_to_everyone_confirmation
-import budgetplus.core.common.generated.resources.push_notif_send_to_internal_topic
-import budgetplus.core.common.generated.resources.push_notif_target_audience
+import budgetplus.feature.push_notifications.generated.resources.Res
+import budgetplus.feature.push_notifications.generated.resources.push_notif_deeplink
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_en
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_ja
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_cn
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_tw
+import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_everyone
+import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_everyone_confirmation
+import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_internal_topic
+import budgetplus.feature.push_notifications.generated.resources.push_notif_target_audience
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Button
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
@@ -50,6 +50,7 @@ import com.kevlina.budgetplus.feature.push.notifications.AudienceTarget
 import com.kevlina.budgetplus.feature.push.notifications.PushNotificationsViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import budgetplus.core.common.generated.resources.Res as CommonRes
 
 @Composable
 internal fun PushNotificationsContent(
@@ -124,8 +125,8 @@ internal fun PushNotificationsContent(
                     )
 
                     Icon(
-                        imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
-                        contentDescription = stringResource(Res.string.book_selection),
+                        imageVector = vectorResource(CommonRes.drawable.ic_arrow_drop_down),
+                        contentDescription = stringResource(CommonRes.string.book_selection),
                         tint = LocalAppColors.current.dark
                     )
                 }
