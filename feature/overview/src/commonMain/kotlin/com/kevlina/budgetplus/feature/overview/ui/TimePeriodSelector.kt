@@ -48,7 +48,6 @@ internal fun ColumnScope.TimePeriodSelector(
     state: TimePeriodSelectorState,
     navController: NavController<BookDest>,
 ) {
-
     val timePeriod by state.timePeriod.collectAsStateWithLifecycle()
     val fromDate by state.fromDate.collectAsStateWithLifecycle()
     val untilDate by state.untilDate.collectAsStateWithLifecycle()
@@ -89,7 +88,7 @@ fun TimePeriodPreset(
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
-        modifier = Modifier.padding(vertical = 16.dp)
+        modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
     ) {
         setOf(
             TimePeriod.Today,
