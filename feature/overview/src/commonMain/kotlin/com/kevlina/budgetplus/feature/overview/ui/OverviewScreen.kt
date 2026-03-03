@@ -66,7 +66,6 @@ fun OverviewScreen(navController: NavController<BookDest>) {
             .fillMaxSize()
             .background(LocalAppColors.current.light)
     ) {
-
         TopBar(
             title = stringResource(Res.string.overview_title, bookName.orEmpty()),
             menuActions = {

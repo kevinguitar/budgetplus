@@ -46,6 +46,8 @@ admob-kmp = "1.1.0"
 revenuecat-kmp = "2.7.0+17.41.0"
 # https://github.com/ktorio/ktor/releases
 ktor = "3.4.0"
+# https://github.com/touchlab/Kermit/releases
+kermit = "2.1.0"
 
 compileAndroidSdk = "36"
 minAndroidSdk = "26"
@@ -84,6 +86,7 @@ compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref
 compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+crashkios = "co.touchlab.crashkios:crashlytics:0.9.0"
 csv = "de.halfbit:csv:1.3"
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -105,7 +108,8 @@ install-referrer = "com.android.installreferrer:installreferrer:2.2"
 junit-android = "androidx.test.ext:junit:1.3.0"
 junit-compose = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.ref = "compose-multiplatform" }
 junit-core = "junit:junit:4.13.2"
-kermit = "co.touchlab:kermit:2.1.0"
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
 kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }

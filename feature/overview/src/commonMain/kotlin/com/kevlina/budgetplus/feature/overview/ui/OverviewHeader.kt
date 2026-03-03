@@ -5,6 +5,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -45,11 +47,10 @@ internal fun OverviewHeader(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-
         RecordTypeTab(
             selected = type,
             onTypeSelected = state.setRecordType,
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
 
         if (authors.size > 1) {
@@ -58,6 +59,8 @@ internal fun OverviewHeader(
                 selectedAuthor = selectedAuthor,
                 setAuthor = state.setAuthor
             )
+        } else {
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         TimePeriodSelector(
@@ -70,7 +73,6 @@ internal fun OverviewHeader(
             enter = expandVertically(expandFrom = Alignment.Top),
             exit = shrinkVertically()
         ) {
-
             BalanceCard(
                 totalPrice = totalPrice,
                 balance = balance,
