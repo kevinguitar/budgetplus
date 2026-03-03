@@ -50,7 +50,7 @@ internal fun OverviewHeader(
         RecordTypeTab(
             selected = type,
             onTypeSelected = state.setRecordType,
-            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
 
         if (authors.size > 1) {
