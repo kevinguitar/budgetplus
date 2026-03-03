@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -56,16 +55,12 @@ class AuthManagerImpl(
     private val currentUserKey = stringPreferencesKey("currentUser")
     private val currentUserFlow = preference.of(currentUserKey, User.serializer())
 
-    // Critical default value for app start
-    override val userState: StateFlow<User?> = runBlocking {
-        currentUserFlow
-            .filterNotNull()
-            .stateIn(
-                scope = appScope,
-                started = SharingStarted.Eagerly,
-                initialValue = currentUserFlow.first()
-            )
-    }
+    override val userState: StateFlow<User?> = currentUserFlow.stateIn(
+        scope = appScope,
+        started = SharingStarted.Eagerly,
+        // Critical default value for app start
+        initialValue = runBlocking { currentUserFlow.first() }
+    )
     private val currentUser: User? get() = userState.value
 
     override val isPremium: StateFlow<Boolean> = userState.mapState { it?.premium == true }
