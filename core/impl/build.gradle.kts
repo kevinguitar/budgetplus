@@ -12,6 +12,8 @@ kotlin {
             implementation(projects.core.inappReview)
             implementation(projects.core.ui)
 
+            implementation(libs.crashkios)
+            implementation(libs.kermit.crashlytics)
             implementation(libs.kotlin.serialization)
             implementation(libs.compose.resources)
 

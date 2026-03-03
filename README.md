@@ -47,6 +47,7 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 - [Coil3](https://github.com/coil-kt/coil) for image loading with KMP support
 - [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for color picking
 - [Compottie](https://github.com/alexzhirkevich/compottie) for Lottie animations in Compose Multiplatform
+- [CrashKiOS](https://github.com/touchlab/CrashKiOS) for better crash reporting on iOS
 - [Csv](https://github.com/sergejsha/csv) for exporting data as CSV (KMP)
 - [Detekt](https://github.com/detekt/detekt) for Kotlin static code analysis
 - [Firebase Kotlin SDK](https://github.com/GitLiveApp/firebase-kotlin-sdk) for KMP support
