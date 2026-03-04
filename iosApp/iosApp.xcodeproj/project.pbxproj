@@ -53,7 +53,7 @@
 		0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9A78A52F52CD5C0090916D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		C6E1A353ED23D830AFC12840 /* Budget+.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Budget+.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6E1A353ED23D830AFC12840 /* BudgetPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -139,7 +139,7 @@
 		2C03A3E98A73FC2B967E9F10 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C6E1A353ED23D830AFC12840 /* Budget+.app */,
+				C6E1A353ED23D830AFC12840 /* BudgetPlus.app */,
 				0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */,
 			);
 			name = Products;
@@ -217,7 +217,7 @@
 				0A76E14B2F53275F00D57F53 /* PurchasesHybridCommonUI */,
 			);
 			productName = iosApp;
-			productReference = C6E1A353ED23D830AFC12840 /* Budget+.app */;
+			productReference = C6E1A353ED23D830AFC12840 /* BudgetPlus.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -507,6 +507,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = BudgetPlus;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -575,6 +576,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = BudgetPlus;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
