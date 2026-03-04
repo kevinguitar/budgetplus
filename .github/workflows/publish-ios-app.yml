@@ -1,13 +1,12 @@
 name: Publish iOS app to App Store
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*-ios'
 
 jobs:
   build-and-publish:
-    # Only run for tags ending with '-ios'
-    if: endsWith(github.event.release.tag_name, '-ios')
     runs-on: macos-latest
 
     steps:
@@ -16,7 +15,7 @@ jobs:
       - name: Parse version from tag
         id: version
         run: |
-          TAG="${{ github.event.release.tag_name }}"
+          TAG="${{ github.ref_name }}"
           # Strip the '-ios' suffix to get the version
           VERSION="${TAG%-ios}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -59,9 +58,9 @@ jobs:
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
           # Decode from secrets
-          echo -n "$DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-          echo -n "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-          echo -n "$EXTENSION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $EXT_PP_PATH
+          printf '%s' "$DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          printf '%s' "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+          printf '%s' "$EXTENSION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $EXT_PP_PATH
 
           # Create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
@@ -148,7 +147,7 @@ jobs:
         run: |
           # Decode the API key
           mkdir -p ./private_keys
-          echo -n "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "./private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "./private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
 
           xcrun altool --upload-app \
             --type ios \
