@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import common.libs
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -6,7 +7,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
-import java.util.Properties
+import java.util.*
 
 class InsiderAppConventionPlugin : Plugin<Project> {
 
@@ -43,6 +44,36 @@ class InsiderAppConventionPlugin : Plugin<Project> {
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 vectorDrawables {
                     useSupportLibrary = true
+                }
+
+                androidResources {
+                    @Suppress("UnstableApiUsage")
+                    localeFilters.add("zh-rTW")
+                }
+            }
+
+            signingConfigs {
+                named("debug") {
+                    storeFile = project.rootProject.file("misc/debug.keystore")
+                }
+                create("release") {
+                    storeFile = project.rootProject.file("misc/debug.keystore")
+                }
+            }
+
+            buildTypes {
+                getByName("release") {
+                    isMinifyEnabled = true
+                    isShrinkResources = true
+                    signingConfig = signingConfigs.getByName("release")
+                    proguardFiles(
+                        getDefaultProguardFile("proguard-android-optimize.txt"),
+                        "proguard-rules.pro"
+                    )
+                    configure<CrashlyticsExtension> {
+                        mappingFileUploadEnabled = true
+                        nativeSymbolUploadEnabled = true
+                    }
                 }
             }
 

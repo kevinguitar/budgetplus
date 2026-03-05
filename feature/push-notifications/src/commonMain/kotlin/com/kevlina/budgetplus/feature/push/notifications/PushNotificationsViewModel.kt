@@ -11,7 +11,6 @@ import budgetplus.feature.push_notifications.generated.resources.push_notif_sent
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
-import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.PushDbMediator
 import com.kevlina.budgetplus.core.data.local.Preference
@@ -54,7 +53,7 @@ class PushNotificationsViewModel private constructor(
     val titleEn = TextFieldState()
     val descEn = TextFieldState()
 
-    val deeplinkPath = TextFieldState()
+    val deeplink = TextFieldState()
 
     private val cacheKey = stringPreferencesKey("pushNotificationCache")
 
@@ -105,16 +104,16 @@ class PushNotificationsViewModel private constructor(
                 pushDbMediator.recordPushNotification(PushNotificationData(
                     internal = isInternal,
                     audienceTarget = audienceTarget.value.name,
-                    titleTw = titleTw.text.trim(),
-                    descTw = descTw.text.trim(),
-                    titleCn = titleCn.text.trim().takeIf { sendToCn.value },
-                    descCn = descCn.text.trim().takeIf { sendToCn.value },
-                    titleJa = titleJa.text.trim().takeIf { sendToJa.value },
-                    descJa = descJa.text.trim().takeIf { sendToJa.value },
-                    titleEn = titleEn.text.trim().takeIf { sendToEn.value },
-                    descEn = descEn.text.trim().takeIf { sendToEn.value },
-                    deeplink = if (deeplinkPath.text.isNotBlank()) {
-                        APP_DEEPLINK + "/" + deeplinkPath.text.trim()
+                    titleTw = titleTw.text.trim().toString(),
+                    descTw = descTw.text.trim().toString(),
+                    titleCn = titleCn.text.trim().takeIf { sendToCn.value }?.toString(),
+                    descCn = descCn.text.trim().takeIf { sendToCn.value }?.toString(),
+                    titleJa = titleJa.text.trim().takeIf { sendToJa.value }?.toString(),
+                    descJa = descJa.text.trim().takeIf { sendToJa.value }?.toString(),
+                    titleEn = titleEn.text.trim().takeIf { sendToEn.value }?.toString(),
+                    descEn = descEn.text.trim().takeIf { sendToEn.value }?.toString(),
+                    deeplink = if (deeplink.text.isNotBlank()) {
+                        deeplink.text.trim().toString()
                     } else {
                         defaultDeeplink
                     },
@@ -129,8 +128,7 @@ class PushNotificationsViewModel private constructor(
 
     private fun loadCache() {
         viewModelScope.launch {
-            val cache = preference
-                .of(cacheKey, PushNotificationCache.serializer()).first()
+            val cache = preference.of(cacheKey, PushNotificationCache.serializer()).first()
                 ?: PushNotificationCache()
 
             titleTw.setTextAndPlaceCursorAtEnd(cache.titleTw)
@@ -139,7 +137,7 @@ class PushNotificationsViewModel private constructor(
             descJa.setTextAndPlaceCursorAtEnd(cache.descriptionJa)
             titleEn.setTextAndPlaceCursorAtEnd(cache.titleEn)
             descEn.setTextAndPlaceCursorAtEnd(cache.descriptionEn)
-            deeplinkPath.setTextAndPlaceCursorAtEnd(cache.deeplinkPath)
+            deeplink.setTextAndPlaceCursorAtEnd(cache.deeplink)
         }
     }
 
@@ -152,7 +150,7 @@ class PushNotificationsViewModel private constructor(
                 descriptionJa = descJa.text.toString(),
                 titleEn = titleEn.text.toString(),
                 descriptionEn = descEn.text.toString(),
-                deeplinkPath = deeplinkPath.text.toString()
+                deeplink = deeplink.text.toString()
             )
             preference.update(cacheKey, PushNotificationCache.serializer(), newCache)
         }

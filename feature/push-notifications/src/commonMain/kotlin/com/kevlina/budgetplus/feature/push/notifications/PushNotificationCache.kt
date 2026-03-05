@@ -10,5 +10,5 @@ internal data class PushNotificationCache(
     val descriptionJa: String = "月初めに支出の追跡を始めましょう \uD83D\uDE4C",
     val titleEn: String = "It's a new month!",
     val descriptionEn: String = "Track your expenses starting from the beginning of the month \uD83D\uDE4C",
-    val deeplinkPath: String = "",
+    val deeplink: String = "",
 )
