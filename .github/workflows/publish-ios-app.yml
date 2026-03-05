@@ -43,7 +43,7 @@ jobs:
           echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
-      - name: Install the Apple certificate and provisioning profile
+      - name: Install the Apple certificate
         env:
           DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
           DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
@@ -104,6 +104,7 @@ jobs:
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -archivePath ./build/iosApp.xcarchive \
+            -allowProvisioningUpdates \
             -skipPackagePluginValidation \
             -quiet
 
