@@ -118,8 +118,18 @@ jobs:
             -skipPackagePluginValidation \
             -quiet
 
-      - name: Export IPA
+      - name: Export and Upload to App Store Connect
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
         run: |
+          # 1. Decode the App Store Connect API Key
+          mkdir -p ./private_keys
+          API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+
+          # 2. Create ExportOptions.plist specifying 'upload' destination
           cat > ./build/ExportOptions.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -133,27 +143,15 @@ jobs:
           </plist>
           EOF
 
+          # 3. Export IPA and Upload directly using xcodebuild
           xcodebuild -exportArchive \
             -archivePath ./build/iosApp.xcarchive \
             -exportOptionsPlist ./build/ExportOptions.plist \
             -exportPath ./build/output \
+            -authenticationKeyPath "$API_KEY_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             -quiet
-
-      - name: Upload to App Store Connect
-        env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
-        run: |
-          # Decode the API key
-          mkdir -p ./private_keys
-          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "./private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-
-          xcrun altool --upload-app \
-            --type ios \
-            --file "$(find ./build/output -name '*.ipa' -print -quit)" \
-            --apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
-            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
