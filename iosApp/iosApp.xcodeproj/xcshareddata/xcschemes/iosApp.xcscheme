@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D37C6359E0199F24ECE2669B"
-               BuildableName = "Budget+.app"
+               BuildableName = "BudgetPlus.app"
                BlueprintName = "iosApp"
                ReferencedContainer = "container:iosApp.xcodeproj">
             </BuildableReference>
@@ -44,7 +44,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D37C6359E0199F24ECE2669B"
-            BuildableName = "Budget+.app"
+            BuildableName = "BudgetPlus.app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
