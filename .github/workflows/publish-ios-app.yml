@@ -47,24 +47,35 @@ jobs:
         env:
           DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
           DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+          DISTRIBUTION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_DISTRIBUTION_PROVISIONING_PROFILE_BASE64 }}
+          EXTENSION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_EXTENSION_PROVISIONING_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
         run: |
           # Create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          EXT_PP_PATH=$RUNNER_TEMP/build_ext_pp.mobileprovision
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-      
+
           # Decode from secrets
           printf '%s' "$DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-      
+          printf '%s' "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+          printf '%s' "$EXTENSION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $EXT_PP_PATH
+
           # Create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-      
+
           # Import certificate to keychain
           security import $CERTIFICATE_PATH -P "$DISTRIBUTION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
+
+          # Apply provisioning profiles
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $EXT_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
       - name: Set JAVA_HOME for Xcode build phase
         run: echo "export JAVA_HOME=$JAVA_HOME" > ./iosApp/.xcode.env
@@ -154,6 +165,9 @@ jobs:
             ./build/output/*.ipa
             ./build/iosApp.xcarchive/dSYMs
 
-      - name: Clean up keychain
+      - name: Clean up keychain and provisioning profiles
         if: ${{ always() }}
-        run: security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision || true
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/build_ext_pp.mobileprovision || true
