@@ -103,14 +103,9 @@ class SettingsViewModel private constructor(
 
     fun deleteAccount() {
         viewModelScope.launch {
-            try {
-                isDeletingAccount.value = true
-                authManager.deleteUserAccount()
-            } catch (e: Exception) {
-                snackbarSender.sendError(e)
-            } finally {
-                isDeletingAccount.value = false
-            }
+            isDeletingAccount.value = true
+            authManager.deleteUserAccount().join()
+            isDeletingAccount.value = false
         }
     }
 }

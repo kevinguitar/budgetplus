@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.core.data.fixtures
 import androidx.annotation.VisibleForTesting
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.remote.User
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @VisibleForTesting
@@ -33,7 +34,7 @@ class FakeAuthManager(
         error("Not yet implemented")
     }
 
-    override suspend fun deleteUserAccount() {
+    override fun deleteUserAccount(): Job {
         error("Not yet implemented")
     }
 }

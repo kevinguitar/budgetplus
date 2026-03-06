@@ -1,6 +1,7 @@
 package com.kevlina.budgetplus.core.data
 
 import com.kevlina.budgetplus.core.data.remote.User
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 
 interface AuthManager {
@@ -19,6 +20,6 @@ interface AuthManager {
 
     suspend fun logout()
 
-    suspend fun deleteUserAccount()
+    fun deleteUserAccount(): Job
 
 }
