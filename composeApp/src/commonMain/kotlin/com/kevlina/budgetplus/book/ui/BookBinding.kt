@@ -92,6 +92,9 @@ internal fun BookBinding(
                 )
 
                 if (showBannerAd) {
+                    LaunchedEffect(vm) {
+                        vm.admobInitializer.requestTrackingAuthorization()
+                    }
                     AdsBanner(bannerId = vm.adUnitId.banner)
                 }
             }
