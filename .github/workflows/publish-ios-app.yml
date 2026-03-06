@@ -117,6 +117,7 @@ jobs:
             -authenticationKeyPath "$API_KEY_PATH" \
             -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
             -skipPackagePluginValidation \
             -quiet
 
