@@ -12,6 +12,7 @@ import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.usePinned
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okio.ByteString.Companion.toByteString
 import platform.AuthenticationServices.ASAuthorization
@@ -57,6 +58,8 @@ actual class AuthViewModel(
         }
     }
 
+    private var activeAppleSignIn: AppleSignInSession? = null
+
     @OptIn(BetaInteropApi::class)
     actual fun signInWithApple() {
         val rawNonce = generateNonce()
@@ -68,38 +71,71 @@ actual class AuthViewModel(
             nonce = hashedNonce
         }
 
+        val session = AppleSignInSession(
+            rawNonce = rawNonce,
+            coroutineScope = viewModelScope,
+            commonAuthViewModel = commonAuthViewModel,
+            snackbarSender = snackbarSender,
+            onComplete = { activeAppleSignIn = null }
+        )
+        activeAppleSignIn = session
+
         val authorizationController = ASAuthorizationController(listOf(request)).apply {
-            delegate = object : NSObject(), ASAuthorizationControllerDelegateProtocol {
-                override fun authorizationController(
-                    controller: ASAuthorizationController,
-                    didCompleteWithAuthorization: ASAuthorization,
-                ) {
-                    val credential = didCompleteWithAuthorization.credential
-                        as? ASAuthorizationAppleIDCredential ?: return
-                    val idTokenData = credential.identityToken ?: return
-                    val idToken = idTokenData.toByteString().toByteArray().decodeToString()
+            delegate = session
+            presentationContextProvider = session
+        }
+        authorizationController.performRequests()
+    }
 
-                    viewModelScope.launch {
-                        commonAuthViewModel.proceedAppleSignIn(idToken, rawNonce)
-                    }
-                }
+    private class AppleSignInSession(
+        private val rawNonce: String,
+        private val coroutineScope: CoroutineScope,
+        private val commonAuthViewModel: CommonAuthViewModel,
+        private val snackbarSender: SnackbarSender,
+        private val onComplete: () -> Unit,
+    ) : NSObject(), ASAuthorizationControllerDelegateProtocol, ASAuthorizationControllerPresentationContextProvidingProtocol {
 
-                override fun authorizationController(
-                    controller: ASAuthorizationController,
-                    didCompleteWithError: platform.Foundation.NSError,
-                ) {
-                    viewModelScope.launch {
-                        snackbarSender.send(didCompleteWithError.localizedDescription)
-                    }
-                }
+        override fun authorizationController(
+            controller: ASAuthorizationController,
+            didCompleteWithAuthorization: ASAuthorization,
+        ) {
+            val credential = didCompleteWithAuthorization.credential
+                as? ASAuthorizationAppleIDCredential
+            if (credential == null) {
+                onComplete()
+                return
             }
-            presentationContextProvider = object : NSObject(), ASAuthorizationControllerPresentationContextProvidingProtocol {
-                override fun presentationAnchorForAuthorizationController(controller: ASAuthorizationController): ASPresentationAnchor {
-                    return UIApplication.sharedApplication.keyWindow ?: UIWindow()
+
+            val idTokenData = credential.identityToken
+            if (idTokenData == null) {
+                onComplete()
+                return
+            }
+
+            val idToken = idTokenData.toByteString().toByteArray().decodeToString()
+
+            coroutineScope.launch {
+                try {
+                    commonAuthViewModel.proceedAppleSignIn(idToken, rawNonce)
+                } finally {
+                    onComplete()
                 }
             }
         }
-        authorizationController.performRequests()
+
+        override fun authorizationController(
+            controller: ASAuthorizationController,
+            didCompleteWithError: platform.Foundation.NSError,
+        ) {
+            coroutineScope.launch {
+                snackbarSender.send(didCompleteWithError.localizedDescription)
+                onComplete()
+            }
+        }
+
+        override fun presentationAnchorForAuthorizationController(controller: ASAuthorizationController): ASPresentationAnchor {
+            return UIApplication.sharedApplication.keyWindow ?: UIWindow()
+        }
     }
 
     private fun generateNonce(): String {
