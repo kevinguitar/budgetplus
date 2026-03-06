@@ -16,29 +16,29 @@ import kotlinx.coroutines.flow.StateFlow
 @ContributesBinding(AppScope::class, binding = binding<ActivityProvider>())
 class ActivityProviderImpl : ActivityProvider, Application.ActivityLifecycleCallbacks {
 
-    final override val activityFlow: StateFlow<ComponentActivity?>
+    final override val activityFlow: StateFlow<Activity?>
         field = MutableStateFlow(null)
 
     override val currentActivity: ComponentActivity?
-        get() = activityFlow.value ?: run {
+        get() = activityFlow.value as? ComponentActivity ?: run {
             Logger.e(MissingActivityException()) { "Missing current activity" }
             null
         }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        activityFlow.value = activity as ComponentActivity
+        activityFlow.value = activity
     }
 
     override fun onActivityStarted(activity: Activity) {
-        activityFlow.value = activity as ComponentActivity
+        activityFlow.value = activity
     }
 
     override fun onActivityResumed(activity: Activity) {
-        activityFlow.value = activity as ComponentActivity
+        activityFlow.value = activity
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        if (activityFlow.value == activity as ComponentActivity) {
+        if (activityFlow.value == activity) {
             activityFlow.value = null
         }
     }
