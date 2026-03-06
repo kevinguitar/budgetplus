@@ -28,6 +28,7 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -133,14 +134,18 @@ class AuthManagerImpl(
         Firebase.auth.signOut()
     }
 
-    override suspend fun deleteUserAccount() {
-        val functions = Firebase.functions("asia-southeast1")
-        val callable = functions.httpsCallable("deleteUserAccount")
+    override fun deleteUserAccount(): Job = appScope.launch {
+        try {
+            val functions = Firebase.functions("asia-southeast1")
+            val callable = functions.httpsCallable("deleteUserAccount")
 
-        val data = mapOf("userId" to userId)
-        callable.invoke(data)
+            val data = mapOf("userId" to userId)
+            callable.invoke(data)
 
-        logout()
+            logout()
+        } catch (e: Exception) {
+            snackbarSender.sendError(e)
+        }
     }
 
     private fun FirebaseUser.toUser() = User(

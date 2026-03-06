@@ -9,34 +9,37 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<ActivityProvider>())
 class ActivityProviderImpl : ActivityProvider, Application.ActivityLifecycleCallbacks {
 
-    private var _currentActivity: Activity? = null
+    final override val activityFlow: StateFlow<Activity?>
+        field = MutableStateFlow(null)
 
     override val currentActivity: ComponentActivity?
-        get() = (_currentActivity as? ComponentActivity) ?: run {
+        get() = activityFlow.value as? ComponentActivity ?: run {
             Logger.e(MissingActivityException()) { "Missing current activity" }
             null
         }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        _currentActivity = activity
+        activityFlow.value = activity
     }
 
     override fun onActivityStarted(activity: Activity) {
-        _currentActivity = activity
+        activityFlow.value = activity
     }
 
     override fun onActivityResumed(activity: Activity) {
-        _currentActivity = activity
+        activityFlow.value = activity
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        if (_currentActivity == activity) {
-            _currentActivity = null
+        if (activityFlow.value == activity) {
+            activityFlow.value = null
         }
     }
 

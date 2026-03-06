@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.firebase.config)
             implementation(libs.firebase.crashlytics)
             implementation(libs.firebase.firestore)
+            implementation(libs.firebase.functions)
             implementation(libs.firebase.messaging)
             implementation(libs.navigation3.ui)
             implementation(libs.navigation3.viewmodel)
@@ -81,6 +82,7 @@ swiftPackageConfig {
                         "FirebaseCore",
                         "FirebaseCrashlytics",
                         "FirebaseFirestore",
+                        "FirebaseFunctions",
                         "FirebaseMessaging",
                         "FirebaseRemoteConfig",
                     ).forEach { add(it, exportToKotlin = false) }

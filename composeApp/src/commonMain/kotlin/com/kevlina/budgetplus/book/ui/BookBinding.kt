@@ -21,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import app.lexilabs.basic.ads.BasicAds
 import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
 import app.lexilabs.basic.ads.composable.InterstitialAd
 import app.lexilabs.basic.ads.composable.rememberInterstitialAd
@@ -49,9 +48,6 @@ internal fun BookBinding(
     val bubbleDest by vm.bubbleViewModel.destination.collectAsStateWithLifecycle()
 
     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
-
-    // Initialize admob sdk
-    BasicAds.Initialize()
 
     LaunchedEffect(vm) {
         vm.snackbarSender.snackbarEvent
@@ -96,6 +92,9 @@ internal fun BookBinding(
                 )
 
                 if (showBannerAd) {
+                    LaunchedEffect(vm) {
+                        vm.admobInitializer.requestTrackingAuthorization()
+                    }
                     AdsBanner(bannerId = vm.adUnitId.banner)
                 }
             }

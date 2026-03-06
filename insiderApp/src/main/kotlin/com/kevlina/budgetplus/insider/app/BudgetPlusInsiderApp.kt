@@ -5,6 +5,7 @@ import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.ActivityProviderImpl
 import com.kevlina.budgetplus.core.common.di.HasServiceProvider
+import com.kevlina.budgetplus.insiderApp.BuildConfig
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.analytics.analytics
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -26,8 +27,8 @@ class BudgetPlusInsiderApp : Application(), HasServiceProvider {
         registerActivityLifecycleCallbacks(activityProvider)
 
         Logger.setLogWriters(LogcatWriter())
-        Firebase.analytics.setAnalyticsCollectionEnabled(false)
-        Firebase.crashlytics.setCrashlyticsCollectionEnabled(false)
+        Firebase.analytics.setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
+        Firebase.crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 
     @Suppress("UNCHECKED_CAST")

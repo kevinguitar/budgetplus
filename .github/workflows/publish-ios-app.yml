@@ -1,13 +1,12 @@
 name: Publish iOS app to App Store
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*-ios'
 
 jobs:
   build-and-publish:
-    # Only run for tags ending with '-ios'
-    if: endsWith(github.event.release.tag_name, '-ios')
     runs-on: macos-latest
 
     steps:
@@ -16,7 +15,7 @@ jobs:
       - name: Parse version from tag
         id: version
         run: |
-          TAG="${{ github.event.release.tag_name }}"
+          TAG="${{ github.ref_name }}"
           # Strip the '-ios' suffix to get the version
           VERSION="${TAG%-ios}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -44,39 +43,42 @@ jobs:
           echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
           echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
 
-      - name: Install the Apple certificate and provisioning profile
+      - name: Install Apple Certificates and Profiles
         env:
-          DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
-          DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
-          DISTRIBUTION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_DISTRIBUTION_PROVISIONING_PROFILE_BASE64 }}
-          EXTENSION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_EXTENSION_PROVISIONING_PROFILE_BASE64 }}
+          DIST_CERT_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
+          DIST_CERT_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+          DEV_CERT_BASE64: ${{ secrets.IOS_DEVELOPMENT_CERTIFICATE_BASE64 }}
+          DEV_CERT_PASSWORD: ${{ secrets.IOS_DEVELOPMENT_CERTIFICATE_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+          APP_PROFILE_BASE64: ${{ secrets.IOS_DISTRIBUTION_PROVISIONING_PROFILE_BASE64 }}
+          EXT_PROFILE_BASE64: ${{ secrets.IOS_EXTENSION_PROVISIONING_PROFILE_BASE64 }}
         run: |
-          # Create variables
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          EXT_PP_PATH=$RUNNER_TEMP/build_ext_pp.mobileprovision
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-
-          # Decode from secrets
-          echo -n "$DISTRIBUTION_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-          echo -n "$DISTRIBUTION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-          echo -n "$EXTENSION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o $EXT_PP_PATH
-
-          # Create temporary keychain
+          
+          # Create and unlock temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security default-keychain -s $KEYCHAIN_PATH
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-
-          # Import certificate to keychain
-          security import $CERTIFICATE_PATH -P "$DISTRIBUTION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
-
-          # Apply provisioning profiles
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $EXT_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          
+          # Import Distribution Cert
+          DIST_CERT_PATH=$RUNNER_TEMP/dist_cert.p12
+          printf '%s' "$DIST_CERT_BASE64" | base64 --decode -o $DIST_CERT_PATH
+          security import $DIST_CERT_PATH -P "$DIST_CERT_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          
+          # Import Development Cert
+          DEV_CERT_PATH=$RUNNER_TEMP/dev_cert.p12
+          printf '%s' "$DEV_CERT_BASE64" | base64 --decode -o $DEV_CERT_PATH
+          security import $DEV_CERT_PATH -P "$DEV_CERT_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          
+          # Bypass UI prompts for codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          
+          # Install Provisioning Profiles physically to the runner
+          PROVISIONING_DIR=~/Library/MobileDevice/Provisioning\ Profiles
+          mkdir -p "$PROVISIONING_DIR"
+          printf '%s' "$APP_PROFILE_BASE64" | base64 --decode -o "$PROVISIONING_DIR/app.mobileprovision"
+          printf '%s' "$EXT_PROFILE_BASE64" | base64 --decode -o "$PROVISIONING_DIR/ext.mobileprovision"
 
       - name: Set JAVA_HOME for Xcode build phase
         run: echo "export JAVA_HOME=$JAVA_HOME" > ./iosApp/.xcode.env
@@ -107,7 +109,20 @@ jobs:
           echo "Updated Config.xcconfig:"
           cat iosApp/Configuration/Config.xcconfig
 
+      - name: Setup App Store Connect API Key
+        env:
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+        run: |
+          mkdir -p $(pwd)/private_keys
+          API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+          echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
+
       - name: Archive iOS App
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
           xcodebuild archive \
             -project iosApp/iosApp.xcodeproj \
@@ -116,12 +131,19 @@ jobs:
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -archivePath ./build/iosApp.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$API_KEY_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             -skipPackagePluginValidation \
             -quiet
 
-      - name: Export IPA
+      - name: Export and Upload to App Store Connect
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
-          cat > ./build/ExportOptions.plist << 'EOF'
+          cat > ./build/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -130,31 +152,32 @@ jobs:
               <string>app-store-connect</string>
               <key>destination</key>
               <string>upload</string>
+              <key>manageAppVersionAndBuildNumber</key>
+              <false/>
+              <key>teamID</key>
+              <string>MU6R4JU7G8</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.kevlina.budgetplus</key>
+                  <string>BudgetPlusApp</string>
+                  <key>com.kevlina.budgetplus.NotificationServiceExtension</key>
+                  <string>NotificationServiceExtension</string>
+              </dict>
           </dict>
           </plist>
           EOF
-
+          
           xcodebuild -exportArchive \
             -archivePath ./build/iosApp.xcarchive \
             -exportOptionsPlist ./build/ExportOptions.plist \
             -exportPath ./build/output \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$API_KEY_PATH" \
+            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             -quiet
-
-      - name: Upload to App Store Connect
-        env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
-        run: |
-          # Decode the API key
-          mkdir -p ./private_keys
-          echo -n "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "./private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-
-          xcrun altool --upload-app \
-            --type ios \
-            --file "$(find ./build/output -name '*.ipa' -print -quit)" \
-            --apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
-            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
@@ -165,9 +188,7 @@ jobs:
             ./build/output/*.ipa
             ./build/iosApp.xcarchive/dSYMs
 
-      - name: Clean up keychain and provisioning profiles
+      - name: Clean up keychain
         if: ${{ always() }}
         run: |
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
-          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision || true
-          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/build_ext_pp.mobileprovision || true

@@ -158,9 +158,9 @@ internal fun PushNotificationsContent(
         )
 
         TextField(
-            state = vm.deeplinkPath,
+            state = vm.deeplink,
             title = "",
-            placeholder = "overview"
+            placeholder = "https://budgetplus.cchi.tw/overview"
         )
 
         Spacer(modifier = Modifier.height(16.dp))

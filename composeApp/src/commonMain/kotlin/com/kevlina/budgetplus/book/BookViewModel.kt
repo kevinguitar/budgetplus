@@ -7,6 +7,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_join_success
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.ads.AdUnitId
+import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
@@ -50,6 +51,7 @@ class BookViewModel(
     val bubbleViewModel: BubbleViewModel,
     val adUnitId: AdUnitId,
     val interstitialAdsHandler: InterstitialAdsHandler,
+    val admobInitializer: AdmobInitializer,
     private val bookRepo: BookRepo,
     @Named("welcome") private val welcomeNavigationAction: NavigationAction,
     authManager: AuthManager,

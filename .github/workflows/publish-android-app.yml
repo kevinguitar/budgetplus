@@ -1,13 +1,12 @@
 name: Publish Android app to Google Play
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*-android'
 
 jobs:
   build-and-publish:
-    # Only run for tags ending with '-android'
-    if: endsWith(github.event.release.tag_name, '-android')
     runs-on: ubuntu-latest
 
     steps:
@@ -69,8 +68,8 @@ jobs:
           releaseFiles: androidApp/build/outputs/bundle/release/app-release.aab
           mappingFile: androidApp/build/outputs/mapping/release/mapping.txt
           track: beta
-          # Get the tag name from the release
-          releaseName: ${{ github.event.release.tag_name }}
+          # Get the tag name from the push event
+          releaseName: ${{ github.ref_name }}
           whatsNewDirectory: distribution/whatsnew
 
       - name: Upload build outputs

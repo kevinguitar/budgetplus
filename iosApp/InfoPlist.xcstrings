@@ -37,7 +37,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Budget+"
+            "value" : "BudgetPlus"
           }
         }
       }
@@ -50,6 +50,35 @@
           "stringUnit" : {
             "state" : "new",
             "value" : ""
+          }
+        }
+      }
+    },
+    "NSUserTrackingUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This identifier will be used to deliver personalized ads to you."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この識別子は、パーソナライズされた広告を配信するために使用されます。"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此标识符将用于向您投放个性化广告。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此識別碼將用於向您投放個人化廣告。"
           }
         }
       }

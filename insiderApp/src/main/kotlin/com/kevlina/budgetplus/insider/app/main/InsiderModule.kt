@@ -35,5 +35,5 @@ interface InsiderModule {
 
     @Provides
     @Named("is_debug")
-    fun provideIsDebug(): Boolean = true
+    fun provideIsDebug(): Boolean = BuildConfig.DEBUG
 }
