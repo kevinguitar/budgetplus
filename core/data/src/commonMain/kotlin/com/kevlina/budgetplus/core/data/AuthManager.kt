@@ -19,4 +19,6 @@ interface AuthManager {
 
     suspend fun logout()
 
+    suspend fun deleteUserAccount()
+
 }

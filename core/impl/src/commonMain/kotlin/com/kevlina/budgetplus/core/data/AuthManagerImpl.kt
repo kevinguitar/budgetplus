@@ -21,6 +21,7 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.crashlytics.crashlytics
 import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.Source
+import dev.gitlive.firebase.functions.functions
 import dev.gitlive.firebase.messaging.messaging
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -130,6 +131,16 @@ class AuthManagerImpl(
     override suspend fun logout() {
         tracker.value.logEvent("logout")
         Firebase.auth.signOut()
+    }
+
+    override suspend fun deleteUserAccount() {
+        val functions = Firebase.functions("asia-southeast1")
+        val callable = functions.httpsCallable("deleteUserAccount")
+
+        val data = mapOf("userId" to userId)
+        callable.invoke(data)
+
+        logout()
     }
 
     private fun FirebaseUser.toUser() = User(

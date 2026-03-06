@@ -180,6 +180,9 @@
     <string name="settings_contact_us">私たちに連絡する</string>
     <string name="settings_privacy_policy">プライバシーポリシー</string>
     <string name="settings_no_email_app_found">電子メールアプリが見当たりません</string>
+    <string name="settings_delete_account">アカウントを削除</string>
+    <string name="settings_delete_account_description">アカウントを削除しますか？アカウントを削除すると、すべての帳簿と取引データが完全に削除され、復元できません。</string>
+    <string name="settings_delete_account_description2">アカウントを完全に削除？</string>
 
     <!-- Color Tone Picker -->
     <string name="color_tone_picker_title">テーマカラーパレット</string>

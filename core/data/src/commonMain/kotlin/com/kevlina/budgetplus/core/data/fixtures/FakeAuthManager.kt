@@ -32,4 +32,8 @@ class FakeAuthManager(
     override suspend fun logout() {
         error("Not yet implemented")
     }
+
+    override suspend fun deleteUserAccount() {
+        error("Not yet implemented")
+    }
 }

@@ -180,6 +180,9 @@
     <string name="settings_contact_us">與我們聯繫</string>
     <string name="settings_privacy_policy">隱私權條款</string>
     <string name="settings_no_email_app_found">找不到 email 應用程式</string>
+    <string name="settings_delete_account">刪除帳號</string>
+    <string name="settings_delete_account_description">確定要刪除帳號嗎？刪除帳號後，所有帳本與帳目資料將一併清除，且無法恢復。</string>
+    <string name="settings_delete_account_description2">確認永久刪除？</string>
 
     <!-- Color Tone Picker -->
     <string name="color_tone_picker_title">主題調色盤</string>

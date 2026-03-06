@@ -18,6 +18,8 @@ import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.settings.api.ChartModeViewModel
 import dev.zacsweers.metro.ContributesIntoMap
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -49,6 +51,9 @@ class SettingsViewModel private constructor(
     val currentUsername get() = authManager.userState.value?.name
     val currentBookName get() = bookRepo.bookState.value?.name
 
+    val isDeletingAccount: StateFlow<Boolean>
+        field = MutableStateFlow(false)
+
     fun trackBatchRecordClicked() {
         tracker.logEvent("settings_batch_record_click")
     }
@@ -79,7 +84,7 @@ class SettingsViewModel private constructor(
         viewModelScope.launch { bookRepo.setAllowMembersEdit(allow) }
     }
 
-    fun deleteOrLeave() {
+    fun deleteOrLeaveBook() {
         viewModelScope.launch {
             val isBookOwner = isBookOwner.value
             val bookName = bookName.value
@@ -92,6 +97,19 @@ class SettingsViewModel private constructor(
                 }, bookName.orEmpty()))
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
+            }
+        }
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            try {
+                isDeletingAccount.value = true
+                authManager.deleteUserAccount()
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
+            } finally {
+                isDeletingAccount.value = false
             }
         }
     }
