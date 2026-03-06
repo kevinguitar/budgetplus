@@ -149,6 +149,15 @@ jobs:
               <false/>
               <key>teamID</key>
               <string>MU6R4JU7G8</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.kevlina.budgetplus</key>
+                  <string>BudgetPlusApp</string>
+                  <key>com.kevlina.budgetplus.NotificationServiceExtension</key>
+                  <string>NotificationServiceExtension</string>
+              </dict>
           </dict>
           </plist>
           EOF
