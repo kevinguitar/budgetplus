@@ -180,6 +180,9 @@
     <string name="settings_contact_us">Contact Us</string>
     <string name="settings_privacy_policy">Privacy Policy</string>
     <string name="settings_no_email_app_found">No email app found</string>
+    <string name="settings_delete_account">Delete Account</string>
+    <string name="settings_delete_account_description">Delete your account? Deleting your account will permanently remove all your books and transaction records, and they cannot be recovered.</string>
+    <string name="settings_delete_account_description2">Delete Permanently?</string>
 
     <!-- Color Tone Picker -->
     <string name="color_tone_picker_title">Color Tone Picker</string>

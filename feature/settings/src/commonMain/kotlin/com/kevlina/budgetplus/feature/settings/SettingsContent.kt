@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.ic_directions_run
 import budgetplus.core.common.generated.resources.ic_edit_note
 import budgetplus.core.common.generated.resources.ic_forward_to_inbox
+import budgetplus.core.common.generated.resources.ic_heart_broken
 import budgetplus.core.common.generated.resources.ic_instagram
 import budgetplus.core.common.generated.resources.ic_language
 import budgetplus.core.common.generated.resources.ic_lock_person
@@ -49,6 +51,9 @@ import budgetplus.core.common.generated.resources.settings_chart_mode
 import budgetplus.core.common.generated.resources.settings_confirm_delete
 import budgetplus.core.common.generated.resources.settings_confirm_leave
 import budgetplus.core.common.generated.resources.settings_contact_us
+import budgetplus.core.common.generated.resources.settings_delete_account
+import budgetplus.core.common.generated.resources.settings_delete_account_description
+import budgetplus.core.common.generated.resources.settings_delete_account_description2
 import budgetplus.core.common.generated.resources.settings_delete_book
 import budgetplus.core.common.generated.resources.settings_edit_book_currency
 import budgetplus.core.common.generated.resources.settings_follow_on_instagram
@@ -73,6 +78,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownMenu
+import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.InputDialog
 import com.kevlina.budgetplus.core.ui.Switch
 import com.kevlina.budgetplus.core.ui.containerPadding
@@ -100,8 +106,11 @@ internal fun SettingsContent(
     var isRenameUserDialogShown by remember { mutableStateOf(false) }
     var isRenameBookDialogShown by remember { mutableStateOf(false) }
     var isMembersDialogShown by rememberSaveable { mutableStateOf(showMembers) }
-    var isDeleteOrLeaveDialogShown by remember { mutableStateOf(false) }
     var isChartModeDropdownShown by remember { mutableStateOf(false) }
+
+    var isDeleteOrLeaveDialogShown by remember { mutableStateOf(false) }
+    var isDeleteAccountDialogShown by remember { mutableStateOf(false) }
+    var isDeleteAccountConfirmationDialogShown by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -290,11 +299,17 @@ internal fun SettingsContent(
         SettingsItem(
             text = stringResource(Res.string.settings_privacy_policy),
             icon = vectorResource(Res.drawable.ic_privacy_tip),
-            roundBottom = true,
             onClick = vm.navigation::viewPrivacyPolicy
         )
 
-        // Danger section
+        SettingsItem(
+            text = stringResource(Res.string.settings_logout),
+            icon = vectorResource(Res.drawable.ic_logout),
+            roundBottom = true,
+            onClick = vm.navigation::logout
+        )
+
+        // Danger zone
         SettingsItem(
             text = stringResource(if (isBookOwner) {
                 Res.string.settings_delete_book
@@ -310,11 +325,23 @@ internal fun SettingsContent(
             onClick = { isDeleteOrLeaveDialogShown = true }
         )
 
+        val isDeletingAccount by vm.isDeletingAccount.collectAsStateWithLifecycle()
+
         SettingsItem(
-            text = stringResource(Res.string.settings_logout),
-            icon = vectorResource(Res.drawable.ic_logout),
+            text = stringResource(Res.string.settings_delete_account),
+            icon = vectorResource(Res.drawable.ic_heart_broken),
             roundBottom = true,
-            onClick = vm.navigation::logout
+            onClick = { isDeleteAccountDialogShown = true },
+            action = {
+                if (isDeletingAccount) {
+                    InfiniteCircularProgress(
+                        strokeWidth = 2.dp,
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(24.dp),
+                    )
+                }
+            }
         )
     }
 
@@ -351,10 +378,32 @@ internal fun SettingsContent(
                 vm.currentBookName.orEmpty()
             ),
             onConfirm = {
-                vm.deleteOrLeave()
+                vm.deleteOrLeaveBook()
                 isDeleteOrLeaveDialogShown = false
             },
             onDismiss = { isDeleteOrLeaveDialogShown = false }
+        )
+    }
+
+    if (isDeleteAccountDialogShown) {
+        ConfirmDialog(
+            message = stringResource(Res.string.settings_delete_account_description),
+            onConfirm = {
+                isDeleteAccountDialogShown = false
+                isDeleteAccountConfirmationDialogShown = true
+            },
+            onDismiss = { isDeleteAccountDialogShown = false }
+        )
+    }
+
+    if (isDeleteAccountConfirmationDialogShown) {
+        ConfirmDialog(
+            message = stringResource(Res.string.settings_delete_account_description2),
+            onConfirm = {
+                isDeleteAccountConfirmationDialogShown = false
+                vm.deleteAccount()
+            },
+            onDismiss = { isDeleteAccountConfirmationDialogShown = false }
         )
     }
 }

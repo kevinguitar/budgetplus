@@ -179,6 +179,9 @@
     <string name="settings_contact_us">与我们联系</string>
     <string name="settings_privacy_policy">隐私权条款</string>
     <string name="settings_no_email_app_found">找不到 email 应用程式</string>
+    <string name="settings_delete_account">删除帐号</string>
+    <string name="settings_delete_account_description">确定要删除帐号吗？删除帐号后，所有帐本与帐目资料将一并清除，且无法恢复。</string>
+    <string name="settings_delete_account_description2">确认永久删除</string>
 
     <!-- Color Tone Picker -->
     <string name="color_tone_picker_title">主题调色盘</string>

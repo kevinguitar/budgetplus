@@ -97,6 +97,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics" }
 firebase-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "firebase-kmp" }
 firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase-kmp" }
+firebase-functions = { module = "dev.gitlive:firebase-functions", version.ref = "firebase-kmp" }
 firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-kmp" }
 firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
 google-ads = "com.google.android.gms:play-services-ads:25.0.0"
