@@ -32,5 +32,7 @@
 	<dict/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses your data to deliver personalized ads and improve your experience.</string>
 </dict>
 </plist>
