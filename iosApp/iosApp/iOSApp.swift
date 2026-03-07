@@ -1,5 +1,6 @@
 import Combine
 import ComposeApp
+import FBAudienceNetwork
 import FirebaseCore
 import FirebaseFirestore
 import FirebaseMessaging
@@ -24,6 +25,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         )
 
         application.registerForRemoteNotifications()
+
+        // This must be called before initializing Admob SDK.
+        FBAdSettings.setAdvertiserTrackingEnabled(true)
 
         BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
             (action as? CommonAppStartAction)?.onAppStart()
