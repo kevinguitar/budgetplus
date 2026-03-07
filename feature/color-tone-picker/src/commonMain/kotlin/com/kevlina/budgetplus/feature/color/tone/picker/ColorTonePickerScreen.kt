@@ -138,7 +138,6 @@ fun ColorTonePickerScreen(
                 .fillMaxSize()
                 .background(LocalAppColors.current.light)
         ) {
-
             TopBar(
                 title = stringResource(Res.string.color_tone_picker_title),
                 navigateUp = ::navigateUp,
@@ -165,8 +164,10 @@ fun ColorTonePickerScreen(
                         enabled = isSaveEnabled,
                         onClick = {
                             if (!selectedColorTone.requiresPremium || isPremium) {
-                                vm.setColorTone(selectedColorTone)
-                                navController.navigateUp()
+                                vm.setColorTone(
+                                    colorTone = selectedColorTone,
+                                    onDone = navController::navigateUp
+                                )
                             } else {
                                 unlockPremium()
                             }
