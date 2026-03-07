@@ -4,7 +4,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_COLORS_PATH
 import com.kevlina.budgetplus.core.data.AuthManager
@@ -16,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -57,7 +58,18 @@ class ThemeManager(
             }
         )
 
-    val themeColors: StateFlow<ThemeColors> = colorTone.mapState(::getThemeColors)
+    val themeColors: StateFlow<ThemeColors> = combine(
+        colorTone,
+        customizedColorsFlow
+    ) { tone, _ ->
+        getThemeColors(tone)
+    }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = appScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = getThemeColors(colorTone.value)
+        )
 
     val previewColors: StateFlow<ThemeColors?>
         field = MutableStateFlow<ThemeColors?>(null)
