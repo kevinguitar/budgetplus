@@ -1,7 +1,8 @@
 name: iOS CI
 
 on:
-  pull_request:
+  # Temporarily disabled because of GH actions limit
+  #pull_request:
 
 # Cancel any current or previous job from the same PR
 concurrency:
