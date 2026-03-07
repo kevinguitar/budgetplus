@@ -21,10 +21,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
-import app.lexilabs.basic.ads.composable.InterstitialAd
-import app.lexilabs.basic.ads.composable.rememberInterstitialAd
 import com.kevlina.budgetplus.book.BookViewModel
+import com.kevlina.budgetplus.core.ads.BannerAd
+import com.kevlina.budgetplus.core.ads.HandleInterstitialAd
 import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -34,7 +33,6 @@ import com.kevlina.budgetplus.core.ui.bubble.Bubble
 import com.kevlina.budgetplus.core.ui.thenIf
 import kotlinx.coroutines.flow.launchIn
 
-@OptIn(DependsOnGoogleMobileAds::class)
 @Composable
 internal fun BookBinding(
     vm: BookViewModel,
@@ -95,7 +93,7 @@ internal fun BookBinding(
                     LaunchedEffect(vm) {
                         vm.admobInitializer.requestTrackingAuthorization()
                     }
-                    AdsBanner(bannerId = vm.adUnitId.banner)
+                    BannerAd(bannerId = vm.adUnitId.banner)
                 }
             }
         }
@@ -106,21 +104,10 @@ internal fun BookBinding(
         )
 
         if (isEligibleForInterstitialAds) {
-            val interstitialAd by rememberInterstitialAd(adUnitId = vm.adUnitId.interstitial)
-            var showInterstitialAd by remember { mutableStateOf(false) }
-
-            LaunchedEffect(vm) {
-                vm.interstitialAdsHandler.showAdEvent
-                    .consumeEach { showInterstitialAd = true }
-                    .launchIn(this)
-            }
-
-            if (showInterstitialAd) {
-                InterstitialAd(
-                    loadedAd = interstitialAd,
-                    onDismissed = { showInterstitialAd = false }
-                )
-            }
+            HandleInterstitialAd(
+                adUnitId = vm.adUnitId.interstitial,
+                handler = vm.interstitialAdsHandler
+            )
         }
     }
 }

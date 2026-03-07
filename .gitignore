@@ -18,5 +18,5 @@ bin
 .vscode
 iosApp/.xcode.env
 composeApp/exportedNativeExample/.build
-composeApp/src/swift/nativeBridge/StartYourBridgeHere.swift
+StartYourBridgeHere.swift
 GoogleService-Info.plist

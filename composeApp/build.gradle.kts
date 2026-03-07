@@ -19,7 +19,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.admob.kmp)
             implementation(libs.compottie)
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.auth)

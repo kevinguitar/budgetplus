@@ -12,7 +12,6 @@ kotlin {
             implementation(projects.core.inappReview)
             implementation(projects.core.ui)
 
-            implementation(libs.admob.kmp)
             implementation(libs.crashkios)
             implementation(libs.kermit.crashlytics)
             implementation(libs.kotlin.serialization)
@@ -27,6 +26,7 @@ kotlin {
             implementation(libs.firebase.config)
         }
         androidMain.dependencies {
+            implementation(libs.google.ads)
             implementation(libs.google.play.update)
             implementation(libs.google.play.review)
         }

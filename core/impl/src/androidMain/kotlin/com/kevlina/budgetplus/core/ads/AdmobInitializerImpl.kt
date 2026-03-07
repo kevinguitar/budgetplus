@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.core.ads
 
-import app.lexilabs.basic.ads.BasicAds
+import com.google.android.gms.ads.MobileAds
 import com.kevlina.budgetplus.core.common.ActivityProvider
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
@@ -26,8 +26,7 @@ class AdmobInitializerImpl(
                 .filterNotNull()
                 .first()
 
-            @Suppress("DEPRECATION")
-            BasicAds.initialize(activity)
+            MobileAds.initialize(activity)
         }
     }
 
