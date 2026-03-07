@@ -201,12 +201,15 @@ jobs:
           APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
         run: |
           IPA_FILE=$(find ./build/output -name "*.ipa" | head -n 1)
-          # We tell Fastlane to upload, but strictly skip waiting and skip submission
           fastlane run upload_to_app_store \
             app_identifier:"com.kevlina.budgetplus" \
+            app_version:"${{ steps.version.outputs.version }}" \
+            build_number:"${{ github.run_number }}" \
             ipa:"$IPA_FILE" \
             skip_waiting_for_build_processing:true \
-            submit_for_review:false
+            submit_for_review:false \
+            skip_metadata:true \
+            force:true
 
       - name: Clean up keychain
         if: ${{ always() }}
@@ -216,6 +219,9 @@ jobs:
     needs: build-and-upload
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -234,26 +240,19 @@ jobs:
           printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
           echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
 
-      - name: Wait for Apple Processing and Submit
+      - name: Wait for Apple Processing and Submit with Metadata
         env:
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
         run: |
-          VERSION="${{ needs.build-and-upload.outputs.version }}"
-          BUILD_NUMBER="${{ needs.build-and-upload.outputs.build_number }}"
-          
-          # Apple NEVER finishes processing in under 10 minutes. 
-          # Sleeping here saves unnecessary API polling on the runner.
-          echo "Sleeping for 10 minutes to allow Apple to process build $BUILD_NUMBER..."
-          sleep 600
-          
-          # Fastlane will find the build, wait for processing to finish if it hasn't, 
-          # and then push it to App Review.
           fastlane run upload_to_app_store \
             app_identifier:"com.kevlina.budgetplus" \
-            app_version:"$VERSION" \
-            build_number:"$BUILD_NUMBER" \
+            app_version:"${{ needs.build-and-upload.outputs.version }}" \
+            build_number:"${{ needs.build-and-upload.outputs.build_number }}" \
             skip_binary_upload:true \
             submit_for_review:true \
-            force:true
+            automatic_release:true \
+            phased_release:false \
+            force:true \
+            metadata_path:"./fastlane/metadata"
