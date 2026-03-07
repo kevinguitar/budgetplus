@@ -19,4 +19,5 @@ bin
 iosApp/.xcode.env
 composeApp/exportedNativeExample/.build
 StartYourBridgeHere.swift
+DummySPMFile.swift
 GoogleService-Info.plist
