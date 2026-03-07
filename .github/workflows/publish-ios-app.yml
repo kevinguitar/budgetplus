@@ -12,6 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Setup Latest Stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 'latest-stable'
+
       - name: Parse version from tag
         id: version
         run: |
@@ -101,13 +106,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Set version in Config.xcconfig
+      - name: Set version in Config.xcconfig and Extension
         run: |
           VERSION="${{ steps.version.outputs.version }}"
+          BUILD_NUMBER="${{ github.run_number }}"
+          
+          # 1. Update the main app's config
           sed -i '' "s/^MARKETING_VERSION=.*/MARKETING_VERSION=$VERSION/" iosApp/Configuration/Config.xcconfig
-          sed -i '' "s/^CURRENT_PROJECT_VERSION=.*/CURRENT_PROJECT_VERSION=${{ github.run_number }}/" iosApp/Configuration/Config.xcconfig
+          sed -i '' "s/^CURRENT_PROJECT_VERSION=.*/CURRENT_PROJECT_VERSION=$BUILD_NUMBER/" iosApp/Configuration/Config.xcconfig
           echo "Updated Config.xcconfig:"
           cat iosApp/Configuration/Config.xcconfig
+          
+          # 2. Update the Extension's Info.plist directly
+          # IMPORTANT: Verify this path matches your actual project structure!
+          EXT_PLIST="iosApp/NotificationServiceExtension/Info.plist"
+          
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$EXT_PLIST"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$EXT_PLIST"
+          echo "Updated Extension version to $VERSION ($BUILD_NUMBER)"
 
       - name: Setup App Store Connect API Key
         env:
