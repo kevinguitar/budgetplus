@@ -6,8 +6,12 @@ on:
       - '*-ios'
 
 jobs:
-  build-and-publish:
+  build-and-upload:
     runs-on: macos-latest
+    # Export the version and build number so the Linux runner knows what to look for
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      build_number: ${{ steps.version.outputs.build_number }}
 
     steps:
       - uses: actions/checkout@v6
@@ -21,10 +25,11 @@ jobs:
         id: version
         run: |
           TAG="${{ github.ref_name }}"
-          # Strip the '-ios' suffix to get the version
           VERSION="${TAG%-ios}"
+          BUILD_NUMBER="${{ github.run_number }}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Parsed version: $VERSION"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "Parsed version: $VERSION ($BUILD_NUMBER)"
 
       - name: Setup JDK 21
         uses: actions/setup-java@v5
@@ -154,10 +159,7 @@ jobs:
             -skipPackagePluginValidation \
             -quiet
 
-      - name: Export and Upload to App Store Connect
-        env:
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      - name: Export Local IPA
         run: |
           cat > ./build/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -167,7 +169,7 @@ jobs:
               <key>method</key>
               <string>app-store-connect</string>
               <key>destination</key>
-              <string>upload</string>
+              <string>export</string> 
               <key>manageAppVersionAndBuildNumber</key>
               <false/>
               <key>teamID</key>
@@ -190,21 +192,68 @@ jobs:
             -exportOptionsPlist ./build/ExportOptions.plist \
             -exportPath ./build/output \
             -allowProvisioningUpdates \
-            -authenticationKeyPath "$API_KEY_PATH" \
-            -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
-            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             -quiet
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: ios-build-outputs
-          retention-days: 7
-          path: |
-            ./build/output/*.ipa
-            ./build/iosApp.xcarchive/dSYMs
+      - name: Fastlane Upload (No Waiting)
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
+        run: |
+          IPA_FILE=$(find ./build/output -name "*.ipa" | head -n 1)
+          # We tell Fastlane to upload, but strictly skip waiting and skip submission
+          fastlane run upload_to_app_store \
+            app_identifier:"com.kevlina.budgetplus" \
+            ipa:"$IPA_FILE" \
+            skip_waiting_for_build_processing:true \
+            submit_for_review:false
 
       - name: Clean up keychain
         if: ${{ always() }}
+        run: security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+
+  wait-and-submit:
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      - name: Setup App Store Connect API Key
+        env:
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
         run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+          mkdir -p $(pwd)/private_keys
+          API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+          echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
+
+      - name: Wait for Apple Processing and Submit
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
+        run: |
+          VERSION="${{ needs.build-and-upload.outputs.version }}"
+          BUILD_NUMBER="${{ needs.build-and-upload.outputs.build_number }}"
+          
+          # Apple NEVER finishes processing in under 10 minutes. 
+          # Sleeping here saves unnecessary API polling on the runner.
+          echo "Sleeping for 10 minutes to allow Apple to process build $BUILD_NUMBER..."
+          sleep 600
+          
+          # Fastlane will find the build, wait for processing to finish if it hasn't, 
+          # and then push it to App Review.
+          fastlane run upload_to_app_store \
+            app_identifier:"com.kevlina.budgetplus" \
+            app_version:"$VERSION" \
+            build_number:"$BUILD_NUMBER" \
+            skip_binary_upload:true \
+            submit_for_review:true \
+            force:true
