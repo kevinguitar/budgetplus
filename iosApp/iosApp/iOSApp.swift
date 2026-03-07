@@ -29,6 +29,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             (action as? CommonAppStartAction)?.onAppStart()
         }
 
+        #if !DEBUG
+        CrashlyticsInitializer.initialize()
+        #endif
+
         return true
     }
 
