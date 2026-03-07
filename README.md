@@ -82,9 +82,9 @@ To run the generator:
 ./gradlew :benchmark:connectedReleaseAndroidTest -P android.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
 ```
 
-The output can be found in: `[module]/build/outputs/connected_android_test_additional_output/release/connected/[device]`.
+The output can be found in: `benchmark/build/outputs/connected_android_test_additional_output/release/connected/[device]`.
 
-Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` directory of your app module.
+Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` directory of the app module.
 
 ### Running Macrobenchmarks
 ```bash
