@@ -1,10 +1,11 @@
-package com.kevlina.budgetplus.book.ui
+package com.kevlina.budgetplus.core.ads
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -18,10 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.lexilabs.basic.ads.AdSize
-import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
-import app.lexilabs.basic.ads.composable.BannerAd
-import app.lexilabs.basic.ads.composable.rememberBannerAd
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ads_not_available
 import budgetplus.core.common.generated.resources.ic_search_off
@@ -39,9 +36,8 @@ import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
-@OptIn(DependsOnGoogleMobileAds::class)
 @Composable
-internal fun AdsBanner(bannerId: String) {
+fun BannerAd(bannerId: String) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -49,17 +45,16 @@ internal fun AdsBanner(bannerId: String) {
             .fillMaxWidth()
     ) {
         var adBannerState by remember { mutableStateOf(AdBannerState.Loading) }
-        val adHandler by rememberBannerAd(
+        NativeBannerAd(
             adUnitId = bannerId,
-            adSize = AdSize.BANNER,
-            onLoad = { adBannerState = AdBannerState.Loaded },
-            onFailure = { adBannerState = AdBannerState.NotAvailable },
+            modifier = Modifier.fillMaxSize(),
+            onStateUpdate = { adBannerState = it }
         )
 
         when (adBannerState) {
             AdBannerState.Loading -> AdsBannerLoader()
             AdBannerState.NotAvailable -> AdsBannerNotAvailable()
-            AdBannerState.Loaded -> BannerAd(adHandler)
+            AdBannerState.Loaded -> Unit
         }
     }
 }
@@ -111,10 +106,6 @@ private fun AdsBannerNotAvailable() {
             color = LocalAppColors.current.dark,
         )
     }
-}
-
-internal enum class AdBannerState {
-    Loading, NotAvailable, Loaded
 }
 
 @Preview(heightDp = 50, showBackground = true)

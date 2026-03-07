@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */ = {isa = PBXBuildFile; productRef = 0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */; };
 		0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
 		0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
 		0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3F61762F3DDC18008A7161 /* GoogleMobileAds */; };
@@ -117,6 +118,7 @@
 				0A76E14C2F53275F00D57F53 /* PurchasesHybridCommonUI in Frameworks */,
 				0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */,
 				0A69C8322F36F8EC0058D721 /* FirebaseCrashlytics in Frameworks */,
+				0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */,
 				0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */,
 				0A69C8302F36F8EC0058D721 /* FirebaseCore in Frameworks */,
 				0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */,
@@ -215,6 +217,7 @@
 				0A3F61762F3DDC18008A7161 /* GoogleMobileAds */,
 				0A76E1492F53275F00D57F53 /* PurchasesHybridCommon */,
 				0A76E14B2F53275F00D57F53 /* PurchasesHybridCommonUI */,
+				0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */,
 			);
 			productName = iosApp;
 			productReference = C6E1A353ED23D830AFC12840 /* BudgetPlus.app */;
@@ -254,6 +257,7 @@
 				0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				0A76E1482F53275F00D57F53 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */,
+				0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2C03A3E98A73FC2B967E9F10 /* Products */;
@@ -652,6 +656,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/googleads-mobile-ios-mediation-meta.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
@@ -687,6 +699,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */;
+			productName = MetaAdapterTarget;
+		};
 		0A3F61762F3DDC18008A7161 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;

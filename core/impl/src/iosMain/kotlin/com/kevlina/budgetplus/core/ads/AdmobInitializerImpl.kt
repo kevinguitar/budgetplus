@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.core.ads
 
-import app.lexilabs.basic.ads.BasicAds
+import GoogleMobileAds.GADMobileAds
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.Tracker
 import dev.zacsweers.metro.AppScope
@@ -45,7 +45,6 @@ class AdmobInitializerImpl(
     }
 
     private fun initAdmob() {
-        @Suppress("DEPRECATION")
-        BasicAds.initialize(null)
+        GADMobileAds.sharedInstance().startWithCompletionHandler(null)
     }
 }

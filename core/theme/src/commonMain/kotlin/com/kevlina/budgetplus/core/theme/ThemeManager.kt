@@ -4,7 +4,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_COLORS_PATH
 import com.kevlina.budgetplus.core.data.AuthManager
@@ -16,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -34,6 +35,7 @@ class ThemeManager(
     private val colorToneFlow = preference.of(colorToneKey, ColorTone.serializer())
 
     private val customizedColorsKey = stringPreferencesKey("customizedColorsCache")
+    private val customizedColorsFlow = preference.of(customizedColorsKey)
 
     // It represents the current theme colors in the customized theme.
     private var currentCustomColors = ThemeColors.MilkTea
@@ -41,17 +43,33 @@ class ThemeManager(
     // This field isn't saved to the preference, it represents the colors that the user is currently mixing.
     private var editedCustomColors = currentCustomColors
 
-    val colorTone: StateFlow<ColorTone> = runBlocking {
-        colorToneFlow
-            .filterNotNull()
-            .stateIn(
-                scope = appScope,
-                started = SharingStarted.Eagerly,
-                initialValue = colorToneFlow.first() ?: ColorTone.MilkTea
-            )
-    }
+    val colorTone: StateFlow<ColorTone> = colorToneFlow
+        .filterNotNull()
+        .stateIn(
+            scope = appScope,
+            started = SharingStarted.Eagerly,
+            initialValue = runBlocking {
+                val tone = colorToneFlow.first()
+                // If the color tone is customized, block and parse the customized colors before rendering UI.
+                if (tone == ColorTone.Customized) {
+                    parseCustomColorsFromCache()
+                }
+                tone ?: ColorTone.MilkTea
+            }
+        )
 
-    val themeColors: StateFlow<ThemeColors> = colorTone.mapState(::getThemeColors)
+    val themeColors: StateFlow<ThemeColors> = combine(
+        colorTone,
+        customizedColorsFlow
+    ) { tone, _ ->
+        getThemeColors(tone)
+    }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = appScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = getThemeColors(colorTone.value)
+        )
 
     val previewColors: StateFlow<ThemeColors?>
         field = MutableStateFlow<ThemeColors?>(null)
@@ -61,12 +79,7 @@ class ThemeManager(
 
     init {
         appScope.launch {
-            preference.of(customizedColorsKey).first()?.let { encodedCustomizedColors ->
-                decodeThemeColors(encodedCustomizedColors)?.let {
-                    currentCustomColors = it
-                    editedCustomColors = it
-                }
-            }
+            parseCustomColorsFromCache()
         }
     }
 
@@ -80,7 +93,7 @@ class ThemeManager(
         ColorTone.Customized -> editedCustomColors
     }
 
-    fun setColorTone(newColorTone: ColorTone) {
+    suspend fun setColorTone(newColorTone: ColorTone) {
         if (!authManager.isPremium.value && newColorTone.requiresPremium) {
             Logger.e { "ThemeManager: Attempting to apply a premium theme for a free user. $colorTone" }
             return
@@ -90,9 +103,7 @@ class ThemeManager(
             saveCustomColors(editedCustomColors)
         }
 
-        appScope.launch {
-            preference.update(colorToneKey, ColorTone.serializer(), newColorTone)
-        }
+        preference.update(colorToneKey, ColorTone.serializer(), newColorTone)
         tracker.logEvent("color_tone_changed", mapOf("tone" to newColorTone.name))
     }
 
@@ -130,7 +141,7 @@ class ThemeManager(
         if (colorTone.value == ColorTone.Customized) {
             hasEditedCustomTheme.value = currentCustomColors != newColors
         } else {
-            saveCustomColors(newColors)
+            appScope.launch { saveCustomColors(newColors) }
         }
     }
 
@@ -152,13 +163,20 @@ class ThemeManager(
         return true
     }
 
-    private fun saveCustomColors(newColors: ThemeColors) {
-        appScope.launch {
-            preference.update(customizedColorsKey, newColors.encode())
+    private suspend fun parseCustomColorsFromCache() {
+        customizedColorsFlow.first()?.let { encodedCustomizedColors ->
+            decodeThemeColors(encodedCustomizedColors)?.let {
+                currentCustomColors = it
+                editedCustomColors = it
+            }
         }
+    }
+
+    private suspend fun saveCustomColors(newColors: ThemeColors) {
         currentCustomColors = newColors
         editedCustomColors = newColors
         hasEditedCustomTheme.value = false
+        preference.update(customizedColorsKey, newColors.encode())
     }
 
     private fun ThemeColors.encode(): String {

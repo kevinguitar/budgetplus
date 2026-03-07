@@ -64,8 +64,11 @@ class ColorTonePickerViewModel(
         selectedColorTone.value = colorTone
     }
 
-    fun setColorTone(colorTone: ColorTone) {
-        themeManager.setColorTone(colorTone)
+    fun setColorTone(colorTone: ColorTone, onDone: () -> Unit) {
+        viewModelScope.launch {
+            themeManager.setColorTone(colorTone)
+            onDone()
+        }
     }
 
     fun setPreviewColors(previewColors: ThemeColors) {
