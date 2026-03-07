@@ -128,7 +128,13 @@ actual class AuthViewModel(
             didCompleteWithError: platform.Foundation.NSError,
         ) {
             coroutineScope.launch {
-                snackbarSender.send(didCompleteWithError.localizedDescription)
+                if (didCompleteWithError.domain == platform.AuthenticationServices.ASAuthorizationErrorDomain &&
+                    didCompleteWithError.code == platform.AuthenticationServices.ASAuthorizationErrorCanceled
+                ) {
+                    Logger.d { "Apple sign-in canceled" }
+                } else {
+                    snackbarSender.send(didCompleteWithError.localizedDescription)
+                }
                 onComplete()
             }
         }
