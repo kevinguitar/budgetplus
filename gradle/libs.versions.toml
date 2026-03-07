@@ -41,7 +41,7 @@ datastore = "1.2.0"
 # https://github.com/icerockdev/moko-permissions/releases
 permissions = "0.20.1"
 # https://github.com/alexzhirkevich/compottie/releases
-compottie = "2.0.2"
+compottie = "2.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
 revenuecat-kmp = "2.7.1+17.42.0"
 # https://github.com/ktorio/ktor/releases
