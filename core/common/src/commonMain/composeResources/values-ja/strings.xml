@@ -55,6 +55,7 @@
     <!-- Book -->
     <string name="book_selection">帳簿を選択する</string>
     <string name="book_create_success">「%1$s」が追加されました</string>
+    <string name="book_rename_success">帳簿の名前が「%1$s」に変更されました</string>
     <string name="book_join_success">「%1$s」に参加しました</string>
     <string name="book_join_link_expired">リンクは無効です</string>
     <string name="book_already_archived">しまった、帳簿はすでに削除されました</string>

@@ -33,6 +33,7 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Named
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -76,12 +77,16 @@ class BookViewModel(
     val isEligibleForInterstitialAds = authManager.isPremium.mapState { !it }
 
     init {
-        // If the user has no active book, navigate them to the welcome screen to create or join a book.
-        combine(authManager.userState, bookRepo.booksState) { user, books ->
-            if (user?.id != null && books?.isEmpty() == true) {
-                navigation.sendEvent(welcomeNavigationAction)
+        combine(authManager.userState, bookRepo.bookState) { user, book ->
+            user?.id != null && (book == null || book.name.isBlank())
+        }
+            .distinctUntilChanged()
+            .onEach { shouldRedirectToWelcome ->
+                if (shouldRedirectToWelcome) {
+                    navigation.sendEvent(welcomeNavigationAction)
+                }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
 
         currentNavKeyFlow
             .onEach { key ->
@@ -89,8 +94,7 @@ class BookViewModel(
                 if (key != BookDest.Colors) {
                     themeManager.clearPreviewColors()
                 }
-            }
-            .launchIn(viewModelScope)
+        }.launchIn(viewModelScope)
     }
 
     fun handleDeeplink(url: String?): DeeplinkType? {

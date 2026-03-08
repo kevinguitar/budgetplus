@@ -55,6 +55,7 @@
     <!-- Book -->
     <string name="book_selection">選擇帳本</string>
     <string name="book_create_success">「%1$s」已新增成功</string>
+    <string name="book_rename_success">已將帳本重新命名為「%1$s」</string>
     <string name="book_join_success">已加入「%1$s」</string>
     <string name="book_join_link_expired">連結已失效ＱＱ</string>
     <string name="book_already_archived">糟糕，帳本已經被刪除了</string>

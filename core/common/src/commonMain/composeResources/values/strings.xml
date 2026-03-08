@@ -55,6 +55,7 @@
     <!-- Book -->
     <string name="book_selection">Select book</string>
     <string name="book_create_success">Your book %1$s is created!</string>
+    <string name="book_rename_success">Your book has been renamed to %1$s!</string>
     <string name="book_join_success">You have joined %1$s successfully!</string>
     <string name="book_join_link_expired">The join link is expired…</string>
     <string name="book_already_archived">Oops, the book has been deleted…</string>

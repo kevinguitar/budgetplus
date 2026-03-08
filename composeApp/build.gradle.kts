@@ -54,6 +54,14 @@ kotlin {
             api(projects.feature.unlockPremium)
             api(projects.feature.welcome)
         }
+        androidUnitTest.dependencies {
+            implementation(projects.core.ads)
+            implementation(projects.core.common)
+            implementation(projects.core.data)
+            implementation(projects.core.theme)
+            implementation(projects.core.ui)
+            implementation(projects.core.unitTest)
+        }
         androidMain.dependencies {
             implementation(libs.google.ads)
             runtimeOnly(libs.google.ads.mediation.meta)

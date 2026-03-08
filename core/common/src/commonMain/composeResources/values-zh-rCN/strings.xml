@@ -54,6 +54,7 @@
     <!-- Book -->
     <string name="book_selection">选择帐本</string>
     <string name="book_create_success">“%1$s”已新增成功</string>
+    <string name="book_rename_success">已将帐本重新命名为"%1$s"</string>
     <string name="book_join_success">已加入“%1$s”</string>
     <string name="book_join_link_expired">连结已失效ＱＱ</string>
     <string name="book_already_archived">糟糕，帐本已经被删除了</string>

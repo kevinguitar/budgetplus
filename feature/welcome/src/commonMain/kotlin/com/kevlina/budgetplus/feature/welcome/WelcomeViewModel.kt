@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_create_success
+import budgetplus.core.common.generated.resources.book_rename_success
 import budgetplus.core.common.generated.resources.book_join_success
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
@@ -46,7 +47,7 @@ class WelcomeViewModel(
     init {
         viewModelScope.launch {
             bookRepo.bookState.collect { book ->
-                if (book != null) {
+                if (book != null && book.name.isNotBlank()) {
                     navigation.sendEvent(bookNavigationAction)
                 }
             }
@@ -62,8 +63,16 @@ class WelcomeViewModel(
             isCreatingBook.value = true
             val name = bookName.text.toString()
             try {
-                bookRepo.createBook(name = name, source = "welcome")
-                toaster.showMessage(getString(Res.string.book_create_success, name))
+                val currentBook = bookRepo.bookState.value
+                if (currentBook != null && currentBook.name.isBlank()) {
+                    // Rename is preferred over delete+create to preserve any existing
+                    // Firestore subcollections (records, categories) already under this book.
+                    bookRepo.renameBook(name)
+                    toaster.showMessage(getString(Res.string.book_rename_success, name))
+                } else {
+                    bookRepo.createBook(name = name, source = "welcome")
+                    toaster.showMessage(getString(Res.string.book_create_success, name))
+                }
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             } finally {
