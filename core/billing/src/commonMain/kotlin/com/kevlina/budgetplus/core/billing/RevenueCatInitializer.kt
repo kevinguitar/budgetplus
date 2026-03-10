@@ -33,7 +33,7 @@ class RevenueCatInitializer(
                 }
 
                 Purchases.sharedInstance.getCustomerInfo(
-                    onError = { error -> Logger.e { "Error fetching customer info: $error" } },
+                    onError = { error -> Logger.w { "Error fetching customer info: $error" } },
                     onSuccess = { customerInfo ->
                         billingController.value.onNewCustomerInfo(customerInfo)
                     }

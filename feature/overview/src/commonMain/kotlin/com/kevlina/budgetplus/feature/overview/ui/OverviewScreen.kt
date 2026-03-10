@@ -137,9 +137,7 @@ fun OverviewScreen(navController: NavController<BookDest>) {
                         try {
                             controller.providePermission(Permission.WRITE_STORAGE)
                             vm.exportToCsv()
-                        } catch (_: DeniedException) {
-                            vm.showWriteFilePermissionHint()
-                        } catch (_: DeniedAlwaysException) {
+                        } catch (_: Exception) {
                             vm.showWriteFilePermissionHint()
                         }
                     }

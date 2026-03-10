@@ -135,6 +135,7 @@ class AuthManagerImpl(
     }
 
     override fun deleteUserAccount(): Job = appScope.launch {
+        tracker.value.logEvent("delete_account")
         try {
             val functions = Firebase.functions("asia-southeast1")
             val callable = functions.httpsCallable("deleteUserAccount")

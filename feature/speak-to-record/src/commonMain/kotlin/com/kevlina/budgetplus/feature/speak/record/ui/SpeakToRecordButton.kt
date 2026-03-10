@@ -39,7 +39,6 @@ import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.rippleIndication
 import com.kevlina.budgetplus.core.ui.thenIf
 import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
@@ -107,10 +106,10 @@ fun ColumnScope.SpeakToRecordButton(
                                 } else {
                                     controller.providePermission(Permission.RECORD_AUDIO)
                                 }
-                            } catch (_: DeniedException) {
-                                // Do nothing
                             } catch (_: DeniedAlwaysException) {
                                 state.showRecordPermissionHint()
+                            } catch (_: Exception) {
+                                // Do nothing
                             }
                         }
                     }

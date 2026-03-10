@@ -7,7 +7,6 @@ import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel
 import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
@@ -28,10 +27,10 @@ fun NotificationPermissionHandler() {
             .consumeEach {
                 try {
                     controller.providePermission(Permission.REMOTE_NOTIFICATION)
-                } catch (_: DeniedException) {
-                    // Do nothing
                 } catch (_: DeniedAlwaysException) {
                     vm.showNotificationPermissionHint()
+                } catch (_: Exception) {
+                    // Do nothing
                 }
             }
             .collect()
