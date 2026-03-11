@@ -1,7 +1,9 @@
 name: iOS CI
 
 on:
-  pull_request:
+  # Temporarily disabled because of GH actions limit
+  #  pull_request:
+  workflow_dispatch:
 
 # Cancel any current or previous job from the same PR
 concurrency:
@@ -60,12 +62,6 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-
-      - name: Resolve SPM packages
-        run: |
-          xcodebuild -resolvePackageDependencies \
-            -project iosApp/iosApp.xcodeproj \
-            -scheme iosApp
 
       - name: Build iOS App (simulator)
         run: |
