@@ -149,6 +149,7 @@ jobs:
             -authenticationKeyPath "$API_KEY_PATH" \
             -authenticationKeyID "$APP_STORE_CONNECT_API_KEY_ID" \
             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+            OTHER_LDFLAGS="-Wl,-weak_framework,SwiftUICore -Wl,-ld_classic -Wl,-weak-lswift_Concurrency" \
             -skipPackagePluginValidation \
             -quiet
 
