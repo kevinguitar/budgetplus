@@ -54,9 +54,7 @@ import org.jetbrains.compose.resources.vectorResource
 internal fun MembersDialog(
     onDismiss: () -> Unit,
 ) {
-
     val viewModel = metroViewModel<MembersViewModel>()
-    viewModel.loadMembers()
 
     val members by viewModel.bookMembers.collectAsStateWithLifecycle()
 
