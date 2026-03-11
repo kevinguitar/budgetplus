@@ -61,6 +61,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
+      - name: Resolve SPM packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp
+
       - name: Build iOS App (simulator)
         run: |
           xcodebuild build \
