@@ -26,6 +26,7 @@ import platform.UIKit.UIAlertActionStyleDefault
 import platform.UIKit.UIAlertController
 import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIApplication
+import platform.UIKit.popoverPresentationController
 
 @ContributesBinding(AppScope::class)
 class SettingsNavigationImpl(
@@ -74,6 +75,12 @@ class SettingsNavigationImpl(
                     handler = null
                 )
             )
+
+            alertController.popoverPresentationController?.let {
+                it.sourceView = rootViewController.view
+                it.sourceRect = rootViewController.view.bounds
+                it.permittedArrowDirections = 0u
+            }
 
             rootViewController.presentViewController(alertController, animated = true, completion = null)
         }
