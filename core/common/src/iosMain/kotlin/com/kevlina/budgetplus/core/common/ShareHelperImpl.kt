@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.StringResource
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
+import platform.UIKit.popoverPresentationController
 
 @ContributesBinding(AppScope::class)
 class ShareHelperImpl : ShareHelper {
@@ -19,6 +20,12 @@ class ShareHelperImpl : ShareHelper {
                 activityItems = listOf(text),
                 applicationActivities = null
             )
+
+            activityViewController.popoverPresentationController?.let {
+                it.sourceView = rootViewController.view
+                it.sourceRect = rootViewController.view.bounds
+                it.permittedArrowDirections = 0u
+            }
 
             rootViewController.presentViewController(
                 viewControllerToPresent = activityViewController,

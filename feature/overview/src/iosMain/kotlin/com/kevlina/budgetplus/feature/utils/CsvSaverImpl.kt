@@ -16,6 +16,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
+import platform.UIKit.popoverPresentationController
 
 @ContributesBinding(AppScope::class)
 class CsvSaverImpl : CsvSaver {
@@ -40,6 +41,12 @@ class CsvSaverImpl : CsvSaver {
                 activityItems = listOf(fileUrl),
                 applicationActivities = null
             )
+
+            activityViewController.popoverPresentationController?.let {
+                it.sourceView = rootViewController.view
+                it.sourceRect = rootViewController.view.bounds
+                it.permittedArrowDirections = 0u
+            }
 
             rootViewController.presentViewController(
                 viewControllerToPresent = activityViewController,
