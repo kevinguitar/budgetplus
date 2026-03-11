@@ -121,14 +121,7 @@ jobs:
           sed -i '' "s/^CURRENT_PROJECT_VERSION=.*/CURRENT_PROJECT_VERSION=$BUILD_NUMBER/" iosApp/Configuration/Config.xcconfig
           echo "Updated Config.xcconfig:"
           cat iosApp/Configuration/Config.xcconfig
-          
-          # 2. Update the Extension's Info.plist directly
-          # IMPORTANT: Verify this path matches your actual project structure!
-          EXT_PLIST="iosApp/NotificationServiceExtension/Info.plist"
-          
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$EXT_PLIST"
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$EXT_PLIST"
-          echo "Updated Extension version to $VERSION ($BUILD_NUMBER)"
+          echo "Updated version to $VERSION ($BUILD_NUMBER) in Config.xcconfig"
 
       - name: Setup App Store Connect API Key
         env:
