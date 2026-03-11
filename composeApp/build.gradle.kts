@@ -68,9 +68,7 @@ swiftPackageConfig {
             linkerOpts = listOf("-ObjC")
             exportedPackageSettings { includeProduct = listOf("FirebaseFirestore") }
             remotePackageVersion(
-                // Repository URL
                 url = uri("https://github.com/firebase/firebase-ios-sdk.git"),
-                // Libraries from the package
                 products = {
                     // Export to Kotlin for use in shared Kotlin code and use it in your swift code
                     // the export doesn't work when gitlive is implemented, my guess is a bug with cinterop
@@ -86,15 +84,21 @@ swiftPackageConfig {
                         "FirebaseRemoteConfig",
                     ).forEach { add(it, exportToKotlin = false) }
                 },
-                // Package version
-                version = libs.versions.firebase.ios.get(),
+                version = "12.10.0",
             )
             remotePackageVersion(
                 url = uri("https://github.com/google/GoogleSignIn-iOS.git"),
                 products = {
                     add("GoogleSignIn", exportToKotlin = true)
                 },
-                version = libs.versions.google.signin.ios.get()
+                version = "9.1.0"
+            )
+            remotePackageVersion(
+                url = uri("https://github.com/facebook/FBAudienceNetwork.git"),
+                products = {
+                    add("FBAudienceNetwork", exportToKotlin = true)
+                },
+                version = "6.21.1"
             )
         }
     }
