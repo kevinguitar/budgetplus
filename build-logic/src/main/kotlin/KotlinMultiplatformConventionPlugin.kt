@@ -7,6 +7,9 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.DisableCacheInKotlinVersion
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCacheApi
+import java.net.URI
 
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
@@ -66,6 +69,13 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                     baseName = modulePath.replaceFirstChar { it.uppercase() }
                     freeCompilerArgs += listOf("-Xbinary=bundleId=$appId.$modulePath")
                     isStatic = true
+
+                    @OptIn(KotlinNativeCacheApi::class)
+                    disableNativeCache(
+                        version = DisableCacheInKotlinVersion.`2_3_20`,
+                        reason = "Crashkios caching workaround",
+                        issueUrl = URI("https://crashkios.touchlab.co/docs/crashlytics/")
+                    )
                 }
             }
 
