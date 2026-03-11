@@ -195,7 +195,7 @@ class BookRepoImpl(
 
     override suspend fun isUserHasBooks(): Boolean {
         // Await the auth state first.
-        val userId = authManager.userState.filterNotNull().first().id
+        authManager.userState.filterNotNull().first().id
         // This await relies on the DB subscription from observeBooks.
         val hasBook = booksState.filterNotNull().first().isNotEmpty()
         if (hasBook) {
