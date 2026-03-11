@@ -93,13 +93,6 @@ swiftPackageConfig {
                 },
                 version = "9.1.0"
             )
-            remotePackageVersion(
-                url = uri("https://github.com/facebook/FBAudienceNetwork.git"),
-                products = {
-                    add("FBAudienceNetwork", exportToKotlin = true)
-                },
-                version = "6.21.1"
-            )
         }
     }
 }
