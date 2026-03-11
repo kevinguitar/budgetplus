@@ -75,6 +75,5 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=YES \
-            OTHER_LDFLAGS="-Wl,-weak_framework,SwiftUICore -Wl,-ld_classic -Wl,-weak-lswift_Concurrency" \
             -skipPackagePluginValidation \
             -quiet
