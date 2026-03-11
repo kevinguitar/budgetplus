@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.feature.settings.member
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.data.AuthManager
@@ -11,7 +10,10 @@ import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.UserRepo
 import com.kevlina.budgetplus.core.data.remote.User
 import dev.zacsweers.metro.ContributesIntoMap
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @ViewModelKey(MembersViewModel::class)
@@ -21,10 +23,24 @@ class MembersViewModel(
     private val authManager: AuthManager,
     private val userRepo: UserRepo,
     private val snackbarSender: SnackbarSender,
-    private val tracker: Tracker,
 ) : ViewModel() {
 
-    val bookMembers = MutableStateFlow<List<User>>(emptyList())
+    val bookMembers: StateFlow<List<User>> = bookRepo.bookState
+        .map { book ->
+            val authors = book?.authors ?: emptyList()
+            val users = authors
+                .mapNotNull { id -> userRepo.getUser(id) }
+                .toMutableList()
+
+            // Move the owner to the first of the list
+            val owner = users.find { it.id == ownerId }
+            if (owner != null) {
+                users.remove(owner)
+                users.add(0, owner)
+            }
+            users
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val userId get() = authManager.requireUserId()
 
@@ -35,27 +51,9 @@ class MembersViewModel(
         viewModelScope.launch {
             try {
                 bookRepo.removeMember(userId)
-                loadMembers()
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             }
         }
-    }
-
-    fun loadMembers() {
-        val authors = bookRepo.bookState.value?.authors ?: return
-        val users = authors
-            .mapNotNull { id -> userRepo.getUser(id) }
-            .toMutableList()
-
-        // Move the owner to the first of the list
-        val owner = users.find { it.id == ownerId }
-        if (owner != null) {
-            users.remove(owner)
-            users.add(0, owner)
-        }
-
-        bookMembers.value = users
-        tracker.logEvent("member_loaded")
     }
 }
