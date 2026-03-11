@@ -53,7 +53,7 @@ class BudgetPlusAppConventionPlugin : Plugin<Project> {
                 androidResources {
                     @Suppress("UnstableApiUsage")
                     localeFilters.addAll(
-                        listOf("en", "zh-rCN", "zh-rTW", "ja-rJP")
+                        listOf("en", "zh-rCN", "zh-rTW", "ja-rJP", "ko-rKR")
                     )
                 }
             }

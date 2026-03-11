@@ -1,88 +1,106 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "CFBundleDisplayName" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Budget+"
+  "sourceLanguage": "en",
+  "strings": {
+    "CFBundleDisplayName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Budget+"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ミニマリストな帳簿"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミニマリストな帳簿"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "极简记帐"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "极简记帐"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "極簡記帳"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "極簡記帳"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미니멀 가계부"
           }
         }
       }
     },
-    "CFBundleName" : {
-      "comment" : "Bundle name",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "BudgetPlus"
+    "CFBundleName": {
+      "comment": "Bundle name",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "BudgetPlus"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BudgetPlus"
           }
         }
       }
     },
-    "NSHumanReadableCopyright" : {
-      "comment" : "Copyright (human-readable)",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : ""
+    "NSHumanReadableCopyright": {
+      "comment": "Copyright (human-readable)",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
           }
         }
       }
     },
-    "NSUserTrackingUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This identifier will be used to deliver personalized ads to you."
+    "NSUserTrackingUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This identifier will be used to deliver personalized ads to you."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "この識別子は、パーソナライズされた広告を配信するために使用されます。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この識別子は、パーソナライズされた広告を配信するために使用されます。"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此标识符将用于向您投放个性化广告。"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此标识符将用于向您投放个性化广告。"
           }
         },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此識別碼將用於向您投放個人化廣告。"
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此識別碼將用於向您投放個人化廣告。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 식별자는 맞춤형 광고를 제공하는 데 사용됩니다."
           }
         }
       }
     }
   },
-  "version" : "1.1"
+  "version": "1.1"
 }

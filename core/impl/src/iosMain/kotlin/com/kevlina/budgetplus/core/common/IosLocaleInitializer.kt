@@ -17,22 +17,11 @@ class IosLocaleInitializer : AppStartAction {
             return
         }
 
-        val supportedLanguages = mapOf(
-            "zh-Hant" to "zh-tw",
-            "zh-Hans" to "zh-cn",
-            "ja" to "ja",
-            "en" to "en"
-        )
-
         val preferredLanguages = NSLocale.preferredLanguages
-        val bestMatch = preferredLanguages
             .asSequence()
             .filterIsInstance<String>()
-            .firstNotNullOfOrNull { lang ->
-                supportedLanguages.entries
-                    .firstOrNull { (iosPrefix, _) -> lang.startsWith(iosPrefix) }
-                    ?.value
-            } ?: "en"
+
+        val bestMatch = resolveSupportedAppLanguage(preferredLanguages.asIterable())
 
         userDefaults.setObject(listOf(bestMatch), "AppleLanguages")
         userDefaults.setBool(true, APP_LANGUAGE_INITIALIZED_KEY)
