@@ -45,8 +45,8 @@ class WelcomeViewModel(
 
     init {
         viewModelScope.launch {
-            bookRepo.bookState.collect { book ->
-                if (book != null) {
+            bookRepo.booksState.collect { books ->
+                if (!books.isNullOrEmpty()) {
                     navigation.sendEvent(bookNavigationAction)
                 }
             }
