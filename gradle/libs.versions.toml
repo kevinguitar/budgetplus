@@ -39,7 +39,7 @@ permissions = "0.20.1"
 # https://github.com/alexzhirkevich/compottie/releases
 compottie = "2.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
-revenuecat-kmp = "2.7.1+17.42.0"
+revenuecat-kmp = "2.8.0+17.46.0"
 # https://github.com/ktorio/ktor/releases
 ktor = "3.4.1"
 # https://github.com/touchlab/Kermit/releases
