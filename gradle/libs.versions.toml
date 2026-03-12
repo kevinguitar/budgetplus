@@ -31,7 +31,7 @@ lifecycle = "2.10.0"
 lifecycle-jb = "2.10.0-beta01"
 jetbrains-material3 = "1.9.0"
 # https://developer.android.com/jetpack/androidx/releases/activity
-android-activity = "1.12.4"
+android-activity = "1.13.0"
 # https://developer.android.com/kotlin/multiplatform/datastore
 datastore = "1.2.1"
 # https://github.com/icerockdev/moko-permissions/releases
