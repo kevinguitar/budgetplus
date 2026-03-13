@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
@@ -117,29 +118,59 @@ internal fun Calculator(
             .onKeyEvent { event ->
                 if (event.type != KeyEventType.KeyUp) return@onKeyEvent false
                 when (event.key) {
-                    Key.Zero -> state.onInput(CalculatorButton.Zero)
-                    Key.One -> state.onInput(CalculatorButton.One)
-                    Key.Two -> state.onInput(CalculatorButton.Two)
-                    Key.Three -> state.onInput(CalculatorButton.Three)
-                    Key.Four -> state.onInput(CalculatorButton.Four)
-                    Key.Five -> state.onInput(CalculatorButton.Five)
-                    Key.Six -> state.onInput(CalculatorButton.Six)
-                    Key.Seven -> state.onInput(CalculatorButton.Seven)
-                    Key.Eight -> state.onInput(CalculatorButton.Eight)
-                    Key.Nine -> state.onInput(CalculatorButton.Nine)
-                    Key.NumPadDot -> state.onInput(CalculatorButton.Dot)
-                    Key.Plus -> state.onInput(CalculatorButton.Plus)
-                    Key.Minus -> state.onInput(CalculatorButton.Minus)
+                    // Numbers 0-7, 9
+                    Key.Zero, Key.NumPad0 -> state.onInput(CalculatorButton.Zero)
+                    Key.One, Key.NumPad1 -> state.onInput(CalculatorButton.One)
+                    Key.Two, Key.NumPad2 -> state.onInput(CalculatorButton.Two)
+                    Key.Three, Key.NumPad3 -> state.onInput(CalculatorButton.Three)
+                    Key.Four, Key.NumPad4 -> state.onInput(CalculatorButton.Four)
+                    Key.Five, Key.NumPad5 -> state.onInput(CalculatorButton.Five)
+                    Key.Six, Key.NumPad6 -> state.onInput(CalculatorButton.Six)
+                    Key.Seven, Key.NumPad7 -> state.onInput(CalculatorButton.Seven)
+                    Key.Nine, Key.NumPad9 -> state.onInput(CalculatorButton.Nine)
+
+                    // 8 and Shift + 8 (Multiply)
+                    Key.Eight, Key.NumPad8 -> {
+                        if (event.isShiftPressed) {
+                            state.onInput(CalculatorButton.Multiply)
+                        } else {
+                            state.onInput(CalculatorButton.Eight)
+                        }
+                    }
+
+                    // Decimals
+                    Key.Period, Key.NumPadDot -> state.onInput(CalculatorButton.Dot)
+
+                    // Operators (Numpad and dedicated keys)
+                    Key.Plus, Key.NumPadAdd -> state.onInput(CalculatorButton.Plus)
+                    Key.Minus, Key.NumPadSubtract -> state.onInput(CalculatorButton.Minus)
                     Key.Multiply, Key.NumPadMultiply -> state.onInput(CalculatorButton.Multiply)
-                    Key.NumPadDivide -> state.onInput(CalculatorButton.Divide)
+                    Key.Slash, Key.NumPadDivide -> state.onInput(CalculatorButton.Divide)
+
+                    // Edits & Actions
                     Key.Backspace -> state.onInput(CalculatorButton.Delete)
                     Key.Escape, Key.Clear -> state.onCalculatorAction(CalculatorAction.Clear)
-                    Key.Equals, Key.NumPadEquals -> state.onCalculatorAction(CalculatorAction.Evaluate)
-                    Key.Enter, Key.NumPadEnter -> if (needEvaluate) {
-                        state.onCalculatorAction(CalculatorAction.Evaluate)
-                    } else {
-                        state.onCalculatorAction(CalculatorAction.Ok)
+
+                    // Equals and Shift + Equals (Plus)
+                    Key.Equals -> {
+                        if (event.isShiftPressed) {
+                            state.onInput(CalculatorButton.Plus)
+                        } else {
+                            state.onCalculatorAction(CalculatorAction.Evaluate)
+                        }
                     }
+
+                    Key.NumPadEquals -> state.onCalculatorAction(CalculatorAction.Evaluate)
+
+                    // Enter
+                    Key.Enter, Key.NumPadEnter -> {
+                        if (needEvaluate) {
+                            state.onCalculatorAction(CalculatorAction.Evaluate)
+                        } else {
+                            state.onCalculatorAction(CalculatorAction.Ok)
+                        }
+                    }
+
                     else -> return@onKeyEvent false
                 }
                 true
