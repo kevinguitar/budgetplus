@@ -28,6 +28,7 @@ import budgetplus.feature.push_notifications.generated.resources.Res
 import budgetplus.feature.push_notifications.generated.resources.push_notif_deeplink
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_en
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_ja
+import budgetplus.feature.push_notifications.generated.resources.push_notif_language_ko
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_cn
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_tw
 import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_everyone
@@ -61,8 +62,9 @@ internal fun PushNotificationsContent(
 
     val audienceTarget by vm.audienceTarget.collectAsStateWithLifecycle()
     val sendToCn by vm.sendToCn.collectAsStateWithLifecycle()
-    val sendToJa by vm.sendToJa.collectAsStateWithLifecycle()
     val sendToEn by vm.sendToEn.collectAsStateWithLifecycle()
+    val sendToJa by vm.sendToJa.collectAsStateWithLifecycle()
+    val sendToKo by vm.sendToKo.collectAsStateWithLifecycle()
 
     var isConfirmationDialogShown by remember { mutableStateOf(false) }
 
@@ -82,12 +84,21 @@ internal fun PushNotificationsContent(
             isOptional = false
         )
 
+        //TODO: Add a collapsible section for Cn, En, Ja, Ko languages
         LanguageBlock(
             textRes = Res.string.push_notif_language_zh_cn,
             title = vm.titleCn,
             description = vm.descCn,
             enabled = sendToCn,
             onEnableUpdate = { vm.sendToCn.value = it }
+        )
+
+        LanguageBlock(
+            textRes = Res.string.push_notif_language_en,
+            title = vm.titleEn,
+            description = vm.descEn,
+            enabled = sendToEn,
+            onEnableUpdate = { vm.sendToEn.value = it }
         )
 
         LanguageBlock(
@@ -99,11 +110,11 @@ internal fun PushNotificationsContent(
         )
 
         LanguageBlock(
-            textRes = Res.string.push_notif_language_en,
-            title = vm.titleEn,
-            description = vm.descEn,
-            enabled = sendToEn,
-            onEnableUpdate = { vm.sendToEn.value = it }
+            textRes = Res.string.push_notif_language_ko,
+            title = vm.titleKo,
+            description = vm.descKo,
+            enabled = sendToKo,
+            onEnableUpdate = { vm.sendToKo.value = it }
         )
 
         Row(modifier = Modifier.fillMaxWidth()) {

@@ -45,13 +45,17 @@ class PushNotificationsViewModel private constructor(
     val titleCn = TextFieldState()
     val descCn = TextFieldState()
 
+    val sendToEn = MutableStateFlow(true)
+    val titleEn = TextFieldState()
+    val descEn = TextFieldState()
+
     val sendToJa = MutableStateFlow(true)
     val titleJa = TextFieldState()
     val descJa = TextFieldState()
 
-    val sendToEn = MutableStateFlow(true)
-    val titleEn = TextFieldState()
-    val descEn = TextFieldState()
+    val sendToKo = MutableStateFlow(true)
+    val titleKo = TextFieldState()
+    val descKo = TextFieldState()
 
     val deeplink = TextFieldState()
 
@@ -108,10 +112,12 @@ class PushNotificationsViewModel private constructor(
                     descTw = descTw.text.trim().toString(),
                     titleCn = titleCn.text.trim().takeIf { sendToCn.value }?.toString(),
                     descCn = descCn.text.trim().takeIf { sendToCn.value }?.toString(),
-                    titleJa = titleJa.text.trim().takeIf { sendToJa.value }?.toString(),
-                    descJa = descJa.text.trim().takeIf { sendToJa.value }?.toString(),
                     titleEn = titleEn.text.trim().takeIf { sendToEn.value }?.toString(),
                     descEn = descEn.text.trim().takeIf { sendToEn.value }?.toString(),
+                    titleJa = titleJa.text.trim().takeIf { sendToJa.value }?.toString(),
+                    descJa = descJa.text.trim().takeIf { sendToJa.value }?.toString(),
+                    titleKo = titleKo.text.trim().takeIf { sendToKo.value }?.toString(),
+                    descKo = descKo.text.trim().takeIf { sendToKo.value }?.toString(),
                     deeplink = if (deeplink.text.isNotBlank()) {
                         deeplink.text.trim().toString()
                     } else {
@@ -133,10 +139,12 @@ class PushNotificationsViewModel private constructor(
 
             titleTw.setTextAndPlaceCursorAtEnd(cache.titleTw)
             descTw.setTextAndPlaceCursorAtEnd(cache.descriptionTw)
-            titleJa.setTextAndPlaceCursorAtEnd(cache.titleJa)
-            descJa.setTextAndPlaceCursorAtEnd(cache.descriptionJa)
             titleEn.setTextAndPlaceCursorAtEnd(cache.titleEn)
             descEn.setTextAndPlaceCursorAtEnd(cache.descriptionEn)
+            titleJa.setTextAndPlaceCursorAtEnd(cache.titleJa)
+            descJa.setTextAndPlaceCursorAtEnd(cache.descriptionJa)
+            titleKo.setTextAndPlaceCursorAtEnd(cache.titleKo)
+            descKo.setTextAndPlaceCursorAtEnd(cache.descriptionKo)
             deeplink.setTextAndPlaceCursorAtEnd(cache.deeplink)
         }
     }
@@ -146,11 +154,13 @@ class PushNotificationsViewModel private constructor(
             val newCache = PushNotificationCache(
                 titleTw = titleTw.text.toString(),
                 descriptionTw = descTw.text.toString(),
-                titleJa = titleJa.text.toString(),
-                descriptionJa = descJa.text.toString(),
                 titleEn = titleEn.text.toString(),
                 descriptionEn = descEn.text.toString(),
-                deeplink = deeplink.text.toString()
+                deeplink = deeplink.text.toString(),
+                titleJa = titleJa.text.toString(),
+                descriptionJa = descJa.text.toString(),
+                titleKo = titleKo.text.toString(),
+                descriptionKo = descKo.text.toString(),
             )
             preference.update(cacheKey, PushNotificationCache.serializer(), newCache)
         }
