@@ -32,6 +32,7 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 - [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html) for asynchronous operations
 - [Metro](https://zacsweers.github.io/metro/latest/) for dependency injection
 - [Navigation3](https://developer.android.com/guide/navigation/navigation-3) for Composable navigation
+- [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) for persistent data storage
 - [RevenueCat](https://github.com/RevenueCat/purchases-kmp) for in-app purchases and subscriptions
 - [AdMob](https://admob.google.com/home/) with Meta Audience Network mediation for ads
 - [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) for JSON parsing
