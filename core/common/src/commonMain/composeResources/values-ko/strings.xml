@@ -4,75 +4,75 @@
     <string name="app_language">ko</string>
 
     <!-- Auth -->
-    <string name="auth_welcome_title">Budget+에 오신 것을 환영합니다</string>
-    <string name="auth_welcome_description">강력한 공동 지출 추적기\n친구 및 가족과 어디서나 함께 사용하세요</string>
+    <string name="auth_welcome_title">미니멀 가계부에 오신 것을 환영합니다</string>
+    <string name="auth_welcome_description">초고속 가계부 앱, 앱을 열고 기록을 완료하는 데 단 5초!\n지금 바로 가족과 친구들과 함께 가계부를 써보세요!</string>
     <string name="auth_google">Google로 계속하기</string>
     <string name="auth_apple">Apple로 계속하기</string>
-    <string name="auth_success">%1$s님, 환영합니다!</string>
+    <string name="auth_success">환영합니다, %1$s님!</string>
 
     <!-- Welcome -->
-    <string name="welcome_create_book_title">새 가계부를 만들 수 있어요</string>
-    <string name="welcome_join_instruction">아니면 친구나 가족의 가계부에 참여하고 싶으신가요?\n초대 링크를 공유해 달라고 요청해 보세요!</string>
+    <string name="welcome_create_book_title">가계부를 생성할 수 있습니다</string>
+    <string name="welcome_join_instruction">친구가 만든 가계부에 참여하고 싶으신가요?\n초대 링크를 공유해 달라고 요청해 보세요!</string>
 
     <!-- Record -->
-    <string name="record_note">메모</string>
-    <string name="record_note_placeholder_expense">무엇을 위해 지출했나요?</string>
-    <string name="record_note_placeholder_income">어디에서 수입이 생겼나요?</string>
+    <string name="record_note">내용</string>
+    <string name="record_note_placeholder_expense">어디에 사용했나요?</string>
+    <string name="record_note_placeholder_income">돈은 어디서 왔나요?</string>
     <string name="record_price">금액</string>
     <string name="record_expense">지출</string>
     <string name="record_income">수입</string>
-    <string name="record_empty_category">카테고리를 선택해 주세요</string>
-    <string name="record_empty_price">금액을 입력해 주세요</string>
+    <string name="record_empty_category">카테고리를 선택하세요</string>
+    <string name="record_empty_price">금액을 입력하세요</string>
     <string name="record_edit_title">기록 수정</string>
-    <string name="record_edited">기록이 수정되었습니다</string>
-    <string name="record_deleted">%1$s 기록이 삭제되었습니다</string>
-    <string name="record_confirm_delete">이 기록을 삭제하시겠어요?</string>
-    <string name="record_duplicated">기록이 복제되었습니다</string>
-    <string name="record_speech_recognition_format">메모와 금액을 말씀해 주세요</string>
-    <string name="record_speech_recognition_not_supported">이 기기에서는 해당 기능을 지원하지 않습니다</string>
-    <string name="record_speech_recognition_no_result">인식할 수 없어요. 다시 시도해 주세요</string>
-    <string name="record_freeze_book_title">구독을 해지하셔서 아쉬워요\n계속 기록할 가계부를 선택해 주세요</string>
-    <string name="record_freeze_book_description">걱정 마세요! 모든 데이터는 그대로 보관됩니다</string>
+    <string name="record_edited">저장되었습니다</string>
+    <string name="record_deleted">%1$s 삭제되었습니다</string>
+    <string name="record_confirm_delete">이 기록을 삭제하시겠습니까?</string>
+    <string name="record_duplicated">기록이 복사되었습니다</string>
+    <string name="record_speech_recognition_format">내용 + 금액을 말씀해 주세요</string>
+    <string name="record_speech_recognition_not_supported">이 기기에서는 음성 기능을 지원하지 않습니다</string>
+    <string name="record_speech_recognition_no_result">식별할 수 없습니다. 다시 말씀해 주세요</string>
+    <string name="record_freeze_book_title">구독이 취소되었습니다\n계속 기록할 가계부를 선택하세요</string>
+    <string name="record_freeze_book_description">걱정하지 마세요! 모든 가계부 데이터는 그대로 보관됩니다</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">일괄 기록</string>
-    <string name="batch_record_start_date">시작 날짜:</string>
-    <string name="batch_record_frequency">반복 주기:</string>
+    <string name="batch_record_start_date">시작 날짜</string>
+    <string name="batch_record_frequency">반복 주기</string>
     <string name="batch_record_every_duration">매</string>
-    <string name="batch_record_unit_month">월</string>
+    <string name="batch_record_unit_month">개월</string>
     <string name="batch_record_unit_week">주</string>
     <string name="batch_record_unit_day">일</string>
-    <string name="batch_record_times">횟수:</string>
-    <string name="batch_record_cta">기록하기</string>
+    <string name="batch_record_times">반복 횟수</string>
+    <string name="batch_record_cta">일괄 기록</string>
     <string name="batch_record_created">%1$s개의 기록이 %2$s에 추가되었습니다</string>
-    <string name="batch_record_edit_confirmation">앞으로의 모든 기록에도 적용하시겠어요?</string>
-    <string name="batch_record_delete_confirmation">앞으로의 모든 기록도 삭제하시겠어요?</string>
-    <string name="batch_record_only_this">이것만</string>
-    <string name="batch_record_all_future_records">앞으로의 모든 기록</string>
+    <string name="batch_record_edit_confirmation">미래의 모든 기록에도 적용하시겠습니까?</string>
+    <string name="batch_record_delete_confirmation">미래의 모든 기록도 함께 삭제하시겠습니까?</string>
+    <string name="batch_record_only_this">이 기록만</string>
+    <string name="batch_record_all_future_records">모든 기록</string>
     <string name="batch_record_edited">%1$s개의 기록이 수정되었습니다</string>
     <string name="batch_record_deleted">%1$s개의 기록이 삭제되었습니다</string>
 
     <!-- Book -->
     <string name="book_selection">가계부 선택</string>
-    <string name="book_create_success">%1$s 가계부가 생성되었습니다!</string>
-    <string name="book_join_success">%1$s에 성공적으로 참여했습니다!</string>
-    <string name="book_join_link_expired">참여 링크가 만료되었어요…</string>
-    <string name="book_already_archived">앗, 가계부가 삭제되었어요…</string>
-    <string name="book_already_joined">이미 참여한 가계부입니다</string>
-    <string name="book_join_exceed_free_limit">프리미엄을 해제해 더 많은 가계부를 만들거나 참여하세요!</string>
+    <string name="book_create_success">「%1$s」이(가) 성공적으로 생성되었습니다</string>
+    <string name="book_join_success">「%1$s」에 참여했습니다</string>
+    <string name="book_join_link_expired">링크가 만료되었습니다</string>
+    <string name="book_already_archived">가계부가 이미 삭제되었습니다</string>
+    <string name="book_already_joined">이미 이 가계부에 참여했습니다</string>
+    <string name="book_join_exceed_free_limit">프리미엄을 이용해 더 많은 가계부를 생성하거나 참여하세요</string>
     <string name="book_exceed_maximum">가계부 최대 개수에 도달했습니다</string>
 
     <!-- Category -->
-    <string name="category_title">카테고리</string>
+    <string name="category_title">카테고리 이름</string>
     <string name="category_edit_title">카테고리 수정</string>
     <string name="category_edit_successful">카테고리 목록이 저장되었습니다</string>
-    <string name="category_already_exist">카테고리 %1$s은(는) 이미 존재합니다</string>
+    <string name="category_already_exist">카테고리 %1$s 이(가) 이미 존재합니다</string>
 
     <string-array name="default_expense_categories">
         <item>식비</item>
-        <item>생활비</item>
+        <item>일상</item>
         <item>교통</item>
-        <item>오락</item>
+        <item>엔터테인먼트</item>
         <item>월세</item>
         <item>통신</item>
         <item>공과금</item>
@@ -82,33 +82,33 @@
     <string-array name="default_income_categories">
         <item>급여</item>
         <item>보너스</item>
-        <item>환급</item>
+        <item>캐시백</item>
         <item>기타</item>
     </string-array>
 
     <!-- Members -->
     <string name="members_title">멤버</string>
-    <string name="members_owner_label">소유자</string>
-    <string name="members_confirm_remove">%1$s을(를) %2$s에서 제거하시겠어요?</string>
+    <string name="members_owner_label">생성자</string>
+    <string name="members_confirm_remove">%1$s님을「%2$s」에서 제거하시겠습니까?</string>
 
     <!-- Review -->
-    <string name="review_request_message">저희 앱이 마음에 드셨나요? 앱을 평가해 주시겠어요?</string>
+    <string name="review_request_message">저희 앱이 마음에 드시나요? 평가를 남겨주실 수 있을까요?</string>
     <string name="review_request_yes">물론이죠!</string>
-    <string name="review_request_no">아니요</string>
+    <string name="review_request_no">지금은 아니요</string>
 
     <!-- Menu -->
-    <string name="menu_invite_to_book">아래 링크를 눌러 저와 함께 지출을 기록해요!\n%1$s</string>
-    <string name="menu_create_book">새 가계부 만들기</string>
-    <string name="menu_share_colors">제가 고른 색상 조합을 확인해 보세요!\n%1$s</string>
+    <string name="menu_invite_to_book">아래 링크를 클릭해 함께 가계부를 써요!\n%1$s</string>
+    <string name="menu_create_book">새 가계부 생성</string>
+    <string name="menu_share_colors">제가 만든 테마 색상을 확인해 보세요!\n%1$s</string>
 
     <!-- Overview -->
-    <string name="overview_title">%1$s의 개요</string>
-    <string name="overview_total_price">총합</string>
+    <string name="overview_title">%1$s 통계</string>
+    <string name="overview_total_price">총액</string>
     <string name="overview_period_day">오늘</string>
     <string name="overview_period_week">이번 주</string>
     <string name="overview_period_month">이번 달</string>
-    <string name="overview_period_last_month">지난달</string>
-    <string name="overview_exceed_max_period">프리미엄을 해제해 한 달보다 긴 기간을 설정하세요</string>
+    <string name="overview_period_last_month">지난 달</string>
+    <string name="overview_exceed_max_period">프리미엄을 해제하여 한 달 이상의 기록을 필터링하세요</string>
     <string name="overview_sort_by_date">날짜순 정렬</string>
     <string name="overview_sort_by_price">금액순 정렬</string>
     <string name="overview_balance">잔액</string>
@@ -117,129 +117,129 @@
     <string name="overview_author_anonymous">익명</string>
 
     <!-- Export -->
-    <string name="export_cta">CSV 내보내기</string>
-    <string name="export_csv_confirmation">%1$s부터 %2$s까지의 모든 기록을 내보내시겠어요?</string>
-    <string name="export_csv_success">보고서가 다운로드 폴더에 저장되었습니다</string>
-    <string name="export_column_type">유형</string>
+    <string name="export_cta">보고서 내보내기</string>
+    <string name="export_csv_confirmation">%1$s부터 %2$s까지의 모든 기록을 내보내시겠습니까?</string>
+    <string name="export_csv_success">CSV 보고서가 다운로드 폴더에 저장되었습니다</string>
+    <string name="export_column_type">항목</string>
     <string name="export_column_name">이름</string>
     <string name="export_column_price">금액 (%1$s)</string>
     <string name="export_column_category">카테고리</string>
-    <string name="export_column_created_on">생성일</string>
+    <string name="export_column_created_on">시간</string>
     <string name="export_column_author">작성자</string>
 
     <!-- Search -->
     <string name="search_title">검색</string>
     <string name="search_field_placeholder">키워드 입력</string>
     <string name="search_all_categories">모든 카테고리</string>
-    <string name="search_period_last_month">지난달</string>
-    <string name="search_period_last_half_year">최근 6개월</string>
+    <string name="search_period_last_month">지난 한 달</string>
+    <string name="search_period_last_half_year">지난 6개월</string>
     <string name="search_period_last_year">지난 1년</string>
-    <string name="search_period_custom">직접 선택</string>
+    <string name="search_period_custom">사용자 지정</string>
     <string name="search_period_custom_range">%1$s부터 %2$s까지</string>
 
     <!-- Premium -->
     <string name="premium_hide_ads">광고 숨기기</string>
     <string name="premium_unlock">프리미엄 해제</string>
-    <string name="premium_unlocked">Budget+ 프리미엄이 해제되었습니다!</string>
-    <string name="premium_acknowledge_fail">결제를 확인할 수 없습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="premium_unlocked">심플 가계부 프리미엄이 해제되었습니다!</string>
+    <string name="premium_acknowledge_fail">결제를 확인할 수 없습니다. 잠시 후 다시 시도하세요</string>
 
     <!-- Settings -->
     <string name="settings_title">%1$s 설정</string>
     <string name="settings_description">설정</string>
-    <string name="settings_rename_user">사용자 이름 변경</string>
-    <string name="settings_rename_user_success">%1$s(으)로 변경되었습니다</string>
+    <string name="settings_rename_user">사용자 이름 수정</string>
+    <string name="settings_rename_user_success">사용자 이름이 %1$s(으)로 변경되었습니다</string>
     <string name="settings_rename_book">가계부 이름 변경</string>
     <string name="settings_rename_book_success">가계부 이름이 %1$s(으)로 변경되었습니다</string>
-    <string name="settings_edit_book_currency">가계부 통화 변경</string>
+    <string name="settings_edit_book_currency">가계부 통화 수정</string>
     <string name="settings_view_members">멤버 보기</string>
     <string name="settings_allow_members_edit">멤버 편집 허용</string>
-    <string name="settings_allow_members_edit_desc">멤버가 이름, 카테고리, 통화 및 모든 기록을 수정할 수 있도록 합니다.</string>
+    <string name="settings_allow_members_edit_desc">멤버가 가계부 이름, 카테고리, 통화 및 모든 기록을 수정할 수 있습니다</string>
     <string name="settings_logout">로그아웃</string>
     <string name="settings_delete_book">가계부 삭제</string>
     <string name="settings_leave_book">가계부 나가기</string>
-    <string name="settings_confirm_delete">%1$s을(를) 삭제하시겠어요?</string>
-    <string name="settings_confirm_leave">%1$s에서 나가시겠어요?</string>
-    <string name="settings_book_deleted">%1$s을(를) 삭제했습니다</string>
-    <string name="settings_book_left">%1$s에서 나갔습니다</string>
+    <string name="settings_confirm_delete">「%1$s」을(를) 삭제하시겠습니까?</string>
+    <string name="settings_confirm_leave">「%1$s」에서 나가시겠습니까?</string>
+    <string name="settings_book_deleted">%1$s이(가) 삭제되었습니다</string>
+    <string name="settings_book_left">%1$s에서 나왔습니다</string>
     <string name="settings_language">언어</string>
-    <string name="settings_input_vibration">입력 진동</string>
+    <string name="settings_input_vibration">입력 진동 피드백</string>
     <string name="settings_chart_mode">개요 차트 모드</string>
     <string name="settings_bar_chart">막대 차트</string>
-    <string name="settings_pie_chart">원형 차트</string>
-    <string name="settings_share_app">친구와 앱 공유하기</string>
-    <string name="settings_share_app_message">제가 멋진 가계부 앱을 찾았어요! 한번 사용해 보세요!\n%1$s</string>
+    <string name="settings_pie_chart">파이 차트</string>
+    <string name="settings_share_app">앱을 친구에게 공유</string>
+    <string name="settings_share_app_message">정말 좋은 가계부 앱을 발견했어요. 한번 사용해 보세요!\n%1$s</string>
     <string name="settings_rate_us">%1$s에서 평가하기</string>
-    <string name="settings_follow_on_instagram">인스타그램에서 팔로우하기</string>
+    <string name="settings_follow_on_instagram">Instagram 팔로우</string>
     <string name="settings_contact_us">문의하기</string>
     <string name="settings_privacy_policy">개인정보 처리방침</string>
     <string name="settings_no_email_app_found">이메일 앱을 찾을 수 없습니다</string>
     <string name="settings_delete_account">계정 삭제</string>
-    <string name="settings_delete_account_description">계정을 삭제하시겠어요? 계정을 삭제하면 모든 가계부와 거래 기록이 영구적으로 제거되며 복구할 수 없습니다.</string>
-    <string name="settings_delete_account_description2">영구 삭제하시겠어요?</string>
+    <string name="settings_delete_account_description">계정을 삭제하시겠습니까? 삭제 후 모든 가계부와 기록 데이터가 영구적으로 삭제되며 복구할 수 없습니다.</string>
+    <string name="settings_delete_account_description2">영구 삭제를 확인하시겠습니까?</string>
 
     <!-- Color Tone Picker -->
-    <string name="color_tone_picker_title">색상 테마 선택</string>
+    <string name="color_tone_picker_title">테마 색상 팔레트</string>
     <string name="color_tone_preview_title">색상 미리보기</string>
     <string name="color_tone_milk_tea">우롱 밀크티</string>
-    <string name="color_tone_dusk">노을빛 웜톤</string>
-    <string name="color_tone_countryside">전원 풍경</string>
+    <string name="color_tone_dusk">황혼의 따뜻한 색</string>
+    <string name="color_tone_countryside">시골 풍경</string>
     <string name="color_tone_barbie">바비와 켄</string>
-    <string name="color_tone_lavender">햇살 라벤더</string>
+    <string name="color_tone_lavender">라벤더 햇살</string>
     <string name="color_tone_nemo_sea">니모와 바다</string>
-    <string name="color_tone_customized">사용자 지정</string>
-    <string name="color_tone_color_hex_code">색상 Hex</string>
-    <string name="color_tone_applied_from_link">색상이 적용되었습니다. 마음에 들면 저장해 주세요!</string>
+    <string name="color_tone_customized">내 팔레트</string>
+    <string name="color_tone_color_hex_code">Hex 색상 코드</string>
+    <string name="color_tone_applied_from_link">테마 색상이 적용되었습니다. 마음에 들면 저장하세요!</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">통화 선택</string>
-    <string name="currency_picker_hint">미국 달러 또는 USD</string>
-    <string name="currency_picker_no_conversion_disclaimer">가격은 환율 변환되지 않으며, 이 설정은 통화 기호 표시에만 영향을 줍니다.</string>
+    <string name="currency_picker_title">가계부 통화</string>
+    <string name="currency_picker_hint">엔 또는 JPY</string>
+    <string name="currency_picker_no_conversion_disclaimer">통화를 변경해도 아이콘만 바뀌며 환율 변환은 적용되지 않습니다</string>
     <string name="currency_picker_edit_success">%1$s의 통화가 %2$s(으)로 변경되었습니다</string>
 
     <!-- Bubble -->
-    <string name="bubble_invite">함께 지출을 기록할 친구들을 초대해 보세요!</string>
-    <string name="bubble_speak_to_record">길게 눌러 음성으로 지출을 기록하세요</string>
-    <string name="bubble_edit_category">탭해서 이름 변경 또는 삭제, 길게 눌러 순서 변경</string>
-    <string name="bubble_save_category">편집을 마친 후 저장을 눌러 주세요</string>
-    <string name="bubble_overview_mode">탭해서 기록을 카테고리별로 묶어 보세요</string>
-    <string name="bubble_overview_export">기록을 CSV로 내보낼 수 있어요</string>
-    <string name="bubble_overview_record_tap_hint">탭해서 수정, 길게 눌러 복제 또는 삭제</string>
-    <string name="bubble_overview_pie_chart">길게 눌러 더 자세히 보기</string>
-    <string name="bubble_records_sorting">날짜 또는 금액순으로 기록 정렬을 변경하세요</string>
-    <string name="bubble_colors_sharing">색상 조합을 친구들과 공유해 보세요!</string>
+    <string name="bubble_invite">공유 링크를 눌러 친구들을 초대하세요!</string>
+    <string name="bubble_speak_to_record">길게 눌러 음성으로 기록하세요</string>
+    <string name="bubble_edit_category">탭하여 이름 변경 또는 삭제, 길게 눌러 드래그로 정렬</string>
+    <string name="bubble_save_category">편집이 끝나면 저장을 잊지 마세요!</string>
+    <string name="bubble_overview_mode">카테고리 또는 상세 보기로 표시할 수 있습니다</string>
+    <string name="bubble_overview_export">기록을 CSV 파일로 내보내기</string>
+    <string name="bubble_overview_record_tap_hint">탭하여 편집, 길게 눌러 복사 또는 삭제</string>
+    <string name="bubble_overview_pie_chart">길게 눌러 더 많은 정보 보기</string>
+    <string name="bubble_records_sorting">날짜 또는 금액으로 정렬할 수 있습니다</string>
+    <string name="bubble_colors_sharing">팔레트를 친구와 공유해 보세요!</string>
 
     <!-- Notification -->
     <string name="notification_channel_general">일반</string>
-    <string name="notification_channel_general_desc">몇 가지 알림과 앱 변경 사항 관련 업데이트</string>
+    <string name="notification_channel_general_desc">알림 및 앱 관련 공지</string>
     <string name="notification_channel_new_member">새 멤버</string>
-    <string name="notification_channel_new_member_desc">새 멤버가 가계부에 참여하면 알려드립니다</string>
+    <string name="notification_channel_new_member_desc">가계부에 새 멤버가 추가되면 알려드립니다</string>
 
     <!-- General -->
     <string name="cta_add">추가</string>
-    <string name="cta_create">만들기</string>
-    <string name="cta_rename">이름 변경</string>
+    <string name="cta_create">생성</string>
+    <string name="cta_rename">저장</string>
     <string name="cta_invite">초대</string>
     <string name="cta_edit">수정</string>
     <string name="cta_save">저장</string>
     <string name="cta_share">공유</string>
     <string name="cta_confirm">확인</string>
-    <string name="cta_go">이동</string>
+    <string name="cta_go">Go</string>
     <string name="cta_cancel">취소</string>
     <string name="cta_back">뒤로</string>
     <string name="cta_delete">삭제</string>
     <string name="cta_complete">완료</string>
-    <string name="cta_duplicate">복제</string>
+    <string name="cta_duplicate">복사</string>
     <string name="select_date">날짜 선택</string>
-    <string name="date_to">~</string>
+    <string name="date_to">까지</string>
     <string name="today">오늘</string>
     <string name="yesterday">어제</string>
     <string name="tomorrow">내일</string>
     <string name="username_title">사용자 이름</string>
     <string name="book_name_title">가계부 이름</string>
     <string name="book_name_placeholder">나의 가계부</string>
-    <string name="ads_not_available">광고를 사용할 수 없습니다</string>
-    <string name="fallback_error_message">문제가 발생했습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="ads_not_available">현재 광고 없음</string>
+    <string name="fallback_error_message">오류가 발생했습니다. 잠시 후 다시 시도하세요</string>
     <string name="permission_hint">마음이 바뀌면 설정에서 권한을 켜 주세요</string>
-    <string name="app_update_downloaded">업데이트가 준비되었습니다!</string>
-    <string name="unsaved_warning_message">변경 사항을 저장하지 않고 나가시겠어요?</string>
+    <string name="app_update_downloaded">미니멀 가계부 업데이트가 준비되었습니다!</string>
+    <string name="unsaved_warning_message">저장되지 않은 변경 사항이 있습니다. 정말 나가시겠습니까?</string>
 </resources>
