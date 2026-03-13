@@ -7,6 +7,7 @@ import budgetplus.core.common.generated.resources.settings_no_email_app_found
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.Constants.APP_LANGUAGE_INITIALIZED_KEY
 import com.kevlina.budgetplus.core.common.SnackbarSender
+import com.kevlina.budgetplus.core.common.supportedAppLanguages
 import com.kevlina.budgetplus.core.data.AuthManager
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -44,24 +45,17 @@ class SettingsNavigationImpl(
             preferredStyle = UIAlertControllerStyleActionSheet
         )
 
-        val languages = mapOf(
-            "繁體中文" to "zh-tw",
-            "简体中文" to "zh-cn",
-            "日本語" to "ja",
-            "English" to "en"
-        )
-
-        languages.forEach { (name, code) ->
+        supportedAppLanguages.forEach { language ->
             alertController.addAction(
                 UIAlertAction.actionWithTitle(
-                    title = name,
+                    title = language.displayName,
                     style = UIAlertActionStyleDefault,
                     handler = {
                         val userDefaults = NSUserDefaults.standardUserDefaults
-                        userDefaults.setObject(listOf(code), "AppleLanguages")
+                        userDefaults.setObject(listOf(language.code), "AppleLanguages")
                         userDefaults.setBool(true, APP_LANGUAGE_INITIALIZED_KEY)
                         userDefaults.synchronize()
-                        onLanguageChanged(code)
+                        onLanguageChanged(language.code)
                     }
                 )
             )

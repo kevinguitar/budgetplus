@@ -16,6 +16,12 @@
             "value" : "ミニマリストな帳簿"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미니멀 가계부"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -67,6 +73,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "この識別子は、パーソナライズされた広告を配信するために使用されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 식별자는 맞춤형 광고를 제공하는 데 사용됩니다."
           }
         },
         "zh-Hans" : {
