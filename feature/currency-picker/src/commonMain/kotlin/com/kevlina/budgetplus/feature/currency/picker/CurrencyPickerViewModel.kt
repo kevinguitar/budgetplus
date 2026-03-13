@@ -77,7 +77,11 @@ class CurrencyPickerViewModel(
 
     suspend fun onCurrencyPicked(state: CurrencyState) {
         val bookName = bookRepo.bookState.value?.name ?: return
-        snackbarSender.send(getString(Res.string.currency_picker_edit_success, bookName, state.currency.name))
-        bookRepo.updateCurrency(state.currency.currencyCode)
+        try {
+            bookRepo.updateCurrency(state.currency.currencyCode)
+            snackbarSender.send(getString(Res.string.currency_picker_edit_success, bookName, state.currency.name))
+        } catch (e: Exception) {
+            snackbarSender.sendError(e)
+        }
     }
 }

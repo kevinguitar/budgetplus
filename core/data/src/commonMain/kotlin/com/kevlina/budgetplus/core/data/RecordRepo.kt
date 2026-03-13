@@ -1,7 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
 import com.kevlina.budgetplus.core.data.remote.Record
-import kotlinx.coroutines.Job
 import kotlinx.datetime.LocalDate
 
 interface RecordRepo {
@@ -18,7 +17,7 @@ interface RecordRepo {
         times: Int,
     ): String
 
-    fun editRecord(
+    suspend fun editRecord(
         oldRecord: Record,
         newDate: LocalDate,
         newCategory: String,
@@ -39,14 +38,14 @@ interface RecordRepo {
 
     fun duplicateRecord(record: Record)
 
-    fun deleteRecord(recordId: String)
+    suspend fun deleteRecord(recordId: String)
 
     /**
      *  @return How many records were deleted?
      */
     suspend fun deleteBatch(record: Record): Int
 
-    fun renameCategories(events: List<CategoryRenameEvent>): Job
+    fun renameCategories(events: List<CategoryRenameEvent>)
 
 }
 
