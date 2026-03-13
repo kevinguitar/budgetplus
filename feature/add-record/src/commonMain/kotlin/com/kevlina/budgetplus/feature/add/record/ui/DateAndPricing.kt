@@ -18,7 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,7 +29,6 @@ import com.kevlina.budgetplus.core.ui.DatePickerDialog
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.SingleDatePicker
 import com.kevlina.budgetplus.core.ui.TextField
-import com.kevlina.budgetplus.core.ui.clickableWithoutRipple
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordDateState
@@ -43,18 +42,17 @@ internal fun ColumnScope.DateAndPricing(
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
 ) {
-    val focusManager = LocalFocusManager.current
-
     val recordDate by state.recordDate.collectAsStateWithLifecycle()
     val currencySymbol by state.currencySymbol.collectAsStateWithLifecycle()
 
     var showDatePicker by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     if (state.scrollable) {
         val priceText = state.priceText.text
         LaunchedEffect(key1 = priceText) {
             if (priceText != CalculatorViewModel.EMPTY_PRICE) {
-                focusManager.clearFocus()
+                keyboardController?.hide()
 
                 if (scrollState.value != scrollState.maxValue) {
                     scrollState.animateScrollTo(scrollState.maxValue)
@@ -83,9 +81,7 @@ internal fun ColumnScope.DateAndPricing(
             readOnly = true,
             title = currencySymbol,
             onTitleClick = state.editCurrency,
-            modifier = Modifier
-                .weight(1F)
-                .clickableWithoutRipple { focusManager.clearFocus() }
+            modifier = Modifier.weight(1F)
         )
     }
 

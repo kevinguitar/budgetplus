@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,7 +61,7 @@ internal fun RecordInfo(
         )
 
         val focusManager = LocalFocusManager.current
-        
+
         TextField(
             state = state.note,
             title = stringResource(Res.string.record_note),
@@ -71,7 +72,7 @@ internal fun RecordInfo(
                 }
             ),
             modifier = Modifier.fillMaxWidth(),
-            onDone = { focusManager.clearFocus() }
+            onDone = { focusManager.moveFocus(FocusDirection.Next) }
         )
 
         DateAndPricing(

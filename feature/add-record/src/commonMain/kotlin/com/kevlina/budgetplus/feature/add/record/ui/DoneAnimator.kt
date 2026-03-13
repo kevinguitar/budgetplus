@@ -12,11 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.EventTrigger
-import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.lottie.loadLottieSpec
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
@@ -28,12 +26,11 @@ import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun BoxScope.DoneAnimator(eventTrigger: EventTrigger<Unit>) {
-    val focusManager = LocalFocusManager.current
-
     var showAnimation by remember { mutableStateOf(false) }
     val imgDone by rememberLottieComposition { loadLottieSpec("img_done") }
     val lottieAnimatable = rememberLottieAnimatable()
@@ -63,9 +60,7 @@ fun BoxScope.DoneAnimator(eventTrigger: EventTrigger<Unit>) {
     }
 
     LaunchedEffect(key1 = eventTrigger) {
-        eventTrigger.event.consumeEach {
-            focusManager.clearFocus()
-
+        eventTrigger.event.onEach {
             showAnimation = true
             lottieAnimatable.animate(
                 composition = imgDone,

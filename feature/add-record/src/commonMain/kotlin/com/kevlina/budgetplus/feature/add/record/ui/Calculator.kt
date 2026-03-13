@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.add.record.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -16,12 +17,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +48,7 @@ import budgetplus.feature.add_record.generated.resources.ic_equal
 import budgetplus.feature.add_record.generated.resources.ic_minus
 import budgetplus.feature.add_record.generated.resources.ic_multiply
 import budgetplus.feature.add_record.generated.resources.ic_plus
+import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -51,6 +64,8 @@ import com.kevlina.budgetplus.feature.speak.record.ui.SpeakToRecordButtonState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -86,8 +101,10 @@ internal fun Calculator(
     val vibrateOnInput by state.vibrateOnInput.collectAsStateWithLifecycle()
     val isBookFrozen by state.isBookFrozen.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
+    val focusRequester = remember { FocusRequester() }
 
-    fun vibrate() {
+    fun onButtonClick() {
+        focusRequester.requestFocus()
         if (vibrateOnInput) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
         }
@@ -96,10 +113,70 @@ internal fun Calculator(
     Column(
         verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         modifier = modifier
+            .focusRequester(focusRequester)
+            .focusable()
+            .onKeyEvent { event ->
+                if (event.type != KeyEventType.KeyUp) return@onKeyEvent false
+                when (event.key) {
+                    // Numbers 0-7, 9
+                    Key.Zero, Key.NumPad0 -> state.onInput(CalculatorButton.Zero)
+                    Key.One, Key.NumPad1 -> state.onInput(CalculatorButton.One)
+                    Key.Two, Key.NumPad2 -> state.onInput(CalculatorButton.Two)
+                    Key.Three, Key.NumPad3 -> state.onInput(CalculatorButton.Three)
+                    Key.Four, Key.NumPad4 -> state.onInput(CalculatorButton.Four)
+                    Key.Five, Key.NumPad5 -> state.onInput(CalculatorButton.Five)
+                    Key.Six, Key.NumPad6 -> state.onInput(CalculatorButton.Six)
+                    Key.Seven, Key.NumPad7 -> state.onInput(CalculatorButton.Seven)
+                    Key.Nine, Key.NumPad9 -> state.onInput(CalculatorButton.Nine)
+
+                    // 8 and Shift + 8 (Multiply)
+                    Key.Eight, Key.NumPad8 -> {
+                        if (event.isShiftPressed) {
+                            state.onInput(CalculatorButton.Multiply)
+                        } else {
+                            state.onInput(CalculatorButton.Eight)
+                        }
+                    }
+
+                    // Decimals
+                    Key.Period, Key.NumPadDot -> state.onInput(CalculatorButton.Dot)
+
+                    // Operators (Numpad and dedicated keys)
+                    Key.Plus, Key.NumPadAdd -> state.onInput(CalculatorButton.Plus)
+                    Key.Minus, Key.NumPadSubtract -> state.onInput(CalculatorButton.Minus)
+                    Key.Multiply, Key.NumPadMultiply -> state.onInput(CalculatorButton.Multiply)
+                    Key.Slash, Key.NumPadDivide -> state.onInput(CalculatorButton.Divide)
+
+                    // Edits & Actions
+                    Key.Backspace -> state.onInput(CalculatorButton.Delete)
+                    Key.Escape, Key.Clear -> state.onCalculatorAction(CalculatorAction.Clear)
+
+                    // Equals and Shift + Equals (Plus)
+                    Key.Equals -> {
+                        if (event.isShiftPressed) {
+                            state.onInput(CalculatorButton.Plus)
+                        } else {
+                            state.onCalculatorAction(CalculatorAction.Evaluate)
+                        }
+                    }
+
+                    Key.NumPadEquals -> state.onCalculatorAction(CalculatorAction.Evaluate)
+
+                    // Enter
+                    Key.Enter, Key.NumPadEnter -> {
+                        if (needEvaluate) {
+                            state.onCalculatorAction(CalculatorAction.Evaluate)
+                        } else {
+                            state.onCalculatorAction(CalculatorAction.Ok)
+                        }
+                    }
+
+                    else -> return@onKeyEvent false
+                }
+                true
+            }
     ) {
-
         calcButtons.chunked(calcButtons.size / 2).forEachIndexed { index, rows ->
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(horizontalSpacing),
                 modifier = if (adaptiveButton) {
@@ -113,7 +190,6 @@ internal fun Calculator(
                 }
             ) {
                 rows.chunked(2).forEach { btns ->
-
                     Column(
                         verticalArrangement = Arrangement.spacedBy(verticalSpacing),
                         modifier = Modifier.weight(1F)
@@ -123,7 +199,7 @@ internal fun Calculator(
                                 button = btn,
                                 isAdaptive = adaptiveButton,
                                 onClick = {
-                                    vibrate()
+                                    onButtonClick()
                                     state.onInput(btn)
                                 }
                             )
@@ -134,7 +210,7 @@ internal fun Calculator(
                 when (index) {
                     0 -> {
                         val onClearClick = {
-                            vibrate()
+                            onButtonClick()
                             state.onCalculatorAction(CalculatorAction.Clear)
                         }
                         val clearText = @Composable {
@@ -169,6 +245,7 @@ internal fun Calculator(
                                 onClick = onClearClick,
                                 modifier = Modifier
                                     .weight(1F)
+                                    .focusProperties { canFocus = false }
                                     .fillMaxHeight(),
                                 shape = CircleShape,
                                 color = LocalAppColors.current.dark
@@ -182,7 +259,7 @@ internal fun Calculator(
                         needEvaluate = needEvaluate,
                         enabled = !isBookFrozen,
                         onClick = {
-                            vibrate()
+                            onButtonClick()
                             state.onCalculatorAction(
                                 if (needEvaluate) {
                                     CalculatorAction.Evaluate
@@ -195,6 +272,15 @@ internal fun Calculator(
                 }
             }
         }
+    }
+
+    LaunchedEffect(state) {
+        focusRequester.requestFocus()
+
+        // When a new record is made, re-focus the calculator.
+        state.recordEvent.event
+            .onEach { focusRequester.requestFocus() }
+            .collect()
     }
 }
 
@@ -210,6 +296,7 @@ private fun ColumnScope.CalculatorBtnContainer(
         onClick = onClick,
         modifier = modifier
             .weight(1F)
+            .focusProperties { canFocus = false }
             .thenIf(isAdaptive) { Modifier.fillMaxWidth() }
             .thenIf(!isAdaptive) { Modifier.aspectRatio(1F) },
         shape = CircleShape,
@@ -271,26 +358,6 @@ private fun ColumnScope.CalculatorBtn(
 }
 
 @Composable
-private fun ColumnScope.ClearBtn(
-    isAdaptive: Boolean,
-    onClick: () -> Unit,
-) {
-    CalculatorBtnContainer(
-        isAdaptive = isAdaptive,
-        onClick = onClick,
-        color = LocalAppColors.current.dark
-    ) {
-        Text(
-            text = "AC",
-            textAlign = TextAlign.Center,
-            fontSize = FontSize.Header,
-            fontWeight = FontWeight.Bold,
-            color = LocalAppColors.current.light
-        )
-    }
-}
-
-@Composable
 private fun RowScope.DoneBtn(
     needEvaluate: Boolean,
     enabled: Boolean,
@@ -300,6 +367,7 @@ private fun RowScope.DoneBtn(
         onClick = onClick,
         modifier = Modifier
             .weight(1F)
+            .focusProperties { canFocus = false }
             .fillMaxHeight(),
         enabled = enabled,
         shape = CircleShape,
@@ -328,6 +396,7 @@ internal data class CalculatorState(
     val needEvaluate: Flow<Boolean>,
     val vibrateOnInput: StateFlow<Boolean>,
     val isBookFrozen: StateFlow<Boolean>,
+    val recordEvent: EventTrigger<Unit>,
     val speakToRecordButtonState: SpeakToRecordButtonState,
     val onInput: (CalculatorButton) -> Unit,
     val onCalculatorAction: (CalculatorAction) -> Unit,
@@ -337,6 +406,7 @@ internal data class CalculatorState(
             needEvaluate = MutableStateFlow(false),
             vibrateOnInput = MutableStateFlow(true),
             isBookFrozen = MutableStateFlow(false),
+            recordEvent = EventTrigger(),
             speakToRecordButtonState = SpeakToRecordButtonState.preview,
             onInput = {},
             onCalculatorAction = {}
@@ -344,10 +414,11 @@ internal data class CalculatorState(
     }
 }
 
-internal fun CalculatorViewModel.toState() = CalculatorState(
+internal fun CalculatorViewModel.toState(recordEvent: EventTrigger<Unit>) = CalculatorState(
     needEvaluate = needEvaluate,
     vibrateOnInput = vibrator.vibrateOnInput,
     isBookFrozen = freezeBookVm.isBookFrozen,
+    recordEvent = recordEvent,
     speakToRecordButtonState = SpeakToRecordButtonState(
         onTap = speakToRecordVm::onButtonTap,
         onReleased = speakToRecordVm::onButtonReleased,
