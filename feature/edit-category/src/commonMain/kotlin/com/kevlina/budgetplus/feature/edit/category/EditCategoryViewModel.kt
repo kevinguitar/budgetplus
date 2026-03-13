@@ -44,11 +44,15 @@ class EditCategoryViewModel(
 
     fun updateCategories(type: RecordType, newCategories: List<String>) {
         viewModelScope.launch {
-            bookRepo.updateCategories(type, newCategories)
-            if (categoryRenameEvents.isNotEmpty()) {
-                recordRepo.renameCategories(categoryRenameEvents)
+            try {
+                bookRepo.updateCategories(type, newCategories)
+                if (categoryRenameEvents.isNotEmpty()) {
+                    recordRepo.renameCategories(categoryRenameEvents)
+                }
+                snackbarSender.send(Res.string.category_edit_successful)
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
             }
-            snackbarSender.send(Res.string.category_edit_successful)
         }
     }
 

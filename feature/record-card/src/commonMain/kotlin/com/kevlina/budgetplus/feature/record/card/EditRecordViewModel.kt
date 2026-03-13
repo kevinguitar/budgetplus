@@ -41,8 +41,8 @@ class EditRecordViewModel(
         editBatch: Boolean,
     ) {
         viewModelScope.launch {
-            if (editBatch) {
-                try {
+            try {
+                if (editBatch) {
                     val count = recordRepo.editBatch(
                         oldRecord = record,
                         newDate = newDate,
@@ -51,41 +51,45 @@ class EditRecordViewModel(
                         newPriceText = newPriceText
                     )
                     snackbarSender.send(getString(Res.string.batch_record_edited, count.toString()))
-                } catch (e: Exception) {
-                    snackbarSender.sendError(e)
+                } else {
+                    recordRepo.editRecord(
+                        oldRecord = record,
+                        newDate = newDate,
+                        newCategory = newCategory,
+                        newName = newName,
+                        newPriceText = newPriceText
+                    )
+                    snackbarSender.send(Res.string.record_edited)
                 }
-            } else {
-                recordRepo.editRecord(
-                    oldRecord = record,
-                    newDate = newDate,
-                    newCategory = newCategory,
-                    newName = newName,
-                    newPriceText = newPriceText
-                )
-                snackbarSender.send(Res.string.record_edited)
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
             }
         }
     }
 
     fun deleteRecord(record: Record, deleteBatch: Boolean = false) {
         viewModelScope.launch {
-            if (deleteBatch) {
-                try {
+            try {
+                if (deleteBatch) {
                     val count = recordRepo.deleteBatch(record)
                     snackbarSender.send(getString(Res.string.batch_record_deleted, count.toString()))
-                } catch (e: Exception) {
-                    snackbarSender.sendError(e)
+                } else {
+                    recordRepo.deleteRecord(record.id)
+                    snackbarSender.send(getString(Res.string.record_deleted, record.name))
                 }
-            } else {
-                recordRepo.deleteRecord(record.id)
-                snackbarSender.send(getString(Res.string.record_deleted, record.name))
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
             }
         }
     }
 
     fun addCategory(type: RecordType, newCategory: String) {
         viewModelScope.launch {
-            bookRepo.addCategory(type = type, category = newCategory, source = "edit")
+            try {
+                bookRepo.addCategory(type = type, category = newCategory, source = "edit")
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
+            }
         }
     }
 }

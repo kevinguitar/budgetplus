@@ -5,7 +5,6 @@ import com.kevlina.budgetplus.core.data.BatchFrequency
 import com.kevlina.budgetplus.core.data.CategoryRenameEvent
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.remote.Record
-import kotlinx.coroutines.Job
 import kotlinx.datetime.LocalDate
 
 @VisibleForTesting
@@ -21,7 +20,7 @@ object FakeRecordRepo : RecordRepo {
         error("Not yet implemented")
     }
 
-    override fun editRecord(
+    override suspend fun editRecord(
         oldRecord: Record,
         newDate: LocalDate,
         newCategory: String,
@@ -45,7 +44,7 @@ object FakeRecordRepo : RecordRepo {
         error("Not yet implemented")
     }
 
-    override fun deleteRecord(recordId: String) {
+    override suspend fun deleteRecord(recordId: String) {
         error("Not yet implemented")
     }
 
@@ -53,7 +52,7 @@ object FakeRecordRepo : RecordRepo {
         error("Not yet implemented")
     }
 
-    override fun renameCategories(events: List<CategoryRenameEvent>): Job {
+    override fun renameCategories(events: List<CategoryRenameEvent>) {
         error("Not yet implemented")
     }
 }

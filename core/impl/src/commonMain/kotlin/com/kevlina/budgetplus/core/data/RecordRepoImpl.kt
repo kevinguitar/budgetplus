@@ -45,7 +45,13 @@ class RecordRepoImpl(
 ) : RecordRepo {
 
     override fun createRecord(record: Record) {
-        appScope.launch { recordsDb().add(record) }
+        appScope.launch {
+            try {
+                recordsDb().add(record)
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
+            }
+        }
         tracker.logEvent("record_created")
     }
 
@@ -77,7 +83,7 @@ class RecordRepoImpl(
         return batchId
     }
 
-    override fun editRecord(
+    override suspend fun editRecord(
         oldRecord: Record,
         newDate: LocalDate,
         newCategory: String,
@@ -89,20 +95,14 @@ class RecordRepoImpl(
             .toLocalDateTime(TimeZone.UTC)
             .time
 
-        val newRecord = try {
-            oldRecord.copy(
-                date = newDate.toEpochDays(),
-                timestamp = LocalDateTime(newDate, originalTime).toInstant(TimeZone.UTC).epochSeconds,
-                category = newCategory,
-                name = newName,
-                price = newPriceText.parseToPrice()
-            )
-        } catch (e: Exception) {
-            snackbarSender.sendError(e)
-            return
-        }
-
-        appScope.launch { recordsDb().document(oldRecord.id).set(newRecord) }
+        val newRecord = oldRecord.copy(
+            date = newDate.toEpochDays(),
+            timestamp = LocalDateTime(newDate, originalTime).toInstant(TimeZone.UTC).epochSeconds,
+            category = newCategory,
+            name = newName,
+            price = newPriceText.parseToPrice()
+        )
+        recordsDb().document(oldRecord.id).set(newRecord)
         tracker.logEvent("record_edited")
     }
 
@@ -148,18 +148,24 @@ class RecordRepoImpl(
     override fun duplicateRecord(record: Record) {
         val duplicatedRecord = record.copy(
             id = "",
-            // The person who duplicate it should be the author
+            // The person who duplicates it should be the author
             author = authManager.userState.value?.toAuthor(),
             // Do not carry the batch info to duplicates
             batchId = null
         )
-        appScope.launch { recordsDb().add(duplicatedRecord) }
-        tracker.logEvent("record_duplicated")
-        appScope.launch { snackbarSender.send(Res.string.record_duplicated) }
+        appScope.launch {
+            try {
+                recordsDb().add(duplicatedRecord)
+                snackbarSender.send(Res.string.record_duplicated)
+                tracker.logEvent("record_duplicated")
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
+            }
+        }
     }
 
-    override fun deleteRecord(recordId: String) {
-        appScope.launch { recordsDb().document(recordId).delete() }
+    override suspend fun deleteRecord(recordId: String) {
+        recordsDb().document(recordId).delete()
         tracker.logEvent("record_deleted")
     }
 
@@ -188,31 +194,33 @@ class RecordRepoImpl(
 
     override fun renameCategories(
         events: List<CategoryRenameEvent>,
-    ) = appScope.launch(Dispatchers.IO) {
-        val db = recordsDb()
-        var dbUpdateCount = 0
+    ) {
+        appScope.launch(Dispatchers.IO) {
+            val db = recordsDb()
+            var dbUpdateCount = 0
 
-        events.forEach { event ->
-            try {
-                val records = db
-                    .where { "category" equalTo event.from }
-                    .get()
+            events.forEach { event ->
+                try {
+                    val records = db
+                        .where { "category" equalTo event.from }
+                        .get()
 
-                records.documents.forEach { doc ->
-                    val newRecord = doc.data<Record>().copy(category = event.to)
-                    db.document(doc.id).set(newRecord)
+                    records.documents.forEach { doc ->
+                        val newRecord = doc.data<Record>().copy(category = event.to)
+                        db.document(doc.id).set(newRecord)
+                    }
+                    dbUpdateCount += records.documents.size
+                } catch (e: Exception) {
+                    Logger.e(e) { "RecordRepo: renameCategories failed" }
                 }
-                dbUpdateCount += records.documents.size
-            } catch (e: Exception) {
-                Logger.e(e) { "RecordRepo: renameCategories failed" }
             }
-        }
 
-        if (dbUpdateCount > 0) {
-            tracker.logEvent(
-                event = "categories_renamed",
-                params = mapOf("db_update_count" to dbUpdateCount)
-            )
+            if (dbUpdateCount > 0) {
+                tracker.logEvent(
+                    event = "categories_renamed",
+                    params = mapOf("db_update_count" to dbUpdateCount)
+                )
+            }
         }
     }
 }

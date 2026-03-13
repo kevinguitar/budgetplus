@@ -106,11 +106,15 @@ class AuthManagerImpl(
         if (currentUser?.premium == isPremium) return
 
         val premiumUser = currentUser?.copy(premium = isPremium) ?: return
-        usersDb.value.document(premiumUser.id).set(premiumUser)
-        setUserToPreference(premiumUser)
+        try {
+            usersDb.value.document(premiumUser.id).set(premiumUser)
+            setUserToPreference(premiumUser)
 
-        if (isPremium) {
-            snackbarSender.send(Res.string.premium_unlocked)
+            if (isPremium) {
+                snackbarSender.send(Res.string.premium_unlocked)
+            }
+        } catch (e: Exception) {
+            snackbarSender.sendError(e)
         }
     }
 
@@ -124,8 +128,12 @@ class AuthManagerImpl(
 
         val userWithNewToken = currentUser?.copy(fcmToken = newToken) ?: return
         appScope.launch {
-            usersDb.value.document(userWithNewToken.id).set(userWithNewToken)
-            setUserToPreference(userWithNewToken)
+            try {
+                usersDb.value.document(userWithNewToken.id).set(userWithNewToken)
+                setUserToPreference(userWithNewToken)
+            } catch (e: Exception) {
+                Logger.w(e) { "Failed to update fcm token" }
+            }
         }
     }
 
