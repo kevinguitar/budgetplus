@@ -188,5 +188,5 @@ private fun RecordViewModel.toState(
             }
         ),
     ),
-    calculatorState = calculatorVm.toState(),
+    calculatorState = calculatorVm.toState(recordEvent),
 )
