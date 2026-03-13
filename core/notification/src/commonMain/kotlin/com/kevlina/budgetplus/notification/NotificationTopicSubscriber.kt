@@ -73,6 +73,7 @@ class NotificationTopicSubscriber(
             "zh-tw" -> "${this}_tw"
             "zh-cn" -> "${this}_cn"
             "ja" -> "${this}_ja"
+            "ko" -> "${this}_ko"
             else -> "${this}_en"
         }
 }
