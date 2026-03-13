@@ -10,7 +10,7 @@ internal data class PushNotificationCache(
     val descriptionEn: String = "Track your expenses starting from the beginning of the month \uD83D\uDE4C",
     val titleJa: String = "新しい月ですよ！",
     val descriptionJa: String = "月初めに支出の追跡を始めましょう \uD83D\uDE4C",
-    val titleKo: String = TODO(),
-    val descriptionKo: String = TODO(),
+    val titleKo: String = "새로운 한 달",
+    val descriptionKo: String = "이번 달 가계부를 기록할 시간입니다!",
     val deeplink: String = "",
 )

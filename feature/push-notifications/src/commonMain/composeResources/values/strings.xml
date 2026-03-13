@@ -16,4 +16,5 @@
     <string name="push_notif_send_to_everyone" translatable="false">發送給所有人！</string>
     <string name="push_notif_send_to_everyone_confirmation" translatable="false">確定要發送給所有人嗎？</string>
     <string name="push_notif_sent_success" translatable="false">傳送成功！</string>
+    <string name="push_notif_other_languages" translatable="false">其他語言</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.book_selection
 import budgetplus.core.common.generated.resources.ic_arrow_drop_down
+import budgetplus.core.common.generated.resources.ic_keyboard_arrow_down
+import budgetplus.core.common.generated.resources.ic_keyboard_arrow_up
 import budgetplus.feature.push_notifications.generated.resources.Res
 import budgetplus.feature.push_notifications.generated.resources.push_notif_deeplink
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_en
@@ -31,6 +34,7 @@ import budgetplus.feature.push_notifications.generated.resources.push_notif_lang
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_ko
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_cn
 import budgetplus.feature.push_notifications.generated.resources.push_notif_language_zh_tw
+import budgetplus.feature.push_notifications.generated.resources.push_notif_other_languages
 import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_everyone
 import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_everyone_confirmation
 import budgetplus.feature.push_notifications.generated.resources.push_notif_send_to_internal_topic
@@ -67,6 +71,7 @@ internal fun PushNotificationsContent(
     val sendToKo by vm.sendToKo.collectAsStateWithLifecycle()
 
     var isConfirmationDialogShown by remember { mutableStateOf(false) }
+    var isOtherLanguagesExpanded by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -84,38 +89,45 @@ internal fun PushNotificationsContent(
             isOptional = false
         )
 
-        //TODO: Add a collapsible section for Cn, En, Ja, Ko languages
-        LanguageBlock(
-            textRes = Res.string.push_notif_language_zh_cn,
-            title = vm.titleCn,
-            description = vm.descCn,
-            enabled = sendToCn,
-            onEnableUpdate = { vm.sendToCn.value = it }
+        ExpandableTitle(
+            title = stringResource(Res.string.push_notif_other_languages),
+            isExpanded = isOtherLanguagesExpanded,
+            onClick = { isOtherLanguagesExpanded = !isOtherLanguagesExpanded }
         )
 
-        LanguageBlock(
-            textRes = Res.string.push_notif_language_en,
-            title = vm.titleEn,
-            description = vm.descEn,
-            enabled = sendToEn,
-            onEnableUpdate = { vm.sendToEn.value = it }
-        )
+        if (isOtherLanguagesExpanded) {
+            LanguageBlock(
+                textRes = Res.string.push_notif_language_zh_cn,
+                title = vm.titleCn,
+                description = vm.descCn,
+                enabled = sendToCn,
+                onEnableUpdate = { vm.sendToCn.value = it }
+            )
 
-        LanguageBlock(
-            textRes = Res.string.push_notif_language_ja,
-            title = vm.titleJa,
-            description = vm.descJa,
-            enabled = sendToJa,
-            onEnableUpdate = { vm.sendToJa.value = it }
-        )
+            LanguageBlock(
+                textRes = Res.string.push_notif_language_en,
+                title = vm.titleEn,
+                description = vm.descEn,
+                enabled = sendToEn,
+                onEnableUpdate = { vm.sendToEn.value = it }
+            )
 
-        LanguageBlock(
-            textRes = Res.string.push_notif_language_ko,
-            title = vm.titleKo,
-            description = vm.descKo,
-            enabled = sendToKo,
-            onEnableUpdate = { vm.sendToKo.value = it }
-        )
+            LanguageBlock(
+                textRes = Res.string.push_notif_language_ja,
+                title = vm.titleJa,
+                description = vm.descJa,
+                enabled = sendToJa,
+                onEnableUpdate = { vm.sendToJa.value = it }
+            )
+
+            LanguageBlock(
+                textRes = Res.string.push_notif_language_ko,
+                title = vm.titleKo,
+                description = vm.descKo,
+                enabled = sendToKo,
+                onEnableUpdate = { vm.sendToKo.value = it }
+            )
+        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -212,6 +224,37 @@ internal fun PushNotificationsContent(
                 navigateUp()
             },
             onDismiss = { isConfirmationDialogShown = false }
+        )
+    }
+}
+
+@Composable
+private fun ExpandableTitle(
+    title: String,
+    isExpanded: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .rippleClick(onClick = onClick)
+    ) {
+        Text(
+            text = title,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = FontSize.Large,
+            modifier = Modifier.weight(1F)
+        )
+
+        Icon(
+            imageVector = if (isExpanded) {
+                vectorResource(CommonRes.drawable.ic_keyboard_arrow_down)
+            } else {
+                vectorResource(CommonRes.drawable.ic_keyboard_arrow_up)
+            },
+            tint = LocalAppColors.current.dark,
         )
     }
 }
