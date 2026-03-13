@@ -19,7 +19,7 @@ class CrashReportingLogWriter : LogWriter() {
     }
 
     override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
-        crashlyticsCalls.logMessage(DefaultFormatter.formatMessage(severity, Tag(tag), Message(message)))
+        crashlyticsCalls.logMessage(DefaultFormatter.formatMessage(null, Tag(tag), Message(message)))
 
         if (severity >= Severity.Error && throwable !is CancellationException) {
             // If throwable is null, wrap the message with an exception
