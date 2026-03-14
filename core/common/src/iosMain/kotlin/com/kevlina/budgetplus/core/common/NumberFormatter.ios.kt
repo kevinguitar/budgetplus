@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.core.common
 
+import platform.Foundation.NSLocale
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterDecimalStyle
@@ -7,6 +8,7 @@ import platform.Foundation.NSNumberFormatterRoundHalfUp
 
 private val ratioFormat by lazy {
     NSNumberFormatter().apply {
+        locale = NSLocale.appLocale
         minimumFractionDigits = 0u
         maximumFractionDigits = 1u
         roundingMode = NSNumberFormatterRoundHalfUp
@@ -16,6 +18,7 @@ private val ratioFormat by lazy {
 
 private val priceFormat by lazy {
     NSNumberFormatter().apply {
+        locale = NSLocale.appLocale
         minimumFractionDigits = 0u
         maximumFractionDigits = 2u
         roundingMode = NSNumberFormatterRoundHalfUp
@@ -25,6 +28,7 @@ private val priceFormat by lazy {
 
 private val priceFormatWithoutSeparator by lazy {
     NSNumberFormatter().apply {
+        locale = NSLocale.appLocale
         minimumFractionDigits = 0u
         maximumFractionDigits = 2u
         roundingMode = NSNumberFormatterRoundHalfUp
