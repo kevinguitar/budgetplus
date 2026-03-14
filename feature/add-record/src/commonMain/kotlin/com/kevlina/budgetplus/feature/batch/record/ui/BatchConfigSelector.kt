@@ -42,7 +42,7 @@ import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
-internal val fontSize = FontSize.SemiLarge
+private val fontSize = FontSize.SemiLarge
 internal val iconModifier = Modifier
     .padding(top = 2.dp)
     .size(20.dp)

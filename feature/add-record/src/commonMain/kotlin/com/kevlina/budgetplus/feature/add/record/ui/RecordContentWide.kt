@@ -19,14 +19,12 @@ internal fun RecordContentWide(
     state: RecordContentState,
     modifier: Modifier = Modifier,
 ) {
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp)
     ) {
-
         RecordInfo(
             state = state.recordInfoState,
             modifier = Modifier.weight(1F)
