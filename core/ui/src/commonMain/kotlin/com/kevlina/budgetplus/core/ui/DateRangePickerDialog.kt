@@ -66,15 +66,17 @@ fun DateRangePickerDialog(
     ) {
         Column {
             val dateFormatter = remember { DatePickerDefaults.dateFormatter() }
+            val colors = datePickerColors()
             DateRangePicker(
                 state = state,
-                colors = datePickerColors(),
-                showModeToggle = false,
+                colors = colors,
+                showModeToggle = true,
                 modifier = Modifier.weight(1F),
                 dateFormatter = dateFormatter,
                 title = {
                     DateRangePickerDefaults.DateRangePickerTitle(
                         displayMode = state.displayMode,
+                        contentColor = colors.titleContentColor
                     )
                 },
                 headline = {
@@ -83,6 +85,7 @@ fun DateRangePickerDialog(
                         selectedEndDateMillis = state.selectedEndDateMillis,
                         displayMode = state.displayMode,
                         dateFormatter = dateFormatter,
+                        contentColor = colors.headlineContentColor,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                 },
