@@ -84,9 +84,10 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                 androidMain.dependencies {
                     implementation(project.libs.bundles.android)
+                    this.project.dependencies.enforcedPlatform(project.libs.firebase.bom)
                 }
 
-                androidUnitTest.dependencies {
+                findByName("androidHostTest")?.dependencies {
                     implementation(kotlin("test"))
                     implementation(project.libs.bundles.test)
 
