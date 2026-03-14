@@ -22,7 +22,6 @@ fun MenuAction(
     enabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
-    //TODO: Make click area bigger to respect scale
     IconButton(
         onClick = onClick,
         enabled = enabled,

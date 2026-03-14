@@ -29,18 +29,19 @@ fun IconButton(
     rippleColor: Color = LocalAppColors.current.light,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val scaledSize = size * LocalTypographyScale.current.scale
     Box(
         contentAlignment = Alignment.Center,
         content = content,
         modifier = modifier
-            .size(size * LocalTypographyScale.current.scale)
+            .size(scaledSize)
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = ripple(
                     bounded = false,
-                    radius = size / 2,
+                    radius = scaledSize / 2,
                     color = rippleColor
                 )
             )
