@@ -16,6 +16,7 @@ kotlin {
             implementation(libs.android.activity)
         }
     }
+    android.androidResources.enable = true
 }
 
 compose.resources {
