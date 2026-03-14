@@ -32,6 +32,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 compilerOptions {
                     jvmTarget.set(project.libs.versions.jvmTarget.map(JvmTarget::fromTarget))
                 }
+                withHostTest {}
                 //TODO: After this all resources can live in core:common
                 androidResources.enable = true
                 packaging.resources {
@@ -84,10 +85,10 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                 androidMain.dependencies {
                     implementation(project.libs.bundles.android)
-                    this.project.dependencies.enforcedPlatform(project.libs.firebase.bom)
+                    implementation(project.dependencies.platform(project.libs.firebase.bom))
                 }
 
-                findByName("androidHostTest")?.dependencies {
+                getByName("androidHostTest").dependencies {
                     implementation(kotlin("test"))
                     implementation(project.libs.bundles.test)
 
