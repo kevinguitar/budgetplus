@@ -1,10 +1,12 @@
 package com.kevlina.budgetplus.core.ui
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -50,6 +52,7 @@ fun TextField(
         capitalization = KeyboardCapitalization.Sentences,
         imeAction = ImeAction.Done
     ),
+    scrollState: ScrollState = rememberScrollState(),
     onDone: (() -> Unit)? = null,
 ) {
     Row(
@@ -79,6 +82,7 @@ fun TextField(
             state = state,
             enabled = enabled,
             readOnly = readOnly,
+            scrollState = scrollState,
             modifier = Modifier.weight(1F),
             textStyle = TextStyle(
                 color = LocalAppColors.current.dark,

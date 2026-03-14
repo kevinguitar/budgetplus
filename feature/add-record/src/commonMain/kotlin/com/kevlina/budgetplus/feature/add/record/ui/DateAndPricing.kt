@@ -74,6 +74,15 @@ internal fun ColumnScope.DateAndPricing(
                 .padding(vertical = 8.dp)
         )
 
+        // A little hack to scroll price text automatically to the end while typing,
+        // this is because price text is read-only and doesn't take the focus from the UI tree.
+        val priceTextScrollState = rememberScrollState()
+        LaunchedEffect(priceTextScrollState.maxValue) {
+            if (priceTextScrollState.maxValue > 0) {
+                priceTextScrollState.animateScrollTo(priceTextScrollState.maxValue)
+            }
+        }
+
         TextField(
             state = state.priceText,
             fontSize = FontSize.Header,
@@ -81,6 +90,7 @@ internal fun ColumnScope.DateAndPricing(
             readOnly = true,
             title = currencySymbol,
             onTitleClick = state.editCurrency,
+            scrollState = priceTextScrollState,
             modifier = Modifier.weight(1F)
         )
     }
