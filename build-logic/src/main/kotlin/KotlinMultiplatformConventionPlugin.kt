@@ -33,8 +33,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                     jvmTarget.set(project.libs.versions.jvmTarget.map(JvmTarget::fromTarget))
                 }
                 withHostTest {}
-                //TODO: After this all resources can live in core:common
-                androidResources.enable = true
                 packaging.resources {
                     excludes.add("META-INF/*.kotlin_module")
                     excludes.add("META-INF/AL2.0")
