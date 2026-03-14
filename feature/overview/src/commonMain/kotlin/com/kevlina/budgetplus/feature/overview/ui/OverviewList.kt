@@ -59,7 +59,6 @@ internal fun OverviewList(
     modifier: Modifier = Modifier,
     header: (@Composable () -> Unit)? = null,
 ) {
-
     val mode by state.mode.collectAsStateWithLifecycle()
     val chartMode by state.chartMode.collectAsStateWithLifecycle()
     val type by state.type.collectAsStateWithLifecycle()

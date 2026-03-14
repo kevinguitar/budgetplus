@@ -64,7 +64,6 @@ fun RecordCard(
             )
             .padding(horizontal = 16.dp)
     ) {
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -72,7 +71,6 @@ fun RecordCard(
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
         ) {
-
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.weight(1F),
@@ -145,7 +143,6 @@ fun RecordCard(
                 onDismissRequest = { isMenuShown = false },
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
-
                 DropdownItem(
                     name = stringResource(Res.string.cta_duplicate),
                 ) {
