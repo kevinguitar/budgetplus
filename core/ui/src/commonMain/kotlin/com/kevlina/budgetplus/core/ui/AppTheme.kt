@@ -51,7 +51,7 @@ fun AppTheme(
 
 object AppTheme {
 
-    val containerMaxWidth: Dp get() = 600.dp
+    val containerMaxWidth: Dp get() = 680.dp
     val dialogShape: Shape get() = RoundedCornerShape(cornerRadius)
     val cardShape: Shape get() = RoundedCornerShape(cornerRadius)
     val cornerRadius: Dp get() = 12.dp
