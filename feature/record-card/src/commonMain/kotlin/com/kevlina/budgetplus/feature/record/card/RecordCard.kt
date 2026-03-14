@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -88,7 +87,7 @@ fun RecordCard(
                         Icon(
                             imageVector = vectorResource(Res.drawable.ic_refresh),
                             tint = LocalAppColors.current.primary,
-                            modifier = Modifier.size(16.dp)
+                            size = 16.dp
                         )
                     }
 

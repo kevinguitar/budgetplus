@@ -28,6 +28,7 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
@@ -47,7 +48,7 @@ internal fun BottomNav(
             .fillMaxWidth()
             .background(color = lightColor)
             .navigationBarsPadding()
-            .height(50.dp)
+            .height(50.dp * LocalTypographyScale.current.scale)
     ) {
         Spacer(
             modifier = Modifier
@@ -90,16 +91,17 @@ private fun RowScope.BottomNavItem(
             .fillMaxHeight()
             .rippleClick { navController.selectRoot(tab.root) }
     ) {
-
         this@BottomNavItem.AnimatedVisibility(
             visible = isSelected,
             enter = scaleIn(),
             exit = scaleOut()
         ) {
-
             Spacer(
                 modifier = Modifier
-                    .size(width = 60.dp, height = 36.dp)
+                    .size(
+                        width = 60.dp * LocalTypographyScale.current.scale,
+                        height = 36.dp * LocalTypographyScale.current.scale
+                    )
                     .background(
                         color = darkColor,
                         shape = CircleShape
@@ -113,7 +115,7 @@ private fun RowScope.BottomNavItem(
                 BottomNavTab.History -> vectorResource(Res.drawable.ic_format_list_bulleted)
             },
             tint = if (isSelected) lightColor else darkColor,
-            modifier = Modifier.size(28.dp)
+            size = 28.dp,
         )
     }
 }

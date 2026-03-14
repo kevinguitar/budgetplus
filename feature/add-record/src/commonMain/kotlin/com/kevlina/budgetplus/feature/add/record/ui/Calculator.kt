@@ -51,6 +51,7 @@ import budgetplus.feature.add_record.generated.resources.ic_plus
 import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
+import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -325,25 +326,29 @@ private fun ColumnScope.CalculatorBtn(
             CalculatorButton.Plus -> Image(
                 painter = painterResource(Res.drawable.ic_plus),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalAppColors.current.light)
+                colorFilter = ColorFilter.tint(LocalAppColors.current.light),
+                modifier = Modifier.typographyScale()
             )
 
             CalculatorButton.Minus -> Image(
                 painter = painterResource(Res.drawable.ic_minus),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalAppColors.current.light)
+                colorFilter = ColorFilter.tint(LocalAppColors.current.light),
+                modifier = Modifier.typographyScale()
             )
 
             CalculatorButton.Multiply -> Image(
                 painter = painterResource(Res.drawable.ic_multiply),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalAppColors.current.light)
+                colorFilter = ColorFilter.tint(LocalAppColors.current.light),
+                modifier = Modifier.typographyScale()
             )
 
             CalculatorButton.Divide -> Image(
                 painter = painterResource(Res.drawable.ic_divide),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalAppColors.current.light)
+                colorFilter = ColorFilter.tint(LocalAppColors.current.light),
+                modifier = Modifier.typographyScale()
             )
 
             else -> Text(
@@ -377,7 +382,8 @@ private fun RowScope.DoneBtn(
             Image(
                 painter = painterResource(Res.drawable.ic_equal),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalAppColors.current.light)
+                colorFilter = ColorFilter.tint(LocalAppColors.current.light),
+                modifier = Modifier.typographyScale()
             )
         } else {
             Text(

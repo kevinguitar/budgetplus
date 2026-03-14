@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_people
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
@@ -57,7 +58,7 @@ internal fun StatCard(
                 imageVector = icon,
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(LocalAppColors.current.dark),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp).typographyScale()
             )
 
             Text(

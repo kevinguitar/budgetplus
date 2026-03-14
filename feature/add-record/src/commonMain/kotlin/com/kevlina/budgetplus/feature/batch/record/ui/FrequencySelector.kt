@@ -59,6 +59,7 @@ internal fun FrequencySelector(
         Icon(
             imageVector = vectorResource(Res.drawable.ic_refresh),
             tint = LocalAppColors.current.dark,
+            size = 20.dp,
             modifier = iconModifier
         )
 

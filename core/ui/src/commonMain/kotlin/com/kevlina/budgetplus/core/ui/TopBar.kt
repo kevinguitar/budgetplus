@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +20,7 @@ import budgetplus.core.common.generated.resources.ic_arrow_back
 import budgetplus.core.common.generated.resources.ic_drive_file_rename_outline
 import budgetplus.core.common.generated.resources.ic_group_add
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -40,9 +40,8 @@ fun TopBar(
             .background(color = LocalAppColors.current.primary.darken(TOP_BAR_DARKEN_FACTOR))
             .thenIf(applyStatusBarPadding) { Modifier.statusBarsPadding() }
             .fillMaxWidth()
-            .height(56.dp)
+            .height(56.dp * LocalTypographyScale.current.scale)
     ) {
-
         if (navigateUp != null) {
             IconButton(onClick = navigateUp) {
                 Icon(

@@ -75,6 +75,7 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.settings.api.ChartMode
 import com.kevlina.budgetplus.core.settings.api.icon
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownMenu
@@ -243,7 +244,7 @@ internal fun SettingsContent(
                         imageVector = chartMode.icon,
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(LocalAppColors.current.dark),
-                        modifier = Modifier.padding(end = 16.dp)
+                        modifier = Modifier.padding(end = 16.dp).typographyScale()
                     )
 
                     DropdownMenu(

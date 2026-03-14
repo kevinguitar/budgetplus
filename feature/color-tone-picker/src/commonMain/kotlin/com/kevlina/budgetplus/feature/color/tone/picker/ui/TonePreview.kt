@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.feature.color.tone.picker.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -139,5 +140,5 @@ internal fun TonePreview(
 @Preview
 @Composable
 private fun TonePreview_Preview() = AppTheme {
-    TonePreview()
+    TonePreview(Modifier.background(LocalAppColors.current.light))
 }

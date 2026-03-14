@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.core.ui
 
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -23,7 +22,7 @@ fun MenuAction(
     enabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
-
+    //TODO: Make click area bigger to respect scale
     IconButton(
         onClick = onClick,
         enabled = enabled,

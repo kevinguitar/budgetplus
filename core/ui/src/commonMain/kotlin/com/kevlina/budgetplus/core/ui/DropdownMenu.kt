@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
@@ -79,9 +78,8 @@ fun DropdownItem(
                         imageVector = icon,
                         contentDescription = null,
                         tint = LocalAppColors.current.dark,
-                        modifier = Modifier
-                            .padding(end = 4.dp)
-                            .size(20.dp)
+                        size = 20.dp,
+                        modifier = Modifier.padding(end = 4.dp)
                     )
                 }
 

@@ -93,6 +93,7 @@ internal fun OverviewList(
 
     Box(modifier) {
         LazyColumn(
+            modifier = Modifier.fillMaxSize(),
             state = listState,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -280,7 +281,7 @@ internal data class OverviewListState(
     }
 }
 
-@Preview
+@Preview(heightDp = 360)
 @Composable
 private fun OverviewList_All_Preview() = AppTheme {
     OverviewList(
@@ -292,7 +293,7 @@ private fun OverviewList_All_Preview() = AppTheme {
     )
 }
 
-@Preview
+@Preview(heightDp = 360)
 @Composable
 private fun OverviewList_Group_Preview() = AppTheme {
     OverviewList(
@@ -302,7 +303,7 @@ private fun OverviewList_Group_Preview() = AppTheme {
     )
 }
 
-@Preview
+@Preview(heightDp = 420)
 @Composable
 private fun OverviewList_PieChart_Preview() = AppTheme {
     OverviewList(

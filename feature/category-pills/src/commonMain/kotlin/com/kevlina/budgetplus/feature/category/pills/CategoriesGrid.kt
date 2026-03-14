@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -50,7 +49,6 @@ fun CategoriesGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
         modifier = modifier
     ) {
-
         when (type) {
             RecordType.Expense -> expenseCategories.forEach { item ->
                 CategoryCard(
@@ -100,7 +98,6 @@ fun CategoryCard(
     paddingValues: PaddingValues = cardPadding,
     onClick: () -> Unit,
 ) {
-
     Box(
         modifier = Modifier
             .background(
@@ -139,18 +136,16 @@ private fun CategoryActionButton(
             .clip(AppTheme.cardShape)
             .rippleClick(onClick = onClick)
     ) {
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.padding(cardPadding)
         ) {
-
             Icon(
                 imageVector = icon,
                 contentDescription = stringResource(Res.string.category_edit_title),
                 tint = LocalAppColors.current.light,
-                modifier = Modifier.size(16.dp)
+                size = 16.dp
             )
 
             Text(
