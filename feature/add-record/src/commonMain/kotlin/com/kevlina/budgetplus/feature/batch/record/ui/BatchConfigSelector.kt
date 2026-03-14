@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,10 +41,8 @@ import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
-internal val fontSize = FontSize.SemiLarge
-internal val iconModifier = Modifier
-    .padding(top = 2.dp)
-    .size(20.dp)
+private val fontSize = FontSize.SemiLarge
+internal val iconModifier = Modifier.padding(top = 2.dp)
 
 @Composable
 internal fun BatchConfigSelector() {
@@ -89,11 +86,11 @@ private fun DateSelector(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         Icon(
             imageVector = vectorResource(Res.drawable.ic_today),
             contentDescription = stringResource(Res.string.select_date),
             tint = LocalAppColors.current.dark,
+            size = 20.dp,
             modifier = iconModifier
         )
 
@@ -135,10 +132,10 @@ private fun TimesSelector(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         Icon(
             imageVector = vectorResource(Res.drawable.ic_numbers),
             tint = LocalAppColors.current.dark,
+            size = 20.dp,
             modifier = iconModifier
         )
 

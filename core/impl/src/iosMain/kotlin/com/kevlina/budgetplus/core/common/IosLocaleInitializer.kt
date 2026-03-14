@@ -21,7 +21,7 @@ class IosLocaleInitializer : AppStartAction {
             .asSequence()
             .filterIsInstance<String>()
 
-        val bestMatch = resolveSupportedAppLanguage(preferredLanguages.asIterable())
+        val bestMatch = resolveSupportedAppLanguage(preferredLanguages.toList()) ?: return
 
         userDefaults.setObject(listOf(bestMatch), "AppleLanguages")
         userDefaults.setBool(true, APP_LANGUAGE_INITIALIZED_KEY)

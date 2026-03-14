@@ -19,7 +19,7 @@ class ComposeConventionPlugin : Plugin<Project> {
         project.dependencies {
             implementation(project.libs.bundles.compose)
             implementation(project.libs.android.activity.compose)
-            debugImplementation(project.libs.compose.uiTooling)
+            debugImplementation(project.libs.compose.android.uiTooling)
         }
     }
 }

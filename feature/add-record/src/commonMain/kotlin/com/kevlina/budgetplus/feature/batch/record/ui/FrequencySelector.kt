@@ -31,6 +31,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownMenu
+import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
@@ -40,6 +41,7 @@ import org.jetbrains.compose.resources.vectorResource
 
 private const val DURATION_MIN = 1
 private const val DURATION_MAX = 12
+private val fontSize = FontSize.SemiLarge
 
 @Composable
 internal fun FrequencySelector(
@@ -57,6 +59,7 @@ internal fun FrequencySelector(
         Icon(
             imageVector = vectorResource(Res.drawable.ic_refresh),
             tint = LocalAppColors.current.dark,
+            size = 20.dp,
             modifier = iconModifier
         )
 

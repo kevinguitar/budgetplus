@@ -18,6 +18,8 @@ import budgetplus.core.common.generated.resources.auth_google
 import budgetplus.core.common.generated.resources.ic_apple
 import budgetplus.core.common.generated.resources.ic_google
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -34,7 +36,7 @@ fun SocialSignInButton(
         modifier = Modifier
             .padding(horizontal = 32.dp)
             .fillMaxWidth()
-            .height(56.dp),
+            .height(56.dp * LocalTypographyScale.current.scale),
         onClick = onClick,
         color = LocalAppColors.current.light
     ) {
@@ -49,6 +51,7 @@ fun SocialSignInButton(
             modifier = Modifier
                 .padding(end = 16.dp)
                 .size(24.dp)
+                .typographyScale()
         )
 
         Text(

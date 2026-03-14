@@ -6,6 +6,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -90,7 +91,7 @@ fun DatePickerDialog(
         DatePicker(
             state = dateState,
             colors = colors,
-            showModeToggle = false
+            showModeToggle = true
         )
     }
 }
@@ -125,6 +126,25 @@ internal fun datePickerColors(): DatePickerColors {
         dayInSelectionRangeContentColor = darkColor,
         dayInSelectionRangeContainerColor = primaryColor.copy(alpha = SELECTION_ALPHA),
         dividerColor = darkColor,
+        dateTextFieldColors = TextFieldDefaults.colors(
+            focusedTextColor = darkColor,
+            unfocusedTextColor = primaryColor,
+            focusedContainerColor = lightColor,
+            unfocusedContainerColor = lightColor,
+            errorContainerColor = lightColor,
+            focusedIndicatorColor = darkColor,
+            unfocusedIndicatorColor = primaryColor,
+            focusedLabelColor = darkColor,
+            unfocusedLabelColor = primaryColor,
+            focusedPlaceholderColor = darkColor,
+            unfocusedPlaceholderColor = primaryColor,
+            focusedSupportingTextColor = darkColor,
+            unfocusedSupportingTextColor = darkColor,
+            focusedPrefixColor = darkColor,
+            unfocusedPrefixColor = primaryColor,
+            focusedSuffixColor = darkColor,
+            unfocusedSuffixColor = primaryColor,
+        )
     )
 }
 

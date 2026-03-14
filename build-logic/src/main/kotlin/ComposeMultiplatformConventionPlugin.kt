@@ -1,8 +1,10 @@
+import common.debugImplementation
 import common.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -24,13 +26,16 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                 }
                 androidMain.dependencies {
                     implementation(project.libs.android.activity.compose)
-                    implementation(project.libs.compose.android.uiTooling)
                     implementation(project.libs.ktor.android)
                 }
                 iosMain.dependencies {
                     implementation(project.libs.ktor.ios)
                 }
             }
+        }
+
+        project.dependencies {
+            debugImplementation(project.libs.compose.android.uiTooling)
         }
     }
 }

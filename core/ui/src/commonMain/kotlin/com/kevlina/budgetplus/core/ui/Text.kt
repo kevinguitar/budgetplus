@@ -10,6 +10,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 
 @Composable
 fun Text(
@@ -27,7 +28,7 @@ fun Text(
         modifier = modifier,
         style = TextStyle(
             color = color,
-            fontSize = fontSize,
+            fontSize = fontSize * LocalTypographyScale.current.scale,
             fontWeight = fontWeight,
             textAlign = textAlign,
             lineHeight = lineHeight

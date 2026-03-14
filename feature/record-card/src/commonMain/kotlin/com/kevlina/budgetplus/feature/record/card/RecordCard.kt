@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -65,7 +64,6 @@ fun RecordCard(
             )
             .padding(horizontal = 16.dp)
     ) {
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -73,7 +71,6 @@ fun RecordCard(
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
         ) {
-
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.weight(1F),
@@ -88,7 +85,7 @@ fun RecordCard(
                         Icon(
                             imageVector = vectorResource(Res.drawable.ic_refresh),
                             tint = LocalAppColors.current.primary,
-                            modifier = Modifier.size(16.dp)
+                            size = 16.dp
                         )
                     }
 
@@ -146,7 +143,6 @@ fun RecordCard(
                 onDismissRequest = { isMenuShown = false },
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
-
                 DropdownItem(
                     name = stringResource(Res.string.cta_duplicate),
                 ) {

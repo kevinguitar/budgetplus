@@ -34,6 +34,7 @@ import budgetplus.core.common.generated.resources.cta_go
 import budgetplus.core.common.generated.resources.ic_logo
 import budgetplus.core.common.generated.resources.welcome_create_book_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -83,7 +84,7 @@ fun CreateBookBlock(
                 Image(
                     painter = painterResource(Res.drawable.ic_logo),
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp).typographyScale()
                 )
 
                 Text(

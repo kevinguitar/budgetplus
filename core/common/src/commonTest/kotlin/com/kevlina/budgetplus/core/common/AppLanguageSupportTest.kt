@@ -16,13 +16,13 @@ class AppLanguageSupportTest {
     }
 
     @Test
-    fun `resolve supported app language returns zh-tw for traditional chinese locale`() {
-        assertEquals("zh-tw", resolveSupportedAppLanguage(listOf("zh-Hant-TW")))
+    fun `resolve supported app language returns zh-Hant for traditional chinese locale`() {
+        assertEquals("zh-Hant", resolveSupportedAppLanguage(listOf("zh-Hant-TW")))
     }
 
     @Test
-    fun `resolve supported app language returns zh-cn for simplified chinese locale`() {
-        assertEquals("zh-cn", resolveSupportedAppLanguage(listOf("zh-Hans-CN")))
+    fun `resolve supported app language returns zh-Hans for simplified chinese locale`() {
+        assertEquals("zh-Hans", resolveSupportedAppLanguage(listOf("zh-Hans-CN")))
     }
 
     @Test
@@ -36,12 +36,12 @@ class AppLanguageSupportTest {
     }
 
     @Test
-    fun `resolve supported app language falls back to english for unsupported languages`() {
-        assertEquals("en", resolveSupportedAppLanguage(listOf("fr-FR", "de-DE")))
+    fun `resolve supported app language falls back to null for unsupported languages`() {
+        assertEquals(null, resolveSupportedAppLanguage(listOf("fr-FR", "de-DE")))
     }
 
     @Test
-    fun `resolve supported app language falls back to english for empty list`() {
-        assertEquals("en", resolveSupportedAppLanguage(emptyList()))
+    fun `resolve supported app language falls back to null for empty list`() {
+        assertEquals(null, resolveSupportedAppLanguage(emptyList()))
     }
 }

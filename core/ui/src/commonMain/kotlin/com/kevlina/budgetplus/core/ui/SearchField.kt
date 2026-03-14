@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_search
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -40,15 +40,14 @@ fun SearchField(
     ),
     onDone: (() -> Unit)? = null,
 ) {
-
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .height(56.dp)
+            .height(56.dp * LocalTypographyScale.current.scale)
             .background(
                 color = LocalAppColors.current.lightBg,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(AppTheme.cornerRadius)
             )
             .padding(horizontal = 16.dp)
     ) {
@@ -56,16 +55,16 @@ fun SearchField(
         Icon(
             imageVector = vectorResource(Res.drawable.ic_search),
             tint = LocalAppColors.current.dark,
-            modifier = Modifier.size(24.dp)
         )
 
+        val fontSize = FontSize.Large * LocalTypographyScale.current.scale
         BasicTextField(
             state = keyword,
             modifier = Modifier.weight(1F),
             textStyle = TextStyle(
                 color = LocalAppColors.current.dark,
                 textAlign = TextAlign.End,
-                fontSize = FontSize.Large,
+                fontSize = fontSize,
                 letterSpacing = TextUnit.Unspecified
             ),
             keyboardOptions = keyboardOptions,
@@ -84,7 +83,7 @@ fun SearchField(
                         Text(
                             text = hint,
                             textAlign = TextAlign.End,
-                            fontSize = FontSize.Large,
+                            fontSize = fontSize,
                             modifier = Modifier.alpha(PLACEHOLDER_ALPHA)
                         )
                     }

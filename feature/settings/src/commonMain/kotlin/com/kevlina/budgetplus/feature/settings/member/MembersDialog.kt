@@ -175,7 +175,7 @@ private fun MemberCard(
                         imageVector = vectorResource(Res.drawable.ic_delete),
                         contentDescription = stringResource(Res.string.cta_delete),
                         tint = LocalAppColors.current.dark,
-                        modifier = Modifier.size(20.dp)
+                        size = 20.dp
                     )
                 }
             }

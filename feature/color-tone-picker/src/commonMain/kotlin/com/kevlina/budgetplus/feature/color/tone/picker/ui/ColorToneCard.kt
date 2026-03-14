@@ -119,10 +119,10 @@ private fun RowScope.EditColorButton(
         Icon(
             imageVector = vectorResource(Res.drawable.ic_colorize),
             tint = color,
+            size = 16.dp,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(8.dp)
-                .size(16.dp)
         )
     }
 }

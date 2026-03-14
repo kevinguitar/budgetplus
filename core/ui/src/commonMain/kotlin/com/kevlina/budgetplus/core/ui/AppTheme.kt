@@ -20,8 +20,12 @@ import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
+import com.kevlina.budgetplus.core.adaptive.WindowSizeClass
+import com.kevlina.budgetplus.core.adaptive.WindowSizeClass.Size
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.ThemeColors
+import com.kevlina.budgetplus.core.theme.TypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme.containerMaxWidth
 
 @Composable
@@ -29,15 +33,25 @@ fun AppTheme(
     themeColors: ThemeColors = ThemeColors.MilkTea,
     content: @Composable () -> Unit,
 ) {
+    val windowSize = WindowSizeClass.calculate()
+    val typographyScale = when {
+        windowSize.height == Size.Compat -> TypographyScale(1.0F)
+        windowSize.width == Size.Compat -> TypographyScale(1.0F)
+        windowSize.width == Size.Medium -> TypographyScale(1.2F)
+        windowSize.width == Size.Expanded -> TypographyScale(1.35F)
+        else -> TypographyScale(1.0F)
+    }
+
     CompositionLocalProvider(
         LocalAppColors provides themeColors,
+        LocalTypographyScale provides typographyScale,
         content = content
     )
 }
 
 object AppTheme {
 
-    val containerMaxWidth: Dp get() = 600.dp
+    val containerMaxWidth: Dp get() = 680.dp
     val dialogShape: Shape get() = RoundedCornerShape(cornerRadius)
     val cardShape: Shape get() = RoundedCornerShape(cornerRadius)
     val cornerRadius: Dp get() = 12.dp

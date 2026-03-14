@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -98,7 +97,7 @@ private fun AdsBannerNotAvailable() {
         Icon(
             imageVector = vectorResource(Res.drawable.ic_search_off),
             tint = LocalAppColors.current.dark,
-            modifier = Modifier.size(20.dp)
+            size = 20.dp
         )
 
         Text(

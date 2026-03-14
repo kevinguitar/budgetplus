@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_delete
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -28,18 +29,19 @@ fun IconButton(
     rippleColor: Color = LocalAppColors.current.light,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val scaledSize = size * LocalTypographyScale.current.scale
     Box(
         contentAlignment = Alignment.Center,
         content = content,
         modifier = modifier
-            .size(size)
+            .size(scaledSize)
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = ripple(
                     bounded = false,
-                    radius = size / 2,
+                    radius = scaledSize / 2,
                     color = rippleColor
                 )
             )
@@ -49,18 +51,16 @@ fun IconButton(
 @Preview(showBackground = true)
 @Composable
 private fun IconButton_Preview() = AppTheme {
-    IconButton(onClick = {}) {
-        IconButton(
-            onClick = { },
-            rippleColor = LocalAppColors.current.dark,
-            size = 40.dp
-        ) {
-            Icon(
-                imageVector = vectorResource(Res.drawable.ic_delete),
-                contentDescription = null,
-                tint = LocalAppColors.current.dark,
-                modifier = Modifier.size(20.dp)
-            )
-        }
+    IconButton(
+        onClick = { },
+        rippleColor = LocalAppColors.current.dark,
+        size = 40.dp
+    ) {
+        Icon(
+            imageVector = vectorResource(Res.drawable.ic_delete),
+            contentDescription = null,
+            tint = LocalAppColors.current.dark,
+            size = 20.dp,
+        )
     }
 }

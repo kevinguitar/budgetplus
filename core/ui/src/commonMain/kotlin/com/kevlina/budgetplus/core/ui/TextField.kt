@@ -1,10 +1,12 @@
 package com.kevlina.budgetplus.core.ui
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -44,19 +47,21 @@ fun TextField(
     enabled: Boolean = true,
     singleLine: Boolean = true,
     readOnly: Boolean = false,
-    fontSize: TextUnit = TextUnit.Unspecified,
+    fontSize: TextUnit = FontSize.Normal,
     letterSpacing: TextUnit = TextUnit.Unspecified,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         capitalization = KeyboardCapitalization.Sentences,
         imeAction = ImeAction.Done
     ),
+    scrollState: ScrollState = rememberScrollState(),
     onDone: (() -> Unit)? = null,
 ) {
+    val scaledFontSize = fontSize * LocalTypographyScale.current.scale
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .height(56.dp)
+            .height(56.dp * LocalTypographyScale.current.scale)
             .background(
                 color = LocalAppColors.current.lightBg,
                 shape = RoundedCornerShape(AppTheme.cornerRadius)
@@ -66,7 +71,7 @@ fun TextField(
         Text(
             text = title,
             fontWeight = FontWeight.SemiBold,
-            fontSize = fontSize,
+            fontSize = scaledFontSize,
             modifier = Modifier.thenIfNotNull(onTitleClick) {
                 Modifier.rippleClick(
                     borderless = true,
@@ -79,11 +84,12 @@ fun TextField(
             state = state,
             enabled = enabled,
             readOnly = readOnly,
+            scrollState = scrollState,
             modifier = Modifier.weight(1F),
             textStyle = TextStyle(
                 color = LocalAppColors.current.dark,
                 textAlign = TextAlign.End,
-                fontSize = fontSize,
+                fontSize = scaledFontSize,
                 letterSpacing = letterSpacing
             ),
             keyboardOptions = keyboardOptions,
@@ -106,7 +112,7 @@ fun TextField(
                         Text(
                             text = placeholder,
                             textAlign = TextAlign.End,
-                            fontSize = fontSize,
+                            fontSize = scaledFontSize,
                             modifier = Modifier.alpha(PLACEHOLDER_ALPHA)
                         )
                     }

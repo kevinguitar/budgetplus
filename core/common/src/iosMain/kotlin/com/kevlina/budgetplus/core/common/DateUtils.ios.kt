@@ -12,7 +12,6 @@ import platform.Foundation.NSDateFormatterShortStyle
 import platform.Foundation.NSDateFormatterStyle
 import platform.Foundation.NSLocale
 import platform.Foundation.NSTimeZone
-import platform.Foundation.currentLocale
 import platform.Foundation.defaultTimeZone
 
 actual val LocalDate.shortFormatted: String
@@ -29,7 +28,7 @@ actual val LocalDateTime.shortFormatted: String
         val formatter = NSDateFormatter()
         formatter.dateStyle = NSDateFormatterShortStyle
         formatter.timeStyle = NSDateFormatterShortStyle
-        formatter.locale = NSLocale.currentLocale
+        formatter.locale = NSLocale.appLocale
 
         val components = toNSDateComponents()
         components.hour = hour.toLong()
@@ -46,7 +45,7 @@ private fun LocalDate.format(style: NSDateFormatterStyle): String {
     val formatter = NSDateFormatter()
     formatter.dateStyle = style
     formatter.timeStyle = NSDateFormatterNoStyle
-    formatter.locale = NSLocale.currentLocale
+    formatter.locale = NSLocale.appLocale
 
     val components = toNSDateComponents()
     val date = NSCalendar.currentCalendar.dateFromComponents(components) ?: return ""
