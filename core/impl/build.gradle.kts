@@ -6,7 +6,6 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.ads)
             implementation(projects.core.data)
             implementation(projects.core.inappUpdate)
             implementation(projects.core.inappReview)
@@ -26,7 +25,6 @@ kotlin {
             implementation(libs.firebase.config)
         }
         androidMain.dependencies {
-            implementation(libs.google.ads)
             implementation(libs.google.play.update)
             implementation(libs.google.play.review)
         }

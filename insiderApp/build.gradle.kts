@@ -15,10 +15,8 @@ dependencies {
     implementation(libs.navigation3.viewmodel)
 
     implementation(projects.core.data)
+    implementation(projects.core.impl)
     implementation(projects.core.ui)
-    implementation(projects.core.impl) {
-        exclude("com.google.android.gms", "play-services-ads")
-    }
 
     implementation(projects.feature.auth)
     implementation(projects.feature.pushNotifications)

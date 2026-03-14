@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import common.libs
+import common.localProperty
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -57,7 +58,10 @@ class InsiderAppConventionPlugin : Plugin<Project> {
                     storeFile = project.rootProject.file("misc/debug.keystore")
                 }
                 create("release") {
-                    storeFile = project.rootProject.file("misc/debug.keystore")
+                    storeFile = project.localProperty("KEYSTORE_PATH")?.let { project.rootProject.file(it) }
+                    storePassword = project.localProperty("KEYSTORE_PASSWORD")
+                    keyAlias = project.localProperty("KEYSTORE_ALIAS")
+                    keyPassword = project.localProperty("KEYSTORE_PASSWORD")
                 }
             }
 

@@ -1,6 +1,7 @@
 plugins {
     alias(budgetplus.plugins.kotlin.multiplatform)
     alias(budgetplus.plugins.compose.multiplatform)
+    alias(budgetplus.plugins.metro)
     alias(libs.plugins.spm.kmp)
 }
 
@@ -18,6 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.data)
             implementation(projects.core.ui)
             implementation(libs.compottie)
         }
