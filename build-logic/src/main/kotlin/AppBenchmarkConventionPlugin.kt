@@ -17,7 +17,6 @@ class AppBenchmarkConventionPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         project.apply(plugin = project.libs.plugins.android.test.get().pluginId)
-        project.apply(plugin = project.libs.plugins.kotlin.android.get().pluginId)
 
         val appId: String by project
 

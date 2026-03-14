@@ -19,4 +19,5 @@ kotlin {
     compilerOptions {
         optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
     }
+    android.androidResources.enable = true
 }
