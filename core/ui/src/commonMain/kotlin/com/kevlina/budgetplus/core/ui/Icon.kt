@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import androidx.compose.material3.Icon as MaterialIcon
 
 @Composable
@@ -21,7 +21,7 @@ fun Icon(
     MaterialIcon(
         imageVector = imageVector,
         contentDescription = contentDescription,
-        modifier = modifier.size(size * LocalTypographyScale.current.scale),
+        modifier = modifier.size(size.withTypographyScale()),
         tint = tint
     )
 }

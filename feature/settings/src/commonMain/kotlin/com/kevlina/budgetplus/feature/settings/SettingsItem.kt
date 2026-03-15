@@ -27,8 +27,8 @@ import budgetplus.core.common.generated.resources.ic_arrow_forward_ios
 import budgetplus.core.common.generated.resources.ic_language
 import com.kevlina.budgetplus.core.lottie.PremiumCrown
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.typographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
@@ -74,8 +74,8 @@ internal fun SettingsItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(
                 start = 16.dp,
-                top = verticalPadding * LocalTypographyScale.current.scale,
-                bottom = verticalPadding * LocalTypographyScale.current.scale
+                top = verticalPadding.withTypographyScale(),
+                bottom = verticalPadding.withTypographyScale()
             )
         ) {
             if (icon != null) {

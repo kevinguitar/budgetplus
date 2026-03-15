@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_search
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -44,7 +44,7 @@ fun SearchField(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .height(56.dp * LocalTypographyScale.current.scale)
+            .height(56.dp.withTypographyScale())
             .background(
                 color = LocalAppColors.current.lightBg,
                 shape = RoundedCornerShape(AppTheme.cornerRadius)
@@ -57,7 +57,7 @@ fun SearchField(
             tint = LocalAppColors.current.dark,
         )
 
-        val fontSize = FontSize.Large * LocalTypographyScale.current.scale
+        val fontSize = FontSize.Large.withTypographyScale()
         BasicTextField(
             state = keyword,
             modifier = Modifier.weight(1F),

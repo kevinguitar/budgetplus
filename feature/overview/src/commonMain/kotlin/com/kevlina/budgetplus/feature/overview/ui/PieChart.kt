@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.roundUpRatioText
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
@@ -73,10 +73,9 @@ internal fun PieChart(
     }
 
     val textMeasurer = rememberTextMeasurer()
-    val fontSize = FontSize.Large * LocalTypographyScale.current.scale
     val textStyle = TextStyle(
         color = LocalAppColors.current.dark,
-        fontSize = fontSize,
+        fontSize = FontSize.Large.withTypographyScale(),
         textAlign = TextAlign.Center,
     )
 

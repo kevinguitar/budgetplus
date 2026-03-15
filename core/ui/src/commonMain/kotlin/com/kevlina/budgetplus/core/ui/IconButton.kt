@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_delete
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -29,7 +29,7 @@ fun IconButton(
     rippleColor: Color = LocalAppColors.current.light,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val scaledSize = size * LocalTypographyScale.current.scale
+    val scaledSize = size.withTypographyScale()
     Box(
         contentAlignment = Alignment.Center,
         content = content,

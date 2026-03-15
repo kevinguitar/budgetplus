@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.roundUpRatioText
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
@@ -114,8 +114,8 @@ internal fun OverviewGroup(
                             .copy(alpha = 0.7F),
                         shape = CircleShape
                     )
-                    .width(48.dp * LocalTypographyScale.current.scale)
-                    .padding(vertical = 4.dp * LocalTypographyScale.current.scale)
+                    .width(48.dp.withTypographyScale())
+                    .padding(vertical = 4.dp.withTypographyScale())
             )
         }
 
