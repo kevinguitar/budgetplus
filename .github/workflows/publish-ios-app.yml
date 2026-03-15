@@ -196,8 +196,6 @@ jobs:
           IPA_FILE=$(find ./build/output -name "*.ipa" | head -n 1)
           fastlane run upload_to_app_store \
             app_identifier:"com.kevlina.budgetplus" \
-            app_version:"${{ steps.version.outputs.version }}" \
-            build_number:"${{ github.run_number }}" \
             ipa:"$IPA_FILE" \
             submit_for_review:false \
             skip_metadata:true \
