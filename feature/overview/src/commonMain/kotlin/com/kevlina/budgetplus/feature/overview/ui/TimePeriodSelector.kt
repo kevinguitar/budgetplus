@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_drive_file_rename_outline
 import budgetplus.core.common.generated.resources.overview_period_day
 import budgetplus.core.common.generated.resources.overview_period_last_month
 import budgetplus.core.common.generated.resources.overview_period_month
@@ -34,6 +36,7 @@ import com.kevlina.budgetplus.core.data.remote.TimePeriod
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DateRangePickerDialog
+import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.overview.OverviewTimeViewModel
@@ -42,6 +45,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun ColumnScope.TimePeriodSelector(
@@ -51,6 +55,7 @@ internal fun ColumnScope.TimePeriodSelector(
     val timePeriod by state.timePeriod.collectAsStateWithLifecycle()
     val fromDate by state.fromDate.collectAsStateWithLifecycle()
     val untilDate by state.untilDate.collectAsStateWithLifecycle()
+    val customPeriod by state.customPeriod.collectAsStateWithLifecycle()
 
     var showDateRangerPicker by remember { mutableStateOf(false) }
 
@@ -67,6 +72,8 @@ internal fun ColumnScope.TimePeriodSelector(
 
     TimePeriodPreset(
         timePeriod = timePeriod,
+        customPeriod = customPeriod,
+        showDateRangePicker = { showDateRangerPicker = true },
         setTimePeriod = state.setTimePeriod
     )
 
@@ -75,7 +82,13 @@ internal fun ColumnScope.TimePeriodSelector(
             startDate = fromDate,
             endDate = untilDate,
             onDismiss = { showDateRangerPicker = false },
-            onRangePicked = state.setDateRange
+            onRangePicked = { from, until ->
+                state.setDateRange(
+                    from,
+                    until,
+                    customPeriod == null || customPeriod == timePeriod
+                )
+            }
         )
     }
 }
@@ -83,6 +96,8 @@ internal fun ColumnScope.TimePeriodSelector(
 @Composable
 fun TimePeriodPreset(
     timePeriod: TimePeriod,
+    customPeriod: TimePeriod?,
+    showDateRangePicker: () -> Unit,
     setTimePeriod: (TimePeriod) -> Unit,
 ) {
     FlowRow(
@@ -103,6 +118,35 @@ fun TimePeriodPreset(
                     onClick = { setTimePeriod(period) }
                 )
             }
+
+        @OptIn(ExperimentalLayoutApi::class)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxRowHeight()
+                .clip(AppTheme.cardShape)
+                .background(
+                    color = if (customPeriod == timePeriod) {
+                        LocalAppColors.current.dark
+                    } else {
+                        LocalAppColors.current.primary
+                    }
+                )
+                .rippleClick {
+                    if (customPeriod == null || customPeriod == timePeriod) {
+                        showDateRangePicker()
+                    } else {
+                        setTimePeriod(customPeriod)
+                    }
+                }
+        ) {
+            Icon(
+                imageVector = vectorResource(Res.drawable.ic_drive_file_rename_outline),
+                tint = LocalAppColors.current.light,
+                size = 20.dp,
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+            )
+        }
     }
 }
 
@@ -114,15 +158,14 @@ private fun TimePeriodPill(
 ) {
     Box(
         modifier = Modifier
+            .clip(AppTheme.cardShape)
             .background(
-                shape = AppTheme.cardShape,
                 color = if (isSelected) {
                     LocalAppColors.current.dark
                 } else {
                     LocalAppColors.current.primary
                 }
             )
-            .clip(AppTheme.cardShape)
             .rippleClick(onClick = onClick)
     ) {
 
@@ -149,11 +192,12 @@ internal class TimePeriodSelectorState(
     val fromDate: StateFlow<LocalDate>,
     val untilDate: StateFlow<LocalDate>,
     val isOneDayPeriod: StateFlow<Boolean>,
+    val customPeriod: StateFlow<TimePeriod?>,
     val openPremiumEvent: EventFlow<Unit>,
     val previousDay: () -> Unit,
     val nextDay: () -> Unit,
     val setTimePeriod: (TimePeriod) -> Unit,
-    val setDateRange: (from: LocalDate, until: LocalDate) -> Unit,
+    val setDateRange: (from: LocalDate, until: LocalDate, isCustomized: Boolean) -> Unit,
 ) {
     companion object {
         val preview = TimePeriodSelectorState(
@@ -161,11 +205,12 @@ internal class TimePeriodSelectorState(
             fromDate = MutableStateFlow(TimePeriod.Month.from),
             untilDate = MutableStateFlow(TimePeriod.Month.until),
             isOneDayPeriod = MutableStateFlow(false),
+            customPeriod = MutableStateFlow(null),
             openPremiumEvent = MutableEventFlow(),
             previousDay = {},
             nextDay = {},
             setTimePeriod = {},
-            setDateRange = { _, _ -> }
+            setDateRange = { _, _, _ -> }
         )
     }
 }
@@ -175,6 +220,7 @@ internal fun OverviewTimeViewModel.toState() = TimePeriodSelectorState(
     fromDate = fromDate,
     untilDate = untilDate,
     isOneDayPeriod = isOneDayPeriod,
+    customPeriod = customPeriod,
     openPremiumEvent = openPremiumEvent,
     previousDay = ::previousDay,
     nextDay = ::nextDay,

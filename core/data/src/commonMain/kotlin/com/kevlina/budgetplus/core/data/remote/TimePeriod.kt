@@ -78,8 +78,7 @@ sealed class TimePeriod {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-
-            other as TimePeriod
+            if (other !is TimePeriod) return false
 
             return from == other.from && until == other.until
         }

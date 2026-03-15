@@ -23,7 +23,11 @@ fun Dp.withTypographyScale(): Dp {
 
 @Composable
 fun TextUnit.withTypographyScale(): TextUnit {
-    return this * LocalTypographyScale.current.scale
+    return if (this == TextUnit.Unspecified) {
+        this
+    } else {
+        this * LocalTypographyScale.current.scale
+    }
 }
 
 val LocalTypographyScale = staticCompositionLocalOf {
