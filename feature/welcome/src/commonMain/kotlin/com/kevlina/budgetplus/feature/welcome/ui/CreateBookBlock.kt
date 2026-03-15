@@ -56,7 +56,6 @@ fun CreateBookBlock(
     applyStatusBarPadding: Boolean = true,
     applyNavBarPadding: Boolean = false,
 ) {
-
     Box(
         modifier = modifier
             .background(LocalAppColors.current.light)

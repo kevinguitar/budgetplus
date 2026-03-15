@@ -1,12 +1,15 @@
 package com.kevlina.budgetplus.core.common.nav
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.serialization.saved
 import androidx.navigation3.runtime.NavKey
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -59,6 +62,8 @@ class NavController<T : NavKey>(
 
     val backStack by savedStateHandle.saved(stateListSerializer) { mutableStateListOf(startRoot) }
     val rootStack by savedStateHandle.saved(stateListSerializer) { mutableStateListOf(startRoot) }
+
+    val currentNavKeyFlow: Flow<T> = snapshotFlow { backStack.lastOrNull() }.filterNotNull()
 
     init {
         // Force initialization of delegated properties to avoid "Cannot modify a state object in a read-only snapshot"
