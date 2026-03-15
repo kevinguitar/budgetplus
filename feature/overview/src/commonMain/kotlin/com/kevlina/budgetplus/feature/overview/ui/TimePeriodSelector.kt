@@ -144,7 +144,7 @@ fun TimePeriodPreset(
                 imageVector = vectorResource(Res.drawable.ic_drive_file_rename_outline),
                 tint = LocalAppColors.current.light,
                 size = 20.dp,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
             )
         }
     }

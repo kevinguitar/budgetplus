@@ -104,10 +104,10 @@
     <!-- Overview -->
     <string name="overview_title">%1$s's Overview</string>
     <string name="overview_total_price">Total</string>
-    <string name="overview_period_day">Today</string>
-    <string name="overview_period_week">Week</string>
-    <string name="overview_period_month">Month</string>
-    <string name="overview_period_last_month">Last Month</string>
+    <string name="overview_period_day">1D</string>
+    <string name="overview_period_week">1W</string>
+    <string name="overview_period_month">1M</string>
+    <string name="overview_period_last_month">LM</string>
     <string name="overview_exceed_max_period">Unlock premium to set the period above one month</string>
     <string name="overview_sort_by_date">Sort by date</string>
     <string name="overview_sort_by_price">Sort by price</string>
