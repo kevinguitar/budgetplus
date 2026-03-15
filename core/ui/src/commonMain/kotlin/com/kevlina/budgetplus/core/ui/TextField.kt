@@ -40,9 +40,10 @@ val FocusRequestDelay = 10.milliseconds
 @Composable
 fun TextField(
     state: TextFieldState,
-    title: String,
     modifier: Modifier = Modifier,
+    title: String? = null,
     onTitleClick: (() -> Unit)? = null,
+    leadingContent: @Composable (() -> Unit)? = null,
     placeholder: String? = null,
     enabled: Boolean = true,
     singleLine: Boolean = true,
@@ -67,17 +68,20 @@ fun TextField(
             )
             .padding(horizontal = 16.dp)
     ) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = fontSize,
-            modifier = Modifier.thenIfNotNull(onTitleClick) {
-                Modifier.rippleClick(
-                    borderless = true,
-                    onClick = it
-                )
-            }
-        )
+        when {
+            leadingContent != null -> leadingContent()
+            title != null -> Text(
+                text = title,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = fontSize,
+                modifier = Modifier.thenIfNotNull(onTitleClick) {
+                    Modifier.rippleClick(
+                        borderless = true,
+                        onClick = it
+                    )
+                }
+            )
+        }
 
         BasicTextField(
             state = state,
