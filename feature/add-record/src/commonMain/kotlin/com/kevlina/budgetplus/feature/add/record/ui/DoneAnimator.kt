@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.lottie.loadLottieSpec
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import io.github.alexzhirkevich.compottie.ExperimentalCompottieApi
@@ -79,7 +80,7 @@ fun BoxScope.DoneAnimator(eventTrigger: EventTrigger<Unit>) {
             ),
             contentDescription = null,
             modifier = Modifier
-                .size(160.dp)
+                .size(160.dp * LocalTypographyScale.current.scale)
                 .align(Alignment.Center),
         )
     }
