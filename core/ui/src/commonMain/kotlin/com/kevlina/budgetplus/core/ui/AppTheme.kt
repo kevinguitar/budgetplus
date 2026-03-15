@@ -38,7 +38,7 @@ fun AppTheme(
         windowSize.height == Size.Compat -> TypographyScale(1.0F)
         windowSize.width == Size.Compat -> TypographyScale(1.0F)
         windowSize.width == Size.Medium -> TypographyScale(1.2F)
-        windowSize.width == Size.Expanded -> TypographyScale(1.35F)
+        windowSize.width == Size.Expanded -> TypographyScale(1.3F)
         else -> TypographyScale(1.0F)
     }
 

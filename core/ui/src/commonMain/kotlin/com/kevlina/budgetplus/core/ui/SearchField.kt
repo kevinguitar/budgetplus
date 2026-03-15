@@ -57,14 +57,13 @@ fun SearchField(
             tint = LocalAppColors.current.dark,
         )
 
-        val fontSize = FontSize.Large.withTypographyScale()
         BasicTextField(
             state = keyword,
             modifier = Modifier.weight(1F),
             textStyle = TextStyle(
                 color = LocalAppColors.current.dark,
                 textAlign = TextAlign.End,
-                fontSize = fontSize,
+                fontSize = FontSize.Large,
                 letterSpacing = TextUnit.Unspecified
             ),
             keyboardOptions = keyboardOptions,
@@ -83,7 +82,7 @@ fun SearchField(
                         Text(
                             text = hint,
                             textAlign = TextAlign.End,
-                            fontSize = fontSize,
+                            fontSize = FontSize.Large,
                             modifier = Modifier.alpha(PLACEHOLDER_ALPHA)
                         )
                     }

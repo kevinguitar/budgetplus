@@ -56,7 +56,6 @@ fun TextField(
     scrollState: ScrollState = rememberScrollState(),
     onDone: (() -> Unit)? = null,
 ) {
-    val scaledFontSize = fontSize.withTypographyScale()
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -71,7 +70,7 @@ fun TextField(
         Text(
             text = title,
             fontWeight = FontWeight.SemiBold,
-            fontSize = scaledFontSize,
+            fontSize = fontSize,
             modifier = Modifier.thenIfNotNull(onTitleClick) {
                 Modifier.rippleClick(
                     borderless = true,
@@ -89,7 +88,7 @@ fun TextField(
             textStyle = TextStyle(
                 color = LocalAppColors.current.dark,
                 textAlign = TextAlign.End,
-                fontSize = scaledFontSize,
+                fontSize = fontSize.withTypographyScale(),
                 letterSpacing = letterSpacing
             ),
             keyboardOptions = keyboardOptions,
@@ -112,7 +111,7 @@ fun TextField(
                         Text(
                             text = placeholder,
                             textAlign = TextAlign.End,
-                            fontSize = scaledFontSize,
+                            fontSize = fontSize,
                             modifier = Modifier.alpha(PLACEHOLDER_ALPHA)
                         )
                     }
