@@ -18,6 +18,7 @@ import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.lottie.loadLottieSpec
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import io.github.alexzhirkevich.compottie.ExperimentalCompottieApi
 import io.github.alexzhirkevich.compottie.dynamic.rememberLottieDynamicProperties
@@ -79,7 +80,7 @@ fun BoxScope.DoneAnimator(eventTrigger: EventTrigger<Unit>) {
             ),
             contentDescription = null,
             modifier = Modifier
-                .size(160.dp)
+                .size(160.dp.withTypographyScale())
                 .align(Alignment.Center),
         )
     }

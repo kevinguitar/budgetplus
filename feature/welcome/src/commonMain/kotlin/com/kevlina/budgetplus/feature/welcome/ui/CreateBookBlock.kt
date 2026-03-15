@@ -35,6 +35,7 @@ import budgetplus.core.common.generated.resources.ic_logo
 import budgetplus.core.common.generated.resources.welcome_create_book_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.typographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -55,7 +56,6 @@ fun CreateBookBlock(
     applyStatusBarPadding: Boolean = true,
     applyNavBarPadding: Boolean = false,
 ) {
-
     Box(
         modifier = modifier
             .background(LocalAppColors.current.light)
@@ -147,13 +147,13 @@ fun CreateBookBlock(
                     enabled = bookName.text.isNotBlank(),
                     shape = CircleShape,
                     contentPadding = PaddingValues(),
-                    modifier = Modifier.size(56.dp)
+                    modifier = Modifier.size(56.dp.withTypographyScale())
                 ) {
                     if (isCreatingBook) {
                         InfiniteCircularProgress(
                             color = LocalAppColors.current.light,
                             strokeWidth = 2.dp,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp.withTypographyScale())
                         )
                     } else {
                         Text(

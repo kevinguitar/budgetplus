@@ -28,8 +28,8 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.ThemeColors
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.rippleClick
@@ -48,7 +48,7 @@ internal fun BottomNav(
             .fillMaxWidth()
             .background(color = lightColor)
             .navigationBarsPadding()
-            .height(50.dp * LocalTypographyScale.current.scale)
+            .height(50.dp.withTypographyScale())
     ) {
         Spacer(
             modifier = Modifier
@@ -99,8 +99,8 @@ private fun RowScope.BottomNavItem(
             Spacer(
                 modifier = Modifier
                     .size(
-                        width = 60.dp * LocalTypographyScale.current.scale,
-                        height = 36.dp * LocalTypographyScale.current.scale
+                        width = 60.dp.withTypographyScale(),
+                        height = 36.dp.withTypographyScale()
                     )
                     .background(
                         color = darkColor,

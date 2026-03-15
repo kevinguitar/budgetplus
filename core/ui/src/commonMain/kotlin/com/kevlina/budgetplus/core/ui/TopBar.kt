@@ -20,7 +20,7 @@ import budgetplus.core.common.generated.resources.ic_arrow_back
 import budgetplus.core.common.generated.resources.ic_drive_file_rename_outline
 import budgetplus.core.common.generated.resources.ic_group_add
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.LocalTypographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -40,7 +40,7 @@ fun TopBar(
             .background(color = LocalAppColors.current.primary.darken(TOP_BAR_DARKEN_FACTOR))
             .thenIf(applyStatusBarPadding) { Modifier.statusBarsPadding() }
             .fillMaxWidth()
-            .height(56.dp * LocalTypographyScale.current.scale)
+            .height(56.dp.withTypographyScale())
     ) {
         if (navigateUp != null) {
             IconButton(onClick = navigateUp) {

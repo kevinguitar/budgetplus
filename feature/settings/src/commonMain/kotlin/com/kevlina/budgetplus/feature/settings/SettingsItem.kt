@@ -28,6 +28,7 @@ import budgetplus.core.common.generated.resources.ic_language
 import com.kevlina.budgetplus.core.lottie.PremiumCrown
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.typographyScale
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
@@ -51,7 +52,6 @@ internal fun SettingsItem(
     verticalPadding: Dp = 16.dp,
     onClick: () -> Unit,
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,7 +72,11 @@ internal fun SettingsItem(
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 16.dp, top = verticalPadding, bottom = verticalPadding)
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = verticalPadding.withTypographyScale(),
+                bottom = verticalPadding.withTypographyScale()
+            )
         ) {
             if (icon != null) {
                 Image(

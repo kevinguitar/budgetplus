@@ -1,9 +1,8 @@
 package com.kevlina.budgetplus.feature.overview.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
@@ -30,9 +29,7 @@ internal fun OverviewContent(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         },
-        modifier = modifier
-            .fillMaxHeight()
-            .width(AppTheme.containerMaxWidth)
+        modifier = modifier.fillMaxSize()
     )
 }
 

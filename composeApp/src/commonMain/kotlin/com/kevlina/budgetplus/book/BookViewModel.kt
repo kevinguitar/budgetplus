@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.book
 
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
@@ -33,7 +32,6 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Named
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -57,18 +55,16 @@ class BookViewModel(
     authManager: AuthManager,
 ) : ViewModel() {
 
-    private val currentNavKeyFlow = snapshotFlow { navController.backStack.lastOrNull() }.filterNotNull()
-
     private val hideBottomNavDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
     private val hideAdsDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
 
-    val showBottomNav = currentNavKeyFlow
+    val showBottomNav = navController.currentNavKeyFlow
         .map { it !in hideBottomNavDestinations }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
     val showBannerAd = combine(
         authManager.isPremium,
-        currentNavKeyFlow
+        navController.currentNavKeyFlow
     ) { isPremium, currentNavKey ->
         !isPremium && currentNavKey !in hideAdsDestinations
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
@@ -83,7 +79,7 @@ class BookViewModel(
             }
         }.launchIn(viewModelScope)
 
-        currentNavKeyFlow
+        navController.currentNavKeyFlow
             .onEach { key ->
                 // Clear the preview colors if the user navigates out of the picker screen.
                 if (key != BookDest.Colors) {
