@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_add
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -39,7 +40,7 @@ fun BoxScope.Fab(
             shape = CircleShape,
             color = LocalAppColors.current.dark,
             onClick = onClick,
-            modifier = Modifier.size(56.dp)
+            modifier = Modifier.size(56.dp.withTypographyScale())
         ) {
             Icon(
                 imageVector = icon,

@@ -37,7 +37,6 @@ internal fun RecordContentRegular(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.fillMaxHeight()
         ) {
-
             RecordInfo(
                 state = state.recordInfoState,
                 modifier = Modifier
