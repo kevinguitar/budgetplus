@@ -95,7 +95,7 @@ firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = 
 firebase-functions = { module = "dev.gitlive:firebase-functions", version.ref = "firebase-kmp" }
 firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-kmp" }
 firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
-google-ads = "com.google.android.gms:play-services-ads:25.0.0"
+google-ads = "com.google.android.gms:play-services-ads:25.1.0"
 google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.21.0.1"
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.2.0"
 google-play-review = "com.google.android.play:review-ktx:2.0.2"
