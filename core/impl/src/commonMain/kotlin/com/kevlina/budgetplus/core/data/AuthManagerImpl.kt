@@ -31,7 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -69,21 +68,9 @@ class AuthManagerImpl(
     override val userId: String? get() = userState.value?.id
 
     init {
-        appScope.launch { userState.collect() }
-
-        // Quite terrible code but this is to skip the first null coming from Firebase Auth, we don't want to clear
-        // the user preference (it is already null) and perform the navigation while the user already on auth screen.
-        var hasSkippedFirstNull = false
         Firebase.auth
             .authStateChanged
-            .onEach { firebaseUser ->
-                when {
-                    firebaseUser != null -> updateUser(firebaseUser.toUser())
-                    !hasSkippedFirstNull -> Unit
-                    else -> updateUser(null)
-                }
-                hasSkippedFirstNull = true
-            }
+            .onEach { firebaseUser -> updateUser(firebaseUser?.toUser()) }
             .launchIn(scope = appScope)
     }
 
