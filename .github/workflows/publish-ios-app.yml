@@ -193,11 +193,15 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
         run: |
+          # Find the IPA and export it so the Fastfile can read it
           IPA_FILE=$(find ./build/output -name "*.ipa" | head -n 1)
           export IPA_FILE
           
-          # Generate a temporary Fastfile
-          cat > Fastfile <<EOF
+          # Create the required fastlane directory
+          mkdir -p fastlane
+          
+          # Generate a temporary Fastfile inside the fastlane folder
+          cat > fastlane/Fastfile <<EOF
           lane :ci_upload do
             app_store_connect_api_key(
               key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
@@ -214,9 +218,8 @@ jobs:
             )
           end
           EOF
-            
-            # Execute the lane we just created
-            fastlane ci_upload
+          
+          fastlane ci_upload
 
       - name: Clean up keychain
         if: ${{ always() }}
@@ -256,8 +259,11 @@ jobs:
           MAX_RETRIES=30
           RETRY_INTERVAL=60
           
-          # Generate a temporary Fastfile for submission
-          cat > Fastfile <<EOF
+          # Create the required fastlane directory
+          mkdir -p fastlane
+          
+          # Generate a temporary Fastfile insde the fastlane folder
+          cat > fastlane/Fastfile <<EOF
           lane :ci_submit do
             app_store_connect_api_key(
               key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
