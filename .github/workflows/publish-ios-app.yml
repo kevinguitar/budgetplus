@@ -214,7 +214,8 @@ jobs:
               ipa: ENV["IPA_FILE"],
               submit_for_review: false,
               skip_metadata: true,
-              force: true
+              force: true,
+              run_precheck_before_submit: false
             )
           end
           EOF
@@ -280,7 +281,8 @@ jobs:
               automatic_release: false,
               phased_release: false,
               force: true,
-              metadata_path: "./fastlane/metadata"
+              metadata_path: "./fastlane/metadata",
+              precheck_include_in_app_purchases: false
             )
           end
           EOF
