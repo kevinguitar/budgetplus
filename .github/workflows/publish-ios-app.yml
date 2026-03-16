@@ -193,16 +193,33 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
         run: |
+          # Find the IPA and export it so the Fastfile can read it
           IPA_FILE=$(find ./build/output -name "*.ipa" | head -n 1)
-          fastlane run upload_to_app_store \
-            app_identifier:"com.kevlina.budgetplus" \
-            app_version:"${{ steps.version.outputs.version }}" \
-            build_number:"${{ github.run_number }}" \
-            ipa:"$IPA_FILE" \
-            skip_waiting_for_build_processing:true \
-            submit_for_review:false \
-            skip_metadata:true \
-            force:true
+          export IPA_FILE
+          
+          # Create the required fastlane directory
+          mkdir -p fastlane
+          
+          # Generate a temporary Fastfile inside the fastlane folder
+          cat > fastlane/Fastfile <<EOF
+          lane :ci_upload do
+            app_store_connect_api_key(
+              key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+              issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+              key_filepath: ENV["APP_STORE_CONNECT_API_KEY_KEY_FILEPATH"],
+              in_house: false
+            )
+            upload_to_app_store(
+              app_identifier: "com.kevlina.budgetplus",
+              ipa: ENV["IPA_FILE"],
+              submit_for_review: false,
+              skip_metadata: true,
+              force: true
+            )
+          end
+          EOF
+          
+          fastlane ci_upload
 
       - name: Clean up keychain
         if: ${{ always() }}
@@ -239,13 +256,48 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
         run: |
-          fastlane run upload_to_app_store \
-            app_identifier:"com.kevlina.budgetplus" \
-            app_version:"${{ needs.build-and-upload.outputs.version }}" \
-            build_number:"${{ needs.build-and-upload.outputs.build_number }}" \
-            skip_binary_upload:true \
-            submit_for_review:true \
-            automatic_release:true \
-            phased_release:false \
-            force:true \
-            metadata_path:"./fastlane/metadata"
+          MAX_RETRIES=30
+          RETRY_INTERVAL=60
+          
+          # Create the required fastlane directory
+          mkdir -p fastlane
+          
+          # Generate a temporary Fastfile insde the fastlane folder
+          cat > fastlane/Fastfile <<EOF
+          lane :ci_submit do
+            app_store_connect_api_key(
+              key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+              issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+              key_filepath: ENV["APP_STORE_CONNECT_API_KEY_KEY_FILEPATH"],
+              in_house: false
+            )
+            upload_to_app_store(
+              app_identifier: "com.kevlina.budgetplus",
+              app_version: "${{ needs.build-and-upload.outputs.version }}",
+              build_number: "${{ needs.build-and-upload.outputs.build_number }}",
+              skip_binary_upload: true,
+              submit_for_review: true,
+              automatic_release: false,
+              phased_release: false,
+              force: true,
+              metadata_path: "./fastlane/metadata"
+            )
+          end
+          EOF
+          
+          echo "Polling App Store Connect to check if the build is processed..."
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES..."
+          
+            if fastlane ci_submit; then
+              echo "✅ Build processed and submitted for review successfully!"
+              exit 0
+            else
+              echo "⚠️ Build not yet processed (or another error occurred). Waiting $RETRY_INTERVAL seconds before retrying..."
+              sleep $RETRY_INTERVAL
+            fi
+          done
+          
+          echo "❌ Timed out waiting for Apple to process the build after $MAX_RETRIES attempts."
+          exit 1
