@@ -194,12 +194,29 @@ jobs:
           APP_STORE_CONNECT_API_KEY_KEY_FILEPATH: ${{ env.API_KEY_PATH }}
         run: |
           IPA_FILE=$(find ./build/output -name "*.ipa" | head -n 1)
-          fastlane run upload_to_app_store \
-            app_identifier:"com.kevlina.budgetplus" \
-            ipa:"$IPA_FILE" \
-            submit_for_review:false \
-            skip_metadata:true \
-            force:true
+          export IPA_FILE
+          
+          # Generate a temporary Fastfile
+          cat > Fastfile <<EOF
+          lane :ci_upload do
+            app_store_connect_api_key(
+              key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+              issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+              key_filepath: ENV["APP_STORE_CONNECT_API_KEY_KEY_FILEPATH"],
+              in_house: false
+            )
+            upload_to_app_store(
+              app_identifier: "com.kevlina.budgetplus",
+              ipa: ENV["IPA_FILE"],
+              submit_for_review: false,
+              skip_metadata: true,
+              force: true
+            )
+          end
+          EOF
+            
+            # Execute the lane we just created
+            fastlane ci_upload
 
       - name: Clean up keychain
         if: ${{ always() }}
@@ -239,23 +256,35 @@ jobs:
           MAX_RETRIES=30
           RETRY_INTERVAL=60
           
+          # Generate a temporary Fastfile for submission
+          cat > Fastfile <<EOF
+          lane :ci_submit do
+            app_store_connect_api_key(
+              key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+              issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+              key_filepath: ENV["APP_STORE_CONNECT_API_KEY_KEY_FILEPATH"],
+              in_house: false
+            )
+            upload_to_app_store(
+              app_identifier: "com.kevlina.budgetplus",
+              app_version: "${{ needs.build-and-upload.outputs.version }}",
+              build_number: "${{ needs.build-and-upload.outputs.build_number }}",
+              skip_binary_upload: true,
+              submit_for_review: true,
+              automatic_release: false,
+              phased_release: false,
+              force: true,
+              metadata_path: "./fastlane/metadata"
+            )
+          end
+          EOF
+          
           echo "Polling App Store Connect to check if the build is processed..."
           
           for i in $(seq 1 $MAX_RETRIES); do
             echo "Attempt $i of $MAX_RETRIES..."
           
-            # The 'if' statement prevents GitHub Actions from failing the job immediately on a Fastlane error
-            if fastlane run upload_to_app_store \
-              app_identifier:"com.kevlina.budgetplus" \
-              app_version:"${{ needs.build-and-upload.outputs.version }}" \
-              build_number:"${{ needs.build-and-upload.outputs.build_number }}" \
-              skip_binary_upload:true \
-              submit_for_review:true \
-              automatic_release:false \
-              phased_release:false \
-              force:true \
-              metadata_path:"./fastlane/metadata"; then
-          
+            if fastlane ci_submit; then
               echo "✅ Build processed and submitted for review successfully!"
               exit 0
             else
