@@ -32,6 +32,7 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Named
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -73,8 +74,11 @@ class BookViewModel(
 
     init {
         // If the user has no active book, navigate them to the welcome screen to create or join a book.
-        combine(authManager.userState, bookRepo.booksState) { user, books ->
-            if (user?.id != null && books?.isEmpty() == true) {
+        combine(
+            authManager.userState.map { it?.id }.distinctUntilChanged(),
+            bookRepo.booksState
+        ) { userId, books ->
+            if (userId != null && books?.isEmpty() == true) {
                 navigation.sendEvent(welcomeNavigationAction)
             }
         }.launchIn(viewModelScope)
