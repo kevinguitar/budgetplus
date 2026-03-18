@@ -171,5 +171,5 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle-plugin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-spm-kmp = "io.github.frankois944.spmForKmp:1.4.12"
+spm-kmp = "io.github.frankois944.spmForKmp:1.6.1"
 buildkonfig = "com.codingfeline.buildkonfig:0.17.1"
