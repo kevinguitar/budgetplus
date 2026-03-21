@@ -1,7 +1,9 @@
 name: Android CI
 
 on:
-  pull_request:
+  # Temporarily disabled
+  #  pull_request:
+  workflow_dispatch:
 
 # Cancel any current or previous job from the same PR
 concurrency:
