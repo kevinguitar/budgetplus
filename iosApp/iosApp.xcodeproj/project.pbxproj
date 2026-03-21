@@ -686,7 +686,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 12.10.0;
+				minimumVersion = 12.11.0;
 			};
 		};
 		0A76E1482F53275F00D57F53 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */ = {
