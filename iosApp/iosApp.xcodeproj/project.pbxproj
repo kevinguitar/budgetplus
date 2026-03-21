@@ -22,7 +22,6 @@
 		0A76E14A2F53275F00D57F53 /* PurchasesHybridCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 0A76E1492F53275F00D57F53 /* PurchasesHybridCommon */; };
 		0A76E14C2F53275F00D57F53 /* PurchasesHybridCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0A76E14B2F53275F00D57F53 /* PurchasesHybridCommonUI */; };
 		0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9A78A52F52CD5C0090916D /* StoreKit.framework */; };
-		0AB987032F6E7FD600FA371A /* FBAudienceNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 0AB987022F6E7FD600FA371A /* FBAudienceNetwork */; };
 		0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619412F37503900F3C461 /* GoogleSignIn */; };
 		0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619432F37503900F3C461 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
@@ -113,7 +112,6 @@
 			files = (
 				0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */,
 				0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */,
-				0AB987032F6E7FD600FA371A /* FBAudienceNetwork in Frameworks */,
 				0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */,
 				0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */,
 				0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */,
@@ -220,7 +218,6 @@
 				0A76E1492F53275F00D57F53 /* PurchasesHybridCommon */,
 				0A76E14B2F53275F00D57F53 /* PurchasesHybridCommonUI */,
 				0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */,
-				0AB987022F6E7FD600FA371A /* FBAudienceNetwork */,
 			);
 			productName = iosApp;
 			productReference = C6E1A353ED23D830AFC12840 /* BudgetPlus.app */;
@@ -262,7 +259,6 @@
 				0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				0A76E1482F53275F00D57F53 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */,
 				0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */,
-				0AB987012F6E7FD600FA371A /* XCRemoteSwiftPackageReference "FBAudienceNetwork" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2C03A3E98A73FC2B967E9F10 /* Products */;
@@ -701,14 +697,6 @@
 				version = 17.52.0;
 			};
 		};
-		0AB987012F6E7FD600FA371A /* XCRemoteSwiftPackageReference "FBAudienceNetwork" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/facebook/FBAudienceNetwork";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.21.1;
-			};
-		};
 		0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
@@ -774,11 +762,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0A76E1482F53275F00D57F53 /* XCRemoteSwiftPackageReference "purchases-hybrid-common" */;
 			productName = PurchasesHybridCommonUI;
-		};
-		0AB987022F6E7FD600FA371A /* FBAudienceNetwork */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0AB987012F6E7FD600FA371A /* XCRemoteSwiftPackageReference "FBAudienceNetwork" */;
-			productName = FBAudienceNetwork;
 		};
 		0AE619412F37503900F3C461 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
