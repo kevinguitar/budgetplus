@@ -102,19 +102,26 @@ fun DateRangePickerDialog(
                         .padding(all = 16.dp)
                 )
 
+                val isRangeSelected = state.selectedStartDateMillis != null && state.selectedEndDateMillis != null
                 Text(
                     text = stringResource(Res.string.cta_confirm),
-                    color = LocalAppColors.current.dark,
+                    color = if (isRangeSelected) {
+                        LocalAppColors.current.dark
+                    } else {
+                        LocalAppColors.current.dark.copy(alpha = 0.4f)
+                    },
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(8.dp))
-                        .rippleClick {
-                            val startDate = state.selectedStartDateMillis?.utcLocaleDate
-                            val endDate = state.selectedEndDateMillis?.utcLocaleDate
-                            if (startDate != null && endDate != null) {
-                                onRangePicked(startDate, endDate)
+                        .thenIf(isRangeSelected) {
+                            Modifier.rippleClick {
+                                val startDate = state.selectedStartDateMillis?.utcLocaleDate
+                                val endDate = state.selectedEndDateMillis?.utcLocaleDate
+                                if (startDate != null && endDate != null) {
+                                    onRangePicked(startDate, endDate)
+                                }
+                                onDismiss()
                             }
-                            onDismiss()
                         }
                         .padding(all = 16.dp)
                 )
