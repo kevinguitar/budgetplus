@@ -694,7 +694,7 @@
 			repositoryURL = "https://github.com/RevenueCat/purchases-hybrid-common";
 			requirement = {
 				kind = exactVersion;
-				version = 17.46.0;
+				version = 17.52.0;
 			};
 		};
 		0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
