@@ -63,6 +63,11 @@ jobs:
 
       - name: Build iOS App (simulator)
         run: |
+          xcodebuild -resolvePackageDependencies \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -clonedSourcePackagesDirPath ./build/SourcePackages
+          
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
@@ -74,5 +79,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
             -skipPackagePluginValidation \
             -quiet
