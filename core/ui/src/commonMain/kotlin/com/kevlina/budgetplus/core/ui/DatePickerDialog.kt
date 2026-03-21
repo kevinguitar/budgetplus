@@ -144,6 +144,7 @@ internal fun datePickerColors(): DatePickerColors {
             unfocusedPrefixColor = primaryColor,
             focusedSuffixColor = darkColor,
             unfocusedSuffixColor = primaryColor,
+            cursorColor = darkColor
         )
     )
 }
