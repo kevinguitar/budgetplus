@@ -63,9 +63,6 @@ jobs:
 
       - name: Build iOS App (simulator)
         run: |
-          # Clean first to reset the Compose Resource providers
-          ./gradlew :composeApp:clean
-          
           xcodebuild -resolvePackageDependencies \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
