@@ -34,11 +34,6 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
             }
         }
 
-        // See https://youtrack.jetbrains.com/issue/CMP-4885
-        project.tasks
-            .matching { it.name == "syncComposeResourcesForIos" }
-            .configureEach { enabled = false }
-
         project.dependencies {
             debugImplementation(project.libs.compose.android.uiTooling)
         }

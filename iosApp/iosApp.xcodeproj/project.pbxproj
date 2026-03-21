@@ -22,7 +22,6 @@
 		0A76E14A2F53275F00D57F53 /* PurchasesHybridCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 0A76E1492F53275F00D57F53 /* PurchasesHybridCommon */; };
 		0A76E14C2F53275F00D57F53 /* PurchasesHybridCommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0A76E14B2F53275F00D57F53 /* PurchasesHybridCommonUI */; };
 		0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9A78A52F52CD5C0090916D /* StoreKit.framework */; };
-		0AB9871A2F6E877900FA371A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AB987192F6E877900FA371A /* SwiftUI.framework */; };
 		0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619412F37503900F3C461 /* GoogleSignIn */; };
 		0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619432F37503900F3C461 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
@@ -55,7 +54,6 @@
 		0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A9A78A52F52CD5C0090916D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		0AB987192F6E877900FA371A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		C6E1A353ED23D830AFC12840 /* BudgetPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -122,7 +120,6 @@
 				0A69C8322F36F8EC0058D721 /* FirebaseCrashlytics in Frameworks */,
 				0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */,
 				0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */,
-				0AB9871A2F6E877900FA371A /* SwiftUI.framework in Frameworks */,
 				0A69C8302F36F8EC0058D721 /* FirebaseCore in Frameworks */,
 				0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */,
 				0A76E14A2F53275F00D57F53 /* PurchasesHybridCommon in Frameworks */,
@@ -136,7 +133,6 @@
 		0A9A78A42F52CD5C0090916D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0AB987192F6E877900FA371A /* SwiftUI.framework */,
 				0A9A78A52F52CD5C0090916D /* StoreKit.framework */,
 			);
 			name = Frameworks;
