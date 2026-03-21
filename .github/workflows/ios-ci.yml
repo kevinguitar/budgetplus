@@ -63,11 +63,6 @@ jobs:
 
       - name: Build iOS App (simulator)
         run: |
-          xcodebuild -resolvePackageDependencies \
-            -project iosApp/iosApp.xcodeproj \
-            -scheme iosApp \
-            -clonedSourcePackagesDirPath ./build/SourcePackages
-          
           xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
