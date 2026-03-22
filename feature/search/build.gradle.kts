@@ -14,7 +14,7 @@ kotlin {
 
             implementation(libs.firebase.firestore)
         }
-        androidUnitTest.dependencies {
+        findByName("androidHostTest")?.dependencies {
             implementation(projects.core.common)
             implementation(projects.core.data)
         }

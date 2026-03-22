@@ -84,7 +84,7 @@ swiftPackageConfig {
                         "FirebaseRemoteConfig",
                     ).forEach { add(it, exportToKotlin = false) }
                 },
-                version = "12.10.0",
+                version = "12.11.0",
             )
             remotePackageVersion(
                 url = uri("https://github.com/google/GoogleSignIn-iOS.git"),
