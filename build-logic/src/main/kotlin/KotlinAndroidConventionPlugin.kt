@@ -43,6 +43,11 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
                 excludes.add("**/*.kotlin_metadata")
             }
 
+            lint {
+                warningsAsErrors = true
+                baseline = project.rootProject.file("lint-baseline.xml")
+            }
+
             project.tasks.withType<KotlinCompile>().configureEach {
                 compilerOptions {
                     // Due to https://youtrack.jetbrains.com/issue/CMP-8498/KLIB-name-conflict-with-AndroidX-libraries

@@ -86,8 +86,8 @@ class BudgetPlusAppConventionPlugin : Plugin<Project> {
                 }
             }
 
-            bundle {
-                storeArchive.enable = false
+            lint {
+                checkDependencies = true
             }
         }
     }

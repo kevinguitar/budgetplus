@@ -92,6 +92,10 @@ class InsiderAppConventionPlugin : Plugin<Project> {
                     excludes.add("META-INF/INDEX.LIST")
                 }
             }
+
+            lint {
+                checkDependencies = true
+            }
         }
     }
 }

@@ -34,6 +34,11 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             compileOptions.sourceCompatibility = javaVersion
             compileOptions.targetCompatibility = javaVersion
 
+            lint {
+                warningsAsErrors = true
+                baseline = project.rootProject.file("lint-baseline.xml")
+            }
+
             packaging.resources {
                 excludes.add("META-INF/*.kotlin_module")
                 excludes.add("META-INF/AL2.0")
@@ -119,7 +124,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
             compilerOptions {
                 // Due to https://youtrack.jetbrains.com/issue/CMP-8498/KLIB-name-conflict-with-AndroidX-libraries
-                allWarningsAsErrors.set(false)
+                allWarningsAsErrors.set(true)
                 freeCompilerArgs.addAll(
                     "-Xcontext-parameters",
                     "-Xexplicit-backing-fields",

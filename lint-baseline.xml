@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.13.2" type="baseline" client="gradle" dependencies="true" name="AGP (8.13.2)" variant="all" version="8.13.2">
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkClientTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="../../../../.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/2.0.2/5605d66977094595cf4dde9db532596b1cc95459/google-http-client-2.0.2.jar"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkClientTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="../../../.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/2.0.2/5605d66977094595cf4dde9db532596b1cc95459/google-http-client-2.0.2.jar"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkServerTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="../../../../.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/2.0.2/5605d66977094595cf4dde9db532596b1cc95459/google-http-client-2.0.2.jar"/>
+    </issue>
+
+    <issue
+        id="TrustAllX509TrustManager"
+        message="`checkServerTrusted` is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers">
+        <location
+            file="../../../.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/2.0.2/5605d66977094595cf4dde9db532596b1cc95459/google-http-client-2.0.2.jar"/>
+    </issue>
+
+</issues>
