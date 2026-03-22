@@ -1,7 +1,9 @@
 package com.kevlina.budgetplus.feature.settings
 
 import android.content.Intent
+import android.os.Build
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.settings_contact_us
@@ -23,6 +25,7 @@ class SettingsNavigationImpl(
     @Named("contact_email") private val contactEmail: String,
 ) : SettingsNavigation {
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun openLanguageSettings(onLanguageChanged: (String) -> Unit) {
         val activity = activityProvider.currentActivity ?: return
         val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS).apply {

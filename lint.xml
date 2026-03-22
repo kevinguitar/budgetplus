@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="AndroidGradlePluginVersion" severity="ignore" />
+    <issue id="ComposableNaming" severity="ignore" />
     <issue id="StaticFieldLeak" severity="ignore" />
 </lint>

@@ -1,3 +1,5 @@
+import io.github.frankois944.spmForKmp.swiftPackageConfig
+
 plugins {
     alias(budgetplus.plugins.kotlin.multiplatform)
     alias(budgetplus.plugins.compose.multiplatform)
@@ -9,10 +11,18 @@ kotlin {
     listOf(
         iosArm64(),
         iosSimulatorArm64(),
-    ).forEach {
-        it.compilations {
-            val main by getting {
-                cinterops.create("nativeBridge")
+    ).forEach { target ->
+        target.swiftPackageConfig(cinteropName = "nativeBridge") {
+            dependency {
+                minIos = "16.6"
+                linkerOpts = listOf("-ObjC")
+                remotePackageVersion(
+                    url = uri("https://github.com/googleads/swift-package-manager-google-mobile-ads.git"),
+                    products = {
+                        add("GoogleMobileAds", exportToKotlin = true)
+                    },
+                    version = libs.versions.google.ads.ios.get()
+                )
             }
         }
     }
@@ -26,22 +36,6 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.google.ads)
-        }
-    }
-}
-
-swiftPackageConfig {
-    create("nativeBridge") {
-        dependency {
-            minIos = "16.6"
-            linkerOpts = listOf("-ObjC")
-            remotePackageVersion(
-                url = uri("https://github.com/googleads/swift-package-manager-google-mobile-ads.git"),
-                products = {
-                    add("GoogleMobileAds", exportToKotlin = true)
-                },
-                version = libs.versions.google.ads.ios.get()
-            )
         }
     }
 }
