@@ -41,7 +41,7 @@ compottie = "2.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
 revenuecat-kmp = "2.10.0+17.52.0"
 # https://github.com/ktorio/ktor/releases
-ktor = "3.4.1"
+ktor = "3.4.2"
 # https://github.com/touchlab/Kermit/releases
 kermit = "2.1.0"
 
