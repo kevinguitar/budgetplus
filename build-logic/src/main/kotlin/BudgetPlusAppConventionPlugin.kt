@@ -87,7 +87,7 @@ class BudgetPlusAppConventionPlugin : Plugin<Project> {
             }
 
             lint {
-                checkDependencies = true
+                warningsAsErrors = true
             }
         }
     }

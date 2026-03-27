@@ -45,7 +45,6 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
 
             lint {
                 warningsAsErrors = true
-                baseline = project.rootProject.file("lint-baseline.xml")
             }
 
             project.tasks.withType<KotlinCompile>().configureEach {

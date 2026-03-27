@@ -36,7 +36,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
             lint {
                 warningsAsErrors = true
-                baseline = project.rootProject.file("lint-baseline.xml")
             }
 
             packaging.resources {

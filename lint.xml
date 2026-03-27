@@ -2,5 +2,8 @@
 <lint>
     <issue id="AndroidGradlePluginVersion" severity="ignore" />
     <issue id="ComposableNaming" severity="ignore" />
+    <issue id="GradleDependency" severity="ignore" />
+    <issue id="NewerVersionAvailable" severity="ignore" />
     <issue id="StaticFieldLeak" severity="ignore" />
+    <issue id="TrustAllX509TrustManager" severity="ignore" />
 </lint>

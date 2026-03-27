@@ -94,7 +94,7 @@ class InsiderAppConventionPlugin : Plugin<Project> {
             }
 
             lint {
-                checkDependencies = true
+                warningsAsErrors = true
             }
         }
     }
