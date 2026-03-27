@@ -25,13 +25,13 @@ interface ViewModelAssistedFactory
 
 // Used to inject ViewModel instances into ViewModelGraph
 @MapKey
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
 // Used to inject assisted ViewModel factory instances into ViewModelGraph
 @MapKey
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class AssistedFactoryKey(val value: KClass<out ViewModelAssistedFactory>)
 
