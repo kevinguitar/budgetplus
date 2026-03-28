@@ -129,3 +129,5 @@ actual class AuthViewModel(
         }
     }
 }
+
+actual val isAppleSignInAvailable: Boolean get() = false

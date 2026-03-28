@@ -176,3 +176,5 @@ actual class AuthViewModel(
         return hash.toHexString()
     }
 }
+
+actual val isAppleSignInAvailable: Boolean get() = true
