@@ -22,6 +22,7 @@ import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.ContributesIntoMap
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -61,7 +62,7 @@ actual class AuthViewModel(
 
         viewModelScope.launch {
             try {
-                val activity = activityProvider.currentActivity ?: error("Cannot find current activity")
+                val activity = activityProvider.activityFlow.filterNotNull().first()
                 val result = credentialManager.getCredential(activity, request)
                 handleSignIn(result)
             } catch (e: GetCredentialCancellationException) {
@@ -92,7 +93,7 @@ actual class AuthViewModel(
 
         viewModelScope.launch {
             try {
-                val activity = activityProvider.currentActivity ?: error("Cannot find current activity")
+                val activity = activityProvider.activityFlow.filterNotNull().first()
                 val result = credentialManager.getCredential(activity, request)
                 handleSignIn(result)
             } catch (e: GetCredentialCancellationException) {
