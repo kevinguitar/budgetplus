@@ -26,14 +26,6 @@ class NavController<T : NavKey>(
 
     val currentNavKeyFlow: Flow<T> = snapshotFlow { backStack.lastOrNull() }.filterNotNull()
 
-    init {
-        // Force initialization of delegated properties to avoid "Cannot modify a state object in a read-only snapshot"
-        // when they are first accessed inside snapshotFlow or other read-only snapshots.
-        rootBackStacks
-        backStack
-        rootStack
-    }
-
     private val currentRoot: T
         get() = rootStack.lastOrNull() ?: startRoot
 
