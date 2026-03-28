@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.kevlina.budgetplus.core.common.consumeEach
 import kotlinx.coroutines.flow.launchIn
 
+//TODO: Clean up
 fun ComponentActivity.consumeNavigation(navigationFlow: NavigationFlow) {
     navigationFlow
         .consumeEach { action ->

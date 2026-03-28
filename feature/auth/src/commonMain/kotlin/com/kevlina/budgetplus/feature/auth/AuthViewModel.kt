@@ -6,9 +6,9 @@ import budgetplus.core.common.generated.resources.auth_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.nav.NavigationAction
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.nav.NavigationFlow
-import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.BookRepo
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.AuthResult
@@ -17,7 +17,6 @@ import dev.gitlive.firebase.auth.GoogleAuthProvider
 import dev.gitlive.firebase.auth.OAuthProvider
 import dev.gitlive.firebase.auth.auth
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.Named
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.getString
@@ -37,8 +36,7 @@ class CommonAuthViewModel(
     private val bookRepo: BookRepo,
     private val toaster: Toaster,
     private val tracker: Tracker,
-    @Named("welcome") private val welcomeNavigationAction: NavigationAction,
-    @Named("book") private val bookNavigationAction: NavigationAction,
+    private val navController: NavController<BookDest>,
 ) {
     val isLoading: StateFlow<Boolean>
         field = MutableStateFlow(false)
@@ -90,18 +88,18 @@ class CommonAuthViewModel(
             toaster.showMessage(message)
         }
 
-        val action = try {
+        val destination = try {
             if (bookRepo.isUserHasBooks()) {
-                bookNavigationAction
+                BookDest.Record
             } else {
-                welcomeNavigationAction
+                BookDest.Welcome
             }
         } catch (e: Exception) {
             snackbarSender.sendError(e)
-            welcomeNavigationAction
+            BookDest.Welcome
         } finally {
             isLoading.value = false
         }
-        navigation.sendEvent(action)
+        navController.selectRootAndClearAll(destination)
     }
 }

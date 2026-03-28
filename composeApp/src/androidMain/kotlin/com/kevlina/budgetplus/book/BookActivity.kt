@@ -20,16 +20,15 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelGraphProvider
 import com.kevlina.budgetplus.core.common.di.resolveGraphExtensionFactory
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
+import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
-import com.kevlina.budgetplus.core.common.nav.consumeNavigation
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.utils.LocalViewModelGraphProvider
 import com.kevlina.budgetplus.core.utils.setStatusBarColor
-import com.kevlina.budgetplus.feature.auth.AuthActivity
-import com.kevlina.budgetplus.feature.welcome.WelcomeActivity
 import com.kevlina.budgetplus.inapp.update.InAppUpdateManager
 import com.kevlina.budgetplus.inapp.update.InAppUpdateState
 import dev.zacsweers.metro.Inject
@@ -42,6 +41,7 @@ class BookActivity : ComponentActivity() {
     @Inject private lateinit var inAppUpdateManager: InAppUpdateManager
     @Inject private lateinit var snackbarSender: SnackbarSender
     @Inject private lateinit var viewModelGraphProvider: ViewModelGraphProvider
+    @Inject private lateinit var navController: NavController<BookDest>
 
     private val viewModel by viewModels<BookViewModel>(
         factoryProducer = ::viewModelGraphProvider
@@ -64,14 +64,13 @@ class BookActivity : ComponentActivity() {
         viewModel.handleDeeplink(intent.dataString)
 
         val destination = when {
-            authManager.userState.value == null -> AuthActivity::class.java
-            bookRepo.currentBookId == null -> WelcomeActivity::class.java
+            authManager.userState.value == null -> BookDest.Auth()
+            bookRepo.currentBookId == null -> BookDest.Welcome
             else -> null
         }
 
         if (destination != null) {
-            startActivity(Intent(this, destination))
-            finish()
+            navController.selectRootAndClearAll(destination)
         }
 
         setContent {
@@ -94,8 +93,6 @@ class BookActivity : ComponentActivity() {
                 }
             }
         }
-
-        consumeNavigation(viewModel.navigation)
 
         addOnNewIntentListener { newIntent ->
             viewModel.handleDeeplink(newIntent.dataString)

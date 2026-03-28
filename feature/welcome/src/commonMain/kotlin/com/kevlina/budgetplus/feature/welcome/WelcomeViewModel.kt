@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_create_success
-import budgetplus.core.common.generated.resources.book_join_success
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
@@ -16,7 +14,6 @@ import com.kevlina.budgetplus.core.common.nav.NavigationFlow
 import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
-import com.kevlina.budgetplus.core.data.JoinBookException
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Named
 import kotlinx.coroutines.Job
@@ -44,6 +41,7 @@ class WelcomeViewModel(
         field = MutableStateFlow(false)
 
     init {
+        //TODO: Can we move to Book VM?
         viewModelScope.launch {
             bookRepo.booksState.collect { books ->
                 if (!books.isNullOrEmpty()) {
@@ -68,25 +66,6 @@ class WelcomeViewModel(
                 snackbarSender.sendError(e)
             } finally {
                 isCreatingBook.value = false
-            }
-        }
-    }
-
-    fun handleJoinRequest() {
-        if (!bookRepo.hasPendingJoinRequest) return
-
-        viewModelScope.launch {
-            try {
-                val bookName = bookRepo.handlePendingJoinRequest() ?: return@launch
-                toaster.showMessage(getString(Res.string.book_join_success, bookName))
-
-                navigation.sendEvent(bookNavigationAction)
-            } catch (e: JoinBookException.General) {
-                snackbarSender.send(e.message)
-            } catch (e: JoinBookException.JoinInfoNotFound) {
-                Logger.e(e) { "WelcomeViewModel: Join info not found" }
-            } catch (e: Exception) {
-                snackbarSender.sendError(e)
             }
         }
     }
