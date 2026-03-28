@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.book
 
-import androidx.lifecycle.SavedStateHandle
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -15,10 +14,6 @@ interface NavControllerModule {
     @SingleIn(AppScope::class)
     @Provides
     fun provideNavController(): NavController<BookDest> {
-        return NavController(
-            startRoot = BottomNavTab.Add.root,
-            serializer = BookDest.serializer(),
-            savedStateHandle = SavedStateHandle()
-        )
+        return NavController(startRoot = BottomNavTab.Add.root)
     }
 }
