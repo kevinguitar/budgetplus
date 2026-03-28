@@ -25,7 +25,6 @@ import budgetplus.core.common.generated.resources.review_request_yes
 import budgetplus.core.common.generated.resources.settings_description
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AdaptiveScreen
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
@@ -41,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun RecordScreen(navController: NavController<BookDest>) {
+fun RecordScreen() {
 
     val vm = metroViewModel<RecordViewModel>()
 
@@ -61,7 +60,7 @@ fun RecordScreen(navController: NavController<BookDest>) {
     ) {
         TopBar(
             title = null,
-            titleContent = { BookSelector(navController) },
+            titleContent = { BookSelector() },
             menuActions = {
                 MenuAction(
                     imageVector = vectorResource(Res.drawable.ic_group_add),
@@ -81,7 +80,7 @@ fun RecordScreen(navController: NavController<BookDest>) {
                     imageVector = vectorResource(Res.drawable.ic_settings),
                     description = stringResource(Res.string.settings_description),
                     onClick = {
-                        navController.navigate(BookDest.Settings())
+                        vm.navController.navigate(BookDest.Settings())
                     }
                 )
             }
@@ -92,24 +91,15 @@ fun RecordScreen(navController: NavController<BookDest>) {
                 .align(Alignment.CenterHorizontally)
                 .weight(1F),
             regularContent = {
-                val recordInfoState = vm.toState(
-                    navController = navController,
-                    scrollable = true,
-                )
+                val recordInfoState = vm.toState(scrollable = true)
                 RecordContentRegular(recordInfoState)
             },
             wideContent = {
-                val recordInfoState = vm.toState(
-                    navController = navController,
-                    scrollable = true,
-                )
+                val recordInfoState = vm.toState(scrollable = true)
                 RecordContentWide(recordInfoState)
             },
             packedContent = {
-                val recordInfoState = vm.toState(
-                    navController = navController,
-                    scrollable = false,
-                )
+                val recordInfoState = vm.toState(scrollable = false)
                 RecordContentPacked(recordInfoState)
             },
             extraContent = {
@@ -137,7 +127,7 @@ fun RecordScreen(navController: NavController<BookDest>) {
             val books by vm.freezeBookVm.books.collectAsStateWithLifecycle()
             FreezeBookDialog(
                 books = books,
-                unlockPremium = { navController.navigate(BookDest.UnlockPremium) },
+                unlockPremium = { vm.navController.navigate(BookDest.UnlockPremium) },
                 activateBook = vm.freezeBookVm::activateBook,
             )
         }
@@ -160,10 +150,7 @@ internal class RecordContentState(
     }
 }
 
-private fun RecordViewModel.toState(
-    navController: NavController<BookDest>,
-    scrollable: Boolean,
-) = RecordContentState(
+private fun RecordViewModel.toState(scrollable: Boolean) = RecordContentState(
     recordInfoState = RecordInfoState(
         type = type,
         note = note,

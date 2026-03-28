@@ -25,8 +25,6 @@ import budgetplus.core.common.generated.resources.ic_arrow_drop_down
 import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.ic_lock
 import budgetplus.core.common.generated.resources.menu_create_book
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.DropdownDivider
 import com.kevlina.budgetplus.core.ui.DropdownItem
@@ -43,7 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun BookSelector(navController: NavController<BookDest>) {
+fun BookSelector() {
 
     val viewModel = metroViewModel<BookSelectorViewModel>()
 
@@ -125,7 +123,7 @@ fun BookSelector(navController: NavController<BookDest>) {
                 onClick = {
                     when (createBookBtnState) {
                         CreateBookBtnState.Enabled -> isBookCreationDialogShown = true
-                        CreateBookBtnState.NeedPremium -> navController.navigate(BookDest.UnlockPremium)
+                        CreateBookBtnState.NeedPremium -> viewModel.unlockPremium()
                         CreateBookBtnState.ReachedMax -> viewModel.showReachedMaxMessage()
                     }
                     isSelectorShown = false

@@ -1,26 +1,21 @@
 package com.kevlina.budgetplus.insider.app.main
 
-import android.content.Context
-import android.content.Intent
-import com.kevlina.budgetplus.core.common.nav.AndroidNavigationAction
-import com.kevlina.budgetplus.core.common.nav.NavigationAction
+import com.kevlina.budgetplus.core.common.nav.InsiderDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.insiderApp.BuildConfig
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
 interface InsiderModule {
 
-    @Provides @Named("book")
-    fun provideBookNavigationAction(context: Context): NavigationAction {
-        return AndroidNavigationAction(intent = Intent(context, InsiderActivity::class.java))
-    }
-
-    @Provides @Named("welcome")
-    fun provideWelcomeNavigationAction(context: Context): NavigationAction {
-        return AndroidNavigationAction(intent = Intent(context, InsiderActivity::class.java))
+    @SingleIn(AppScope::class)
+    @Provides
+    fun provideNavController(): NavController<InsiderDest> {
+        return NavController(startRoot = InsiderDest.Insider)
     }
 
     // Do not override FCM token from insider app, to make sure regular users

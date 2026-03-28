@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.edit.category
 
 import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.CategoryRenameEvent
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeRecordRepo
@@ -36,6 +37,7 @@ class EditCategoryViewModelTest {
     }
 
     private fun createModel() = EditCategoryViewModel(
+        navController = NavController.preview,
         bookRepo = FakeBookRepo(),
         recordRepo = FakeRecordRepo,
         bubbleRepo = FakeBubbleRepo(),

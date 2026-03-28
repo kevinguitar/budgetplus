@@ -10,6 +10,7 @@ import com.kevlina.budgetplus.core.common.di.ViewModelAssistedFactory
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
@@ -48,6 +49,7 @@ class SearchViewModel(
     private val recordRepo: RecordRepo,
     private val userRepo: UserRepo,
     private val tracker: Tracker,
+    val navController: NavController<BookDest>,
     categoriesVm: CategoriesViewModel,
 ) : ViewModel() {
 
@@ -143,7 +145,6 @@ class SearchViewModel(
             editRecordEvent = editRecordEvent,
             deleteRecordEvent = deleteRecordEvent
         ),
-        unlockPremiumEvent = unlockPremiumEvent
     )
 
     private fun canEditRecord(record: Record): Boolean {
@@ -152,7 +153,7 @@ class SearchViewModel(
 
     private fun selectPeriod(period: SearchPeriod) {
         if (period.requiresPremium && !authManager.isPremium.value) {
-            unlockPremiumEvent.sendEvent()
+            navController.navigate(BookDest.UnlockPremium)
             tracker.logEvent("search_period_unlock_premium")
             return
         }

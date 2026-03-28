@@ -10,8 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.batch_record_title
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.utils.metroViewModel
@@ -20,8 +18,7 @@ import com.kevlina.budgetplus.feature.batch.record.BatchRecordViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BatchRecordScreen(navController: NavController<BookDest>) {
-
+fun BatchRecordScreen() {
     val vm = metroViewModel<BatchRecordViewModel>()
 
     Column(
@@ -32,7 +29,7 @@ fun BatchRecordScreen(navController: NavController<BookDest>) {
 
         TopBar(
             title = stringResource(Res.string.batch_record_title),
-            navigateUp = navController::navigateUp,
+            navigateUp = vm.navController::navigateUp,
         )
 
         Box(

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.feature.insider.generated.resources.Res
 import budgetplus.feature.insider.generated.resources.insider_language_en
 import budgetplus.feature.insider.generated.resources.insider_language_ja
+import budgetplus.feature.insider.generated.resources.insider_language_ko
 import budgetplus.feature.insider.generated.resources.insider_language_zh_cn
 import budgetplus.feature.insider.generated.resources.insider_language_zh_tw
 import budgetplus.feature.insider.generated.resources.insider_user_created_on
@@ -102,6 +103,7 @@ internal fun UserCard(
                         "zh-tw" -> Res.string.insider_language_zh_tw
                         "zh-cn" -> Res.string.insider_language_zh_cn
                         "ja" -> Res.string.insider_language_ja
+                        "ko" -> Res.string.insider_language_ko
                         else -> Res.string.insider_language_en
                     }))
                 }

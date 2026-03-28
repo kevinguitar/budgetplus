@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,11 +26,6 @@ import budgetplus.core.common.generated.resources.overview_period_day
 import budgetplus.core.common.generated.resources.overview_period_last_month
 import budgetplus.core.common.generated.resources.overview_period_month
 import budgetplus.core.common.generated.resources.overview_period_week
-import com.kevlina.budgetplus.core.common.EventFlow
-import com.kevlina.budgetplus.core.common.MutableEventFlow
-import com.kevlina.budgetplus.core.common.consumeEach
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.remote.TimePeriod
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -42,7 +36,6 @@ import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.overview.OverviewTimeViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -50,7 +43,6 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 internal fun ColumnScope.TimePeriodSelector(
     state: TimePeriodSelectorState,
-    navController: NavController<BookDest>,
 ) {
     val timePeriod by state.timePeriod.collectAsStateWithLifecycle()
     val fromDate by state.fromDate.collectAsStateWithLifecycle()
@@ -58,12 +50,6 @@ internal fun ColumnScope.TimePeriodSelector(
     val customPeriod by state.customPeriod.collectAsStateWithLifecycle()
 
     var showDateRangerPicker by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = state.openPremiumEvent) {
-        state.openPremiumEvent
-            .consumeEach { navController.navigate(BookDest.UnlockPremium) }
-            .collect()
-    }
 
     DateRange(
         state = state,
@@ -193,7 +179,6 @@ internal class TimePeriodSelectorState(
     val untilDate: StateFlow<LocalDate>,
     val isOneDayPeriod: StateFlow<Boolean>,
     val customPeriod: StateFlow<TimePeriod?>,
-    val openPremiumEvent: EventFlow<Unit>,
     val previousDay: () -> Unit,
     val nextDay: () -> Unit,
     val setTimePeriod: (TimePeriod) -> Unit,
@@ -206,7 +191,6 @@ internal class TimePeriodSelectorState(
             untilDate = MutableStateFlow(TimePeriod.Month.until),
             isOneDayPeriod = MutableStateFlow(false),
             customPeriod = MutableStateFlow(null),
-            openPremiumEvent = MutableEventFlow(),
             previousDay = {},
             nextDay = {},
             setTimePeriod = {},
@@ -221,7 +205,6 @@ internal fun OverviewTimeViewModel.toState() = TimePeriodSelectorState(
     untilDate = untilDate,
     isOneDayPeriod = isOneDayPeriod,
     customPeriod = customPeriod,
-    openPremiumEvent = openPremiumEvent,
     previousDay = ::previousDay,
     nextDay = ::nextDay,
     setTimePeriod = ::setTimePeriod,
@@ -237,7 +220,6 @@ private fun TimePeriodSelector_Preview() = AppTheme {
     ) {
         TimePeriodSelector(
             state = TimePeriodSelectorState.preview,
-            navController = NavController.preview
         )
     }
 }

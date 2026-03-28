@@ -60,6 +60,9 @@ actual class AuthViewModel(
 
     private var activeAppleSignIn: AppleSignInSession? = null
 
+    // Noop on iOS
+    actual fun checkAuthorizedAccounts(enableAutoSignIn: Boolean) = Unit
+
     @OptIn(BetaInteropApi::class)
     actual fun signInWithApple() {
         val rawNonce = generateNonce()
@@ -173,3 +176,5 @@ actual class AuthViewModel(
         return hash.toHexString()
     }
 }
+
+actual val isAppleSignInAvailable: Boolean get() = true

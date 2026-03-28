@@ -3,75 +3,30 @@ package com.kevlina.budgetplus.core.common.nav
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.serialization.saved
 import androidx.navigation3.runtime.NavKey
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 
 /**
  * A navigation controller that has a back stack for complex navigation trees like bottom navigation.
+ * Note that this NavController is designed to be a singleton across the app to ease the dependency graph,
+ * and there is a known issue that the backstack won't survive the process death.
  *
- * @param startRoot which root of navigation tree that is initially displayed.
+ * @param startRoot which root of the navigation tree that is initially displayed.
  */
 class NavController<T : NavKey>(
     private val startRoot: T,
-    private val serializer: KSerializer<T>,
-    savedStateHandle: SavedStateHandle,
 ) {
 
-    private val stateListSerializer = object : KSerializer<SnapshotStateList<T>> {
-        private val delegate = ListSerializer(serializer)
-        override val descriptor: SerialDescriptor = delegate.descriptor
+    private val rootBackStacks = mutableMapOf<T, SnapshotStateList<T>>(
+        startRoot to mutableStateListOf(startRoot)
+    )
 
-        override fun serialize(encoder: Encoder, value: SnapshotStateList<T>) {
-            delegate.serialize(encoder, value)
-        }
-
-        override fun deserialize(decoder: Decoder): SnapshotStateList<T> {
-            return delegate.deserialize(decoder).toMutableStateList()
-        }
-    }
-
-    private val mutableMapSerializer = object : KSerializer<MutableMap<T, SnapshotStateList<T>>> {
-        private val delegate = MapSerializer(serializer, stateListSerializer)
-        override val descriptor: SerialDescriptor = delegate.descriptor
-
-        override fun serialize(encoder: Encoder, value: MutableMap<T, SnapshotStateList<T>>) {
-            delegate.serialize(encoder, value)
-        }
-
-        override fun deserialize(decoder: Decoder): MutableMap<T, SnapshotStateList<T>> {
-            return delegate.deserialize(decoder).toMutableMap()
-        }
-    }
-
-    private val rootBackStacks by savedStateHandle.saved(serializer = mutableMapSerializer) {
-        mutableMapOf<T, SnapshotStateList<T>>(
-            startRoot to mutableStateListOf(startRoot)
-        )
-    }
-
-    val backStack by savedStateHandle.saved(stateListSerializer) { mutableStateListOf(startRoot) }
-    val rootStack by savedStateHandle.saved(stateListSerializer) { mutableStateListOf(startRoot) }
+    val backStack = mutableStateListOf(startRoot)
+    val rootStack = mutableStateListOf(startRoot)
 
     val currentNavKeyFlow: Flow<T> = snapshotFlow { backStack.lastOrNull() }.filterNotNull()
-
-    init {
-        // Force initialization of delegated properties to avoid "Cannot modify a state object in a read-only snapshot"
-        // when they are first accessed inside snapshotFlow or other read-only snapshots.
-        rootBackStacks
-        backStack
-        rootStack
-    }
 
     private val currentRoot: T
         get() = rootStack.lastOrNull() ?: startRoot
@@ -133,10 +88,6 @@ class NavController<T : NavKey>(
     }
 
     companion object {
-        val preview = NavController(
-            startRoot = BottomNavTab.Add.root,
-            serializer = BookDest.serializer(),
-            savedStateHandle = SavedStateHandle()
-        )
+        val preview = NavController(startRoot = BottomNavTab.Add.root)
     }
 }

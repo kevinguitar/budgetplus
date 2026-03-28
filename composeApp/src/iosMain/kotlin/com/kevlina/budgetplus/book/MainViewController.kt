@@ -36,12 +36,6 @@ fun MainViewController(): UIViewController = ComposeUIViewController {
         }
     }
 
-    LaunchedEffect(graph.navigation) {
-        graph.navigation
-            .consumeEach { it.navigate() }
-            .collect()
-    }
-
     CompositionLocalProvider(
         LocalViewModelGraphProvider provides graph.viewModelGraphProvider
     ) {

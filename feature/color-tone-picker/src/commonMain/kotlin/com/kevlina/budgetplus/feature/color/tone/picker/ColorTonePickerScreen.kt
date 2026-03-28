@@ -26,8 +26,6 @@ import budgetplus.core.common.generated.resources.cta_share
 import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.ic_share
 import budgetplus.core.common.generated.resources.unsaved_warning_message
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.ColorTone
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AdaptiveScreen
@@ -55,7 +53,6 @@ private const val CUSTOM_COLOR_TRANSITION = 100L
 
 @Composable
 fun ColorTonePickerScreen(
-    navController: NavController<BookDest>,
     hexFromLink: String?,
 ) {
     val vm = metroViewModel<ColorTonePickerViewModel>()
@@ -112,13 +109,8 @@ fun ColorTonePickerScreen(
         if (isSaveEnabled) {
             isExitDialogShown = true
         } else {
-            navController.navigateUp()
+            vm.navController.navigateUp()
         }
-    }
-
-    fun unlockPremium() {
-        vm.trackUnlockPremium()
-        navController.navigate(BookDest.UnlockPremium)
     }
 
     if (isSaveEnabled) {
@@ -164,12 +156,9 @@ fun ColorTonePickerScreen(
                         enabled = isSaveEnabled,
                         onClick = {
                             if (!selectedColorTone.requiresPremium || isPremium) {
-                                vm.setColorTone(
-                                    colorTone = selectedColorTone,
-                                    onDone = navController::navigateUp
-                                )
+                                vm.setColorTone(colorTone = selectedColorTone)
                             } else {
-                                unlockPremium()
+                                vm.unlockPremium()
                             }
                         }
                     )
@@ -184,7 +173,7 @@ fun ColorTonePickerScreen(
                         pagerState = pagerState,
                         isPremium = isPremium,
                         getThemeColors = vm::getThemeColors,
-                        unlockPremium = ::unlockPremium,
+                        unlockPremium = vm::unlockPremium,
                         onColorPicked = vm::onColorPicked
                     )
                 },
@@ -194,7 +183,7 @@ fun ColorTonePickerScreen(
                         pagerState = pagerState,
                         isPremium = isPremium,
                         getThemeColors = vm::getThemeColors,
-                        unlockPremium = ::unlockPremium,
+                        unlockPremium = vm::unlockPremium,
                         onColorPicked = vm::onColorPicked
                     )
                 }
@@ -205,7 +194,7 @@ fun ColorTonePickerScreen(
             ConfirmDialog(
                 message = stringResource(Res.string.unsaved_warning_message),
                 onConfirm = {
-                    navController.navigateUp()
+                    vm.navController.navigateUp()
                     isExitDialogShown = false
                 },
                 onDismiss = { isExitDialogShown = false }

@@ -9,5 +9,6 @@ internal data class InsiderData(
 internal data class UsersOverviewData(
     val totalEnglishUsers: Long,
     val totalJapaneseUsers: Long,
+    val totalKoreanUsers: Long,
     val totalSimplifiedChineseUsers: Long,
 )

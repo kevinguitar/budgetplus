@@ -61,7 +61,7 @@ class RecordsObserverImpl(
             observeRecords(bookId, timePeriod.first())
         }
 
-    final override val records: StateFlow<Sequence<Record>?>
+    override val records: StateFlow<Sequence<Record>?>
         field = MutableStateFlow<Sequence<Record>?>(null)
 
     // Cache the time period by book id

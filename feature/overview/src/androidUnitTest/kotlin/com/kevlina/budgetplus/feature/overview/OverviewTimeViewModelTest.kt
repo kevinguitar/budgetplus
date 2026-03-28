@@ -4,6 +4,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.overview_exceed_max_period
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordsObserver
@@ -161,6 +162,7 @@ class OverviewTimeViewModelTest {
         every { recordsObserver.setTimePeriod(any(), any()) } just runs
 
         val model = OverviewTimeViewModel(
+            navController = NavController.preview,
             recordsObserver = recordsObserver,
             bookRepo = bookRepo,
             authManager = FakeAuthManager(),

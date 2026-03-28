@@ -7,12 +7,14 @@
     <string name="insider_users_overview" translatable="false">用戶總覽</string>
     <string name="insider_total_en_users" translatable="false">英文用戶總數</string>
     <string name="insider_total_ja_users" translatable="false">日文用戶總數</string>
+    <string name="insider_total_ko_users" translatable="false">韓文用戶總數</string>
     <string name="insider_total_cn_users" translatable="false">簡體中文用戶總數</string>
     <string name="insider_new_users" translatable="false">新用戶</string>
     <string name="insider_active_premium_users" translatable="false">活躍付費用戶</string>
     <string name="insider_language_zh_tw" translatable="false">繁體中文</string>
     <string name="insider_language_zh_cn" translatable="false">簡體中文</string>
     <string name="insider_language_ja" translatable="false">日文</string>
+    <string name="insider_language_ko" translatable="false">韓文</string>
     <string name="insider_language_en" translatable="false">英文</string>
     <string name="insider_user_created_on" translatable="false">創建時間：%1$s</string>
     <string name="insider_user_last_active_on" translatable="false">最後上線：%1$s</string>

@@ -12,6 +12,8 @@ import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.mediumFormatted
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
@@ -58,6 +60,7 @@ class OverviewViewModel private constructor(
     private val bubbleRepo: BubbleRepo,
     private val csvExporter: CsvExporter,
     private val snackbarSender: SnackbarSender,
+    val navController: NavController<BookDest>,
     val bookRepo: BookRepo,
     val timeModel: OverviewTimeViewModel,
     val chartModeModel: ChartModeViewModel,

@@ -20,6 +20,8 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provider
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.invoke
 import java.io.File
 import java.io.IOException
@@ -36,8 +38,7 @@ class CsvSaverImpl(
     private val contentResolver get() = context.contentResolver
 
     override suspend fun saveToDownload(fileName: String, csvText: String) = IO {
-        val activity = activityProvider.currentActivity ?: error("Cannot find current activity")
-
+        val activity = activityProvider.activityFlow.filterNotNull().first()
         val cacheFile = File(shareCacheDir(), "$fileName.csv")
         val outputStream = contentResolver.openOutputStream(cacheFile.toUri())
             ?: throw IOException("Cannot open output stream from $cacheFile")

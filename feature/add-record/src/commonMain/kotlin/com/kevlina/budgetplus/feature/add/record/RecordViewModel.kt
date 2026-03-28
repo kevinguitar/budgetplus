@@ -22,6 +22,8 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.parseToPrice
 import com.kevlina.budgetplus.core.common.sendEvent
@@ -54,6 +56,7 @@ class RecordViewModel(
     val categoriesVm: CategoriesViewModel,
     val freezeBookVm: FreezeBookViewModel,
     val bookRepo: BookRepo,
+    val navController: NavController<BookDest>,
     private val recordRepo: RecordRepo,
     private val bubbleRepo: BubbleRepo,
     private val authManager: AuthManager,

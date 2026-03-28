@@ -22,11 +22,12 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.containerPadding
+import com.kevlina.budgetplus.feature.auth.isAppleSignInAvailable
 
 @Composable
 fun AuthContent(
     signInWithGoogle: () -> Unit,
-    signInWithApple: (() -> Unit)? = null,
+    signInWithApple: () -> Unit,
     isLoading: Boolean,
 ) {
     Box(
@@ -73,7 +74,7 @@ fun AuthContent(
                 onClick = signInWithGoogle,
             )
 
-            if (signInWithApple != null) {
+            if (isAppleSignInAvailable) {
                 SocialSignInButton(
                     provider = SocialSignInProvider.Apple,
                     onClick = signInWithApple,
@@ -86,17 +87,11 @@ fun AuthContent(
 @Preview
 @Composable
 private fun AuthContent_Preview() = AppTheme {
-    AuthContent(signInWithGoogle = {}, isLoading = false)
-}
-
-@Preview
-@Composable
-private fun AuthContentApple_Preview() = AppTheme {
     AuthContent(signInWithGoogle = {}, signInWithApple = {}, isLoading = false)
 }
 
 @Preview
 @Composable
 private fun AuthContentLoading_Preview() = AppTheme {
-    AuthContent(signInWithGoogle = {}, isLoading = true)
+    AuthContent(signInWithGoogle = {}, signInWithApple = {}, isLoading = true)
 }

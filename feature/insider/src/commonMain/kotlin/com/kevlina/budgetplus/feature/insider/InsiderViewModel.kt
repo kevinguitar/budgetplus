@@ -56,11 +56,13 @@ class InsiderViewModel(
         coroutineScope {
             val totalEnglishUsers = async { insiderRepo.getTotalUsersByLanguage("en") }
             val totalJapaneseUsers = async { insiderRepo.getTotalUsersByLanguage("ja") }
+            val totalKoreanUsers = async { insiderRepo.getTotalUsersByLanguage("ko") }
             val totalSimplifiedChineseUsers = async { insiderRepo.getTotalUsersByLanguage("zh-cn") }
 
             UsersOverviewData(
                 totalEnglishUsers = totalEnglishUsers.await(),
                 totalJapaneseUsers = totalJapaneseUsers.await(),
+                totalKoreanUsers = totalKoreanUsers.await(),
                 totalSimplifiedChineseUsers = totalSimplifiedChineseUsers.await(),
             )
         }

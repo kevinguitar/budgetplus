@@ -4,12 +4,7 @@ import androidx.lifecycle.ViewModel
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.auth_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.nav.NavigationAction
-import com.kevlina.budgetplus.core.common.nav.NavigationFlow
-import com.kevlina.budgetplus.core.common.sendEvent
-import com.kevlina.budgetplus.core.data.BookRepo
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.AuthResult
 import dev.gitlive.firebase.auth.FirebaseAuth
@@ -17,27 +12,25 @@ import dev.gitlive.firebase.auth.GoogleAuthProvider
 import dev.gitlive.firebase.auth.OAuthProvider
 import dev.gitlive.firebase.auth.auth
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.Named
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.getString
 
-expect class AuthViewModel: ViewModel {
+expect val isAppleSignInAvailable: Boolean
+
+expect class AuthViewModel : ViewModel {
     val commonAuthViewModel: CommonAuthViewModel
 
+    fun checkAuthorizedAccounts(enableAutoSignIn: Boolean)
     fun signInWithGoogle()
     fun signInWithApple()
 }
 
 @Inject
 class CommonAuthViewModel(
-    val navigation: NavigationFlow,
-    val snackbarSender: SnackbarSender,
-    private val bookRepo: BookRepo,
-    private val toaster: Toaster,
+    private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
-    @Named("welcome") private val welcomeNavigationAction: NavigationAction,
-    @Named("book") private val bookNavigationAction: NavigationAction,
+    private val authSuccessNavigation: AuthSuccessNavigation,
 ) {
     val isLoading: StateFlow<Boolean>
         field = MutableStateFlow(false)
@@ -86,21 +79,10 @@ class CommonAuthViewModel(
 
         if (name.isNotBlank()) {
             val message = getString(Res.string.auth_success, name)
-            toaster.showMessage(message)
+            snackbarSender.send(message)
         }
 
-        val action = try {
-            if (bookRepo.isUserHasBooks()) {
-                bookNavigationAction
-            } else {
-                welcomeNavigationAction
-            }
-        } catch (e: Exception) {
-            snackbarSender.sendError(e)
-            welcomeNavigationAction
-        } finally {
-            isLoading.value = false
-        }
-        navigation.sendEvent(action)
+        authSuccessNavigation.navigate()
+        isLoading.value = false
     }
 }

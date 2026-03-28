@@ -9,9 +9,6 @@ import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.mapState
-import com.kevlina.budgetplus.core.common.nav.NavigationAction
-import com.kevlina.budgetplus.core.common.nav.NavigationFlow
-import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.local.Preference
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.data.remote.UsersDb
@@ -46,8 +43,7 @@ class AuthManagerImpl(
     private val preference: Preference,
     private val tracker: Lazy<Tracker>,
     @Named("allow_update_fcm_token") private val allowUpdateFcmToken: Boolean,
-    @Named("auth") private val authNavigationAction: NavigationAction,
-    private val navigationFlow: NavigationFlow,
+    private val logoutNavigation: LogoutNavigation,
     private val snackbarSender: SnackbarSender,
     @AppCoroutineScope private val appScope: CoroutineScope,
     @UsersDb private val usersDb: Lazy<CollectionReference>,
@@ -208,7 +204,7 @@ class AuthManagerImpl(
     private suspend fun setUserToPreference(user: User?) {
         if (user == null) {
             preference.remove(currentUserKey)
-            navigationFlow.sendEvent(authNavigationAction)
+            logoutNavigation.navigate()
         } else {
             preference.update(currentUserKey, User.serializer(), user)
         }

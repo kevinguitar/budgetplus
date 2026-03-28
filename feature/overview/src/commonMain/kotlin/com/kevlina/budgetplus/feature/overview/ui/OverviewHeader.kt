@@ -17,8 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kevlina.budgetplus.core.common.RecordType
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -30,7 +28,6 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 internal fun OverviewHeader(
     state: OverviewHeaderState,
-    navController: NavController<BookDest>,
     modifier: Modifier = Modifier,
 ) {
 
@@ -65,7 +62,6 @@ internal fun OverviewHeader(
 
         TimePeriodSelector(
             state = state.timePeriodSelectorState,
-            navController = navController,
         )
 
         AnimatedVisibility(
@@ -113,7 +109,6 @@ internal data class OverviewHeaderState(
 private fun OverviewHeader_Preview() = AppTheme {
     OverviewHeader(
         state = OverviewHeaderState.preview,
-        navController = NavController.preview,
         modifier = Modifier
             .background(LocalAppColors.current.light)
             .padding(horizontal = 16.dp)

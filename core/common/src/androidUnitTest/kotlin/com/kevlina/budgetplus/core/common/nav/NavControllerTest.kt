@@ -1,27 +1,20 @@
 package com.kevlina.budgetplus.core.common.nav
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation3.runtime.NavKey
 import com.google.common.truth.Truth.assertThat
-import kotlinx.serialization.Serializable
 import org.junit.Test
 
 class NavControllerTest {
 
-    @Serializable
     private sealed interface TestKey : NavKey {
-        @Serializable data object RootA : TestKey
-        @Serializable data object RootB : TestKey
-        @Serializable data object RootC : TestKey
-        @Serializable data object Screen1 : TestKey
-        @Serializable data object Screen2 : TestKey
+        data object RootA : TestKey
+        data object RootB : TestKey
+        data object RootC : TestKey
+        data object Screen1 : TestKey
+        data object Screen2 : TestKey
     }
 
-    private fun createNavController(startRoot: TestKey) = NavController(
-        startRoot = startRoot,
-        serializer = TestKey.serializer(),
-        savedStateHandle = SavedStateHandle()
-    )
+    private fun createNavController(startRoot: TestKey) = NavController(startRoot = startRoot)
 
     @Test
     fun `Initial state verification`() {

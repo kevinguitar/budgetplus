@@ -27,7 +27,7 @@ class BubbleRepoImpl(
 
     private val bubblesQueue = mutableListOf<BubbleDest>()
 
-    final override val bubble: StateFlow<BubbleDest?>
+    override val bubble: StateFlow<BubbleDest?>
         field = MutableStateFlow<BubbleDest?>(null)
 
     private var bubbleShownJob: Job? = null

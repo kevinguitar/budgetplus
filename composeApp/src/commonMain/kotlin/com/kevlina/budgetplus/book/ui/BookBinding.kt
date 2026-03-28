@@ -74,7 +74,7 @@ internal fun BookBinding(
             ) {
                 NavDisplay(
                     backStack = vm.navController.backStack,
-                    entryProvider = { bookNavGraph(navController, it) },
+                    entryProvider = ::bookNavGraph,
                     entryDecorators = listOf(
                         rememberSaveableStateHolderNavEntryDecorator(),
                         rememberViewModelStoreNavEntryDecorator()

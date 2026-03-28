@@ -75,7 +75,7 @@ class BookRepoImpl(
         )
     }
 
-    final override val booksState: StateFlow<List<Book>?>
+    override val booksState: StateFlow<List<Book>?>
         field = MutableStateFlow<List<Book>?>(null)
 
     override val currentBookId: String? get() = bookState.value?.id

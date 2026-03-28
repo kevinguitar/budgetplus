@@ -9,6 +9,8 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.combineState
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.FREE_BOOKS_LIMIT
@@ -24,6 +26,7 @@ import org.jetbrains.compose.resources.getString
 class BookSelectorViewModel(
     private val bookRepo: BookRepo,
     private val snackbarSender: SnackbarSender,
+    private val navController: NavController<BookDest>,
     authManager: AuthManager,
 ) : ViewModel() {
 
@@ -56,6 +59,10 @@ class BookSelectorViewModel(
                 snackbarSender.sendError(e)
             }
         }
+    }
+
+    fun unlockPremium() {
+        navController.navigate(BookDest.UnlockPremium)
     }
 
     fun showReachedMaxMessage() {
