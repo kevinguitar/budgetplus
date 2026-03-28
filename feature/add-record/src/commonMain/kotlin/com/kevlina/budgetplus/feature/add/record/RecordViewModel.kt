@@ -38,9 +38,9 @@ import com.kevlina.budgetplus.feature.add.record.RecordViewModel.Companion.RECOR
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
 import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
 import com.kevlina.budgetplus.inapp.review.InAppReviewManager
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -50,7 +50,7 @@ import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.getString
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 class RecordViewModel(
     val calculatorVm: CalculatorViewModel,
     val categoriesVm: CategoriesViewModel,

@@ -30,9 +30,9 @@ import com.kevlina.budgetplus.feature.overview.ui.OverviewHeaderState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewListState
 import com.kevlina.budgetplus.feature.overview.ui.toState
 import com.kevlina.budgetplus.feature.overview.utils.CsvExporter
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -50,7 +50,7 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 class OverviewViewModel private constructor(
     private val recordRepo: RecordRepo,
     private val recordsObserver: RecordsObserver,

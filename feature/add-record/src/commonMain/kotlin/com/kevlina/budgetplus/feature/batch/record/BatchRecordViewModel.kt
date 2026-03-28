@@ -23,9 +23,9 @@ import com.kevlina.budgetplus.core.data.remote.toAuthor
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel.Companion.EMPTY_PRICE
 import com.kevlina.budgetplus.feature.add.record.RecordDateState
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +37,7 @@ import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.getString
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 class BatchRecordViewModel(
     val categoriesVm: CategoriesViewModel,
     val bookRepo: BookRepo,

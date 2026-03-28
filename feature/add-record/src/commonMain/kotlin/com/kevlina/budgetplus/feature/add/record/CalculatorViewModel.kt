@@ -18,13 +18,16 @@ import com.kevlina.budgetplus.feature.add.record.ui.CalculatorAction
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
 import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordViewModel
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-@Inject
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class CalculatorViewModel(
     val vibrator: VibratorManager,
     val speakToRecordVm: SpeakToRecordViewModel,

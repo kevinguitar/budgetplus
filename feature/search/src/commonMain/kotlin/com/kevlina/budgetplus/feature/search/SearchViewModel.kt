@@ -25,13 +25,13 @@ import com.kevlina.budgetplus.feature.search.ui.SearchPeriod.Companion.requiresP
 import com.kevlina.budgetplus.feature.search.ui.SearchResult
 import com.kevlina.budgetplus.feature.search.ui.SearchResultState
 import com.kevlina.budgetplus.feature.search.ui.SearchState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -180,7 +180,7 @@ class SearchViewModel(
 
     @AssistedFactory
     @ManualViewModelAssistedFactoryKey
-    @ContributesIntoMap(ViewModelScope::class)
+    @ContributesIntoMap(AppScope::class)
     fun interface Factory : ManualViewModelAssistedFactory {
         fun create(params: BookDest.Search): SearchViewModel
     }

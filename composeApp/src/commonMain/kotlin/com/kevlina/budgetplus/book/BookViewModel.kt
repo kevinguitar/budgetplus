@@ -23,9 +23,9 @@ import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.JoinBookException
 import com.kevlina.budgetplus.core.theme.ThemeManager
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 class BookViewModel(
     val navController: NavController<BookDest>,
     val snackbarSender: SnackbarSender,

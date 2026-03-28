@@ -19,15 +19,15 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import com.kevlina.budgetplus.core.common.ActivityProvider
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.data.local.Preference
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 actual class AuthViewModel(
     actual val commonAuthViewModel: CommonAuthViewModel,
     private val activityProvider: ActivityProvider,

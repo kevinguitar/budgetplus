@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.local.Preference
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.SingleIn
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -21,8 +22,9 @@ import kotlinx.coroutines.launch
 /**
  * When a user's premium is expired, we freeze their books and leave only one book to continue recording.
  */
-@SingleIn(ViewModelScope::class)
-@Inject
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
+@SingleIn(AppScope::class)
 class FreezeBookViewModel(
     authManager: AuthManager,
     private val preference: Preference,

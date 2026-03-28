@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.data.InsiderRepo
 import com.kevlina.budgetplus.core.data.remote.User
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlin.time.Duration.Companion.days
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 class InsiderViewModel(
     private val insiderRepo: InsiderRepo,
     private val snackbarSender: SnackbarSender,

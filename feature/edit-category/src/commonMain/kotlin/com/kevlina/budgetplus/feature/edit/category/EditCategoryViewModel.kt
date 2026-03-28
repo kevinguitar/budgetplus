@@ -15,9 +15,9 @@ import com.kevlina.budgetplus.core.data.CategoryRenameEvent
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,7 +25,7 @@ import org.jetbrains.compose.resources.getString
 import kotlin.time.Duration.Companion.seconds
 
 @ViewModelKey
-@ContributesIntoMap(ViewModelScope::class)
+@ContributesIntoMap(AppScope::class)
 class EditCategoryViewModel(
     val navController: NavController<BookDest>,
     private val bookRepo: BookRepo,
