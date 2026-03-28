@@ -8,8 +8,6 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.currency_picker_edit_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -17,6 +15,8 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(CurrencyPickerViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 class CurrencyPickerViewModel(
     val navController: NavController<BookDest>,

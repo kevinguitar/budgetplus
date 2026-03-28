@@ -8,8 +8,6 @@ import budgetplus.core.common.generated.resources.permission_hint
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.mediumFormatted
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -33,6 +31,8 @@ import com.kevlina.budgetplus.feature.overview.ui.OverviewListState
 import com.kevlina.budgetplus.feature.overview.ui.toState
 import com.kevlina.budgetplus.feature.overview.utils.CsvExporter
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
-@ViewModelKey(OverviewViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 class OverviewViewModel private constructor(
     private val recordRepo: RecordRepo,

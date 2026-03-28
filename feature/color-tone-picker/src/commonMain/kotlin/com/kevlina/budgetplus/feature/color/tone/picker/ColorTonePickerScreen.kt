@@ -33,10 +33,10 @@ import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.color.tone.picker.ui.TonePickerContentRegular
 import com.kevlina.budgetplus.feature.color.tone.picker.ui.TonePickerContentWide
 import com.kevlina.budgetplus.feature.color.tone.picker.ui.colorTones
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect

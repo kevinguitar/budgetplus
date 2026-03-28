@@ -3,8 +3,6 @@ package com.kevlina.budgetplus.book.ui
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation3.runtime.NavEntry
 import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.utils.assistedMetroViewModel
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.ui.RecordScreen
 import com.kevlina.budgetplus.feature.auth.AuthViewModel
 import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
@@ -20,6 +18,8 @@ import com.kevlina.budgetplus.feature.search.SearchViewModel
 import com.kevlina.budgetplus.feature.settings.SettingsScreen
 import com.kevlina.budgetplus.feature.unlock.premium.PremiumScreen
 import com.kevlina.budgetplus.feature.welcome.ui.WelcomeBinding
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
     return when (bookDest) {

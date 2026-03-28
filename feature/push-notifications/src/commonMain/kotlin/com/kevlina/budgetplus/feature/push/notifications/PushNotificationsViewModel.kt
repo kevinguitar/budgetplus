@@ -9,14 +9,14 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.feature.push_notifications.generated.resources.Res
 import budgetplus.feature.push_notifications.generated.resources.push_notif_sent_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.PushDbMediator
 import com.kevlina.budgetplus.core.data.local.Preference
 import com.kevlina.budgetplus.core.data.remote.PushNotificationData
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Named
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
-@ViewModelKey(PushNotificationsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 class PushNotificationsViewModel private constructor(
     private val preference: Preference,

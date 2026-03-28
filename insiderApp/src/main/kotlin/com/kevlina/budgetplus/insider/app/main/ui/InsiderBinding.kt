@@ -27,12 +27,12 @@ import com.kevlina.budgetplus.core.common.nav.InsiderDest
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.auth.AuthViewModel
 import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
 import com.kevlina.budgetplus.feature.insider.InsiderScreen
 import com.kevlina.budgetplus.feature.push.notifications.PushNotificationsScreen
 import com.kevlina.budgetplus.insider.app.main.InsiderRootViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 
 @Composable

@@ -14,7 +14,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.settings_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
-import com.kevlina.budgetplus.core.utils.metroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

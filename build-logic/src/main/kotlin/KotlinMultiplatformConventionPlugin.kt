@@ -122,7 +122,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             }
 
             compilerOptions {
-                // Due to https://youtrack.jetbrains.com/issue/CMP-8498/KLIB-name-conflict-with-AndroidX-libraries
                 allWarningsAsErrors.set(true)
                 freeCompilerArgs.addAll(
                     "-Xcontext-parameters",

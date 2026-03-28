@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import com.kevlina.budgetplus.core.common.consumeEach
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.collect
 
 @Composable

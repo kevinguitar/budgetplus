@@ -3,12 +3,12 @@ package com.kevlina.budgetplus.feature.freeze
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine

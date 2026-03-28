@@ -12,9 +12,9 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.batch_record_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.ui.DoneAnimator
 import com.kevlina.budgetplus.feature.batch.record.BatchRecordViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

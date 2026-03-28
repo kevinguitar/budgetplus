@@ -5,9 +5,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.revenuecat.purchases.kmp.ui.revenuecatui.Paywall
 import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
 fun PremiumScreen() {

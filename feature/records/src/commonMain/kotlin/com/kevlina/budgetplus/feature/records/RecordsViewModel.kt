@@ -5,9 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.combineState
-import com.kevlina.budgetplus.core.common.di.AssistedFactoryKey
-import com.kevlina.budgetplus.core.common.di.ViewModelAssistedFactory
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -26,6 +23,9 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -132,9 +132,9 @@ class RecordsViewModel(
     }
 
     @AssistedFactory
-    @AssistedFactoryKey(Factory::class)
+    @ManualViewModelAssistedFactoryKey
     @ContributesIntoMap(ViewModelScope::class)
-    fun interface Factory : ViewModelAssistedFactory {
+    fun interface Factory : ManualViewModelAssistedFactory {
         fun create(params: BookDest.Records): RecordsViewModel
     }
 }

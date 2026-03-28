@@ -31,10 +31,10 @@ import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel
 import com.kevlina.budgetplus.feature.category.pills.toState
 import com.kevlina.budgetplus.feature.freeze.FreezeBookDialog
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.collect
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource

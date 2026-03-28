@@ -6,20 +6,20 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_create_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(WelcomeViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 class WelcomeViewModel(
     private val snackbarSender: SnackbarSender,

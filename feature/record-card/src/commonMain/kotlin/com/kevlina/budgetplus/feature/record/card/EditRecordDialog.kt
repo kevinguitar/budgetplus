@@ -48,10 +48,10 @@ import com.kevlina.budgetplus.core.ui.SingleDatePicker
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
 import com.kevlina.budgetplus.core.ui.rippleClick
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.category.pills.CategoriesGrid
 import com.kevlina.budgetplus.feature.category.pills.CategoryCard
 import com.kevlina.budgetplus.feature.category.pills.toState
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.datetime.LocalDate

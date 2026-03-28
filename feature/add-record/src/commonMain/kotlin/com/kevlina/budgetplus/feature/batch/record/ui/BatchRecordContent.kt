@@ -30,10 +30,10 @@ import com.kevlina.budgetplus.core.ui.RecordTypeTab
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
 import com.kevlina.budgetplus.core.ui.containerPadding
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.batch.record.BatchRecordViewModel
 import com.kevlina.budgetplus.feature.category.pills.CategoriesGrid
 import com.kevlina.budgetplus.feature.category.pills.toState
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

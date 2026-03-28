@@ -8,8 +8,6 @@ import budgetplus.core.common.generated.resources.category_already_exist
 import budgetplus.core.common.generated.resources.category_edit_successful
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.BookRepo
@@ -18,13 +16,15 @@ import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import kotlin.time.Duration.Companion.seconds
 
-@ViewModelKey(EditCategoryViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 class EditCategoryViewModel(
     val navController: NavController<BookDest>,

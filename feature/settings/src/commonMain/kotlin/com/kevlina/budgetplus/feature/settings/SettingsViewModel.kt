@@ -11,8 +11,6 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.VibratorManager
 import com.kevlina.budgetplus.core.common.combineState
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -20,12 +18,14 @@ import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.settings.api.ChartModeViewModel
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(SettingsViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 class SettingsViewModel private constructor(
     private val bookRepo: BookRepo,

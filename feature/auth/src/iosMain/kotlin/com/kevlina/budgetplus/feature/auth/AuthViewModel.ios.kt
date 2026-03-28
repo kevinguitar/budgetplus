@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ViewModelScope
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
@@ -34,7 +34,7 @@ import platform.UIKit.UIWindow
 import platform.darwin.NSObject
 import kotlin.coroutines.cancellation.CancellationException
 
-@ViewModelKey(AuthViewModel::class)
+@ViewModelKey
 @ContributesIntoMap(ViewModelScope::class)
 actual class AuthViewModel(
     actual val commonAuthViewModel: CommonAuthViewModel,
