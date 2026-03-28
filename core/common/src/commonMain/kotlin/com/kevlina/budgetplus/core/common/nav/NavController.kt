@@ -10,8 +10,10 @@ import kotlinx.coroutines.flow.filterNotNull
 
 /**
  * A navigation controller that has a back stack for complex navigation trees like bottom navigation.
+ * Note that this NavController is designed to be a singleton across the app to ease the dependency graph,
+ * and there is a known issue that the backstack won't survive the process death.
  *
- * @param startRoot which root of navigation tree that is initially displayed.
+ * @param startRoot which root of the navigation tree that is initially displayed.
  */
 class NavController<T : NavKey>(
     private val startRoot: T,
