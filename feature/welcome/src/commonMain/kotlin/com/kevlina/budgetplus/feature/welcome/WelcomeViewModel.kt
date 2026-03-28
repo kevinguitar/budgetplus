@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_create_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -26,7 +25,6 @@ class WelcomeViewModel(
     private val snackbarSender: SnackbarSender,
     private val bookRepo: BookRepo,
     private val authManager: AuthManager,
-    private val toaster: Toaster,
     private val navController: NavController<BookDest>,
 ) : ViewModel() {
 
@@ -57,7 +55,7 @@ class WelcomeViewModel(
             val name = bookName.text.toString()
             try {
                 bookRepo.createBook(name = name, source = "welcome")
-                toaster.showMessage(getString(Res.string.book_create_success, name))
+                snackbarSender.send(getString(Res.string.book_create_success, name))
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             } finally {

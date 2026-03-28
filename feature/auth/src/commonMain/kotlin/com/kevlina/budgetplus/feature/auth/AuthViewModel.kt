@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.auth_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -32,7 +31,6 @@ expect class AuthViewModel : ViewModel {
 class CommonAuthViewModel(
     private val snackbarSender: SnackbarSender,
     private val bookRepo: BookRepo,
-    private val toaster: Toaster,
     private val tracker: Tracker,
     private val navController: NavController<BookDest>,
 ) {
@@ -83,7 +81,7 @@ class CommonAuthViewModel(
 
         if (name.isNotBlank()) {
             val message = getString(Res.string.auth_success, name)
-            toaster.showMessage(message)
+            snackbarSender.send(message)
         }
 
         val destination = try {
