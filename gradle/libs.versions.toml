@@ -111,6 +111,7 @@ kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
+metrox-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 mockk = "io.mockk:mockk:1.14.9"
 navigation-event = "org.jetbrains.androidx.navigationevent:navigationevent-compose:1.0.1"
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }

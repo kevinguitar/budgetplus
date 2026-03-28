@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.book
 
 import com.kevlina.budgetplus.book.di.DeeplinkFlow
 import com.kevlina.budgetplus.core.common.AppStartAction
-import com.kevlina.budgetplus.core.common.di.ViewModelGraphProvider
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.sendEvent
@@ -11,11 +10,13 @@ import com.kevlina.budgetplus.core.theme.ThemeManager
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.createGraph
+import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 
 @DependencyGraph(AppScope::class)
-interface BudgetPlusIosAppGraph {
+interface BudgetPlusIosAppGraph : ViewModelGraph {
     val appStartActions: Set<AppStartAction>
-    val viewModelGraphProvider: ViewModelGraphProvider
+    val viewModelFactory: MetroViewModelFactory
     val authManager: AuthManager
     val themeManager: ThemeManager
     val navController: NavController<BookDest>

@@ -9,19 +9,19 @@ import budgetplus.core.common.generated.resources.record_deleted
 import budgetplus.core.common.generated.resources.record_edited
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(EditRecordViewModel::class)
-@ContributesIntoMap(ViewModelScope::class)
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class EditRecordViewModel(
     val categoriesVm: CategoriesViewModel,
     private val recordRepo: RecordRepo,

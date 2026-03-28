@@ -32,9 +32,9 @@ import budgetplus.feature.insider.generated.resources.insider_weekly_active_user
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.insider.InsiderViewModel
 import com.kevlina.budgetplus.feature.insider.UsersOverviewData
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import budgetplus.core.common.generated.resources.Res as CommonRes

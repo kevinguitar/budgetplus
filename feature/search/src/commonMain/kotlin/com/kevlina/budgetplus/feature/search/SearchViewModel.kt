@@ -5,9 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.di.AssistedFactoryKey
-import com.kevlina.budgetplus.core.common.di.ViewModelAssistedFactory
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -28,10 +25,13 @@ import com.kevlina.budgetplus.feature.search.ui.SearchPeriod.Companion.requiresP
 import com.kevlina.budgetplus.feature.search.ui.SearchResult
 import com.kevlina.budgetplus.feature.search.ui.SearchResultState
 import com.kevlina.budgetplus.feature.search.ui.SearchState
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -98,7 +98,6 @@ class SearchViewModel(
 
     private val editRecordEvent = MutableEventFlow<Record>()
     private val deleteRecordEvent = MutableEventFlow<Record>()
-    private val unlockPremiumEvent = MutableEventFlow<Unit>()
 
     private val allAuthors = bookRepo.bookState
         .map {
@@ -180,9 +179,9 @@ class SearchViewModel(
     }
 
     @AssistedFactory
-    @AssistedFactoryKey(Factory::class)
-    @ContributesIntoMap(ViewModelScope::class)
-    fun interface Factory : ViewModelAssistedFactory {
+    @ManualViewModelAssistedFactoryKey
+    @ContributesIntoMap(AppScope::class)
+    fun interface Factory : ManualViewModelAssistedFactory {
         fun create(params: BookDest.Search): SearchViewModel
     }
 }

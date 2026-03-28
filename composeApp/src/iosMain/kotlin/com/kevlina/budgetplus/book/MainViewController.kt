@@ -10,8 +10,8 @@ import com.kevlina.budgetplus.book.ui.BookBinding
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.utils.LocalViewModelGraphProvider
-import com.kevlina.budgetplus.core.utils.metroViewModel
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.collect
 import platform.UIKit.UIApplication
 import platform.UIKit.UIStatusBarStyleDarkContent
@@ -37,7 +37,7 @@ fun MainViewController(): UIViewController = ComposeUIViewController {
     }
 
     CompositionLocalProvider(
-        LocalViewModelGraphProvider provides graph.viewModelGraphProvider
+        LocalMetroViewModelFactory provides graph.viewModelFactory
     ) {
         AppTheme(themeColors) {
             val vm = metroViewModel<BookViewModel>()
