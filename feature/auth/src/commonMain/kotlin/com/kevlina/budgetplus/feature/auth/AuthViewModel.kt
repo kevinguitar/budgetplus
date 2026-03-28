@@ -5,9 +5,6 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.auth_success
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
-import com.kevlina.budgetplus.core.data.BookRepo
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.AuthResult
 import dev.gitlive.firebase.auth.FirebaseAuth
@@ -32,9 +29,8 @@ expect class AuthViewModel : ViewModel {
 @Inject
 class CommonAuthViewModel(
     private val snackbarSender: SnackbarSender,
-    private val bookRepo: BookRepo,
     private val tracker: Tracker,
-    private val navController: NavController<BookDest>,
+    private val authSuccessNavigation: AuthSuccessNavigation,
 ) {
     val isLoading: StateFlow<Boolean>
         field = MutableStateFlow(false)
@@ -86,18 +82,7 @@ class CommonAuthViewModel(
             snackbarSender.send(message)
         }
 
-        val destination = try {
-            if (bookRepo.isUserHasBooks()) {
-                BookDest.Record
-            } else {
-                BookDest.Welcome
-            }
-        } catch (e: Exception) {
-            snackbarSender.sendError(e)
-            BookDest.Welcome
-        } finally {
-            isLoading.value = false
-        }
-        navController.selectRootAndClearAll(destination)
+        authSuccessNavigation.navigate()
+        isLoading.value = false
     }
 }

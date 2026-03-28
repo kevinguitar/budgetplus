@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.kevlina.budgetplus.core.common.SnackbarData
@@ -29,6 +28,8 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
 import com.kevlina.budgetplus.core.utils.metroViewModel
+import com.kevlina.budgetplus.feature.auth.AuthViewModel
+import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
 import com.kevlina.budgetplus.feature.insider.InsiderScreen
 import com.kevlina.budgetplus.feature.push.notifications.PushNotificationsScreen
 import com.kevlina.budgetplus.insider.app.main.InsiderViewModel
@@ -58,17 +59,29 @@ internal fun InsiderBinding(vm: InsiderViewModel = metroViewModel()) {
                     // Do not consider the top padding, and let TopBar handle it.
                     .padding(bottom = innerPadding.calculateBottomPadding())
             ) {
-                val backStack = rememberNavBackStack(InsiderDest.Insider)
-
                 NavDisplay(
-                    backStack = backStack,
+                    backStack = vm.navController.backStack,
                     entryProvider = entryProvider {
+                        entry<InsiderDest.Auth> {
+                            val vm = metroViewModel<AuthViewModel>()
+                            LaunchedEffect(vm) {
+                                vm.checkAuthorizedAccounts(enableAutoSignIn = true)
+                            }
+                            AuthBinding(
+                                vm = vm.commonAuthViewModel,
+                                signInWithGoogle = vm::signInWithGoogle,
+                                signInWithApple = vm::signInWithApple,
+                            )
+                        }
+
                         entry<InsiderDest.Insider> {
-                            InsiderScreen(openPushNotifications = { backStack.add(InsiderDest.PushNotifications) })
+                            InsiderScreen(openPushNotifications = {
+                                vm.navController.navigate(InsiderDest.PushNotifications)
+                            })
                         }
 
                         entry<InsiderDest.PushNotifications> {
-                            PushNotificationsScreen(navigateUp = { backStack.removeLastOrNull() })
+                            PushNotificationsScreen(navigateUp = vm.navController::navigateUp)
                         }
                     },
                     entryDecorators = listOf(

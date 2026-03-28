@@ -42,6 +42,8 @@ sealed interface BookDest : NavKey {
 
 sealed interface InsiderDest : NavKey {
 
+    data object Auth : InsiderDest
+
     data object Insider : InsiderDest
 
     data object PushNotifications : InsiderDest

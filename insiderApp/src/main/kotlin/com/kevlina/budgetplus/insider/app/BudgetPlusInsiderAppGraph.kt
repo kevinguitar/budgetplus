@@ -2,6 +2,8 @@ package com.kevlina.budgetplus.insider.app
 
 import android.app.Application
 import android.content.Context
+import com.kevlina.budgetplus.core.common.ActivityProviderImpl
+import com.kevlina.budgetplus.core.common.AppStartAction
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Binds
 import dev.zacsweers.metro.DependencyGraph
@@ -13,8 +15,10 @@ interface BudgetPlusInsiderAppGraph {
     @Binds val BudgetPlusInsiderApp.bindApplication: Application
     @Binds val BudgetPlusInsiderApp.bindContext: Context
 
+    val activityProvider: ActivityProviderImpl
+
     // Collect it here to avoid metro's SuspiciousUnusedMultibinding warning, we don't need to invoke them.
-    // val appStartActions: Set<AppStartAction>
+    val appStartActions: Set<AppStartAction>
 
     @DependencyGraph.Factory
     fun interface Factory {

@@ -12,6 +12,7 @@ import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeShareHelper
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
@@ -171,6 +172,7 @@ class RecordViewModelTest {
         categoriesVm = categoriesVm,
         freezeBookVm = fakeFreezeBookVm,
         bookRepo = bookRepo,
+        navController = NavController.preview,
         recordRepo = FakeRecordRepo,
         bubbleRepo = FakeBubbleRepo(),
         authManager = FakeAuthManager(),
