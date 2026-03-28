@@ -82,7 +82,7 @@ class BookViewModel(
         navController.currentNavKeyFlow
             .onEach { key ->
                 // Clear the preview colors if the user navigates out of the picker screen.
-                if (key != BookDest.Colors) {
+                if (key !is BookDest.Colors) {
                     themeManager.clearPreviewColors()
                 }
             }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.getString
 
-expect class AuthViewModel: ViewModel {
+expect class AuthViewModel : ViewModel {
     val commonAuthViewModel: CommonAuthViewModel
 
     fun checkAuthorizedAccounts(enableAutoSignIn: Boolean)
@@ -30,7 +30,7 @@ expect class AuthViewModel: ViewModel {
 
 @Inject
 class CommonAuthViewModel(
-    val snackbarSender: SnackbarSender,
+    private val snackbarSender: SnackbarSender,
     private val bookRepo: BookRepo,
     private val toaster: Toaster,
     private val tracker: Tracker,

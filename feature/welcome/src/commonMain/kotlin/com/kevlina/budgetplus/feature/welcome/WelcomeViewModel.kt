@@ -23,7 +23,7 @@ import org.jetbrains.compose.resources.getString
 @ViewModelKey(WelcomeViewModel::class)
 @ContributesIntoMap(ViewModelScope::class)
 class WelcomeViewModel(
-    val snackbarSender: SnackbarSender,
+    private val snackbarSender: SnackbarSender,
     private val bookRepo: BookRepo,
     private val authManager: AuthManager,
     private val toaster: Toaster,
