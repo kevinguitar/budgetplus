@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.collect
 fun AuthBinding(
     vm: CommonAuthViewModel,
     signInWithGoogle: () -> Unit,
-    signInWithApple: (() -> Unit)? = null,
+    signInWithApple: () -> Unit,
 ) {
     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
     val isLoading by vm.isLoading.collectAsStateWithLifecycle()

@@ -6,11 +6,13 @@ import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerClient.InstallReferrerResponse
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.kevlina.budgetplus.core.data.BookRepo
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 
-@Inject
+@AssistedInject
 class ReferrerHandler(
-    private val activity: ComponentActivity,
+    @Assisted private val activity: ComponentActivity,
     private val bookRepo: BookRepo,
 ) : InstallReferrerStateListener {
 
@@ -45,5 +47,10 @@ class ReferrerHandler(
 
     override fun onInstallReferrerServiceDisconnected() {
         Logger.d { "ReferrerClient: Disconnected" }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(activity: ComponentActivity): ReferrerHandler
     }
 }

@@ -25,6 +25,7 @@ import org.jetbrains.compose.resources.getString
 expect class AuthViewModel: ViewModel {
     val commonAuthViewModel: CommonAuthViewModel
 
+    fun checkAuthorizedAccounts(enableAutoSignIn: Boolean)
     fun signInWithGoogle()
     fun signInWithApple()
 }

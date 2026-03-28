@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 sealed interface BookDest : NavKey {
 
     @Serializable
-    data object Auth : BookDest
+    data class Auth(val enableAutoSignIn: Boolean) : BookDest
 
     @Serializable
     data object Welcome : BookDest

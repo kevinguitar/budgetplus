@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.book.ui
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation3.runtime.NavEntry
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -26,12 +27,15 @@ internal fun bookNavGraph(
     bookDest: BookDest,
 ): NavEntry<BookDest> {
     return when (bookDest) {
-        BookDest.Auth -> NavEntry(bookDest) {
+        is BookDest.Auth -> NavEntry(bookDest) {
             val vm = metroViewModel<AuthViewModel>()
+            LaunchedEffect(bookDest) {
+                vm.checkAuthorizedAccounts(enableAutoSignIn = bookDest.enableAutoSignIn)
+            }
             AuthBinding(
-                vm.commonAuthViewModel,
-                vm::signInWithGoogle,
-                vm::signInWithApple
+                vm = vm.commonAuthViewModel,
+                signInWithGoogle = vm::signInWithGoogle,
+                signInWithApple = vm::signInWithApple,
             )
         }
 
