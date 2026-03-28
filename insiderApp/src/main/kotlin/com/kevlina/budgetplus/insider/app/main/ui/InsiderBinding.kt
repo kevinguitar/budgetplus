@@ -32,11 +32,11 @@ import com.kevlina.budgetplus.feature.auth.AuthViewModel
 import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
 import com.kevlina.budgetplus.feature.insider.InsiderScreen
 import com.kevlina.budgetplus.feature.push.notifications.PushNotificationsScreen
-import com.kevlina.budgetplus.insider.app.main.InsiderViewModel
+import com.kevlina.budgetplus.insider.app.main.InsiderRootViewModel
 import kotlinx.coroutines.flow.launchIn
 
 @Composable
-internal fun InsiderBinding(vm: InsiderViewModel = metroViewModel()) {
+internal fun InsiderBinding(vm: InsiderRootViewModel = metroViewModel()) {
 
     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
 

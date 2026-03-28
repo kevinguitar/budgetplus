@@ -31,7 +31,7 @@ import java.text.DecimalFormat
 @Composable
 internal fun StatCard(
     title: String,
-    icon: ImageVector,
+    icon: ImageVector? = null,
     number: Long,
 ) {
 
@@ -53,13 +53,16 @@ internal fun StatCard(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.weight(1F)
         ) {
-
-            Image(
-                imageVector = icon,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(LocalAppColors.current.dark),
-                modifier = Modifier.size(24.dp).typographyScale()
-            )
+            if (icon != null) {
+                Image(
+                    imageVector = icon,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(LocalAppColors.current.dark),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .typographyScale()
+                )
+            }
 
             Text(
                 text = title,

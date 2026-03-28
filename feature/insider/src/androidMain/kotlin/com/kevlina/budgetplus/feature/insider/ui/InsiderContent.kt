@@ -17,10 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.ic_today
 import budgetplus.feature.insider.generated.resources.Res
-import budgetplus.feature.insider.generated.resources.ic_abc
 import budgetplus.feature.insider.generated.resources.ic_calendar_view_week
-import budgetplus.feature.insider.generated.resources.ic_landscape
-import budgetplus.feature.insider.generated.resources.ic_ramen_dining
 import budgetplus.feature.insider.generated.resources.ic_workspace_premium
 import budgetplus.feature.insider.generated.resources.insider_active_premium_users
 import budgetplus.feature.insider.generated.resources.insider_daily_active_users
@@ -28,6 +25,7 @@ import budgetplus.feature.insider.generated.resources.insider_new_users
 import budgetplus.feature.insider.generated.resources.insider_total_cn_users
 import budgetplus.feature.insider.generated.resources.insider_total_en_users
 import budgetplus.feature.insider.generated.resources.insider_total_ja_users
+import budgetplus.feature.insider.generated.resources.insider_total_ko_users
 import budgetplus.feature.insider.generated.resources.insider_total_premium_users
 import budgetplus.feature.insider.generated.resources.insider_users_overview
 import budgetplus.feature.insider.generated.resources.insider_weekly_active_users
@@ -146,21 +144,24 @@ private fun LazyListScope.overviewSection(overviewData: UsersOverviewData?) {
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_en_users),
-                icon = vectorResource(Res.drawable.ic_abc),
                 number = overviewData.totalEnglishUsers
             )
         }
         item(contentType = TYPE_STAT) {
             StatCard(
                 title = stringResource(Res.string.insider_total_ja_users),
-                icon = vectorResource(Res.drawable.ic_ramen_dining),
                 number = overviewData.totalJapaneseUsers
             )
         }
         item(contentType = TYPE_STAT) {
             StatCard(
+                title = stringResource(Res.string.insider_total_ko_users),
+                number = overviewData.totalKoreanUsers
+            )
+        }
+        item(contentType = TYPE_STAT) {
+            StatCard(
                 title = stringResource(Res.string.insider_total_cn_users),
-                icon = vectorResource(Res.drawable.ic_landscape),
                 number = overviewData.totalSimplifiedChineseUsers
             )
         }
