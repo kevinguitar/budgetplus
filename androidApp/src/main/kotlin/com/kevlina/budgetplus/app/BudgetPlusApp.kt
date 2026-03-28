@@ -36,9 +36,6 @@ class BudgetPlusApp : Application(), HasServiceProvider {
 
         // Execute all the actions that need to be executed on app start.
         appStartActions.forEach { it.onAppStart() }
-
-        Logger.d { "VM providers: ${appGraph.viewModelProviders.size}" }
-        Logger.d { "VM manual providers: ${appGraph.manualAssistedFactoryProviders.size}" }
     }
 
     @Suppress("UNCHECKED_CAST")
