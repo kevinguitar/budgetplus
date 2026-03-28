@@ -8,7 +8,6 @@ import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
-import com.kevlina.budgetplus.core.common.nav.NavigationFlow
 import com.kevlina.budgetplus.core.data.BookRepo
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.AuthResult
@@ -31,7 +30,6 @@ expect class AuthViewModel: ViewModel {
 
 @Inject
 class CommonAuthViewModel(
-    val navigation: NavigationFlow,
     val snackbarSender: SnackbarSender,
     private val bookRepo: BookRepo,
     private val toaster: Toaster,

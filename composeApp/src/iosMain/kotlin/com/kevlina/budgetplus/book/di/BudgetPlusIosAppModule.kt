@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.book.di
 
 import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.common.MutableEventFlow
-import com.kevlina.budgetplus.core.common.nav.DeeplinkFlow
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Named
@@ -40,3 +39,5 @@ interface BudgetPlusIosAppModule {
         return "https://apps.apple.com/app/id$appId?action=write-review"
     }
 }
+
+typealias DeeplinkFlow = MutableEventFlow<String?>

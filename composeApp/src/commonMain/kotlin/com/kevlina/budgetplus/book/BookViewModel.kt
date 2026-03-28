@@ -21,7 +21,6 @@ import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_UNLOCK_PREMIUM_PATH
 import com.kevlina.budgetplus.core.common.nav.NavController
-import com.kevlina.budgetplus.core.common.nav.NavigationFlow
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.JoinBookException
@@ -43,7 +42,6 @@ class BookViewModel(
     val navController: NavController<BookDest>,
     val snackbarSender: SnackbarSender,
     val themeManager: ThemeManager,
-    val navigation: NavigationFlow,
     val bubbleViewModel: BubbleViewModel,
     val adUnitId: AdUnitId,
     val interstitialAdsHandler: InterstitialAdsHandler,
@@ -52,18 +50,20 @@ class BookViewModel(
     authManager: AuthManager,
 ) : ViewModel() {
 
-    private val hideBottomNavDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
-    private val hideAdsDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
+    private val hideBottomNavDestinations =
+        setOf(BookDest.Auth::class, BookDest.Welcome::class, BookDest.UnlockPremium::class)
+    private val hideAdsDestinations =
+        setOf(BookDest.Auth::class, BookDest.Welcome::class, BookDest.UnlockPremium::class)
 
     val showBottomNav = navController.currentNavKeyFlow
-        .map { it !in hideBottomNavDestinations }
+        .map { it::class !in hideBottomNavDestinations }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
     val showBannerAd = combine(
         authManager.isPremium,
         navController.currentNavKeyFlow
     ) { isPremium, currentNavKey ->
-        !isPremium && currentNavKey !in hideAdsDestinations
+        !isPremium && currentNavKey::class !in hideAdsDestinations
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     val isEligibleForInterstitialAds = authManager.isPremium.mapState { !it }

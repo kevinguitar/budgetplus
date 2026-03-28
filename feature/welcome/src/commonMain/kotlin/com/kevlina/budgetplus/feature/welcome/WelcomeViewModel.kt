@@ -9,13 +9,11 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Toaster
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
-import com.kevlina.budgetplus.core.common.nav.NavigationAction
-import com.kevlina.budgetplus.core.common.nav.NavigationFlow
-import com.kevlina.budgetplus.core.common.sendEvent
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metro.Named
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +23,11 @@ import org.jetbrains.compose.resources.getString
 @ViewModelKey(WelcomeViewModel::class)
 @ContributesIntoMap(ViewModelScope::class)
 class WelcomeViewModel(
-    val navigation: NavigationFlow,
     val snackbarSender: SnackbarSender,
     private val bookRepo: BookRepo,
     private val authManager: AuthManager,
     private val toaster: Toaster,
-    @Named("book") private val bookNavigationAction: NavigationAction,
+    private val navController: NavController<BookDest>,
 ) : ViewModel() {
 
     private var createBookJob: Job? = null
@@ -45,7 +42,7 @@ class WelcomeViewModel(
         viewModelScope.launch {
             bookRepo.booksState.collect { books ->
                 if (!books.isNullOrEmpty()) {
-                    navigation.sendEvent(bookNavigationAction)
+                    navController.navigate(BookDest.Record)
                 }
             }
         }
