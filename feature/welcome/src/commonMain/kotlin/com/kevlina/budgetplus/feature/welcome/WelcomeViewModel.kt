@@ -38,11 +38,10 @@ class WelcomeViewModel(
         field = MutableStateFlow(false)
 
     init {
-        //TODO: Can we move to Book VM?
         viewModelScope.launch {
             bookRepo.booksState.collect { books ->
                 if (!books.isNullOrEmpty()) {
-                    navController.navigate(BookDest.Record)
+                    navController.selectRootAndClearAll(BookDest.Record)
                 }
             }
         }
