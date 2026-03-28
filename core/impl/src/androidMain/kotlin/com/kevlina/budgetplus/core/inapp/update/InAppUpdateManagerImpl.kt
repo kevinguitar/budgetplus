@@ -32,7 +32,7 @@ class InAppUpdateManagerImpl(
     private val preference: Preference,
 ) : InAppUpdateManager {
 
-    final override val updateState: MutableStateFlow<InAppUpdateState> = MutableStateFlow(InAppUpdateState.NotStarted)
+    override val updateState: MutableStateFlow<InAppUpdateState> = MutableStateFlow(InAppUpdateState.NotStarted)
 
     private val appUpdateManager = AppUpdateManagerFactory.create(activity)
     private val scope = activity.lifecycleScope

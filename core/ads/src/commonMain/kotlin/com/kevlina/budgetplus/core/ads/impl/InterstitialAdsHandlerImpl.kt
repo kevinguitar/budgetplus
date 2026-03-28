@@ -17,7 +17,7 @@ class InterstitialAdsHandlerImpl(
     private val tracker: Tracker,
 ) : InterstitialAdsHandler {
 
-    final override val showAdEvent: EventFlow<Unit>
+    override val showAdEvent: EventFlow<Unit>
         field = MutableEventFlow()
 
     override fun showAd() {

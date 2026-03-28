@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 @ContributesBinding(AppScope::class, binding = binding<ActivityProvider>())
 class ActivityProviderImpl : ActivityProvider, Application.ActivityLifecycleCallbacks {
 
-    final override val activityFlow: StateFlow<Activity?>
+    override val activityFlow: StateFlow<Activity?>
         field = MutableStateFlow(null)
 
     override val currentActivity: ComponentActivity?

@@ -10,7 +10,7 @@ class FakeVibratorManager(
     initialVibrateOnInput: Boolean = true,
 ) : VibratorManager {
 
-    final override val vibrateOnInput: StateFlow<Boolean>
+    override val vibrateOnInput: StateFlow<Boolean>
         field = MutableStateFlow(initialVibrateOnInput)
 
     override fun toggleVibrateOnInput() {

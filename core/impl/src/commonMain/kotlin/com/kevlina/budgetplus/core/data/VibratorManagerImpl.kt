@@ -22,7 +22,7 @@ class VibratorManagerImpl(
 
     private val vibrateOnInputKey = booleanPreferencesKey("vibrateOnInputFlow")
 
-    final override val vibrateOnInput: StateFlow<Boolean> = preference.of(vibrateOnInputKey, true, appScope)
+    override val vibrateOnInput: StateFlow<Boolean> = preference.of(vibrateOnInputKey, true, appScope)
 
     override fun toggleVibrateOnInput() {
         appScope.launch { preference.update(vibrateOnInputKey, !vibrateOnInput.value) }
