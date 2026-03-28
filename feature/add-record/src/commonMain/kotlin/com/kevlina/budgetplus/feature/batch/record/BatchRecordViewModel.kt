@@ -12,6 +12,8 @@ import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BatchFrequency
@@ -39,6 +41,7 @@ import org.jetbrains.compose.resources.getString
 class BatchRecordViewModel(
     val categoriesVm: CategoriesViewModel,
     val bookRepo: BookRepo,
+    val navController: NavController<BookDest>,
     private val recordRepo: RecordRepo,
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,

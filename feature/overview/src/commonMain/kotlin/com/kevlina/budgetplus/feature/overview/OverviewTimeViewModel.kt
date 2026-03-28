@@ -6,12 +6,11 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_go
 import budgetplus.core.common.generated.resources.overview_exceed_max_period
-import com.kevlina.budgetplus.core.common.EventFlow
-import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.mapState
-import com.kevlina.budgetplus.core.common.sendEvent
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordsObserver
@@ -30,6 +29,7 @@ import kotlinx.datetime.plus
 
 @Inject
 class OverviewTimeViewModel(
+    private val navController: NavController<BookDest>,
     private val recordsObserver: RecordsObserver,
     private val bookRepo: BookRepo,
     private val authManager: AuthManager,
@@ -58,9 +58,6 @@ class OverviewTimeViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    val openPremiumEvent: EventFlow<Unit>
-        field = MutableEventFlow<Unit>()
-
     fun setTimePeriod(timePeriod: TimePeriod, isCustomized: Boolean = false) {
         val bookId = bookRepo.currentBookId ?: return
         val isAboveOneMonth = timePeriod.from < timePeriod.until.minus(1, DateTimeUnit.MONTH)
@@ -71,8 +68,8 @@ class OverviewTimeViewModel(
                     message = Res.string.overview_exceed_max_period,
                     actionLabel = Res.string.cta_go,
                     action = {
+                        navController.navigate(BookDest.UnlockPremium)
                         tracker.logEvent("overview_exceed_max_period_unlock")
-                        openPremiumEvent.sendEvent()
                     }
                 )
             }

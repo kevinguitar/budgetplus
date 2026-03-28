@@ -12,6 +12,8 @@ import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.ContributesIntoMap
@@ -25,6 +27,7 @@ import org.jetbrains.compose.resources.getString
 @ViewModelKey(CurrencyPickerViewModel::class)
 @ContributesIntoMap(ViewModelScope::class)
 class CurrencyPickerViewModel(
+    val navController: NavController<BookDest>,
     private val bookRepo: BookRepo,
     private val snackbarSender: SnackbarSender,
     private val preference: Preference,
@@ -83,5 +86,6 @@ class CurrencyPickerViewModel(
         } catch (e: Exception) {
             snackbarSender.sendError(e)
         }
+        navController.navigateUp()
     }
 }

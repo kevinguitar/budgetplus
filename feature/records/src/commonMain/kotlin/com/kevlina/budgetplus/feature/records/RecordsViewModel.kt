@@ -10,6 +10,7 @@ import com.kevlina.budgetplus.core.common.di.ViewModelAssistedFactory
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
@@ -35,6 +36,7 @@ import kotlinx.coroutines.launch
 @AssistedInject
 class RecordsViewModel(
     @Assisted private val params: BookDest.Records,
+    val navController: NavController<BookDest>,
     val bookRepo: BookRepo,
     private val userRepo: UserRepo,
     private val recordRepo: RecordRepo,

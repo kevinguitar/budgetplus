@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import com.kevlina.budgetplus.core.billing.BillingController
 import com.kevlina.budgetplus.core.common.di.ViewModelKey
 import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import dev.zacsweers.metro.ContributesIntoMap
 
 @ViewModelKey(PremiumViewModel::class)
 @ContributesIntoMap(ViewModelScope::class)
 class PremiumViewModel(
+    val navController: NavController<BookDest>,
     authManager: AuthManager,
     billingController: BillingController,
 ) : ViewModel() {

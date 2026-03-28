@@ -17,8 +17,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.currency_picker_no_conversion_disclaimer
 import budgetplus.core.common.generated.resources.currency_picker_title
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.TopBar
@@ -28,7 +26,6 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CurrencyPickerScreen(
-    navController: NavController<BookDest>,
     vm: CurrencyPickerViewModel = metroViewModel(),
 ) {
     val currencies by vm.currencies.collectAsStateWithLifecycle()
@@ -44,7 +41,7 @@ fun CurrencyPickerScreen(
 
         TopBar(
             title = stringResource(Res.string.currency_picker_title),
-            navigateUp = { navController.navigateUp() },
+            navigateUp = { vm.navController.navigateUp() },
         )
 
         Box(
@@ -61,7 +58,6 @@ fun CurrencyPickerScreen(
                     coroutineScope.launch {
                         if (vm.hasShownCurrencyDisclaimer()) {
                             vm.onCurrencyPicked(currency)
-                            navController.navigateUp()
                         } else {
                             currencyDisclaimerDialogState = currency
                         }
@@ -77,7 +73,6 @@ fun CurrencyPickerScreen(
                     coroutineScope.launch {
                         vm.onCurrencyPicked(currency)
                         currencyDisclaimerDialogState = null
-                        navController.navigateUp()
                     }
                 },
                 onDismiss = { currencyDisclaimerDialogState = null },

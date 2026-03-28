@@ -26,8 +26,6 @@ import budgetplus.core.common.generated.resources.ic_paid
 import budgetplus.core.common.generated.resources.overview_details_title
 import budgetplus.core.common.generated.resources.overview_sort_by_date
 import budgetplus.core.common.generated.resources.overview_sort_by_price
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -44,10 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun RecordsScreen(
-    navController: NavController<BookDest>,
-    vm: RecordsViewModel,
-) {
+fun RecordsScreen(vm: RecordsViewModel) {
     var editRecordDialog by remember { mutableStateOf<Record?>(null) }
     var deleteRecordDialog by remember { mutableStateOf<Record?>(null) }
 
@@ -70,7 +65,7 @@ fun RecordsScreen(
             snapshotFlow { pagerState.currentPage }
         ) { recordsList, page ->
             if (recordsList?.getOrNull(page)?.isEmpty() == true) {
-                navController.navigateUp()
+                vm.navController.navigateUp()
             }
         }.collect()
     }
@@ -83,7 +78,7 @@ fun RecordsScreen(
 
         TopBar(
             title = stringResource(Res.string.overview_details_title, category, totalPrice),
-            navigateUp = navController::navigateUp,
+            navigateUp = vm.navController::navigateUp,
             menuActions = {
                 val modifier = Modifier.onPlaced {
                     vm.highlightSortingButton(
