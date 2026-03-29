@@ -2,8 +2,6 @@ package com.kevlina.budgetplus.book
 
 import com.kevlina.budgetplus.book.di.DeeplinkFlow
 import com.kevlina.budgetplus.core.common.AppStartAction
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.theme.ThemeManager
@@ -19,7 +17,6 @@ interface BudgetPlusIosAppGraph : ViewModelGraph {
     val viewModelFactory: MetroViewModelFactory
     val authManager: AuthManager
     val themeManager: ThemeManager
-    val navController: NavController<BookDest>
     val deeplinkFlow: DeeplinkFlow
 }
 

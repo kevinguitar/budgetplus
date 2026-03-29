@@ -28,7 +28,7 @@ class InsiderActivity : ComponentActivity() {
             .inject(this)
 
         enableEdgeToEdge()
-        setStatusBarColor(isLight = false)
+        setStatusBarColor(isLightBg = false)
         super.onCreate(savedInstanceState)
 
         if (authManager.userState.value == null) {
