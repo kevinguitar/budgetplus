@@ -48,6 +48,21 @@
       "productID" : "budgetplus.premium.lifetime",
       "referenceName" : "Budget+ Premium",
       "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "6761323716",
+      "localizations" : [
+        {
+          "description" : "不受任何廣告打擾、擴充至十本記帳本、批次新增您的固定支出收入、解鎖所有主題色調及調色盤",
+          "displayName" : "極簡記帳－進階版",
+          "locale" : "zh_Hant"
+        }
+      ],
+      "productID" : "budgetplus.premium.lifetime.30off",
+      "referenceName" : "Budget+ Premium 30% Off",
+      "type" : "NonConsumable"
     }
   ],
   "settings" : {
@@ -58,7 +73,7 @@
     "_developerTeamID" : "MU6R4JU7G8",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 796456263.07675803,
+    "_lastSynchronizedDate" : 796467397.18432105,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
@@ -77,7 +92,15 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
-
+            {
+              "displayPrice" : "11.99",
+              "internalID" : "7BE6273E",
+              "numberOfPeriods" : 1,
+              "offerID" : "annual_20_off",
+              "paymentMode" : "payAsYouGo",
+              "referenceName" : "Annual 20% OFF",
+              "subscriptionPeriod" : "P1Y"
+            }
           ],
           "codeOffers" : [
 
@@ -87,7 +110,7 @@
           "groupNumber" : 2,
           "internalID" : "6759821669",
           "introductoryOffer" : {
-            "internalID" : "DAC324F0",
+            "internalID" : "37D3C1D8",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P1W"
@@ -104,11 +127,6 @@
               "locale" : "ja"
             },
             {
-              "description" : "No ads, create up to 10 books, batch record expenses.",
-              "displayName" : "Budget+ Premium",
-              "locale" : "en_US"
-            },
-            {
               "description" : "不受任何广告打扰、扩充至十本记帐本、批次新增您的固定支出收入、解锁所有主题色调及调色盘",
               "displayName" : "极简记帐－进阶版",
               "locale" : "zh_Hans"
@@ -117,6 +135,11 @@
               "description" : "광고 없이 쾌적하게 사용하세요. 가계부를 최대 10개까지 생성할 수 있습니다.",
               "displayName" : "미니멀 가계부 - 프리미엄",
               "locale" : "ko"
+            },
+            {
+              "description" : "No ads, create up to 10 books, batch record expenses.",
+              "displayName" : "Budget+ Premium",
+              "locale" : "en_US"
             }
           ],
           "productID" : "budgetplus.premium.annual",
@@ -142,16 +165,6 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "광고 없이 쾌적하게 사용하세요. 가계부를 최대 10개까지 생성할 수 있습니다.",
-              "displayName" : "미니멀 가계부 - 프리미엄",
-              "locale" : "ko"
-            },
-            {
-              "description" : "不受任何广告打扰、扩充至十本记帐本、批次新增您的固定支出收入、解锁所有主题色调及调色盘",
-              "displayName" : "极简记帐－进阶版",
-              "locale" : "zh_Hans"
-            },
-            {
               "description" : "広告の干渉を受けません、10冊の帳簿に拡張する、すべてのテーマカラーやカラーパレットを解除する",
               "displayName" : "ミニマリストな帳簿アプレミアム版",
               "locale" : "ja"
@@ -162,9 +175,19 @@
               "locale" : "en_US"
             },
             {
+              "description" : "광고 없이 쾌적하게 사용하세요. 가계부를 최대 10개까지 생성할 수 있습니다.",
+              "displayName" : "미니멀 가계부 - 프리미엄",
+              "locale" : "ko"
+            },
+            {
               "description" : "不受任何廣告打擾、擴充至十本記帳本、批次新增您的固定支出收入、解鎖所有主題色調及調色盤",
               "displayName" : "極簡記帳－進階版",
               "locale" : "zh_Hant"
+            },
+            {
+              "description" : "不受任何广告打扰、扩充至十本记帐本、批次新增您的固定支出收入、解锁所有主题色调及调色盘",
+              "displayName" : "极简记帐－进阶版",
+              "locale" : "zh_Hans"
             }
           ],
           "productID" : "budgetplus.premium.monthly",

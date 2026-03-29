@@ -27,17 +27,18 @@ class RevenueCatInitializer(
 ) : AppStartAction {
 
     override fun onAppStart() {
+        Purchases.logLevel = LogLevel.DEBUG
         authManager.userState
             .mapNotNull {
                 val userId = it?.id
                 if (userId == null) {
+                    Purchases.configure(apiKey = BuildKonfig.revenuecatApiKey)
                     Purchases.sharedInstance.delegate = null
                 }
                 userId
             }
             .distinctUntilChanged()
             .onEach { userId ->
-                Purchases.logLevel = LogLevel.DEBUG
                 Purchases.configure(apiKey = BuildKonfig.revenuecatApiKey) {
                     appUserId = userId
                 }

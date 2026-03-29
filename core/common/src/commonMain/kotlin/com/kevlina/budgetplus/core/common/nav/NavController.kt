@@ -32,7 +32,7 @@ class NavController<T : NavKey>(
         get() = rootStack.lastOrNull() ?: startRoot
 
     fun selectRoot(rootKey: T) {
-        if (rootKey == currentRoot) return
+        if (rootKey::class == currentRoot::class) return
 
         if (rootKey in rootStack) {
             // If the root is already in the stack, remove it and add it again to bring it to the top
@@ -47,7 +47,7 @@ class NavController<T : NavKey>(
     }
 
     fun selectRootAndClearAll(rootKey: T) {
-        if (rootKey == currentRoot) return
+        if (rootKey::class == currentRoot::class) return
 
         rootStack.clear()
         rootStack.add(rootKey)
