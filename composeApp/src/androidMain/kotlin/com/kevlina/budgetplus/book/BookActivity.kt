@@ -27,7 +27,6 @@ import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.utils.setStatusBarColor
 import com.kevlina.budgetplus.inapp.update.InAppUpdateManager
 import com.kevlina.budgetplus.inapp.update.InAppUpdateState
 import dev.zacsweers.metro.Inject
@@ -60,7 +59,6 @@ class BookActivity : ComponentActivity() {
         }
 
         enableEdgeToEdge()
-        setStatusBarColor(isLight = false)
         super.onCreate(savedInstanceState)
 
         viewModel.handleDeeplink(intent.dataString)

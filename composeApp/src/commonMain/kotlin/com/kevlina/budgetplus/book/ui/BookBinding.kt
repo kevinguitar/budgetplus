@@ -17,15 +17,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import coil3.compose.LocalPlatformContext
 import com.kevlina.budgetplus.book.BookViewModel
 import com.kevlina.budgetplus.core.ads.BannerAd
 import com.kevlina.budgetplus.core.ads.HandleInterstitialAd
 import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.consumeEach
+import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
@@ -44,6 +47,7 @@ internal fun BookBinding(
     val isEligibleForInterstitialAds by vm.isEligibleForInterstitialAds.collectAsStateWithLifecycle()
     val previewColors by vm.themeManager.previewColors.collectAsStateWithLifecycle()
     val bubbleDest by vm.bubbleViewModel.destination.collectAsStateWithLifecycle()
+    val themeColors by vm.themeManager.themeColors.collectAsStateWithLifecycle()
 
     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
 
@@ -51,6 +55,18 @@ internal fun BookBinding(
         vm.snackbarSender.snackbarEvent
             .consumeEach { snackbarData = it }
             .launchIn(this)
+    }
+
+    val platformContext = LocalPlatformContext.current
+    LaunchedEffect(themeColors, navController) {
+        navController.currentNavKeyFlow.collect { navKey ->
+            val bgColor = if (navKey::class in lightBackgroundNavKeys) {
+                themeColors.light
+            } else {
+                themeColors.primary
+            }
+            setStatusBarColor(context = platformContext, isLightBg = bgColor.luminance() > 0.6)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -111,3 +127,5 @@ internal fun BookBinding(
         }
     }
 }
+
+private val lightBackgroundNavKeys = setOf(BookDest.Welcome::class, BookDest.UnlockPremium::class)
