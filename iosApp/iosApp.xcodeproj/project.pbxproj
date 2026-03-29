@@ -65,6 +65,13 @@
 			);
 			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
 		};
+		0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BudgetPlusPremium.storekit,
+			);
+			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
+		};
 		6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -92,6 +99,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */,
+				0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";

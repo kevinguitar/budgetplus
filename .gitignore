@@ -10,7 +10,6 @@ build
 /captures
 .externalNativeBuild
 .cxx
-*.storekit
 local.properties
 BudgetKey
 xcuserdata

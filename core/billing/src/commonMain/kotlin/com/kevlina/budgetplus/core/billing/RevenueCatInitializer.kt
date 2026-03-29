@@ -1,12 +1,16 @@
 package com.kevlina.budgetplus.core.billing
 
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.revenuecat.purchases.kmp.LogLevel
 import com.revenuecat.purchases.kmp.Purchases
+import com.revenuecat.purchases.kmp.PurchasesDelegate
 import com.revenuecat.purchases.kmp.configure
+import com.revenuecat.purchases.kmp.models.CustomerInfo
+import com.revenuecat.purchases.kmp.models.PurchasesError
+import com.revenuecat.purchases.kmp.models.StoreProduct
+import com.revenuecat.purchases.kmp.models.StoreTransaction
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +28,13 @@ class RevenueCatInitializer(
 
     override fun onAppStart() {
         authManager.userState
-            .mapNotNull { it?.id }
+            .mapNotNull {
+                val userId = it?.id
+                if (userId == null) {
+                    Purchases.sharedInstance.delegate = null
+                }
+                userId
+            }
             .distinctUntilChanged()
             .onEach { userId ->
                 Purchases.logLevel = LogLevel.DEBUG
@@ -32,12 +42,20 @@ class RevenueCatInitializer(
                     appUserId = userId
                 }
 
-                Purchases.sharedInstance.getCustomerInfo(
-                    onError = { error -> Logger.w { "Error fetching customer info: $error" } },
-                    onSuccess = { customerInfo ->
+                // React to customer info updates from RevenueCat
+                Purchases.sharedInstance.delegate = object : PurchasesDelegate {
+                    override fun onCustomerInfoUpdated(customerInfo: CustomerInfo) {
                         billingController.value.onNewCustomerInfo(customerInfo)
                     }
-                )
+
+                    override fun onPurchasePromoProduct(
+                        product: StoreProduct,
+                        startPurchase: (
+                            onError: (error: PurchasesError, userCancelled: Boolean) -> Unit,
+                            onSuccess: (storeTransaction: StoreTransaction, customerInfo: CustomerInfo) -> Unit,
+                        ) -> Unit,
+                    ) = Unit
+                }
             }
             .launchIn(appScope)
     }

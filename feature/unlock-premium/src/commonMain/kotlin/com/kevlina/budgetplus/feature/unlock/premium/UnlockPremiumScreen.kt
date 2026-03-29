@@ -10,9 +10,9 @@ import com.revenuecat.purchases.kmp.ui.revenuecatui.PaywallOptions
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
-fun PremiumScreen() {
+fun UnlockPremiumScreen() {
 
-    val vm = metroViewModel<PremiumViewModel>()
+    val vm = metroViewModel<UnlockPremiumViewModel>()
     val isPremium by vm.isPremium.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = isPremium) {

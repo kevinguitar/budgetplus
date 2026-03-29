@@ -16,7 +16,7 @@ import com.kevlina.budgetplus.feature.records.RecordsViewModel
 import com.kevlina.budgetplus.feature.search.SearchScreen
 import com.kevlina.budgetplus.feature.search.SearchViewModel
 import com.kevlina.budgetplus.feature.settings.SettingsScreen
-import com.kevlina.budgetplus.feature.unlock.premium.PremiumScreen
+import com.kevlina.budgetplus.feature.unlock.premium.UnlockPremiumScreen
 import com.kevlina.budgetplus.feature.welcome.ui.WelcomeBinding
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -52,7 +52,7 @@ internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
         }
 
         BookDest.UnlockPremium -> NavEntry(bookDest) {
-            PremiumScreen()
+            UnlockPremiumScreen()
         }
 
         BookDest.BatchRecord -> NavEntry(bookDest) {
