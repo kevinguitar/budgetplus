@@ -56,6 +56,11 @@ class BillingControllerImpl(
         override fun onRestoreStarted() {
             tracker.logEvent("restore_purchases_attempt")
         }
+
+        override fun onRestoreError(error: PurchasesError) {
+            tracker.logEvent("restore_purchases_error")
+            appScope.launch { snackbarSender.send(error.message) }
+        }
     }
 
     override fun onNewCustomerInfo(customerInfo: CustomerInfo) {
