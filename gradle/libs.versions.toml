@@ -108,6 +108,7 @@ kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
 kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
