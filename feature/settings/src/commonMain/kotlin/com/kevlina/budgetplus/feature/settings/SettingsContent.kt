@@ -71,6 +71,7 @@ import budgetplus.core.common.generated.resources.settings_view_members
 import budgetplus.core.common.generated.resources.username_title
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.settings.api.ChartMode
 import com.kevlina.budgetplus.core.settings.api.icon
@@ -160,7 +161,7 @@ internal fun SettingsContent(
             SettingsItem(
                 text = stringResource(Res.string.settings_edit_book_currency),
                 icon = vectorResource(Res.drawable.ic_currency_exchange),
-                onClick = { navController.navigate(BookDest.CurrencyPicker) }
+                onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.BookCurrency)) }
             )
         }
 

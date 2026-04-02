@@ -22,6 +22,7 @@ import com.kevlina.budgetplus.core.common.ShareHelper
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.parseToPrice
@@ -173,13 +174,12 @@ class RecordViewModel(
 
     fun editCurrency() {
         if (bookRepo.canEdit) {
-            navController.navigate(BookDest.CurrencyPicker)
+            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.BookCurrency))
         }
     }
 
     fun editPreferredCurrency() {
-        //TODO: Differentiate between preferred and book currency
-        navController.navigate(BookDest.CurrencyPicker)
+        navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.PreferredCurrency))
     }
 
     private fun record() {

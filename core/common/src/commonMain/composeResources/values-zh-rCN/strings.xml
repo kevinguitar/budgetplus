@@ -190,10 +190,9 @@
     <string name="color_tone_applied_from_link">已套用主题色调，喜欢记得储存！</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">帐本币别</string>
+    <string name="currency_picker_book_title">帐本币别</string>
     <string name="currency_picker_hint">日元或 JPY</string>
-    <string name="currency_picker_no_conversion_disclaimer">更换帐本币别只会改变图示，并不包含汇率转换</string>
-    <string name="currency_picker_edit_success">%1$s的币别已更换为%2$s</string>
+    <string name="currency_picker_book_edit_success">%1$s的币别已更换为%2$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">点击分享连结，邀请好友们一起记帐！</string>

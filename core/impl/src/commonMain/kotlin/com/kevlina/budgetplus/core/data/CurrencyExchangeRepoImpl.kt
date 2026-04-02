@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -66,6 +65,10 @@ class CurrencyExchangeRepoImpl(
         }
 
     private val httpClient = HttpClient { expectSuccess = true }
+
+    override suspend fun getPreferredCurrencyCode(): String {
+        return preferredCurrency.first() ?: getDefaultCurrencyCode()
+    }
 
     override suspend fun updatePreferredCurrency(currency: Currency) {
         preference.update(preferredCurrencyKey, currency.currencyCode)

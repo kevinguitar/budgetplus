@@ -191,10 +191,9 @@
     <string name="color_tone_applied_from_link">テーマカラーが適用されました、気に入ったら保存してください！</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">勘定通貨</string>
+    <string name="currency_picker_book_title">勘定通貨</string>
     <string name="currency_picker_hint">米ドルまたは USD</string>
-    <string name="currency_picker_no_conversion_disclaimer">勘定通貨の変更はアイコンの変更のみで、為替レートの変換は含まれません</string>
-    <string name="currency_picker_edit_success">%1$sの通貨が%2$sに変更されました</string>
+    <string name="currency_picker_book_edit_success">%1$sの通貨が%2$sに変更されました</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">リンクを共有し、友達を招待して一緒に記帳しましょう</string>

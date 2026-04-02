@@ -191,10 +191,11 @@
     <string name="color_tone_applied_from_link">已套用主題色調，喜歡記得儲存！</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">帳本幣別</string>
+    <string name="currency_picker_book_title">帳本幣別</string>
+    <string name="currency_picker_preferred_title">偏好幣別</string>
     <string name="currency_picker_hint">日圓或 JPY</string>
-    <string name="currency_picker_no_conversion_disclaimer">更換帳本幣別只會改變圖示，並不包含匯率轉換</string>
-    <string name="currency_picker_edit_success">%1$s的幣別已更換為%2$s</string>
+    <string name="currency_picker_book_edit_success">%1$s的幣別已設定為%2$s</string>
+    <string name="currency_picker_preferred_edit_success">偏好幣別已設定為%1$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">點擊分享連結，邀請好友們一起記帳！</string>

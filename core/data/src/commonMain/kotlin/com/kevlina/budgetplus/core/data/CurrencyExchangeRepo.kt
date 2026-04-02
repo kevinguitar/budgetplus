@@ -8,6 +8,11 @@ interface CurrencyExchangeRepo {
     val exchangeRateChange: Flow<Unit>
 
     /**
+     * @return The currency code that the user prefers to use.
+     */
+    suspend fun getPreferredCurrencyCode(): String
+
+    /**
      * Updates the currency that the user prefers to use.
      */
     suspend fun updatePreferredCurrency(currency: Currency)

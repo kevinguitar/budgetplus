@@ -191,10 +191,9 @@
     <string name="color_tone_applied_from_link">Applied the colors, save it if you like it!</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">Currency Picker</string>
+    <string name="currency_picker_book_title">Currency Picker</string>
     <string name="currency_picker_hint">US Dollar or USD</string>
-    <string name="currency_picker_no_conversion_disclaimer">Please note that we won't convert the price, the setting affects only the currency symbol representation.</string>
-    <string name="currency_picker_edit_success">%1$s's currency has been changed to %2$s</string>
+    <string name="currency_picker_book_edit_success">%1$s's currency has been changed to %2$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">Invite fellows to track expenses together!</string>

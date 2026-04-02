@@ -24,7 +24,12 @@ sealed interface BookDest : NavKey {
 
     data class Colors(val hex: String? = null) : BookDest
 
-    data object CurrencyPicker : BookDest
+    data class CurrencyPicker(val purpose: Purpose) : BookDest {
+        enum class Purpose {
+            BookCurrency,
+            PreferredCurrency,
+        }
+    }
 
     /**
      * Destinations of History tab
