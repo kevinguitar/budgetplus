@@ -17,6 +17,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -59,7 +61,9 @@ class CurrencyExchangeRepoImpl(
     )
 
     override val exchangeRateChange: Flow<Unit>
-        field = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+        field = MutableSharedFlow<Unit>(replay = 1).apply {
+            onSubscription { emit(Unit) }
+        }
 
     private val httpClient = HttpClient { expectSuccess = true }
 

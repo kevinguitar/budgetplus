@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.SingleDatePicker
+import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
@@ -37,13 +39,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 
 @Composable
-internal fun ColumnScope.DateAndPricing(
+internal fun DateAndPricing(
     state: DateAndPricingState,
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
 ) {
     val recordDate by state.recordDate.collectAsStateWithLifecycle()
     val currencySymbol by state.currencySymbol.collectAsStateWithLifecycle()
+    val preferredCurrencyPrice = state.preferredCurrencyPrice.collectAsStateWithLifecycle().value
 
     var showDatePicker by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -61,46 +64,57 @@ internal fun ColumnScope.DateAndPricing(
         }
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
 
-        SingleDatePicker(
-            date = recordDate.date,
-            modifier = Modifier
-                .rippleClick { showDatePicker = true }
-                .padding(vertical = 8.dp)
-        )
+            SingleDatePicker(
+                date = recordDate.date,
+                modifier = Modifier
+                    .rippleClick { showDatePicker = true }
+                    .padding(vertical = 8.dp)
+            )
 
-        // A little hack to scroll price text automatically to the end while typing,
-        // this is because price text is read-only and doesn't take the focus from the UI tree.
-        val priceTextScrollState = rememberScrollState()
-        LaunchedEffect(priceTextScrollState.maxValue) {
-            if (priceTextScrollState.maxValue > 0) {
-                priceTextScrollState.animateScrollTo(priceTextScrollState.maxValue)
+            // A little hack to scroll price text automatically to the end while typing,
+            // this is because price text is read-only and doesn't take the focus from the UI tree.
+            val priceTextScrollState = rememberScrollState()
+            LaunchedEffect(priceTextScrollState.maxValue) {
+                if (priceTextScrollState.maxValue > 0) {
+                    priceTextScrollState.animateScrollTo(priceTextScrollState.maxValue)
+                }
             }
+
+            TextField(
+                state = state.priceText,
+                fontSize = FontSize.Header,
+                letterSpacing = 0.5.sp,
+                readOnly = true,
+                title = currencySymbol,
+                onTitleClick = state.editCurrency,
+                scrollState = priceTextScrollState,
+                modifier = Modifier.weight(1F)
+            )
         }
 
-        TextField(
-            state = state.priceText,
-            fontSize = FontSize.Header,
-            letterSpacing = 0.5.sp,
-            readOnly = true,
-            title = currencySymbol,
-            onTitleClick = state.editCurrency,
-            scrollState = priceTextScrollState,
-            modifier = Modifier.weight(1F)
-        )
-    }
+        if (preferredCurrencyPrice != null) {
+            Text(
+                text = preferredCurrencyPrice,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .rippleClick(onClick = state.editPreferredCurrency)
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+            )
+        }
 
-    if (showDatePicker) {
-        DatePickerDialog(
-            date = recordDate.date,
-            onDatePicked = state.setDate,
-            onDismiss = { showDatePicker = false }
-        )
+        if (showDatePicker) {
+            DatePickerDialog(
+                date = recordDate.date,
+                onDatePicked = state.setDate,
+                onDismiss = { showDatePicker = false }
+            )
+        }
     }
 }
 
@@ -109,18 +123,22 @@ internal class DateAndPricingState(
     val recordDate: StateFlow<RecordDateState>,
     val currencySymbol: StateFlow<String>,
     val priceText: TextFieldState,
+    val preferredCurrencyPrice: StateFlow<String?>,
     val scrollable: Boolean,
     val setDate: (LocalDate) -> Unit,
     val editCurrency: () -> Unit,
+    val editPreferredCurrency: () -> Unit,
 ) {
     companion object {
         val preview = DateAndPricingState(
             recordDate = MutableStateFlow(RecordDateState.Now),
             currencySymbol = MutableStateFlow("$"),
             priceText = TextFieldState("2344"),
+            preferredCurrencyPrice = MutableStateFlow("USD100"),
             scrollable = false,
             setDate = {},
-            editCurrency = {}
+            editCurrency = {},
+            editPreferredCurrency = {}
         )
     }
 }
@@ -128,13 +146,11 @@ internal class DateAndPricingState(
 @Preview
 @Composable
 private fun DateAndPricing_Preview() = AppTheme {
-    Column {
-        DateAndPricing(
-            state = DateAndPricingState.preview,
-            scrollState = rememberScrollState(),
-            modifier = Modifier
-                .background(LocalAppColors.current.light)
-                .padding(horizontal = 16.dp)
-        )
-    }
+    DateAndPricing(
+        state = DateAndPricingState.preview,
+        scrollState = rememberScrollState(),
+        modifier = Modifier
+            .background(LocalAppColors.current.light)
+            .padding(horizontal = 16.dp)
+    )
 }
