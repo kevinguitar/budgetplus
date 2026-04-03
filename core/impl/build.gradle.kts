@@ -25,6 +25,9 @@ kotlin {
             implementation(libs.firebase.messaging)
             implementation(libs.firebase.config)
         }
+        commonTest.dependencies {
+            implementation(libs.ktor.client.mock)
+        }
         androidMain.dependencies {
             implementation(libs.google.play.update)
             implementation(libs.google.play.review)

@@ -49,7 +49,6 @@ private data class ExchangeRates(
     val map: Map<String, ExchangeRate>,
 )
 
-//TODO: Cover this with tests when finishes implementation
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<CurrencyExchangeRepo>())
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
@@ -58,6 +57,7 @@ class CurrencyExchangeRepoImpl(
     private val preference: Preference,
     private val json: Json,
     @AppCoroutineScope private val appScope: CoroutineScope,
+    private val httpClient: HttpClient,
 ) : CurrencyExchangeRepo, AppStartAction {
 
     private val preferredCurrencyKey = stringPreferencesKey("preferredCurrencyCode")
@@ -90,8 +90,6 @@ class CurrencyExchangeRepoImpl(
 
     override val displayInPreferredCurrency: StateFlow<Boolean>
         field = MutableStateFlow(false)
-
-    private val httpClient = HttpClient { expectSuccess = true }
 
     override fun onAppStart() {
         appScope.launch { refreshRate() }
