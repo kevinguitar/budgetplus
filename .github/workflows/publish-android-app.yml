@@ -55,7 +55,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble release AAB
-        run: ./gradlew :androidApp:bundleRelease --quiet
+        run: ./gradlew :androidApp:bundleRelease
 
       - name: Set Release Name
         run: echo "RELEASE_NAME=${REF_NAME%-android}" >> $GITHUB_ENV
