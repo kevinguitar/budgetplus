@@ -167,13 +167,11 @@ internal fun SettingsContent(
             )
         }
 
-        if (isPremium) {
-            SettingsItem(
-                text = stringResource(Res.string.settings_edit_default_currency),
-                icon = vectorResource(Res.drawable.ic_currency_exchange),
-                onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.PreferredCurrency)) }
-            )
-        }
+        SettingsItem(
+            text = stringResource(Res.string.settings_edit_default_currency),
+            icon = vectorResource(Res.drawable.ic_currency_exchange),
+            onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.PreferredCurrency)) }
+        )
 
         SettingsItem(
             text = stringResource(Res.string.settings_view_members),
