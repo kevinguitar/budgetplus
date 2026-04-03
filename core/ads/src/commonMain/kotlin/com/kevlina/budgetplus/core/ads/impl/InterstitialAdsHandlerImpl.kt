@@ -17,13 +17,23 @@ class InterstitialAdsHandlerImpl(
     private val tracker: Tracker,
 ) : InterstitialAdsHandler {
 
-    override val showAdEvent: EventFlow<Unit>
+    override val showAdEvent: EventFlow<() -> Unit>
         field = MutableEventFlow()
 
     override fun showAd() {
         if (authManager.isPremium.value) return
 
-        showAdEvent.sendEvent()
+        showAdEvent.sendEvent {}
+        tracker.logEvent("show_ad_full_screen")
+    }
+
+    override fun showAdThen(onComplete: () -> Unit) {
+        if (authManager.isPremium.value) {
+            onComplete()
+            return
+        }
+
+        showAdEvent.sendEvent(onComplete)
         tracker.logEvent("show_ad_full_screen")
     }
 }
