@@ -16,7 +16,6 @@ import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.formatPriceWithCurrency
 import com.kevlina.budgetplus.core.common.getCurrencySymbol
-import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_JOIN_PATH
@@ -58,6 +57,7 @@ import kotlin.time.Duration.Companion.days
 class BookRepoImpl(
     private val authManager: AuthManager,
     private val joinInfoProcessor: JoinInfoProcessor,
+    private val currencyExchangeRepo: CurrencyExchangeRepo,
     private val tracker: Tracker,
     private val preference: Preference,
     @AppCoroutineScope private val appScope: CoroutineScope,
@@ -224,7 +224,7 @@ class BookRepoImpl(
             authors = listOf(userId),
             expenseCategories = expenses.toList(),
             incomeCategories = incomes.toList(),
-            currencyCode = getDefaultCurrencyCode()
+            currencyCode = currencyExchangeRepo.getPreferredCurrencyCode()
         )
         val doc = booksDb.value.add(newBook)
         selectBook(newBook.copy(id = doc.id))
