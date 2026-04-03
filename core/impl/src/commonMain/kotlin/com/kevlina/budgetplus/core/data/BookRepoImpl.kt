@@ -28,6 +28,7 @@ import dev.gitlive.firebase.firestore.Source
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +58,7 @@ import kotlin.time.Duration.Companion.days
 class BookRepoImpl(
     private val authManager: AuthManager,
     private val joinInfoProcessor: JoinInfoProcessor,
-    private val currencyExchangeRepo: CurrencyExchangeRepo,
+    private val currencyExchangeRepo: Provider<CurrencyExchangeRepo>,
     private val tracker: Tracker,
     private val preference: Preference,
     @AppCoroutineScope private val appScope: CoroutineScope,
@@ -224,7 +225,7 @@ class BookRepoImpl(
             authors = listOf(userId),
             expenseCategories = expenses.toList(),
             incomeCategories = incomes.toList(),
-            currencyCode = currencyExchangeRepo.getPreferredCurrencyCode()
+            currencyCode = currencyExchangeRepo().getPreferredCurrencyCode()
         )
         val doc = booksDb.value.add(newBook)
         selectBook(newBook.copy(id = doc.id))

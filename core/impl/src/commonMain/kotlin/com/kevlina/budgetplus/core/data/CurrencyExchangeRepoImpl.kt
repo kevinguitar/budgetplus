@@ -5,6 +5,7 @@ import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.common.formatPriceWithCurrency
+import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
@@ -16,7 +17,10 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -64,6 +68,15 @@ class CurrencyExchangeRepoImpl(
             onSubscription { emit(Unit) }
         }
 
+    override val preferredCurrencySymbol: Flow<String?>
+        get() = preferredCurrency.map { preferred ->
+            val code = preferred ?: getDefaultCurrencyCode()
+            getAvailableCurrencies().firstOrNull { it.currencyCode == code }?.symbol
+        }
+
+    override val displayInPreferredCurrency: StateFlow<Boolean>
+        field = MutableStateFlow(false)
+
     private val httpClient = HttpClient { expectSuccess = true }
 
     override suspend fun getPreferredCurrencyCode(): String {
@@ -93,6 +106,10 @@ class CurrencyExchangeRepoImpl(
         val convertedPrice = price / rate
 
         return formatPriceWithCurrency(convertedPrice, preferred, alwaysShowSymbol = true)
+    }
+
+    override fun toggleDisplayInPreferredCurrency() {
+        displayInPreferredCurrency.value = !displayInPreferredCurrency.value
     }
 
     private suspend fun refreshRate() {

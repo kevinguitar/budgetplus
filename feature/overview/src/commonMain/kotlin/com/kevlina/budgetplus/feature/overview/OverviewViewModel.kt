@@ -14,6 +14,7 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
+import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.RecordsObserver
 import com.kevlina.budgetplus.core.data.UserRepo
@@ -25,6 +26,7 @@ import com.kevlina.budgetplus.core.data.resolveAuthor
 import com.kevlina.budgetplus.core.settings.api.ChartModeViewModel
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
+import com.kevlina.budgetplus.feature.overview.ui.CurrencyToggleState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewContentState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewHeaderState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewListState
@@ -65,6 +67,7 @@ class OverviewViewModel private constructor(
     val timeModel: OverviewTimeViewModel,
     val chartModeModel: ChartModeViewModel,
     private val preference: Preference,
+    private val currencyExchangeRepo: CurrencyExchangeRepo,
 ) : ViewModel() {
 
     val bookName = bookRepo.bookState.mapState { it?.name }
@@ -153,12 +156,30 @@ class OverviewViewModel private constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
+    private val currencyToggleState: StateFlow<CurrencyToggleState?> = combine(
+        bookRepo.currencySymbol,
+        currencyExchangeRepo.preferredCurrencySymbol,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { bookCurrencySymbol, preferredCurrencySymbol, currencyToggle ->
+        if (preferredCurrencySymbol == null || bookCurrencySymbol == preferredCurrencySymbol) {
+            return@combine null
+        }
+
+        CurrencyToggleState(
+            bookCurrencySymbol = bookCurrencySymbol,
+            preferredCurrencySymbol = preferredCurrencySymbol,
+            toggleState = currencyToggle,
+            onClick = ::onCurrencyToggled
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
     internal val state = OverviewContentState(
         headerState = OverviewHeaderState(
             type = type,
             totalPrice = totalFormattedPrice,
             balance = formattedBalance,
             recordGroups = recordGroups,
+            currencyToggleState = currencyToggleState,
             authors = authors,
             selectedAuthor = selectedAuthor,
             timePeriodSelectorState = timeModel.toState(),
@@ -268,6 +289,14 @@ class OverviewViewModel private constructor(
         pieChartBubbleJob = viewModelScope.launch {
             delay(animationDelay)
             bubbleRepo.addBubbleToQueue(dest)
+        }
+    }
+
+    private fun onCurrencyToggled() {
+        if (authManager.isPremium.value) {
+            currencyExchangeRepo.toggleDisplayInPreferredCurrency()
+        } else {
+            navController.navigate(BookDest.UnlockPremium)
         }
     }
 

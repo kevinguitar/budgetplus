@@ -5,13 +5,21 @@ import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
 
 @VisibleForTesting
 class FakeCurrencyExchangeRepo(
-    var preferredCurrencyCode: String = "USD"
+    var preferredCurrencyCode: String = "USD",
 ) : CurrencyExchangeRepo {
 
     override val exchangeRateChange: Flow<Unit> = MutableSharedFlow()
+
+    override val preferredCurrencySymbol: Flow<String?> = flowOf(preferredCurrencyCode)
+
+    override val displayInPreferredCurrency: StateFlow<Boolean>
+        field = MutableStateFlow(true)
 
     override suspend fun getPreferredCurrencyCode(): String = preferredCurrencyCode
 
@@ -21,5 +29,9 @@ class FakeCurrencyExchangeRepo(
 
     override suspend fun formatPreferredCurrency(price: Double): String {
         return "$price $preferredCurrencyCode"
+    }
+
+    override fun toggleDisplayInPreferredCurrency() {
+        displayInPreferredCurrency.value = !displayInPreferredCurrency.value
     }
 }
