@@ -26,8 +26,7 @@ sealed interface BookDest : NavKey {
 
     data class CurrencyPicker(val purpose: Purpose) : BookDest {
         enum class Purpose {
-            BookCurrency,
-            PreferredCurrency,
+            Book, Preferred
         }
     }
 

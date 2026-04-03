@@ -45,13 +45,13 @@ class CurrencyPickerViewModel(
 
     val title: StringResource
         get() = when (params.purpose) {
-            Purpose.BookCurrency -> Res.string.currency_picker_book_title
-            Purpose.PreferredCurrency -> Res.string.currency_picker_default_title
+            Purpose.Book -> Res.string.currency_picker_book_title
+            Purpose.Preferred -> Res.string.currency_picker_default_title
         }
 
     private val currentCurrencyCode = when (params.purpose) {
-        Purpose.BookCurrency -> bookRepo.bookState.value?.currencyCode
-        Purpose.PreferredCurrency -> currencyExchangeRepo.preferredCurrencyCode
+        Purpose.Book -> bookRepo.bookState.value?.currencyCode
+        Purpose.Preferred -> currencyExchangeRepo.preferredCurrencyCode
     }
 
     private val defaultCurrencyCode = getDefaultCurrencyCode()
@@ -88,7 +88,7 @@ class CurrencyPickerViewModel(
 
     suspend fun onCurrencyPicked(currency: Currency) {
         when (params.purpose) {
-            Purpose.BookCurrency -> {
+            Purpose.Book -> {
                 val bookName = bookRepo.bookState.value?.name ?: return
                 try {
                     bookRepo.updateCurrency(currency.currencyCode)
@@ -98,7 +98,7 @@ class CurrencyPickerViewModel(
                 }
             }
 
-            Purpose.PreferredCurrency -> {
+            Purpose.Preferred -> {
                 currencyExchangeRepo.updatePreferredCurrency(currency)
                 snackbarSender.send(getString(Res.string.currency_picker_default_edit_success, currency.name))
             }

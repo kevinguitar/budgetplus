@@ -58,6 +58,7 @@ import budgetplus.core.common.generated.resources.settings_delete_account_descri
 import budgetplus.core.common.generated.resources.settings_delete_book
 import budgetplus.core.common.generated.resources.settings_edit_book_currency
 import budgetplus.core.common.generated.resources.settings_edit_default_currency
+import budgetplus.core.common.generated.resources.settings_edit_default_currency_desc
 import budgetplus.core.common.generated.resources.settings_follow_on_instagram
 import budgetplus.core.common.generated.resources.settings_input_vibration
 import budgetplus.core.common.generated.resources.settings_language
@@ -153,6 +154,12 @@ internal fun SettingsContent(
             onClick = { isRenameUserDialogShown = true }
         )
 
+        SettingsItem(
+            text = stringResource(Res.string.settings_view_members),
+            icon = vectorResource(Res.drawable.ic_supervised_user_circle),
+            onClick = { isMembersDialogShown = true }
+        )
+
         if (vm.canEditBook) {
             SettingsItem(
                 text = stringResource(Res.string.settings_rename_book),
@@ -163,21 +170,16 @@ internal fun SettingsContent(
             SettingsItem(
                 text = stringResource(Res.string.settings_edit_book_currency),
                 icon = vectorResource(Res.drawable.ic_paid),
-                onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.BookCurrency)) }
+                onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.Book)) }
             )
         }
 
         SettingsItem(
             text = stringResource(Res.string.settings_edit_default_currency),
+            description = stringResource(Res.string.settings_edit_default_currency_desc),
             icon = vectorResource(Res.drawable.ic_currency_exchange),
-            onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.PreferredCurrency)) }
-        )
-
-        SettingsItem(
-            text = stringResource(Res.string.settings_view_members),
-            icon = vectorResource(Res.drawable.ic_supervised_user_circle),
             roundBottom = !isBookOwner,
-            onClick = { isMembersDialogShown = true }
+            onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.Preferred)) }
         )
 
         if (isBookOwner) {

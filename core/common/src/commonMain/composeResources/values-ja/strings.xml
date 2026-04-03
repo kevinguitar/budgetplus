@@ -153,6 +153,7 @@
     <string name="settings_rename_book_success">帳簿の名前が%1$sに変更されました</string>
     <string name="settings_edit_book_currency">勘定通貨の編集</string>
     <string name="settings_edit_default_currency">デフォルト通貨を編集</string>
+    <string name="settings_edit_default_currency_desc">為替レートをリアルタイム換算。新規帳簿の作成時にもこの設定が自動的に適用されます。</string>
     <string name="settings_view_members">メンバーを表示</string>
     <string name="settings_allow_members_edit">メンバーに編集を許可</string>
     <string name="settings_allow_members_edit_desc">メンバーが帳簿名、カテゴリ、通貨、すべての記録を編集できるようにします。</string>

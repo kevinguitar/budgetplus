@@ -158,7 +158,7 @@ class RecordViewModelTest {
         model.editCurrency()
 
         assertThat(model.navController.backStack.last()).isEqualTo(
-            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.BookCurrency)
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Book)
         )
     }
 
@@ -177,7 +177,7 @@ class RecordViewModelTest {
         model.editPreferredCurrency()
 
         assertThat(model.navController.backStack.last()).isEqualTo(
-            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.PreferredCurrency)
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Preferred)
         )
     }
 

@@ -175,13 +175,13 @@ class RecordViewModel(
 
     fun editCurrency() {
         if (bookRepo.canEdit) {
-            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.BookCurrency))
+            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.Book))
         }
     }
 
     fun editPreferredCurrency() {
         if (isPremium.value) {
-            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.PreferredCurrency))
+            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.Preferred))
         } else {
             navController.navigate(BookDest.UnlockPremium)
         }

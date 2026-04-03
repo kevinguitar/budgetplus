@@ -26,6 +26,8 @@ compose.resources {
 val copyTraditionalChinese = tasks.register<Copy>("copyTraditionalChinese") {
     val baseResDir = "src/commonMain/composeResources"
 
+    inputs.file(file("$baseResDir/values-zh-rTW/strings.xml"))
+
     into(baseResDir)
 
     // Use TW as the single source of truth

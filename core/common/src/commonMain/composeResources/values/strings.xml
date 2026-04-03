@@ -153,6 +153,7 @@
     <string name="settings_rename_book_success">Renamed the book to %1$s</string>
     <string name="settings_edit_book_currency">Edit Book Currency</string>
     <string name="settings_edit_default_currency">Edit Default Currency</string>
+    <string name="settings_edit_default_currency_desc">RReal-time exchange rate conversion. This setting will be the default for new books.</string>
     <string name="settings_view_members">View Members</string>
     <string name="settings_allow_members_edit">Allow Members to Edit</string>
     <string name="settings_allow_members_edit_desc">Let your book members edit name, categories, currency and all records.</string>
