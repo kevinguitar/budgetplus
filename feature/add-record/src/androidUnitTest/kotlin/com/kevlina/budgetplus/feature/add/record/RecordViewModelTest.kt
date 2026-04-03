@@ -12,10 +12,13 @@ import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeShareHelper
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
+import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
+import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
+import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.fixtures.FakeRecordRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
@@ -149,6 +152,52 @@ class RecordViewModelTest {
         model.requestReviewEvent.awaitUnconsumedEvent()
     }
 
+    @Test
+    fun `editCurrency should navigate to BookCurrency when user can edit book`() = runTest {
+        val model = createModel(canEditBook = true)
+        model.editCurrency()
+
+        assertThat(model.navController.backStack.last()).isEqualTo(
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.BookCurrency)
+        )
+    }
+
+    @Test
+    fun `editCurrency should not navigate when user cannot edit book`() = runTest {
+        val model = createModel(canEditBook = false)
+        val initialDest = model.navController.backStack.last()
+        model.editCurrency()
+
+        assertThat(model.navController.backStack.last()).isEqualTo(initialDest)
+    }
+
+    @Test
+    fun `editPreferredCurrency should navigate to PreferredCurrency when user is premium`() = runTest {
+        val model = createModel(isPremium = true)
+        model.editPreferredCurrency()
+
+        assertThat(model.navController.backStack.last()).isEqualTo(
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.PreferredCurrency)
+        )
+    }
+
+    @Test
+    fun `editPreferredCurrency should navigate to UnlockPremium when user is not premium`() = runTest {
+        val model = createModel(isPremium = false)
+        model.editPreferredCurrency()
+
+        assertThat(model.navController.backStack.last()).isEqualTo(BookDest.UnlockPremium)
+    }
+
+    @Test
+    fun `preferredCurrencyPrice should emit formatted price from currencyExchangeRepo`() = runTest {
+        val currencyExchangeRepo = FakeCurrencyExchangeRepo(preferredCurrencyCode = "EUR")
+        val model = createModel(currencyExchangeRepo = currencyExchangeRepo)
+
+        calculatorVm.input("100")
+        assertThat(model.preferredCurrencyPrice.first { it != null }).isEqualTo("100.0 EUR")
+    }
+
 
     private val calculatorVm = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
@@ -167,17 +216,21 @@ class RecordViewModelTest {
 
     private fun createModel(
         recordCount: Int = 0,
+        canEditBook: Boolean = true,
+        isPremium: Boolean = false,
+        currencyExchangeRepo: CurrencyExchangeRepo = FakeCurrencyExchangeRepo(),
     ) = RecordViewModel(
         calculatorVm = calculatorVm,
         categoriesVm = categoriesVm,
         freezeBookVm = fakeFreezeBookVm,
-        bookRepo = bookRepo,
-        navController = NavController.preview,
+        bookRepo = FakeBookRepo(canEdit = canEditBook),
+        navController = NavController(startRoot = BookDest.Record),
         recordRepo = FakeRecordRepo,
         bubbleRepo = FakeBubbleRepo(),
-        authManager = FakeAuthManager(),
+        authManager = FakeAuthManager(isPremium = isPremium),
         interstitialAdsHandler = interstitialAdsHandler,
         inAppReviewManager = FakeInAppReviewManager(),
+        currencyExchangeRepo = currencyExchangeRepo,
         snackbarSender = FakeSnackbarSender,
         shareHelper = FakeShareHelper,
         preference = FakePreference {

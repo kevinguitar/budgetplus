@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -14,7 +13,7 @@ class FakeCurrencyExchangeRepo(
     override var preferredCurrencyCode: String = "USD",
 ) : CurrencyExchangeRepo {
 
-    override val exchangeRateChange: Flow<Unit> = MutableSharedFlow()
+    override val exchangeRateChange = MutableStateFlow(Unit)
 
     override val preferredCurrencySymbol: Flow<String?> = flowOf(preferredCurrencyCode)
 
