@@ -33,7 +33,6 @@
     <string name="record_speech_recognition_no_result">無法辨識，請再說一次</string>
     <string name="record_freeze_book_title">很遺憾您取消訂閱了\n請選擇一本帳本繼續記帳</string>
     <string name="record_freeze_book_description">別擔心！您的所有帳本資料皆會保留</string>
-    <!-- TODO: Review localization -->
     <string name="record_currency_exchange">匯率換算</string>
 
     <!-- Batch Record -->
@@ -153,7 +152,6 @@
     <string name="settings_rename_book">重新命名帳本</string>
     <string name="settings_rename_book_success">帳本名稱已更改為%1$s</string>
     <string name="settings_edit_book_currency">編輯帳本幣別</string>
-    <!-- TODO -->
     <string name="settings_edit_default_currency">編輯預設幣別</string>
     <string name="settings_view_members">查看成員</string>
     <string name="settings_allow_members_edit">允許成員編輯</string>
@@ -195,7 +193,6 @@
     <string name="color_tone_applied_from_link">已套用主題色調，喜歡記得儲存！</string>
 
     <!-- Currency Picker -->
-    <!-- TODO: Review localization -->
     <string name="currency_picker_book_title">帳本幣別</string>
     <string name="currency_picker_default_title">預設幣別</string>
     <string name="currency_picker_hint">日圓或 JPY</string>
