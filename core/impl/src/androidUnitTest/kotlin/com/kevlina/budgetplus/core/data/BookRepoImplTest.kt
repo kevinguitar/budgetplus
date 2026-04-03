@@ -49,6 +49,6 @@ internal class BookRepoImplTest {
         },
         appScope = backgroundScope,
         booksDb = lazy { mockk<CollectionReference>(relaxed = true) },
-        currencyExchangeRepo = ::FakeCurrencyExchangeRepo
+        currencyExchangeRepo = lazy { FakeCurrencyExchangeRepo() }
     )
 }

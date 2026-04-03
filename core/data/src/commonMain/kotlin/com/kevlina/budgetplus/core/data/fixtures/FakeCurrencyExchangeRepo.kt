@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 
 @VisibleForTesting
 class FakeCurrencyExchangeRepo(
-    var preferredCurrencyCode: String = "USD",
+    override var preferredCurrencyCode: String = "USD",
 ) : CurrencyExchangeRepo {
 
     override val exchangeRateChange: Flow<Unit> = MutableSharedFlow()
@@ -21,13 +21,11 @@ class FakeCurrencyExchangeRepo(
     override val displayInPreferredCurrency: StateFlow<Boolean>
         field = MutableStateFlow(true)
 
-    override suspend fun getPreferredCurrencyCode(): String = preferredCurrencyCode
-
-    override suspend fun updatePreferredCurrency(currency: Currency) {
+    override fun updatePreferredCurrency(currency: Currency) {
         preferredCurrencyCode = currency.currencyCode
     }
 
-    override suspend fun formatPreferredCurrency(price: Double): String {
+    override fun formatPreferredCurrency(price: Double, alwaysShowSymbol: Boolean): String {
         return "$price $preferredCurrencyCode"
     }
 

@@ -14,25 +14,25 @@ interface CurrencyExchangeRepo {
     val preferredCurrencySymbol: Flow<String?>
 
     /**
+     * @return The currency code that the user prefers to use.
+     */
+    val preferredCurrencyCode: String
+
+    /**
      * @return Whether to display prices in the preferred currency or book's currency.
      */
     val displayInPreferredCurrency: StateFlow<Boolean>
 
     /**
-     * @return The currency code that the user prefers to use.
-     */
-    suspend fun getPreferredCurrencyCode(): String
-
-    /**
      * Updates the currency that the user prefers to use.
      */
-    suspend fun updatePreferredCurrency(currency: Currency)
+    fun updatePreferredCurrency(currency: Currency)
 
     /**
      * Formats the given price using the preferred currency.
      * @return Formatted price string, or null if the preferred currency rate is not resolved.
      */
-    suspend fun formatPreferredCurrency(price: Double): String?
+    fun formatPreferredCurrency(price: Double, alwaysShowSymbol: Boolean = false): String?
 
     /**
      * Toggle whether to display prices in the preferred currency or book's currency.

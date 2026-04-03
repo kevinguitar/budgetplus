@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 
@@ -52,8 +51,7 @@ class CurrencyPickerViewModel(
 
     private val currentCurrencyCode = when (params.purpose) {
         Purpose.BookCurrency -> bookRepo.bookState.value?.currencyCode
-        //TODO: Fix this runBlocking
-        Purpose.PreferredCurrency -> runBlocking { currencyExchangeRepo.getPreferredCurrencyCode() }
+        Purpose.PreferredCurrency -> currencyExchangeRepo.preferredCurrencyCode
     }
 
     private val defaultCurrencyCode = getDefaultCurrencyCode()

@@ -115,14 +115,18 @@ class OverviewViewModel private constructor(
         records.orEmpty().sumOf { it.price }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0.0)
 
-    private val totalFormattedPrice = totalPrice.mapState {
-        bookRepo.formatPrice(it, alwaysShowSymbol = true)
-    }
+    private val totalFormattedPrice = combine(
+        totalPrice,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { price, _ ->
+        bookRepo.formatPrice(price, alwaysShowSymbol = true)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     private val formattedBalance = combine(
         recordsObserver.records.filterNotNull(),
-        selectedAuthor
-    ) { records, author ->
+        selectedAuthor,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { records, author, _ ->
         val authorId = author?.id
         val sum = withContext(Dispatchers.Default) {
             records
@@ -195,6 +199,7 @@ class OverviewViewModel private constructor(
             recordList = recordList,
             recordGroups = recordGroups,
             isSoloAuthor = isSoloAuthor,
+            currencyToggleState = currencyToggleState.mapState { it?.toggleState ?: false },
             highlightTapHint = ::highlightTapHint,
             highlightPieChart = ::highlightPieChart,
             formatPrice = bookRepo::formatPrice,

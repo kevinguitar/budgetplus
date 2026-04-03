@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.core.data
 import androidx.datastore.preferences.core.stringPreferencesKey
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.common.formatPriceWithCurrency
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
@@ -10,7 +11,9 @@ import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.binding
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -18,17 +21,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onSubscription
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlin.time.Clock
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 @Serializable
@@ -45,23 +49,31 @@ private data class ExchangeRates(
     val map: Map<String, ExchangeRate>,
 )
 
+//TODO: Cover this with tests when finishes implementation
 @SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
+@ContributesBinding(AppScope::class, binding = binding<CurrencyExchangeRepo>())
+@ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
 class CurrencyExchangeRepoImpl(
     private val bookRepo: BookRepo,
     private val preference: Preference,
     private val json: Json,
     @AppCoroutineScope private val appScope: CoroutineScope,
-) : CurrencyExchangeRepo {
+) : CurrencyExchangeRepo, AppStartAction {
 
     private val preferredCurrencyKey = stringPreferencesKey("preferredCurrencyCode")
     private val preferredCurrency = preference.of(preferredCurrencyKey)
+    private val preferredCurrencyState = preferredCurrency
+        .map { it ?: getDefaultCurrencyCode() }
+        .stateIn(appScope, SharingStarted.Eagerly, getDefaultCurrencyCode())
 
     private val cachedRatesKey = stringPreferencesKey("cachedExchangeRates")
     private val cachedRates = preference.of(
         key = cachedRatesKey,
         serializer = ExchangeRates.serializer(),
     )
+    private val cachedRatesState = cachedRates
+        .map { it ?: ExchangeRates(emptyMap()) }
+        .stateIn(appScope, SharingStarted.Eagerly, ExchangeRates(emptyMap()))
 
     override val exchangeRateChange: Flow<Unit>
         field = MutableSharedFlow<Unit>(replay = 1).apply {
@@ -69,43 +81,40 @@ class CurrencyExchangeRepoImpl(
         }
 
     override val preferredCurrencySymbol: Flow<String?>
-        get() = preferredCurrency.map { preferred ->
-            val code = preferred ?: getDefaultCurrencyCode()
-            getAvailableCurrencies().firstOrNull { it.currencyCode == code }?.symbol
+        get() = preferredCurrencyState.map { preferred ->
+            getAvailableCurrencies().firstOrNull { it.currencyCode == preferred }?.symbol
         }
+
+    override val preferredCurrencyCode: String
+        get() = preferredCurrencyState.value
 
     override val displayInPreferredCurrency: StateFlow<Boolean>
         field = MutableStateFlow(false)
 
     private val httpClient = HttpClient { expectSuccess = true }
 
-    override suspend fun getPreferredCurrencyCode(): String {
-        return preferredCurrency.first() ?: getDefaultCurrencyCode()
+    override fun onAppStart() {
+        appScope.launch { refreshRate() }
     }
 
-    override suspend fun updatePreferredCurrency(currency: Currency) {
-        preference.update(preferredCurrencyKey, currency.currencyCode)
-        refreshRate()
+    override fun updatePreferredCurrency(currency: Currency) {
+        appScope.launch {
+            preference.update(preferredCurrencyKey, currency.currencyCode)
+            refreshRate()
+        }
     }
 
-    override suspend fun formatPreferredCurrency(price: Double): String? {
+    override fun formatPreferredCurrency(price: Double, alwaysShowSymbol: Boolean): String? {
         val bookCurrencyCode = bookRepo.bookState.value?.currencyCode?.lowercase() ?: return null
-        val preferred = (preferredCurrency.first() ?: getDefaultCurrencyCode()).lowercase()
+        val preferred = (preferredCurrencyState.value).lowercase()
 
         // No conversion needed if currencies match.
         if (bookCurrencyCode == preferred) return null
 
-        val rates = cachedRates.first() ?: ExchangeRates(emptyMap())
-        val cachedRate = rates.map[preferred]
-
-        if (!isCacheValid(cachedRate)) {
-            appScope.launch { refreshRate() }
-        }
-
-        val rate = rates.getRateFor(preferred, bookCurrencyCode) ?: return null
+        val rate = getRateFor(preferred, bookCurrencyCode) ?: return null
         val convertedPrice = price / rate
 
-        return formatPriceWithCurrency(convertedPrice, preferred, alwaysShowSymbol = true)
+        return formatPriceWithCurrency(convertedPrice, preferred, alwaysShowSymbol)
     }
 
     override fun toggleDisplayInPreferredCurrency() {
@@ -113,7 +122,7 @@ class CurrencyExchangeRepoImpl(
     }
 
     private suspend fun refreshRate() {
-        val baseCurrency = (preferredCurrency.first() ?: getDefaultCurrencyCode()).lowercase()
+        val baseCurrency = (preferredCurrency.first())?.lowercase() ?: getDefaultCurrencyCode()
         val ratesMap = safeFetchRates(baseCurrency) ?: return
 
         val currentRates = cachedRates.first() ?: ExchangeRates(emptyMap())
@@ -130,13 +139,6 @@ class CurrencyExchangeRepoImpl(
             value = updatedRates,
         )
         exchangeRateChange.emit(Unit)
-    }
-
-    private fun isCacheValid(exchangeRate: ExchangeRate?): Boolean {
-        if (exchangeRate == null) return false
-        val nowMillis = Clock.System.now()
-        val cacheMillis = exchangeRate.cachedAt
-        return (nowMillis - cacheMillis) < CACHE_DURATION
     }
 
     private suspend fun safeFetchRates(baseCurrency: String): Map<String, Double>? {
@@ -163,15 +165,14 @@ class CurrencyExchangeRepoImpl(
         return json.decodeFromJsonElement<Map<String, Double>>(ratesObject)
     }
 
-    private fun ExchangeRates.getRateFor(
+    private fun getRateFor(
         baseCurrency: String,
         targetCurrency: String,
     ): Double? {
-        return map[baseCurrency]?.rates?.get(targetCurrency)
+        return cachedRatesState.value.map[baseCurrency]?.rates?.get(targetCurrency)
     }
 
     private companion object {
-        val CACHE_DURATION = 12.hours
         const val CDN_BASE_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1"
         const val FALLBACK_BASE_URL = "https://latest.currency-api.pages.dev/v1"
     }

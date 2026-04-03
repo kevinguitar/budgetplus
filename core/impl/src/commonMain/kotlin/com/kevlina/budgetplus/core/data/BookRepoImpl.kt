@@ -28,7 +28,6 @@ import dev.gitlive.firebase.firestore.Source
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.ContributesIntoSet
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +57,7 @@ import kotlin.time.Duration.Companion.days
 class BookRepoImpl(
     private val authManager: AuthManager,
     private val joinInfoProcessor: JoinInfoProcessor,
-    private val currencyExchangeRepo: Provider<CurrencyExchangeRepo>,
+    private val currencyExchangeRepo: Lazy<CurrencyExchangeRepo>,
     private val tracker: Tracker,
     private val preference: Preference,
     @AppCoroutineScope private val appScope: CoroutineScope,
@@ -225,7 +224,7 @@ class BookRepoImpl(
             authors = listOf(userId),
             expenseCategories = expenses.toList(),
             incomeCategories = incomes.toList(),
-            currencyCode = currencyExchangeRepo().getPreferredCurrencyCode()
+            currencyCode = currencyExchangeRepo.value.preferredCurrencyCode
         )
         val doc = booksDb.value.add(newBook)
         selectBook(newBook.copy(id = doc.id))
@@ -312,7 +311,14 @@ class BookRepoImpl(
     }
 
     override fun formatPrice(price: Double, alwaysShowSymbol: Boolean): String {
-        return formatPriceWithCurrency(
+        val currencyExchangeRepo = currencyExchangeRepo.value
+        val preferredPrice = if (currencyExchangeRepo.displayInPreferredCurrency.value) {
+            currencyExchangeRepo.formatPreferredCurrency(price, alwaysShowSymbol)
+        } else {
+            null
+        }
+
+        return preferredPrice ?: formatPriceWithCurrency(
             price = price,
             currencyCode = bookState.value?.currencyCode,
             alwaysShowSymbol = alwaysShowSymbol
