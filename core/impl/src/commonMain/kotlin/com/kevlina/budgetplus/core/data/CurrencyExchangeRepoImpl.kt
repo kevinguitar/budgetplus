@@ -120,7 +120,7 @@ class CurrencyExchangeRepoImpl(
     }
 
     private suspend fun refreshRate() {
-        val baseCurrency = (preferredCurrency.first())?.lowercase() ?: getDefaultCurrencyCode()
+        val baseCurrency = (preferredCurrency.first() ?: getDefaultCurrencyCode()).lowercase()
         val ratesMap = safeFetchRates(baseCurrency) ?: return
 
         val currentRates = cachedRates.first() ?: ExchangeRates(emptyMap())
