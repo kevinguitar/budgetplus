@@ -33,6 +33,7 @@
     <string name="record_speech_recognition_no_result">Cannot recognize, please try again</string>
     <string name="record_freeze_book_title">Sad to see you go\nPlease choose a book to continue recording</string>
     <string name="record_freeze_book_description">Don't worry! All your data will be preserved</string>
+    <string name="record_currency_exchange">Currency Converter</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">Batch Record</string>
@@ -151,6 +152,8 @@
     <string name="settings_rename_book">Rename Book</string>
     <string name="settings_rename_book_success">Renamed the book to %1$s</string>
     <string name="settings_edit_book_currency">Edit Book Currency</string>
+    <string name="settings_edit_default_currency">Edit Default Currency</string>
+    <string name="settings_edit_default_currency_desc">RReal-time exchange rate conversion. This setting will be the default for new books.</string>
     <string name="settings_view_members">View Members</string>
     <string name="settings_allow_members_edit">Allow Members to Edit</string>
     <string name="settings_allow_members_edit_desc">Let your book members edit name, categories, currency and all records.</string>
@@ -191,10 +194,11 @@
     <string name="color_tone_applied_from_link">Applied the colors, save it if you like it!</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">Currency Picker</string>
+    <string name="currency_picker_book_title">Book's Currency</string>
+    <string name="currency_picker_default_title">Default Currency</string>
     <string name="currency_picker_hint">US Dollar or USD</string>
-    <string name="currency_picker_no_conversion_disclaimer">Please note that we won't convert the price, the setting affects only the currency symbol representation.</string>
-    <string name="currency_picker_edit_success">%1$s's currency has been changed to %2$s</string>
+    <string name="currency_picker_book_edit_success">%1$s's currency has been changed to %2$s</string>
+    <string name="currency_picker_default_edit_success">The default currency has been changed to %1$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">Invite fellows to track expenses together!</string>

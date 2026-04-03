@@ -4,9 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -30,11 +31,11 @@ internal fun OverviewHeader(
     state: OverviewHeaderState,
     modifier: Modifier = Modifier,
 ) {
-
     val type by state.type.collectAsStateWithLifecycle()
     val totalPrice by state.totalPrice.collectAsStateWithLifecycle()
     val balance by state.balance.collectAsStateWithLifecycle()
     val recordGroups by state.recordGroups.collectAsStateWithLifecycle()
+    val currencyToggleState = state.currencyToggleState.collectAsStateWithLifecycle().value
     val authors by state.authors.collectAsStateWithLifecycle()
     val selectedAuthor by state.selectedAuthor.collectAsStateWithLifecycle()
 
@@ -50,14 +51,22 @@ internal fun OverviewHeader(
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
 
-        if (authors.size > 1) {
-            AuthorSelector(
-                authors = authors,
-                selectedAuthor = selectedAuthor,
-                setAuthor = state.setAuthor
-            )
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.heightIn(min = 8.dp)
+        ) {
+            if (authors.size > 1) {
+                AuthorSelector(
+                    authors = authors,
+                    selectedAuthor = selectedAuthor,
+                    setAuthor = state.setAuthor
+                )
+            }
+
+            if (currencyToggleState != null) {
+                CurrencyToggle(state = currencyToggleState)
+            }
         }
 
         TimePeriodSelector(
@@ -83,6 +92,7 @@ internal data class OverviewHeaderState(
     val totalPrice: StateFlow<String>,
     val balance: StateFlow<String>,
     val recordGroups: StateFlow<Map<String, List<Record>>?>,
+    val currencyToggleState: StateFlow<CurrencyToggleState?>,
     val authors: StateFlow<List<User>>,
     val selectedAuthor: StateFlow<User?>,
     val timePeriodSelectorState: TimePeriodSelectorState,
@@ -95,6 +105,7 @@ internal data class OverviewHeaderState(
             totalPrice = MutableStateFlow("$245.25"),
             balance = MutableStateFlow("$52.45"),
             recordGroups = MutableStateFlow(mapOf("Food" to emptyList())),
+            currencyToggleState = MutableStateFlow(null),
             authors = MutableStateFlow(listOf(User(name = "Kevin"), User(name = "Alina"))),
             selectedAuthor = MutableStateFlow(User(name = "Kevin")),
             timePeriodSelectorState = TimePeriodSelectorState.preview,

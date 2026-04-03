@@ -9,6 +9,7 @@ import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
 import com.kevlina.budgetplus.feature.batch.record.ui.BatchRecordScreen
 import com.kevlina.budgetplus.feature.color.tone.picker.ColorTonePickerScreen
 import com.kevlina.budgetplus.feature.currency.picker.CurrencyPickerScreen
+import com.kevlina.budgetplus.feature.currency.picker.CurrencyPickerViewModel
 import com.kevlina.budgetplus.feature.edit.category.EditCategoryScreen
 import com.kevlina.budgetplus.feature.overview.ui.OverviewScreen
 import com.kevlina.budgetplus.feature.records.RecordsScreen
@@ -63,8 +64,10 @@ internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
             ColorTonePickerScreen(hexFromLink = bookDest.hex)
         }
 
-        BookDest.CurrencyPicker -> NavEntry(bookDest) {
-            CurrencyPickerScreen()
+        is BookDest.CurrencyPicker -> NavEntry(bookDest) {
+            CurrencyPickerScreen(
+                vm = assistedMetroViewModel<CurrencyPickerViewModel, CurrencyPickerViewModel.Factory> { create(bookDest) }
+            )
         }
 
         BookDest.Overview -> NavEntry(bookDest) {

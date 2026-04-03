@@ -166,13 +166,12 @@ private fun RecordViewModel.toState(scrollable: Boolean) = RecordContentState(
             recordDate = recordDate,
             currencySymbol = bookRepo.currencySymbol,
             priceText = calculatorVm.priceText,
+            isPremium = isPremium,
+            preferredCurrencyPrice = preferredCurrencyPrice,
             scrollable = scrollable,
             setDate = ::setDate,
-            editCurrency = {
-                if (bookRepo.canEdit) {
-                    navController.navigate(BookDest.CurrencyPicker)
-                }
-            }
+            editCurrency = ::editCurrency,
+            editPreferredCurrency = ::editPreferredCurrency
         ),
     ),
     calculatorState = calculatorVm.toState(recordEvent),

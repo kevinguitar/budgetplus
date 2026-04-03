@@ -27,11 +27,13 @@
     <string name="record_edited">已储存</string>
     <string name="record_deleted">已删除%1$s</string>
     <string name="record_confirm_delete">确认删除此笔帐目吗？</string>
+    <string name="record_duplicated">帐目已复制</string>
     <string name="record_speech_recognition_format">请说出内容＋金额</string>
     <string name="record_speech_recognition_not_supported">此装置未支援语音功能</string>
     <string name="record_speech_recognition_no_result">无法辨识，请再说一次</string>
     <string name="record_freeze_book_title">很遗憾您取消订阅了\n请选择一本帐本继续记帐</string>
     <string name="record_freeze_book_description">别担心！您的所有帐本资料皆会保留</string>
+    <string name="record_currency_exchange">汇率换算</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">批次记帐</string>
@@ -150,6 +152,8 @@
     <string name="settings_rename_book">重新命名帐本</string>
     <string name="settings_rename_book_success">帐本名称已更改为%1$s</string>
     <string name="settings_edit_book_currency">编辑帐本币别</string>
+    <string name="settings_edit_default_currency">编辑预设币别</string>
+    <string name="settings_edit_default_currency_desc">即时换算显示汇率，且后续新增帐本时将预设沿用此币别设定</string>
     <string name="settings_view_members">查看成员</string>
     <string name="settings_allow_members_edit">允许成员编辑</string>
     <string name="settings_allow_members_edit_desc">让成员编辑帐本名称、类别、币别及所有帐目</string>
@@ -190,10 +194,11 @@
     <string name="color_tone_applied_from_link">已套用主题色调，喜欢记得储存！</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">帐本币别</string>
+    <string name="currency_picker_book_title">帐本币别</string>
+    <string name="currency_picker_default_title">预设币别</string>
     <string name="currency_picker_hint">日元或 JPY</string>
-    <string name="currency_picker_no_conversion_disclaimer">更换帐本币别只会改变图示，并不包含汇率转换</string>
-    <string name="currency_picker_edit_success">%1$s的币别已更换为%2$s</string>
+    <string name="currency_picker_book_edit_success">%1$s的币别已更换为%2$s</string>
+    <string name="currency_picker_default_edit_success">预设币别已设定为%1$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">点击分享连结，邀请好友们一起记帐！</string>
@@ -227,6 +232,7 @@
     <string name="cta_back">返回</string>
     <string name="cta_delete">删除</string>
     <string name="cta_complete">完成</string>
+    <string name="cta_duplicate">复制</string>
     <string name="select_date">选择日期</string>
     <string name="date_to">至</string>
     <string name="today">今天</string>

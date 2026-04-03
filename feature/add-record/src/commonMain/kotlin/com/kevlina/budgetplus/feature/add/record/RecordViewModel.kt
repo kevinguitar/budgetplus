@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.feature.add.record
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.runtime.snapshotFlow
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +22,7 @@ import com.kevlina.budgetplus.core.common.ShareHelper
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.parseToPrice
@@ -28,12 +30,14 @@ import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.common.withCurrentTime
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
+import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.local.Preference
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.toAuthor
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
+import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel.Companion.EMPTY_PRICE
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel.Companion.RECORD_COUNT_CYCLE
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
 import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
@@ -42,9 +46,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.getString
@@ -62,6 +71,7 @@ class RecordViewModel(
     private val authManager: AuthManager,
     private val interstitialAdsHandler: InterstitialAdsHandler,
     private val inAppReviewManager: InAppReviewManager,
+    private val currencyExchangeRepo: CurrencyExchangeRepo,
     private val snackbarSender: SnackbarSender,
     private val shareHelper: ShareHelper,
     private val preference: Preference,
@@ -82,6 +92,25 @@ class RecordViewModel(
 
     val requestPermissionEvent: EventFlow<Unit>
         field = MutableEventFlow<Unit>()
+
+    val isPremium = authManager.isPremium
+
+    val preferredCurrencyPrice = combine(
+        snapshotFlow { calculatorVm.priceText.text },
+        bookRepo.bookState.map { it?.currencyCode },
+        currencyExchangeRepo.exchangeRateChange,
+        ::Triple
+    )
+        .mapLatest { (priceText, _, _) ->
+            if (priceText == EMPTY_PRICE) return@mapLatest null
+            val price = try {
+                priceText.parseToPrice()
+            } catch (_: Exception) {
+                return@mapLatest null
+            }
+            currencyExchangeRepo.formatPreferredCurrency(price, alwaysShowSymbol = true)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     private val recordCountKey = intPreferencesKey("recordCount")
     private val recordCount = preference.of(recordCountKey)
@@ -142,6 +171,20 @@ class RecordViewModel(
 
     suspend fun showNotificationPermissionHint() {
         snackbarSender.send(Res.string.permission_hint)
+    }
+
+    fun editCurrency() {
+        if (bookRepo.canEdit) {
+            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.Book))
+        }
+    }
+
+    fun editPreferredCurrency() {
+        if (isPremium.value) {
+            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.Preferred))
+        } else {
+            navController.navigate(BookDest.UnlockPremium)
+        }
     }
 
     private fun record() {

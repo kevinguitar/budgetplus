@@ -31,7 +31,7 @@ fun Switch(
             uncheckedTrackColor = LocalAppColors.current.light,
             uncheckedBorderColor = LocalAppColors.current.dark
         ),
-        modifier = modifier.scale(SWITCH_SCALE)
+        modifier = modifier.scale(SWITCH_SCALE),
     )
 }
 

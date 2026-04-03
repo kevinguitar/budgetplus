@@ -2,41 +2,57 @@ package com.kevlina.budgetplus.feature.currency.picker
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.currency_picker_edit_success
+import budgetplus.core.common.generated.resources.currency_picker_book_edit_success
+import budgetplus.core.common.generated.resources.currency_picker_book_title
+import budgetplus.core.common.generated.resources.currency_picker_default_edit_success
+import budgetplus.core.common.generated.resources.currency_picker_default_title
+import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.BookRepo
-import com.kevlina.budgetplus.core.data.local.Preference
+import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey
-@ContributesIntoMap(AppScope::class)
+@AssistedInject
 class CurrencyPickerViewModel(
-    val navController: NavController<BookDest>,
+    @Assisted private val params: BookDest.CurrencyPicker,
+    private val navController: NavController<BookDest>,
     private val bookRepo: BookRepo,
+    private val currencyExchangeRepo: CurrencyExchangeRepo,
     private val snackbarSender: SnackbarSender,
-    private val preference: Preference,
 ) : ViewModel() {
 
     val keyword = TextFieldState()
 
-    private val hasShownCurrencyDisclaimerKey = booleanPreferencesKey("hasShownCurrencyDisclaimerCache")
-    private val currentCurrencyCode = bookRepo.bookState.value?.currencyCode
+    val title: StringResource
+        get() = when (params.purpose) {
+            Purpose.Book -> Res.string.currency_picker_book_title
+            Purpose.Preferred -> Res.string.currency_picker_default_title
+        }
+
+    private val currentCurrencyCode = when (params.purpose) {
+        Purpose.Book -> bookRepo.bookState.value?.currencyCode
+        Purpose.Preferred -> currencyExchangeRepo.preferredCurrencyCode
+    }
 
     private val defaultCurrencyCode = getDefaultCurrencyCode()
 
@@ -63,14 +79,6 @@ class CurrencyPickerViewModel(
             .launchIn(viewModelScope)
     }
 
-    suspend fun hasShownCurrencyDisclaimer(): Boolean {
-        val hasShown = preference.of(hasShownCurrencyDisclaimerKey).first() == true
-        if (!hasShown) {
-            preference.update(hasShownCurrencyDisclaimerKey, true)
-        }
-        return hasShown
-    }
-
     private fun onSearch(keyword: CharSequence) {
         currencies.value = allCurrencies.filter {
             it.currency.name.contains(keyword, ignoreCase = true) ||
@@ -78,14 +86,34 @@ class CurrencyPickerViewModel(
         }
     }
 
-    suspend fun onCurrencyPicked(state: CurrencyState) {
-        val bookName = bookRepo.bookState.value?.name ?: return
-        try {
-            bookRepo.updateCurrency(state.currency.currencyCode)
-            snackbarSender.send(getString(Res.string.currency_picker_edit_success, bookName, state.currency.name))
-        } catch (e: Exception) {
-            snackbarSender.sendError(e)
+    suspend fun onCurrencyPicked(currency: Currency) {
+        when (params.purpose) {
+            Purpose.Book -> {
+                val bookName = bookRepo.bookState.value?.name ?: return
+                try {
+                    bookRepo.updateCurrency(currency.currencyCode)
+                    snackbarSender.send(getString(Res.string.currency_picker_book_edit_success, bookName, currency.name))
+                } catch (e: Exception) {
+                    snackbarSender.sendError(e)
+                }
+            }
+
+            Purpose.Preferred -> {
+                currencyExchangeRepo.updatePreferredCurrency(currency)
+                snackbarSender.send(getString(Res.string.currency_picker_default_edit_success, currency.name))
+            }
         }
+        navigateUp()
+    }
+
+    fun navigateUp() {
         navController.navigateUp()
+    }
+
+    @AssistedFactory
+    @ManualViewModelAssistedFactoryKey
+    @ContributesIntoMap(AppScope::class)
+    fun interface Factory : ManualViewModelAssistedFactory {
+        fun create(params: BookDest.CurrencyPicker): CurrencyPickerViewModel
     }
 }

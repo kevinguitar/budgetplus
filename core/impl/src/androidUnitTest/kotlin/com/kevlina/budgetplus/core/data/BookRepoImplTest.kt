@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
+import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.User
@@ -47,6 +48,7 @@ internal class BookRepoImplTest {
             set(stringPreferencesKey("currentBook"), Json.encodeToString(book))
         },
         appScope = backgroundScope,
-        booksDb = lazy { mockk<CollectionReference>(relaxed = true) }
+        booksDb = lazy { mockk<CollectionReference>(relaxed = true) },
+        currencyExchangeRepo = lazy { FakeCurrencyExchangeRepo() }
     )
 }

@@ -33,7 +33,6 @@ internal fun BalanceCard(
     totalPrice: String,
     balance: String,
 ) {
-
     Row(
         modifier = modifier
             .fillMaxWidth()

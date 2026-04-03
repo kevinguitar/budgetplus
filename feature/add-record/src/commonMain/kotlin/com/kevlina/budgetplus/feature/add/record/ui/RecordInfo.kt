@@ -44,9 +44,11 @@ internal fun RecordInfo(
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = modifier.thenIf(state.scrollable) {
-            Modifier.verticalScroll(scrollState)
-        }
+        modifier = modifier
+            .thenIf(state.scrollable) {
+                Modifier.verticalScroll(scrollState)
+            }
+            .padding(bottom = 8.dp)
     ) {
 
         RecordTypeTab(
@@ -78,7 +80,6 @@ internal fun RecordInfo(
         DateAndPricing(
             state = state.dateAndPricingState,
             scrollState = scrollState,
-            modifier = Modifier.padding(bottom = 16.dp)
         )
     }
 }
