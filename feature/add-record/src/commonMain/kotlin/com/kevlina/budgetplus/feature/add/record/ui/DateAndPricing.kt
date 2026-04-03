@@ -4,30 +4,36 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_currency_exchange
+import budgetplus.core.common.generated.resources.record_currency_exchange
+import com.kevlina.budgetplus.core.lottie.PremiumCrown
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
 import com.kevlina.budgetplus.core.ui.FontSize
+import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.SingleDatePicker
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
@@ -37,6 +43,8 @@ import com.kevlina.budgetplus.feature.add.record.RecordDateState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 internal fun DateAndPricing(
@@ -46,7 +54,6 @@ internal fun DateAndPricing(
 ) {
     val recordDate by state.recordDate.collectAsStateWithLifecycle()
     val currencySymbol by state.currencySymbol.collectAsStateWithLifecycle()
-    val preferredCurrencyPrice = state.preferredCurrencyPrice.collectAsStateWithLifecycle().value
 
     var showDatePicker by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -98,14 +105,32 @@ internal fun DateAndPricing(
             )
         }
 
+        val isPremium by state.isPremium.collectAsStateWithLifecycle()
+        val preferredCurrencyPrice = state.preferredCurrencyPrice.collectAsStateWithLifecycle().value
+
         if (preferredCurrencyPrice != null) {
-            Text(
-                text = preferredCurrencyPrice,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .align(Alignment.End)
                     .rippleClick(onClick = state.editPreferredCurrency)
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-            )
+                    .padding(all = 8.dp),
+            ) {
+                if (isPremium) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_currency_exchange),
+                        tint = LocalAppColors.current.dark,
+                        size = 20.dp
+                    )
+                    Text(text = preferredCurrencyPrice)
+                } else {
+                    PremiumCrown(modifier = Modifier.size(24.dp))
+                    Text(text = stringResource(Res.string.record_currency_exchange))
+                }
+            }
+        } else {
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         if (showDatePicker) {
@@ -118,11 +143,12 @@ internal fun DateAndPricing(
     }
 }
 
-@Immutable
+@Stable
 internal class DateAndPricingState(
     val recordDate: StateFlow<RecordDateState>,
     val currencySymbol: StateFlow<String>,
     val priceText: TextFieldState,
+    val isPremium: StateFlow<Boolean>,
     val preferredCurrencyPrice: StateFlow<String?>,
     val scrollable: Boolean,
     val setDate: (LocalDate) -> Unit,
@@ -134,6 +160,7 @@ internal class DateAndPricingState(
             recordDate = MutableStateFlow(RecordDateState.Now),
             currencySymbol = MutableStateFlow("$"),
             priceText = TextFieldState("2344"),
+            isPremium = MutableStateFlow(true),
             preferredCurrencyPrice = MutableStateFlow("USD100"),
             scrollable = false,
             setDate = {},

@@ -94,6 +94,8 @@ class RecordViewModel(
     val requestPermissionEvent: EventFlow<Unit>
         field = MutableEventFlow<Unit>()
 
+    val isPremium = authManager.isPremium
+
     val preferredCurrencyPrice = combine(
         snapshotFlow { calculatorVm.priceText.text },
         bookRepo.bookState.map { it?.currencyCode },
@@ -179,7 +181,11 @@ class RecordViewModel(
     }
 
     fun editPreferredCurrency() {
-        navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.PreferredCurrency))
+        if (isPremium.value) {
+            navController.navigate(BookDest.CurrencyPicker(purpose = Purpose.PreferredCurrency))
+        } else {
+            navController.navigate(BookDest.UnlockPremium)
+        }
     }
 
     private fun record() {

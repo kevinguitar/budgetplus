@@ -27,7 +27,6 @@ import budgetplus.core.common.generated.resources.color_tone_picker_title
 import budgetplus.core.common.generated.resources.cta_rename
 import budgetplus.core.common.generated.resources.ic_account_circle
 import budgetplus.core.common.generated.resources.ic_color_lens
-import budgetplus.core.common.generated.resources.ic_currency_exchange
 import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.ic_directions_run
 import budgetplus.core.common.generated.resources.ic_edit_note
@@ -37,6 +36,7 @@ import budgetplus.core.common.generated.resources.ic_instagram
 import budgetplus.core.common.generated.resources.ic_language
 import budgetplus.core.common.generated.resources.ic_lock_person
 import budgetplus.core.common.generated.resources.ic_logout
+import budgetplus.core.common.generated.resources.ic_paid
 import budgetplus.core.common.generated.resources.ic_privacy_tip
 import budgetplus.core.common.generated.resources.ic_share
 import budgetplus.core.common.generated.resources.ic_show_chart
@@ -160,7 +160,7 @@ internal fun SettingsContent(
 
             SettingsItem(
                 text = stringResource(Res.string.settings_edit_book_currency),
-                icon = vectorResource(Res.drawable.ic_currency_exchange),
+                icon = vectorResource(Res.drawable.ic_paid),
                 onClick = { navController.navigate(BookDest.CurrencyPicker(Purpose.BookCurrency)) }
             )
         }

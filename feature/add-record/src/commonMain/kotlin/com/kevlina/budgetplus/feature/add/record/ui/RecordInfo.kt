@@ -48,7 +48,7 @@ internal fun RecordInfo(
             .thenIf(state.scrollable) {
                 Modifier.verticalScroll(scrollState)
             }
-            .padding(bottom = 16.dp)
+            .padding(bottom = 8.dp)
     ) {
 
         RecordTypeTab(
