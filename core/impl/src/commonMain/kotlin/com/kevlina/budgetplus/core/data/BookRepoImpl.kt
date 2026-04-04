@@ -139,6 +139,7 @@ class BookRepoImpl(
     }
 
     override suspend fun handlePendingJoinRequest(): String? {
+        val userId = authManager.userId ?: return null
         val joinId = requireNotNull(pendingJoinId.value) { "Doesn't have pending join request" }
         pendingJoinId.value = null
 
@@ -146,7 +147,6 @@ class BookRepoImpl(
         val bookId = joinInfo.bookId
         val validBefore = joinInfo.generatedOn + linkExpirationMillis
 
-        val userId = authManager.requireUserId()
         val isPremium = authManager.userState.value?.premium == true
         val bookCount = booksState.filterNotNull().first().size
         val book = getLatestBook(bookId)
