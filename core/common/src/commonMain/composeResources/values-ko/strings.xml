@@ -18,7 +18,7 @@
     <string name="record_note">내용</string>
     <string name="record_note_placeholder_expense">어디에 사용했나요?</string>
     <string name="record_note_placeholder_income">돈은 어디서 왔나요?</string>
-    <string name="record_price">금액</string>
+    <string name="record_price">금액 (%1$s)</string>
     <string name="record_expense">지출</string>
     <string name="record_income">수입</string>
     <string name="record_empty_category">카테고리를 선택하세요</string>

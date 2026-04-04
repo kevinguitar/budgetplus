@@ -33,6 +33,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 @Serializable
@@ -121,9 +122,14 @@ class CurrencyExchangeRepoImpl(
 
     private suspend fun refreshRate() {
         val baseCurrency = (preferredCurrency.first() ?: getDefaultCurrencyCode()).lowercase()
-        val ratesMap = safeFetchRates(baseCurrency) ?: return
-
         val currentRates = cachedRates.first() ?: ExchangeRates(emptyMap())
+        val cachedRate = currentRates.map[baseCurrency]
+        if (cachedRate != null && (Clock.System.now() - cachedRate.cachedAt) < CACHE_VALIDITY) {
+            Logger.d { "CurrencyExchange: Cache is valid, skipping the request" }
+            return
+        }
+
+        val ratesMap = safeFetchRates(baseCurrency) ?: return
         val updatedRates = currentRates.copy(
             map = currentRates.map + (baseCurrency to ExchangeRate(
                 rates = ratesMap,
@@ -171,6 +177,7 @@ class CurrencyExchangeRepoImpl(
     }
 
     private companion object {
+        val CACHE_VALIDITY = 4.hours
         const val CDN_BASE_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1"
         const val FALLBACK_BASE_URL = "https://latest.currency-api.pages.dev/v1"
     }

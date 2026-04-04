@@ -12,6 +12,7 @@ import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeShareHelper
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
+import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
@@ -236,6 +237,7 @@ class RecordViewModelTest {
         preference = FakePreference {
             set(intPreferencesKey("recordCount"), recordCount)
         },
+        tracker = FakeTracker(),
     )
 }
 

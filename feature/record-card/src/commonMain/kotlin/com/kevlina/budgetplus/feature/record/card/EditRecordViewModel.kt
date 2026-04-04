@@ -32,6 +32,8 @@ class EditRecordViewModel(
     val canAddCategory: Boolean
         get() = bookRepo.canEdit
 
+    val currencySymbol = bookRepo.currencySymbol
+
     fun editRecord(
         record: Record,
         newDate: LocalDate,

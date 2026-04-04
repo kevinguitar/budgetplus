@@ -20,6 +20,7 @@ import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.ShareHelper
 import com.kevlina.budgetplus.core.common.SnackbarSender
+import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
@@ -75,6 +76,7 @@ class RecordViewModel(
     private val snackbarSender: SnackbarSender,
     private val shareHelper: ShareHelper,
     private val preference: Preference,
+    private val tracker: Tracker,
 ) : ViewModel() {
 
     val type: StateFlow<RecordType>
@@ -185,6 +187,7 @@ class RecordViewModel(
         } else {
             navController.navigate(BookDest.UnlockPremium)
         }
+        tracker.logEvent("currency_exchange_edit_preferred")
     }
 
     private fun record() {
