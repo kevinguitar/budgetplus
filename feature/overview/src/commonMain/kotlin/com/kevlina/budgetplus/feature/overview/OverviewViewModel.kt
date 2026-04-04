@@ -303,6 +303,7 @@ class OverviewViewModel private constructor(
         } else {
             navController.navigate(BookDest.UnlockPremium)
         }
+        tracker.logEvent("currency_exchange_toggle_overview")
     }
 
     companion object {
