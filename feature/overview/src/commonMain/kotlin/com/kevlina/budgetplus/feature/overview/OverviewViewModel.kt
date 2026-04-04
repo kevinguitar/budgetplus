@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.permission_hint
+import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
@@ -62,6 +63,7 @@ class OverviewViewModel private constructor(
     private val bubbleRepo: BubbleRepo,
     private val csvExporter: CsvExporter,
     private val snackbarSender: SnackbarSender,
+    private val interstitialAdsHandler: InterstitialAdsHandler,
     val navController: NavController<BookDest>,
     val bookRepo: BookRepo,
     val timeModel: OverviewTimeViewModel,
@@ -222,6 +224,10 @@ class OverviewViewModel private constructor(
 
     fun exportToCsv() {
         tracker.logEvent("overview_export_to_csv")
+        interstitialAdsHandler.showAdThen(onComplete = ::performCsvExport)
+    }
+
+    private fun performCsvExport() {
         viewModelScope.launch {
             try {
                 val period = recordsObserver.timePeriod.first()
