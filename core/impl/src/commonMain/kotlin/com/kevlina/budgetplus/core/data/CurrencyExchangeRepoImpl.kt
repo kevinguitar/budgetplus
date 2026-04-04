@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -77,9 +76,7 @@ class CurrencyExchangeRepoImpl(
         .stateIn(appScope, SharingStarted.Eagerly, ExchangeRates(emptyMap()))
 
     override val exchangeRateChange: Flow<Unit>
-        field = MutableSharedFlow<Unit>(replay = 1).apply {
-            onSubscription { emit(Unit) }
-        }
+        field = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     override val preferredCurrencySymbol: Flow<String?>
         get() = preferredCurrencyState.map { preferred ->
