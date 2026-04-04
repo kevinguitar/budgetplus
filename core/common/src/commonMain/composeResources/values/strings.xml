@@ -18,7 +18,7 @@
     <string name="record_note">Note</string>
     <string name="record_note_placeholder_expense">What did you pay for?</string>
     <string name="record_note_placeholder_income">Where did you earn from?</string>
-    <string name="record_price">Price</string>
+    <string name="record_price">Price (%1$s)</string>
     <string name="record_expense">Expense</string>
     <string name="record_income">Income</string>
     <string name="record_empty_category">Please choose a category</string>

@@ -18,7 +18,7 @@
     <string name="record_note">内容</string>
     <string name="record_note_placeholder_expense">花在哪裡？</string>
     <string name="record_note_placeholder_income">钱从哪裡来？</string>
-    <string name="record_price">金额</string>
+    <string name="record_price">金额（%1$s）</string>
     <string name="record_expense">支出</string>
     <string name="record_income">收入</string>
     <string name="record_empty_category">请选择类别</string>

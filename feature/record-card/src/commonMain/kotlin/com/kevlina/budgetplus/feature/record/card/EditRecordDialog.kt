@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.batch_record_edit_confirmation
 import budgetplus.core.common.generated.resources.category_title
@@ -63,6 +64,8 @@ fun EditRecordDialog(
     vm: EditRecordViewModel = metroViewModel(),
     onDismiss: () -> Unit,
 ) {
+    val currencySymbol by vm.currencySymbol.collectAsStateWithLifecycle()
+
     var date by remember {
         mutableStateOf(LocalDate.fromEpochDays(editRecord.date))
     }
@@ -141,7 +144,7 @@ fun EditRecordDialog(
                     TextField(
                         state = priceText,
                         modifier = Modifier.focusRequester(priceFocus),
-                        title = stringResource(Res.string.record_price),
+                        title = stringResource(Res.string.record_price, currencySymbol),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = if (isSaveEnabled) ImeAction.Done else ImeAction.None

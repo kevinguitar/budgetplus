@@ -18,7 +18,7 @@
     <string name="record_note">内容</string>
     <string name="record_note_placeholder_expense">何にお金を使った？</string>
     <string name="record_note_placeholder_income">収入源はどこから？</string>
-    <string name="record_price">金額</string>
+    <string name="record_price">金額（%1$s）</string>
     <string name="record_expense">支出</string>
     <string name="record_income">収入</string>
     <string name="record_empty_category">カテゴリを選択してください</string>
