@@ -130,7 +130,7 @@ jobs:
         run: |
           mkdir -p $(pwd)/private_keys
           API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$API_KEY_PATH"
           echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
 
       - name: Archive iOS App
@@ -248,7 +248,7 @@ jobs:
         run: |
           mkdir -p $(pwd)/private_keys
           API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$API_KEY_PATH"
           echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
 
       - name: Wait for Apple Processing and Submit with Metadata
