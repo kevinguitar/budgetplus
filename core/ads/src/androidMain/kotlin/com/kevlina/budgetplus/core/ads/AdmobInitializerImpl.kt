@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
 @ContributesBinding(AppScope::class, binding = binding<AdmobInitializer>())
-class AdmobInitializerImpl(
+internal class AdmobInitializerImpl(
     private val activityProvider: ActivityProvider,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : AppStartAction, AdmobInitializer {

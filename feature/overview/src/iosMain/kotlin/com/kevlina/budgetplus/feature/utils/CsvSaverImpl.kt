@@ -19,7 +19,7 @@ import platform.UIKit.UIApplication
 import platform.UIKit.popoverPresentationController
 
 @ContributesBinding(AppScope::class)
-class CsvSaverImpl : CsvSaver {
+internal class CsvSaverImpl : CsvSaver {
 
     override suspend fun saveToDownload(fileName: String, csvText: String) {
         val tempDir = NSTemporaryDirectory()

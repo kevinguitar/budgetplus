@@ -7,7 +7,7 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 
 @ContributesBinding(AppScope::class)
-class ShareHelperImpl(
+internal class ShareHelperImpl(
     private val activity: ActivityProvider,
 ) : ShareHelper {
 

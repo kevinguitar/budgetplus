@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class BillingControllerImpl(
+internal class BillingControllerImpl(
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
     private val authManager: AuthManager,

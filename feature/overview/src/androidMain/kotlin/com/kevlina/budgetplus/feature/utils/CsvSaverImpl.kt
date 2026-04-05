@@ -27,7 +27,7 @@ import java.io.File
 import java.io.IOException
 
 @ContributesBinding(AppScope::class)
-class CsvSaverImpl(
+internal class CsvSaverImpl(
     private val context: Context,
     @Named("app_package") private val appPackage: String,
     @Named("share_cache") private val shareCacheDir: Provider<File>,

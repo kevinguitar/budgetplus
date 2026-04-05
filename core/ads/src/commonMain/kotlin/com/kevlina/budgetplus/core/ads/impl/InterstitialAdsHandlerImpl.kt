@@ -12,7 +12,7 @@ import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class InterstitialAdsHandlerImpl(
+internal class InterstitialAdsHandlerImpl(
     private val authManager: AuthManager,
     private val tracker: Tracker,
 ) : InterstitialAdsHandler {

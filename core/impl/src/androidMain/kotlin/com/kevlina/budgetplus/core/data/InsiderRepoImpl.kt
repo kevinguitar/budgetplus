@@ -15,7 +15,7 @@ import kotlin.time.Duration
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class InsiderRepoImpl(
+internal class InsiderRepoImpl(
     @UsersDb private val usersDbKmp: Lazy<CollectionReference>,
 ) : InsiderRepo {
 

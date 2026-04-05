@@ -6,7 +6,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class SpeakToRecordPlaceholderImpl : SpeakToRecord {
+internal class SpeakToRecordPlaceholderImpl : SpeakToRecord {
     override val isAvailableOnDevice: Boolean
         get() = false
 
