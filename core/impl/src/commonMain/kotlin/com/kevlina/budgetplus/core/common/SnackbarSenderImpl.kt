@@ -14,7 +14,7 @@ import org.jetbrains.compose.resources.getString
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class SnackbarSenderImpl(
+internal class SnackbarSenderImpl(
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : SnackbarSender {
 

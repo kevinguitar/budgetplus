@@ -17,7 +17,7 @@ import dev.zacsweers.metro.Named
 import org.jetbrains.compose.resources.getString
 
 @ContributesBinding(AppScope::class)
-class SettingsNavigationImpl(
+internal class SettingsNavigationImpl(
     private val activityProvider: ActivityProvider,
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,

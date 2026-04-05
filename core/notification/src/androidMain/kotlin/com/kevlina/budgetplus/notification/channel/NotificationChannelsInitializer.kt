@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
 @ContributesIntoSet(AppScope::class)
-class NotificationChannelsInitializer(
+internal class NotificationChannelsInitializer(
     private val context: Context,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : AppStartAction {

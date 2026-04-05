@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.flowOf
 import java.util.*
 
 @ContributesBinding(AppScope::class)
-class SpeakToRecordImpl(
+internal class SpeakToRecordImpl(
     private val context: Context,
     private val speakResultParser: SpeakResultParser,
     private val tracker: Tracker,

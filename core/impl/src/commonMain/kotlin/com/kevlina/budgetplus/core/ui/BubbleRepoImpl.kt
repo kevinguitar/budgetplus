@@ -20,7 +20,7 @@ import kotlinx.coroutines.sync.withLock
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class BubbleRepoImpl(
+internal class BubbleRepoImpl(
     @AppCoroutineScope private val appScope: CoroutineScope,
     private val preference: Preference,
 ) : BubbleRepo {
