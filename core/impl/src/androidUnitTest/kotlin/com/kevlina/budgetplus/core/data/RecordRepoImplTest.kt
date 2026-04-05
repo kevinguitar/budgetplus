@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.core.data
 
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
@@ -27,7 +26,8 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.junit.Ignore
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 
@@ -39,7 +39,7 @@ class RecordRepoImplTest {
         createRepo().createRecord(testRecord)
 
         coVerify { recordsDb.add(testRecord) }
-        assertThat(tracker.lastEventName).isEqualTo("record_created")
+        assertEquals("record_created", tracker.lastEventName)
     }
 
     @Test
@@ -74,7 +74,7 @@ class RecordRepoImplTest {
                 )
             }
         }
-        assertThat(tracker.lastEventName).isEqualTo("record_batched")
+        assertEquals("record_batched", tracker.lastEventName)
     }
 
     @Test
@@ -107,7 +107,7 @@ class RecordRepoImplTest {
                 )
             )
         }
-        assertThat(tracker.lastEventName).isEqualTo("record_edited")
+        assertEquals("record_edited", tracker.lastEventName)
     }
 
     @Test
@@ -126,7 +126,7 @@ class RecordRepoImplTest {
                     )
                 )
             }
-            assertThat(tracker.lastEventName).isEqualTo("record_duplicated")
+            assertEquals("record_duplicated", tracker.lastEventName)
         }
 
     @Test
@@ -135,7 +135,7 @@ class RecordRepoImplTest {
 
         verify { recordsDb.document("old_record_id") }
         coVerify { documentReference.delete() }
-        assertThat(tracker.lastEventName).isEqualTo("record_deleted")
+        assertEquals("record_deleted", tracker.lastEventName)
     }
 
     @Test

@@ -1,17 +1,17 @@
 package com.kevlina.budgetplus.core.data
 
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.plainPriceString
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class PriceFormatterTest {
 
     @Test
     fun `plainPriceString extension is working correctly`() {
-        assertThat(12.0.plainPriceString).isEqualTo("12")
-        assertThat(12.356.plainPriceString).isEqualTo("12.36")
-        assertThat(12.349.plainPriceString).isEqualTo("12.35")
-        assertThat(12.99.plainPriceString).isEqualTo("12.99")
-        assertThat(12.999.plainPriceString).isEqualTo("13")
+        assertEquals("12", 12.0.plainPriceString)
+        assertEquals("12.36", 12.356.plainPriceString)
+        assertEquals("12.35", 12.349.plainPriceString)
+        assertEquals("12.99", 12.99.plainPriceString)
+        assertEquals("13", 12.999.plainPriceString)
     }
 }

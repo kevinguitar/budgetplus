@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.feature.freeze
 
 import androidx.datastore.preferences.core.stringPreferencesKey
 import app.cash.turbine.test
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
@@ -12,7 +11,11 @@ import com.kevlina.budgetplus.core.unit.test.MainDispatcherRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class FreezeBookViewModelTest {
 
@@ -28,7 +31,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(authManager, bookRepo)
 
         model.showFreezeDialog.test {
-            assertThat(awaitItem()).isTrue()
+            assertTrue(awaitItem())
         }
     }
 
@@ -39,7 +42,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(authManager, bookRepo)
 
         model.showFreezeDialog.test {
-            assertThat(awaitItem()).isFalse()
+            assertFalse(awaitItem())
         }
     }
 
@@ -50,7 +53,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(authManager, bookRepo)
 
         model.showFreezeDialog.test {
-            assertThat(awaitItem()).isFalse()
+            assertFalse(awaitItem())
         }
     }
 
@@ -64,7 +67,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(authManager, bookRepo, preference)
 
         model.showFreezeDialog.test {
-            assertThat(awaitItem()).isFalse()
+            assertFalse(awaitItem())
         }
     }
 
@@ -76,7 +79,7 @@ class FreezeBookViewModelTest {
         }
         createViewModel(authManager = authManager, preference = preference)
 
-        assertThat(preference.of(activatedBookIdKey).first()).isNull()
+        assertNull(preference.of(activatedBookIdKey).first())
     }
 
     @Test
@@ -89,8 +92,8 @@ class FreezeBookViewModelTest {
         val model = createViewModel(authManager, bookRepo, preference)
 
         model.showFreezeDialog.test {
-            assertThat(awaitItem()).isFalse()
-            assertThat(preference.of(activatedBookIdKey).first()).isNull()
+            assertFalse(awaitItem())
+            assertNull(preference.of(activatedBookIdKey).first())
         }
     }
 
@@ -103,7 +106,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(bookRepo = bookRepo, preference = preference)
 
         model.isBookFrozen.test {
-            assertThat(awaitItem()).isTrue()
+            assertTrue(awaitItem())
         }
     }
 
@@ -116,7 +119,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(bookRepo = bookRepo, preference = preference)
 
         model.isBookFrozen.test {
-            assertThat(awaitItem()).isFalse()
+            assertFalse(awaitItem())
         }
     }
 
@@ -126,7 +129,7 @@ class FreezeBookViewModelTest {
         val model = createViewModel(preference = preference)
 
         model.activateBook("test-book")
-        assertThat(preference.of(activatedBookIdKey).first()).isEqualTo("test-book")
+        assertEquals("test-book", preference.of(activatedBookIdKey).first())
     }
 
     private fun createViewModel(

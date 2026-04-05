@@ -1,7 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
@@ -13,7 +12,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CurrencyExchangeRepoImplTest {
 
@@ -31,7 +36,7 @@ class CurrencyExchangeRepoImplTest {
         // Wait for potential async refresh
         repo.exchangeRateChange.first()
 
-        assertThat(repo.preferredCurrencyCode).isEqualTo("USD")
+        assertEquals("USD", repo.preferredCurrencyCode)
     }
 
     @Test
@@ -45,7 +50,7 @@ class CurrencyExchangeRepoImplTest {
 
         repo.exchangeRateChange.first()
 
-        assertThat(repo.preferredCurrencyCode).isEqualTo("EUR")
+        assertEquals("EUR", repo.preferredCurrencyCode)
     }
 
     @Test
@@ -55,7 +60,7 @@ class CurrencyExchangeRepoImplTest {
         
         val result = repo.formatPreferredCurrency(100.0, false)
 
-        assertThat(result).isNull()
+        assertNull(result)
     }
 
     @Test
@@ -72,19 +77,19 @@ class CurrencyExchangeRepoImplTest {
         // price in EUR is 100.0. converted to USD: 100.0 / 0.5 = 200.0
         val result = repo.formatPreferredCurrency(100.0, false)
 
-        assertThat(result).contains("200")
+        assertContains(result!!, "200")
     }
 
     @Test
     fun `toggleDisplayInPreferredCurrency toggles state`() = runTest {
         val repo = createRepo()
-        assertThat(repo.displayInPreferredCurrency.value).isFalse()
+        assertFalse(repo.displayInPreferredCurrency.value)
         
         repo.toggleDisplayInPreferredCurrency()
-        assertThat(repo.displayInPreferredCurrency.value).isTrue()
+        assertTrue(repo.displayInPreferredCurrency.value)
         
         repo.toggleDisplayInPreferredCurrency()
-        assertThat(repo.displayInPreferredCurrency.value).isFalse()
+        assertFalse(repo.displayInPreferredCurrency.value)
     }
 
     @Test
@@ -107,11 +112,11 @@ class CurrencyExchangeRepoImplTest {
         repo.onAppStart()
         repo.exchangeRateChange.first()
         
-        assertThat(callCount).isEqualTo(2)
+        assertEquals(2, callCount)
         // Verify it actually worked by checking conversion
         val result = repo.formatPreferredCurrency(1.0, false)
 
-        assertThat(result).isNotNull()
+        assertNotNull(result)
     }
 
     private fun createMockEngine(vararg rates: Pair<String, String>): MockEngine {
