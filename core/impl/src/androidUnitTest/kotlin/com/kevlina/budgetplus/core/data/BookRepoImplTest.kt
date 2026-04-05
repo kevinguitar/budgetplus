@@ -1,7 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
@@ -15,7 +14,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class BookRepoImplTest {
 
@@ -23,7 +24,7 @@ internal class BookRepoImplTest {
     fun `canEdit is true when Book#allowMembersEdit is null`() = runTest {
         val repo = createRepo(book = Book(allowMembersEdit = null))
         repo.bookState.filterNotNull().first()
-        assertThat(repo.canEdit).isTrue()
+        assertTrue(repo.canEdit)
     }
 
     @Test
@@ -35,7 +36,7 @@ internal class BookRepoImplTest {
             )
         )
         repo.bookState.filterNotNull().first()
-        assertThat(repo.canEdit).isFalse()
+        assertFalse(repo.canEdit)
     }
 
     private val tracker = FakeTracker()

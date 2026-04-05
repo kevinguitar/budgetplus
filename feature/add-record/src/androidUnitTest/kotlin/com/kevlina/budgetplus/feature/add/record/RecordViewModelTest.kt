@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
@@ -40,7 +39,10 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import org.junit.Rule
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class RecordViewModelTest {
 
@@ -54,7 +56,7 @@ class RecordViewModelTest {
         calculatorVm.input("1")
         calculatorVm.evaluate()
 
-        assertThat(FakeSnackbarSender.lastSentMessageRes).isEqualTo(Res.string.record_empty_category)
+        assertEquals(Res.string.record_empty_category, FakeSnackbarSender.lastSentMessageRes)
     }
 
     @Test
@@ -62,7 +64,7 @@ class RecordViewModelTest {
         createModel()
         calculatorVm.evaluate()
 
-        assertThat(FakeSnackbarSender.lastSentMessageRes).isEqualTo(Res.string.record_empty_price)
+        assertEquals(Res.string.record_empty_price, FakeSnackbarSender.lastSentMessageRes)
     }
 
     @Test
@@ -78,17 +80,16 @@ class RecordViewModelTest {
         calculatorVm.input("123")
         calculatorVm.evaluate()
 
-        assertThat(
-            // Do not verify timestamp as it depends on test execution time
-            FakeRecordRepo.lastCreatedRecord?.copy(timestamp = null)
-        ).isEqualTo(
+        assertEquals(
             Record(
                 type = RecordType.Income,
                 category = "Test category",
                 name = "Test note",
                 date = date.toEpochDays(),
                 price = 123.0,
-            )
+            ),
+            // Do not verify timestamp as it depends on test execution time
+            FakeRecordRepo.lastCreatedRecord?.copy(timestamp = null)
         )
     }
 
@@ -99,17 +100,16 @@ class RecordViewModelTest {
         calculatorVm.input("1.23")
         calculatorVm.evaluate()
 
-        assertThat(
-            // Do not verify timestamp as it depends on test execution time
-            FakeRecordRepo.lastCreatedRecord?.copy(timestamp = null)
-        ).isEqualTo(
+        assertEquals(
             Record(
                 type = RecordType.Expense,
                 category = "Test category",
                 name = "Test category",
                 date = LocalDate.now().toEpochDays(),
                 price = 1.23,
-            )
+            ),
+            // Do not verify timestamp as it depends on test execution time
+            FakeRecordRepo.lastCreatedRecord?.copy(timestamp = null)
         )
     }
 
@@ -121,9 +121,9 @@ class RecordViewModelTest {
         calculatorVm.input("1")
         calculatorVm.evaluate()
 
-        assertThat(categoriesVm.category.value).isNull()
-        assertThat(model.note.text.toString()).isEmpty()
-        assertThat(calculatorVm.priceText.text).isEqualTo("0")
+        assertNull(categoriesVm.category.value)
+        assertTrue(model.note.text.toString().isEmpty())
+        assertEquals("0", calculatorVm.priceText.text)
     }
 
     @Test
@@ -132,7 +132,7 @@ class RecordViewModelTest {
         calculatorVm.input("1")
         calculatorVm.evaluate()
 
-        assertThat(interstitialAdsHandler.count).isEqualTo(1)
+        assertEquals(1, interstitialAdsHandler.count)
     }
 
     @Test
@@ -158,8 +158,9 @@ class RecordViewModelTest {
         val model = createModel(canEditBook = true)
         model.editCurrency()
 
-        assertThat(model.navController.backStack.last()).isEqualTo(
-            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Book)
+        assertEquals(
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Book),
+            model.navController.backStack.last()
         )
     }
 
@@ -169,7 +170,7 @@ class RecordViewModelTest {
         val initialDest = model.navController.backStack.last()
         model.editCurrency()
 
-        assertThat(model.navController.backStack.last()).isEqualTo(initialDest)
+        assertEquals(initialDest, model.navController.backStack.last())
     }
 
     @Test
@@ -177,8 +178,9 @@ class RecordViewModelTest {
         val model = createModel(isPremium = true)
         model.editPreferredCurrency()
 
-        assertThat(model.navController.backStack.last()).isEqualTo(
-            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Preferred)
+        assertEquals(
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Preferred),
+            model.navController.backStack.last()
         )
     }
 
@@ -187,7 +189,7 @@ class RecordViewModelTest {
         val model = createModel(isPremium = false)
         model.editPreferredCurrency()
 
-        assertThat(model.navController.backStack.last()).isEqualTo(BookDest.UnlockPremium)
+        assertEquals(BookDest.UnlockPremium, model.navController.backStack.last())
     }
 
     @Test
@@ -196,7 +198,7 @@ class RecordViewModelTest {
         val model = createModel(currencyExchangeRepo = currencyExchangeRepo)
 
         calculatorVm.input("100")
-        assertThat(model.preferredCurrencyPrice.first { it != null }).isEqualTo("100.0 EUR")
+        assertEquals("100.0 EUR", model.preferredCurrencyPrice.first { it != null })
     }
 
 
@@ -242,7 +244,7 @@ class RecordViewModelTest {
 }
 
 private suspend fun EventFlow<Unit>.awaitUnconsumedEvent() {
-    assertThat(mapNotNull { it.consume() }.first()).isEqualTo(Unit)
+    assertEquals(Unit, mapNotNull { it.consume() }.first())
 }
 
 val fakeSpeakToRecordVm = SpeakToRecordViewModel(

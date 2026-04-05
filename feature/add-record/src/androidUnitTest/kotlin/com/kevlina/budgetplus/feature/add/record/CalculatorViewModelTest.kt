@@ -1,7 +1,6 @@
 package com.kevlina.budgetplus.feature.add.record
 
 import app.cash.turbine.test
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
@@ -11,7 +10,10 @@ import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
 import com.kevlina.budgetplus.feature.freeze.fakeFreezeBookVm
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class CalculatorViewModelTest {
 
@@ -22,21 +24,21 @@ class CalculatorViewModelTest {
     fun `clearing the pricing`() {
         val statement = "36"
         calculator.input(statement)
-        assertThat(calculator.priceText.text).isEqualTo(statement)
+        assertEquals(statement, calculator.priceText.text)
 
         calculator.clearPrice()
-        assertThat(calculator.priceText.text).isEqualTo(CalculatorViewModel.EMPTY_PRICE)
+        assertEquals(CalculatorViewModel.EMPTY_PRICE, calculator.priceText.text)
     }
 
     @Test
     fun `evaluating the result`() = runTest {
         calculator.needEvaluate.test {
-            assertThat(awaitItem()).isFalse()
+            assertFalse(awaitItem())
             calculator.input("3×6")
-            assertThat(awaitItem()).isTrue()
+            assertTrue(awaitItem())
             calculator.evaluate()
-            assertThat(awaitItem()).isFalse()
-            assertThat(calculator.priceText.text).isEqualTo("18")
+            assertFalse(awaitItem())
+            assertEquals("18", calculator.priceText.text)
         }
     }
 
@@ -44,19 +46,19 @@ class CalculatorViewModelTest {
     fun `complicated statement should be evaluated correctly`() {
         calculator.input("2.54+1.65×64.2÷9.01")
         calculator.evaluate()
-        assertThat(calculator.priceText.text).isEqualTo("14.3")
+        assertEquals("14.3", calculator.priceText.text)
     }
 
     @Test
     fun `operator should be replaced correctly`() {
         calculator.input("3+-1×+÷2")
-        assertThat(calculator.priceText.text).isEqualTo("3-1÷2")
+        assertEquals("3-1÷2", calculator.priceText.text)
     }
 
     @Test
     fun `duplicated dot should be omitted`() {
         calculator.input("1.5.4+2..1...2")
-        assertThat(calculator.priceText.text).isEqualTo("1.54+2.12")
+        assertEquals("1.54+2.12", calculator.priceText.text)
     }
 
     @Test
@@ -66,7 +68,7 @@ class CalculatorViewModelTest {
         calculator.input("+321")
         calculator.onInput(CalculatorButton.Delete)
         calculator.evaluate()
-        assertThat(calculator.priceText.text).isEqualTo("44")
+        assertEquals("44", calculator.priceText.text)
     }
 
     private val calculator = CalculatorViewModel(
