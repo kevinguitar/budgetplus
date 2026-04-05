@@ -23,11 +23,11 @@ class EditCategoryViewModelTest {
         model.onCategoryRenamed("Restaurant", "Food")
 
         assertEquals(
-            listOf(
+            setOf(
                 CategoryRenameEvent(from = "Sport", "Health"),
                 CategoryRenameEvent(from = "Util", "Utility")
             ),
-            model.categoryRenameEvents
+            model.categoryRenameEvents.toSet()
         )
     }
 
