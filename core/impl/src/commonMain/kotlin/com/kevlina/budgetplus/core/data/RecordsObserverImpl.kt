@@ -42,7 +42,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class RecordsObserverImpl(
+internal class RecordsObserverImpl(
     @AppCoroutineScope private val appScope: CoroutineScope,
     @BooksDb private val booksDb: Lazy<CollectionReference>,
     private val preference: Preference,

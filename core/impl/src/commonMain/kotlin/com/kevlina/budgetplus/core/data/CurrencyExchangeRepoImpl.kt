@@ -52,7 +52,7 @@ private data class ExchangeRates(
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<CurrencyExchangeRepo>())
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
-class CurrencyExchangeRepoImpl(
+internal class CurrencyExchangeRepoImpl(
     private val bookRepo: BookRepo,
     private val preference: Preference,
     private val json: Json,

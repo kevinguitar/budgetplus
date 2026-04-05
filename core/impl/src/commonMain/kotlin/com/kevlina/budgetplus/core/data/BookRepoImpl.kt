@@ -54,7 +54,7 @@ import kotlin.time.Duration.Companion.days
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<BookRepo>())
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
-class BookRepoImpl(
+internal class BookRepoImpl(
     private val authManager: AuthManager,
     private val joinInfoProcessor: JoinInfoProcessor,
     private val currencyExchangeRepo: Lazy<CurrencyExchangeRepo>,

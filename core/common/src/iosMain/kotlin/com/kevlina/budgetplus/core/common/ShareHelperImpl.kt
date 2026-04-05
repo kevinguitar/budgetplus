@@ -10,7 +10,7 @@ import platform.UIKit.UIApplication
 import platform.UIKit.popoverPresentationController
 
 @ContributesBinding(AppScope::class)
-class ShareHelperImpl : ShareHelper {
+internal class ShareHelperImpl : ShareHelper {
 
     override suspend fun share(title: StringResource, text: String) {
         val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController ?: return

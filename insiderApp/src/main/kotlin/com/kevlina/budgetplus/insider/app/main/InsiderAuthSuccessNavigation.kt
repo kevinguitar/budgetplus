@@ -7,7 +7,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class InsiderAuthSuccessNavigation(
+internal class InsiderAuthSuccessNavigation(
     private val navController: NavController<InsiderDest>,
 ) : AuthSuccessNavigation {
 

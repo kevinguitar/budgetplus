@@ -30,7 +30,7 @@ import platform.UIKit.UIApplication
 import platform.UIKit.popoverPresentationController
 
 @ContributesBinding(AppScope::class)
-class SettingsNavigationImpl(
+internal class SettingsNavigationImpl(
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,
     @Named("contact_email") private val contactEmail: String,

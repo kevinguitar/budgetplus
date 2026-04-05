@@ -13,7 +13,7 @@ import platform.AppTrackingTransparency.ATTrackingManagerAuthorizationStatusNotD
 
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
 @ContributesBinding(AppScope::class, binding = binding<AdmobInitializer>())
-class AdmobInitializerImpl(
+internal class AdmobInitializerImpl(
     private val tracker: Tracker,
 ) : AppStartAction, AdmobInitializer {
 
