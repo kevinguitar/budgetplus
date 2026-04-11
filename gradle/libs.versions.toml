@@ -12,13 +12,13 @@ compose-multiplatform = "1.10.3"
 # https://github.com/ZacSweers/metro/releases
 metro = "0.13.2"
 # https://developer.android.com/jetpack/androidx/releases/navigation3
-navigation3 = "1.0.1"
+navigation3 = "1.1.0"
 # https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html#multiplatform-support
 navigation3-jb = "1.0.0-alpha06"
 # https://firebase.google.com/support/release-notes/android
-firebase-bom = "34.11.0"
+firebase-bom = "34.12.0"
 # https://mvnrepository.com/artifact/com.google.firebase/firebase-crashlytics-gradle
-firebase-crashlytics = "3.0.6"
+firebase-crashlytics = "3.0.7"
 # https://github.com/GitLiveApp/firebase-kotlin-sdk/releases
 firebase-kmp = "2.4.0"
 # https://github.com/googleads/swift-package-manager-google-mobile-ads/releases
@@ -106,7 +106,7 @@ junit-compose = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.re
 junit-core = "junit:junit:4.13.2"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
-kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
@@ -173,4 +173,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle-plugin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 spm-kmp = "io.github.frankois944.spmForKmp:1.6.1"
-buildkonfig = "com.codingfeline.buildkonfig:0.17.1"
+buildkonfig = "com.codingfeline.buildkonfig:0.18.0"
