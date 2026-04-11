@@ -106,7 +106,7 @@ junit-compose = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.re
 junit-core = "junit:junit:4.13.2"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
-kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
