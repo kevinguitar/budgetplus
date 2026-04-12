@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeAppLanguageProvider
@@ -52,8 +53,9 @@ class AuthManagerImplTest {
 
     @Test
     fun `requireUserId returns userId when user exists`() = runTest {
-        val manager = createAuthManager()
-        setUserInPreference(User(id = "user123", name = "Alice"))
+        val preference = FakePreference()
+        val manager = createAuthManager(preference = preference)
+        preference.setUser(User(id = "user123", name = "Alice"))
         assertEquals("user123", manager.userState.first { it != null }?.id)
         assertEquals("user123", manager.requireUserId())
     }
@@ -62,9 +64,10 @@ class AuthManagerImplTest {
 
     @Test
     fun `markPremium does nothing when already same premium state`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
-        val manager = createAuthManager(userDbClient = userDbClient)
-        setUserInPreference(User(id = "user1", premium = true))
+        val manager = createAuthManager(preference = preference, userDbClient = userDbClient)
+        preference.setUser(User(id = "user1", premium = true))
         manager.userState.first { it != null }
 
         manager.markPremium(isPremium = true)
@@ -75,12 +78,17 @@ class AuthManagerImplTest {
 
     @Test
     fun `markPremium updates user to premium in DB and preference`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
         val snackbarSender = FakeSnackbarSender
         snackbarSender.lastSentMessageRes = null
 
-        val manager = createAuthManager(userDbClient = userDbClient, snackbarSender = snackbarSender)
-        setUserInPreference(User(id = "user1", name = "Alice", premium = false))
+        val manager = createAuthManager(
+            preference = preference,
+            userDbClient = userDbClient,
+            snackbarSender = snackbarSender,
+        )
+        preference.setUser(User(id = "user1", name = "Alice", premium = false))
         manager.userState.first { it != null }
 
         manager.markPremium(isPremium = true)
@@ -95,12 +103,17 @@ class AuthManagerImplTest {
 
     @Test
     fun `markPremium to false does not send snackbar`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
         val snackbarSender = FakeSnackbarSender
         snackbarSender.lastSentMessageRes = null
 
-        val manager = createAuthManager(userDbClient = userDbClient, snackbarSender = snackbarSender)
-        setUserInPreference(User(id = "user1", name = "Alice", premium = true))
+        val manager = createAuthManager(
+            preference = preference,
+            userDbClient = userDbClient,
+            snackbarSender = snackbarSender,
+        )
+        preference.setUser(User(id = "user1", name = "Alice", premium = true))
         manager.userState.first { it != null }
 
         manager.markPremium(isPremium = false)
@@ -111,14 +124,19 @@ class AuthManagerImplTest {
 
     @Test
     fun `markPremium sends error on DB failure`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
         val testError = RuntimeException("DB error")
         userDbClient.setUserError = testError
         val snackbarSender = FakeSnackbarSender
         snackbarSender.lastSentError = null
 
-        val manager = createAuthManager(userDbClient = userDbClient, snackbarSender = snackbarSender)
-        setUserInPreference(User(id = "user1", name = "Alice", premium = false))
+        val manager = createAuthManager(
+            preference = preference,
+            userDbClient = userDbClient,
+            snackbarSender = snackbarSender,
+        )
+        preference.setUser(User(id = "user1", name = "Alice", premium = false))
         manager.userState.first { it != null }
 
         manager.markPremium(isPremium = true)
@@ -140,12 +158,14 @@ class AuthManagerImplTest {
 
     @Test
     fun `updateFcmToken does nothing when allowUpdateFcmToken is false`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
         val manager = createAuthManager(
+            preference = preference,
             userDbClient = userDbClient,
             allowUpdateFcmToken = false,
         )
-        setUserInPreference(User(id = "user1", name = "Alice"))
+        preference.setUser(User(id = "user1", name = "Alice"))
         manager.userState.first { it != null }
 
         manager.updateFcmToken("new_token")
@@ -155,9 +175,10 @@ class AuthManagerImplTest {
 
     @Test
     fun `updateFcmToken does nothing when token is same as current`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
-        val manager = createAuthManager(userDbClient = userDbClient)
-        setUserInPreference(User(id = "user1", name = "Alice", fcmToken = "same_token"))
+        val manager = createAuthManager(preference = preference, userDbClient = userDbClient)
+        preference.setUser(User(id = "user1", name = "Alice", fcmToken = "same_token"))
         manager.userState.first { it != null }
 
         manager.updateFcmToken("same_token")
@@ -177,9 +198,10 @@ class AuthManagerImplTest {
 
     @Test
     fun `updateFcmToken updates token in DB and preference`() = runTest {
+        val preference = FakePreference()
         val userDbClient = FakeUserDbClient()
-        val manager = createAuthManager(userDbClient = userDbClient)
-        setUserInPreference(User(id = "user1", name = "Alice", fcmToken = "old_token"))
+        val manager = createAuthManager(preference = preference, userDbClient = userDbClient)
+        preference.setUser(User(id = "user1", name = "Alice", fcmToken = "old_token"))
         manager.userState.first { it != null }
 
         manager.updateFcmToken("new_token")
@@ -208,21 +230,24 @@ class AuthManagerImplTest {
 
     @Test
     fun `deleteUserAccount calls cloud function and logs out`() = runTest {
+        val preference = FakePreference()
         val authState = FakeAuthState()
         val cloudFunctionsCaller = FakeCloudFunctionsCaller()
         val tracker = FakeTracker()
         val manager = createAuthManager(
+            preference = preference,
             authState = authState,
             cloudFunctionsCaller = cloudFunctionsCaller,
             tracker = tracker,
         )
-        setUserInPreference(User(id = "user1", name = "Alice"))
+        preference.setUser(User(id = "user1", name = "Alice"))
         manager.userState.first { it != null }
 
         manager.deleteUserAccount()
         testScheduler.advanceUntilIdle()
 
-        assertEquals("delete_account", tracker.lastEvent?.first)
+        // deleteUserAccount calls logout() at the end, which sets lastEvent to "logout"
+        assertEquals("logout", tracker.lastEventName)
         assertNotNull(cloudFunctionsCaller.lastCall)
         assertEquals("deleteUserAccount", cloudFunctionsCaller.lastCall?.first)
         assertEquals("asia-southeast1", cloudFunctionsCaller.lastCall?.second)
@@ -252,15 +277,17 @@ class AuthManagerImplTest {
 
     @Test
     fun `renameUser updates profile and tracks event`() = runTest {
+        val preference = FakePreference()
         val authState = FakeAuthState()
         val tracker = FakeTracker()
         val userDbClient = FakeUserDbClient()
         val manager = createAuthManager(
+            preference = preference,
             authState = authState,
             tracker = tracker,
             userDbClient = userDbClient,
         )
-        setUserInPreference(User(id = "user1", name = "Alice"))
+        preference.setUser(User(id = "user1", name = "Alice"))
         manager.userState.first { it != null }
 
         manager.renameUser("Bob")
@@ -273,14 +300,16 @@ class AuthManagerImplTest {
 
     @Test
     fun `auth state change with null user triggers logout navigation`() = runTest {
+        val preference = FakePreference()
         val authState = FakeAuthState()
         val logoutNavigation = FakeLogoutNavigation()
         val manager = createAuthManager(
+            preference = preference,
             authState = authState,
             logoutNavigation = logoutNavigation,
         )
         // Set up a user first
-        setUserInPreference(User(id = "user1", name = "Alice"))
+        preference.setUser(User(id = "user1", name = "Alice"))
         manager.userState.first { it != null }
 
         // Emit null auth state (user signed out)
@@ -382,7 +411,7 @@ class AuthManagerImplTest {
         val authState = FakeAuthState()
         val userDbClient = FakeUserDbClient()
         val fcmTokenProvider = FakeFcmTokenProvider(token = "my_token")
-        val manager = createAuthManager(
+        createAuthManager(
             authState = authState,
             userDbClient = userDbClient,
             fcmTokenProvider = fcmTokenProvider,
@@ -405,7 +434,7 @@ class AuthManagerImplTest {
         val authState = FakeAuthState()
         val userDbClient = FakeUserDbClient()
         val fcmTokenProvider = FakeFcmTokenProvider(token = "should_not_be_used")
-        val manager = createAuthManager(
+        createAuthManager(
             authState = authState,
             userDbClient = userDbClient,
             fcmTokenProvider = fcmTokenProvider,
@@ -446,24 +475,24 @@ class AuthManagerImplTest {
 
     @Test
     fun `isPremium reflects user premium state`() = runTest {
-        val manager = createAuthManager()
+        val preference = FakePreference()
+        val manager = createAuthManager(preference = preference)
 
         assertFalse(manager.isPremium.value)
 
-        setUserInPreference(User(id = "user1", premium = true))
+        preference.setUser(User(id = "user1", premium = true))
         manager.userState.first { it?.premium == true }
         assertTrue(manager.isPremium.value)
 
-        setUserInPreference(User(id = "user1", premium = false))
+        preference.setUser(User(id = "user1", premium = false))
         manager.userState.first { it?.premium != true }
         assertFalse(manager.isPremium.value)
     }
 
     // -- Test setup --
 
-    private val preference = FakePreference()
-
     private fun TestScope.createAuthManager(
+        preference: FakePreference = FakePreference(),
         authState: FakeAuthState = FakeAuthState(),
         tracker: FakeTracker = FakeTracker(),
         userDbClient: FakeUserDbClient = FakeUserDbClient(),
@@ -487,12 +516,12 @@ class AuthManagerImplTest {
         cloudFunctionsCaller = cloudFunctionsCaller,
         appLanguageProvider = FakeAppLanguageProvider(),
     )
+}
 
-    private suspend fun setUserInPreference(user: User) {
-        preference.update(
-            key = androidx.datastore.preferences.core.stringPreferencesKey("currentUser"),
-            serializer = User.serializer(),
-            value = user
-        )
-    }
+private suspend fun FakePreference.setUser(user: User) {
+    update(
+        key = stringPreferencesKey("currentUser"),
+        serializer = User.serializer(),
+        value = user,
+    )
 }
