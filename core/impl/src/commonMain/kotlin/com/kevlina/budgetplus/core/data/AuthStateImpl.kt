@@ -4,11 +4,9 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class AuthStateImpl : AuthState {
 

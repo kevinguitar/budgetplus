@@ -2,9 +2,6 @@ package com.kevlina.budgetplus.core.data
 
 import com.kevlina.budgetplus.core.data.remote.User
 
-/**
- *  Wraps Firestore operations on the users collection for testability.
- */
 interface UserDbClient {
 
     /**

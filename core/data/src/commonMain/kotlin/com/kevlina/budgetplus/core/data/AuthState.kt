@@ -2,9 +2,6 @@ package com.kevlina.budgetplus.core.data
 
 import kotlinx.coroutines.flow.Flow
 
-/**
- *  Wraps Firebase Auth operations for testability.
- */
 interface AuthState {
 
     val authStateChanged: Flow<AuthStateUser?>

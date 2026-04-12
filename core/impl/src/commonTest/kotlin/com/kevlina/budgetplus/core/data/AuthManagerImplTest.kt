@@ -13,7 +13,9 @@ import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.fixtures.FakeUserDbClient
 import com.kevlina.budgetplus.core.data.remote.User
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -508,7 +510,7 @@ class AuthManagerImplTest {
         allowUpdateFcmToken = allowUpdateFcmToken,
         logoutNavigation = logoutNavigation,
         snackbarSender = snackbarSender,
-        appScope = backgroundScope,
+        appScope = backgroundScope + UnconfinedTestDispatcher(testScheduler),
         authState = authState,
         userDbClient = userDbClient,
         fcmTokenProvider = fcmTokenProvider,

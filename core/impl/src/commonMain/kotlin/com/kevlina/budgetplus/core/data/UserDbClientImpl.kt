@@ -6,9 +6,7 @@ import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.Source
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.SingleIn
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class UserDbClientImpl(
     @UsersDb private val usersDb: Lazy<CollectionReference>,
