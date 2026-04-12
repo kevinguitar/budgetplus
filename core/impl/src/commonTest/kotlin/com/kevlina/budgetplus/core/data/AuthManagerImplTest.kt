@@ -335,7 +335,7 @@ class AuthManagerImplTest {
 
         // Emit auth state with a new user
         authState.authStateFlow.emit(
-            AuthStateUser(uid = "user1", displayName = "Alice", photoURL = "photo.jpg")
+            User(id = "user1", name = "Alice", photoUrl = "photo.jpg")
         )
         testScheduler.advanceUntilIdle()
 
@@ -367,7 +367,7 @@ class AuthManagerImplTest {
 
         // Emit auth state
         authState.authStateFlow.emit(
-            AuthStateUser(uid = "user1", displayName = "AuthName", photoURL = null)
+            User(id = "user1", name = "AuthName")
         )
         testScheduler.advanceUntilIdle()
 
@@ -398,7 +398,7 @@ class AuthManagerImplTest {
         )
 
         authState.authStateFlow.emit(
-            AuthStateUser(uid = "user1", displayName = "Alice", photoURL = null)
+            User(id = "user1", name = "Alice")
         )
         testScheduler.advanceUntilIdle()
 
@@ -420,7 +420,7 @@ class AuthManagerImplTest {
         )
 
         authState.authStateFlow.emit(
-            AuthStateUser(uid = "new_user", displayName = "NewUser", photoURL = null)
+            User(id = "new_user", name = "NewUser")
         )
         testScheduler.advanceUntilIdle()
 
@@ -444,7 +444,7 @@ class AuthManagerImplTest {
         )
 
         authState.authStateFlow.emit(
-            AuthStateUser(uid = "user1", displayName = "Alice", photoURL = null)
+            User(id = "user1", name = "Alice")
         )
         testScheduler.advanceUntilIdle()
 
@@ -464,7 +464,7 @@ class AuthManagerImplTest {
         )
 
         authState.authStateFlow.emit(
-            AuthStateUser(uid = "user1", displayName = "Alice", photoURL = null)
+            User(id = "user1", name = "Alice")
         )
         testScheduler.advanceUntilIdle()
 

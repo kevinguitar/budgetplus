@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
+import com.kevlina.budgetplus.core.data.remote.User
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.zacsweers.metro.AppScope
@@ -10,13 +11,13 @@ import kotlinx.coroutines.flow.map
 @ContributesBinding(AppScope::class)
 class AuthStateImpl : AuthState {
 
-    override val authStateChanged: Flow<AuthStateUser?> =
+    override val authStateChanged: Flow<User?> =
         Firebase.auth.authStateChanged.map { firebaseUser ->
             firebaseUser?.let {
-                AuthStateUser(
-                    uid = it.uid,
-                    displayName = it.displayName,
-                    photoURL = it.photoURL,
+                User(
+                    id = it.uid,
+                    name = it.displayName,
+                    photoUrl = it.photoURL,
                 )
             }
         }

@@ -60,12 +60,8 @@ class AuthManagerImpl(
     init {
         authState
             .authStateChanged
-            .onEach { authStateUser ->
-                updateUser(authStateUser?.let {
-                    User(id = it.uid, name = it.displayName, photoUrl = it.photoURL)
-                })
-            }
-            .launchIn(scope = appScope)
+            .onEach(::updateUser)
+            .launchIn(appScope)
     }
 
     override fun requireUserId(): String {
@@ -73,9 +69,8 @@ class AuthManagerImpl(
     }
 
     override suspend fun renameUser(newName: String) {
-        authState.updateCurrentUserProfile(displayName = newName)
-
         val user = currentUser ?: error("Current user is null.")
+        authState.updateCurrentUserProfile(displayName = newName)
         updateUser(
             user = user.copy(name = newName),
             newName = newName
