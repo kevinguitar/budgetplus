@@ -26,7 +26,7 @@ import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.ui.bubble.FakeBubbleRepo
 import com.kevlina.budgetplus.core.unit.test.MainDispatcherRule
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
-import com.kevlina.budgetplus.feature.freeze.fakeFreezeBookVm
+import com.kevlina.budgetplus.feature.freeze.createFreezeBookVm
 import com.kevlina.budgetplus.feature.speak.record.RecordActor
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecord
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordViewModel
@@ -34,6 +34,7 @@ import com.kevlina.budgetplus.inapp.review.fixtures.FakeInAppReviewManager
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -51,18 +52,18 @@ class RecordViewModelTest {
 
     @Test
     fun `show message when category is empty`() = runTest {
-        createModel()
+        val model = createModel()
         categoriesVm.setCategory(null)
-        calculatorVm.input("1")
-        calculatorVm.evaluate()
+        model.calculatorVm.input("1")
+        model.calculatorVm.evaluate()
 
         assertEquals(Res.string.record_empty_category, FakeSnackbarSender.lastSentMessageRes)
     }
 
     @Test
     fun `show message when price is empty`() = runTest {
-        createModel()
-        calculatorVm.evaluate()
+        val model = createModel()
+        model.calculatorVm.evaluate()
 
         assertEquals(Res.string.record_empty_price, FakeSnackbarSender.lastSentMessageRes)
     }
@@ -71,14 +72,14 @@ class RecordViewModelTest {
     fun `record should be created with correct info in RecordRepo`() = runTest {
         val date = LocalDate.now().minus(1, DateTimeUnit.DAY)
 
-        createModel().apply {
+        val model = createModel().apply {
             setDate(date)
             note.setTextAndPlaceCursorAtEnd("Test note")
             setType(RecordType.Income)
         }
 
-        calculatorVm.input("123")
-        calculatorVm.evaluate()
+        model.calculatorVm.input("123")
+        model.calculatorVm.evaluate()
 
         assertEquals(
             Record(
@@ -95,10 +96,10 @@ class RecordViewModelTest {
 
     @Test
     fun `record without note should fallback to category`() = runTest {
-        createModel()
+        val model = createModel()
 
-        calculatorVm.input("1.23")
-        calculatorVm.evaluate()
+        model.calculatorVm.input("1.23")
+        model.calculatorVm.evaluate()
 
         assertEquals(
             Record(
@@ -118,19 +119,19 @@ class RecordViewModelTest {
         val model = createModel()
         model.note.setTextAndPlaceCursorAtEnd("Test note")
 
-        calculatorVm.input("1")
-        calculatorVm.evaluate()
+        model.calculatorVm.input("1")
+        model.calculatorVm.evaluate()
 
         assertNull(categoriesVm.category.value)
         assertTrue(model.note.text.toString().isEmpty())
-        assertEquals("0", calculatorVm.priceText.text)
+        assertEquals("0", model.calculatorVm.priceText.text)
     }
 
     @Test
     fun `show fullscreen ad on every 7th record`() = runTest {
-        createModel(recordCount = 6)
-        calculatorVm.input("1")
-        calculatorVm.evaluate()
+        val model = createModel(recordCount = 6)
+        model.calculatorVm.input("1")
+        model.calculatorVm.evaluate()
 
         assertEquals(1, interstitialAdsHandler.count)
     }
@@ -138,8 +139,8 @@ class RecordViewModelTest {
     @Test
     fun `request notification permission after the 2nd record`() = runTest {
         val model = createModel(recordCount = 1)
-        calculatorVm.input("1")
-        calculatorVm.evaluate()
+        model.calculatorVm.input("1")
+        model.calculatorVm.evaluate()
 
         model.requestPermissionEvent.awaitUnconsumedEvent()
     }
@@ -147,8 +148,8 @@ class RecordViewModelTest {
     @Test
     fun `request in app review after 4th record`() = runTest {
         val model = createModel(recordCount = 3)
-        calculatorVm.input("1")
-        calculatorVm.evaluate()
+        model.calculatorVm.input("1")
+        model.calculatorVm.evaluate()
 
         model.requestReviewEvent.awaitUnconsumedEvent()
     }
@@ -197,17 +198,18 @@ class RecordViewModelTest {
         val currencyExchangeRepo = FakeCurrencyExchangeRepo(preferredCurrencyCode = "EUR")
         val model = createModel(currencyExchangeRepo = currencyExchangeRepo)
 
-        calculatorVm.input("100")
+        model.calculatorVm.input("100")
         assertEquals("100.0 EUR", model.preferredCurrencyPrice.first { it != null })
     }
 
 
-    private val calculatorVm = CalculatorViewModel(
+    private fun TestScope.createCalculatorVm() = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
         snackbarSender = FakeSnackbarSender,
         speakToRecordVm = fakeSpeakToRecordVm,
-        freezeBookVm = fakeFreezeBookVm,
+        freezeBookVm = createFreezeBookVm(),
         expressionEvaluator = ExpressionEvaluator(),
+        appScope = backgroundScope
     )
 
     private val bookRepo = FakeBookRepo()
@@ -217,15 +219,16 @@ class RecordViewModelTest {
 
     private val interstitialAdsHandler = FakeInterstitialAdsHandler()
 
-    private fun createModel(
+    private fun TestScope.createModel(
         recordCount: Int = 0,
         canEditBook: Boolean = true,
         isPremium: Boolean = false,
         currencyExchangeRepo: CurrencyExchangeRepo = FakeCurrencyExchangeRepo(),
+        calculatorVm: CalculatorViewModel = createCalculatorVm()
     ) = RecordViewModel(
         calculatorVm = calculatorVm,
         categoriesVm = categoriesVm,
-        freezeBookVm = fakeFreezeBookVm,
+        freezeBookVm = createFreezeBookVm(),
         bookRepo = FakeBookRepo(canEdit = canEditBook),
         navController = NavController(startRoot = BookDest.Record),
         recordRepo = FakeRecordRepo,

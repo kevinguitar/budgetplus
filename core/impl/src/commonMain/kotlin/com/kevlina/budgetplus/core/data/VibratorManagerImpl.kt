@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class VibratorManagerImpl(
+internal class VibratorManagerImpl(
     private val preference: Preference,
     private val tracker: Tracker,
     @AppCoroutineScope private val appScope: CoroutineScope,

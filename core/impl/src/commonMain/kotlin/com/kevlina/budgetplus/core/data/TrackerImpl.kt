@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onEach
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class TrackerImpl(
+internal class TrackerImpl(
     authManager: Lazy<AuthManager>,
     @AppCoroutineScope appScope: CoroutineScope,
     @Named("is_debug") private val isDebug: Boolean,

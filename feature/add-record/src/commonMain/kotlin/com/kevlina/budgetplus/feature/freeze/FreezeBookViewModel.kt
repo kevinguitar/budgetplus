@@ -1,15 +1,14 @@
 package com.kevlina.budgetplus.feature.freeze
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -22,14 +21,14 @@ import kotlinx.coroutines.launch
 /**
  * When a user's premium is expired, we freeze their books and leave only one book to continue recording.
  */
-@ViewModelKey
-@ContributesIntoMap(AppScope::class)
 @SingleIn(AppScope::class)
+@Inject
 class FreezeBookViewModel(
     authManager: AuthManager,
     private val preference: Preference,
     bookRepo: BookRepo,
-) : ViewModel() {
+    @AppCoroutineScope private val appScope: CoroutineScope,
+) {
 
     private val activatedBookIdKey = stringPreferencesKey("activatedBookIdKey")
     val activatedBookId = preference.of(activatedBookIdKey)
@@ -52,18 +51,18 @@ class FreezeBookViewModel(
         val hasMultipleBooks = books.size > 1
         val shouldShowDialog = isFreeUser && hasMultipleBooks
         shouldShowDialog
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+    }.stateIn(appScope, SharingStarted.WhileSubscribed(), false)
 
     val isBookFrozen = combine(
         bookRepo.bookState,
         activatedBookId
     ) { book, activatedBookId ->
         activatedBookId != null && book?.id != activatedBookId
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+    }.stateIn(appScope, SharingStarted.WhileSubscribed(), false)
 
     val books = bookRepo.booksState
         .filterNotNull()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(appScope, SharingStarted.WhileSubscribed(), emptyList())
 
     init {
         authManager.isPremium
@@ -72,11 +71,11 @@ class FreezeBookViewModel(
                     preference.remove(activatedBookIdKey)
                 }
             }
-            .launchIn(viewModelScope)
+            .launchIn(appScope)
     }
 
     fun activateBook(bookId: String) {
-        viewModelScope.launch {
+        appScope.launch {
             preference.update(activatedBookIdKey, bookId)
         }
     }

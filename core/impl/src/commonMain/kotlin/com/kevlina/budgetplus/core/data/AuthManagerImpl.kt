@@ -28,7 +28,7 @@ import kotlin.time.Clock
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class AuthManagerImpl(
+internal class AuthManagerImpl(
     private val preference: Preference,
     private val tracker: Lazy<Tracker>,
     @Named("allow_update_fcm_token") private val allowUpdateFcmToken: Boolean,

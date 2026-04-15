@@ -36,7 +36,7 @@ import kotlin.time.Instant
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class RecordRepoImpl(
+internal class RecordRepoImpl(
     @RecordsDb private val recordsDb: Provider<CollectionReference>,
     @AppCoroutineScope private val appScope: CoroutineScope,
     private val authManager: AuthManager,

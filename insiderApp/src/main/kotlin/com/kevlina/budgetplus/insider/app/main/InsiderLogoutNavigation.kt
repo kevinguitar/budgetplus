@@ -7,7 +7,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class InsiderLogoutNavigation(
+internal class InsiderLogoutNavigation(
     private val navController: NavController<InsiderDest>,
 ) : LogoutNavigation {
 

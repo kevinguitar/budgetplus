@@ -7,7 +7,8 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
 import com.kevlina.budgetplus.core.unit.test.SnapshotFlowRule
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorAction
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
-import com.kevlina.budgetplus.feature.freeze.fakeFreezeBookVm
+import com.kevlina.budgetplus.feature.freeze.createFreezeBookVm
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import kotlin.test.Test
@@ -21,7 +22,8 @@ class CalculatorViewModelTest {
     val rule = SnapshotFlowRule()
 
     @Test
-    fun `clearing the pricing`() {
+    fun `clearing the pricing`() = runTest {
+        val calculator = createCalculator()
         val statement = "36"
         calculator.input(statement)
         assertEquals(statement, calculator.priceText.text)
@@ -32,6 +34,7 @@ class CalculatorViewModelTest {
 
     @Test
     fun `evaluating the result`() = runTest {
+        val calculator = createCalculator()
         calculator.needEvaluate.test {
             assertFalse(awaitItem())
             calculator.input("3×6")
@@ -43,26 +46,30 @@ class CalculatorViewModelTest {
     }
 
     @Test
-    fun `complicated statement should be evaluated correctly`() {
+    fun `complicated statement should be evaluated correctly`() = runTest {
+        val calculator = createCalculator()
         calculator.input("2.54+1.65×64.2÷9.01")
         calculator.evaluate()
         assertEquals("14.3", calculator.priceText.text)
     }
 
     @Test
-    fun `operator should be replaced correctly`() {
+    fun `operator should be replaced correctly`() = runTest {
+        val calculator = createCalculator()
         calculator.input("3+-1×+÷2")
         assertEquals("3-1÷2", calculator.priceText.text)
     }
 
     @Test
-    fun `duplicated dot should be omitted`() {
+    fun `duplicated dot should be omitted`() = runTest {
+        val calculator = createCalculator()
         calculator.input("1.5.4+2..1...2")
         assertEquals("1.54+2.12", calculator.priceText.text)
     }
 
     @Test
-    fun `delete button should work correctly`() {
+    fun `delete button should work correctly`() = runTest {
+        val calculator = createCalculator()
         calculator.input("123")
         calculator.onInput(CalculatorButton.Delete)
         calculator.input("+321")
@@ -71,12 +78,13 @@ class CalculatorViewModelTest {
         assertEquals("44", calculator.priceText.text)
     }
 
-    private val calculator = CalculatorViewModel(
+    private fun TestScope.createCalculator() = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
         snackbarSender = FakeSnackbarSender,
         speakToRecordVm = fakeSpeakToRecordVm,
-        freezeBookVm = fakeFreezeBookVm,
-        expressionEvaluator = ExpressionEvaluator()
+        freezeBookVm = createFreezeBookVm(),
+        expressionEvaluator = ExpressionEvaluator(),
+        appScope = backgroundScope
     )
 }
 

@@ -28,7 +28,7 @@ import kotlin.time.Instant
  *  if the user rejected, we'll never prompt the review flow again for them.
  */
 @ContributesBinding(AppScope::class)
-class InAppReviewManagerImpl(
+internal class InAppReviewManagerImpl(
     private val inAppReviewLauncher: InAppReviewLauncher,
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,

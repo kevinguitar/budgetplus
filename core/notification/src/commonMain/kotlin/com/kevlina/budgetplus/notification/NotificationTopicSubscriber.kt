@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @ContributesIntoSet(AppScope::class)
-class NotificationTopicSubscriber(
+internal class NotificationTopicSubscriber(
     private val authManager: AuthManager,
     private val preference: Preference,
     private val topicMessaging: TopicMessaging,

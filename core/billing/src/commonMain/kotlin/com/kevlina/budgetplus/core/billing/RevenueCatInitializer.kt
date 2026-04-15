@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 
 @ContributesIntoSet(AppScope::class)
-class RevenueCatInitializer(
+internal class RevenueCatInitializer(
     private val authManager: AuthManager,
     private val billingController: Lazy<BillingController>,
     @AppCoroutineScope private val appScope: CoroutineScope,
