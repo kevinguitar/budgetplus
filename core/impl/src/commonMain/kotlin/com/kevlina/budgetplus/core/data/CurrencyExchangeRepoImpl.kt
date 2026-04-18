@@ -108,9 +108,11 @@ internal class CurrencyExchangeRepoImpl(
         if (bookCurrencyCode == preferred) return null
 
         val rate = getRateFor(preferred, bookCurrencyCode) ?: return null
-        val convertedPrice = price / rate
-
-        return formatPriceWithCurrency(convertedPrice, preferred, alwaysShowSymbol)
+        return if (rate == 0.0) {
+            null
+        } else {
+            formatPriceWithCurrency(price / rate, preferred, alwaysShowSymbol)
+        }
     }
 
     override fun toggleDisplayInPreferredCurrency() {

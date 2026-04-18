@@ -38,7 +38,6 @@ import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.toAuthor
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
-import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel.Companion.EMPTY_PRICE
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel.Companion.RECORD_COUNT_CYCLE
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
 import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
@@ -105,7 +104,6 @@ class RecordViewModel(
         ::Triple
     )
         .mapLatest { (priceText, _, _) ->
-            if (priceText == EMPTY_PRICE) return@mapLatest null
             val price = try {
                 priceText.parseToPrice()
             } catch (_: Exception) {
