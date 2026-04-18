@@ -22,7 +22,7 @@ buildkonfig {
 
     val revenuecatApiKey = "revenuecatApiKey"
     defaultConfigs {
-        buildConfigField(STRING, revenuecatApiKey, "")
+        buildConfigField(STRING, revenuecatApiKey, null, nullable = true)
     }
 
     targetConfigs {
@@ -30,7 +30,8 @@ buildkonfig {
             buildConfigField(
                 type = STRING,
                 name = revenuecatApiKey,
-                value = localProperty("REVENUECAT_ANDROID_API_KEY")
+                value = localProperty("REVENUECAT_ANDROID_API_KEY"),
+                nullable = true
             )
         }
 
@@ -38,7 +39,8 @@ buildkonfig {
             buildConfigField(
                 type = STRING,
                 name = revenuecatApiKey,
-                value = localProperty("REVENUECAT_IOS_API_KEY")
+                value = localProperty("REVENUECAT_IOS_API_KEY"),
+                nullable = true
             )
         }
     }

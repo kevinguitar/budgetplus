@@ -94,6 +94,41 @@ Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` d
 
 ---
 
+## Build the Project Locally
+If you want to build the project locally, follow these steps:
+
+1. Clone the repository.
+2. Add a `google-services.json` file under `:androidApp` folder. Here's a valid dummy file you can use:
+```json
+{
+  "project_info": {
+    "project_number": "dummy_project_number",
+    "project_id": "dummy_project_id"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "dummy_app_id",
+        "android_client_info": {
+          "package_name": "com.kevlina.budgetplus"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "dummy_api_key"
+        }
+      ]
+    }
+  ]
+}
+```
+3. Now you should be able to build both Android and iOS apps:
+   - Build the Android app, run `./gradlew assembleDebug`
+   - Build the iOS app, run `./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64`
+4. If you want to have the app running with real functionalities, you'll need to create a new project on Firebase and wire your API keys in the project.
+
+---
+
 ## Backend: Firebase Cloud Functions
 
 Database interactions and push notifications are implemented using [Firebase Cloud Functions](https://firebase.google.com/docs/functions). 
