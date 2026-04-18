@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.core.billing
 
+import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.data.AuthManager
@@ -27,19 +28,25 @@ internal class RevenueCatInitializer(
 ) : AppStartAction {
 
     override fun onAppStart() {
+        val apiKey = BuildKonfig.revenuecatApiKey
+        if (apiKey.isNullOrEmpty()) {
+            Logger.e { "RevenueCat API key is not set, skipping initialization." }
+            return
+        }
+
         Purchases.logLevel = LogLevel.DEBUG
         authManager.userState
             .mapNotNull {
                 val userId = it?.id
                 if (userId == null) {
-                    Purchases.configure(apiKey = BuildKonfig.revenuecatApiKey)
+                    Purchases.configure(apiKey = apiKey)
                     Purchases.sharedInstance.delegate = null
                 }
                 userId
             }
             .distinctUntilChanged()
             .onEach { userId ->
-                Purchases.configure(apiKey = BuildKonfig.revenuecatApiKey) {
+                Purchases.configure(apiKey = apiKey) {
                     appUserId = userId
                 }
 
