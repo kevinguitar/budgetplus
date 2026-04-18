@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
       "state" : {
-        "revision" : "7b722132d1f2ab421c88a2e5c384c984cebd0d00",
-        "version" : "3.4.0"
+        "revision" : "19dffda9a9caf8d86570ff846535902d8509d7bf",
+        "version" : "3.5.0"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "1657f705bc70255ff9d66dfcc697a85db164998f",
-        "version" : "12.11.0"
+        "revision" : "5100f946bd32778662047a823bf145c6da32d85d",
+        "version" : "12.12.1"
       }
     },
     {
@@ -168,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-hybrid-common",
       "state" : {
-        "revision" : "29e618fcfe93c0a2a32d5106bda66dc257b556cc",
-        "version" : "17.54.0"
+        "revision" : "aa2bfca14cb6e393a9b2a813a4eed770544b2193",
+        "version" : "17.55.1"
       }
     },
     {
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/RevenueCat/purchases-ios-spm",
       "state" : {
-        "revision" : "a1bf83fc76099c3d801aa7fc2543c3b9e488cd00",
-        "version" : "5.67.0"
+        "revision" : "66f81c19e29170cecc1f155c62cd586cf53b8400",
+        "version" : "5.67.1"
       }
     },
     {
