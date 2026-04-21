@@ -120,7 +120,7 @@ navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", ver
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3-jb" }
 navigation3-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle-jb" }
 profile-installer = "androidx.profileinstaller:profileinstaller:1.4.1"
-reorderable = "sh.calvin.reorderable:reorderable:3.0.0"
+reorderable = "sh.calvin.reorderable:reorderable:3.1.0"
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat-kmp" }
 revenuecat-ui = { module = "com.revenuecat.purchases:purchases-kmp-ui", version.ref = "revenuecat-kmp" }
 test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
