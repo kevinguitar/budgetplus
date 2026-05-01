@@ -85,6 +85,10 @@ class BookViewModel(
                 if (key !is BookDest.Colors) {
                     themeManager.clearPreviewColors()
                 }
+
+                if (key is BookDest.Welcome) {
+                    handleJoinRequest()
+                }
             }
             .launchIn(viewModelScope)
     }

@@ -9,7 +9,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class BookAuthSuccessNavigation(
+internal class BookAuthSuccessNavigation(
     private val navController: NavController<BookDest>,
     private val bookRepo: BookRepo,
     private val snackbarSender: SnackbarSender,

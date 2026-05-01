@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.currency_picker_hint
+import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -39,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun CurrencyPickerContent(
     keyword: TextFieldState,
     currencyStates: List<CurrencyState>,
-    onCurrencyPicked: (CurrencyState) -> Unit,
+    onCurrencyPicked: (Currency) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -70,7 +71,7 @@ internal fun CurrencyPickerContent(
                     item(key = state.currency.symbol) {
                         CurrencyCard(
                             state = state,
-                            onClick = { onCurrencyPicked(state) }
+                            onClick = { onCurrencyPicked(state.currency) }
                         )
                     }
                 }

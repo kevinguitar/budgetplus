@@ -4,6 +4,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import io.ktor.client.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 
@@ -17,4 +18,8 @@ interface DataModule {
             ignoreUnknownKeys = true
         }
     }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideHttpClient(): HttpClient = HttpClient { expectSuccess = true }
 }

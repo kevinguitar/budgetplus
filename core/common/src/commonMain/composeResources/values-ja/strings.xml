@@ -18,7 +18,7 @@
     <string name="record_note">内容</string>
     <string name="record_note_placeholder_expense">何にお金を使った？</string>
     <string name="record_note_placeholder_income">収入源はどこから？</string>
-    <string name="record_price">金額</string>
+    <string name="record_price">金額（%1$s）</string>
     <string name="record_expense">支出</string>
     <string name="record_income">収入</string>
     <string name="record_empty_category">カテゴリを選択してください</string>
@@ -33,6 +33,7 @@
     <string name="record_speech_recognition_no_result">認識できませんでした。もう一度お話しください。</string>
     <string name="record_freeze_book_title">解約は残念です。\n引き続き記帳する帳簿を1つお選びください。</string>
     <string name="record_freeze_book_description">ご安心ください！これまでのデータはすべて残ります。</string>
+    <string name="record_currency_exchange">通貨換算</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">一括で記帳する</string>
@@ -151,6 +152,8 @@
     <string name="settings_rename_book">帳簿の名前を変更</string>
     <string name="settings_rename_book_success">帳簿の名前が%1$sに変更されました</string>
     <string name="settings_edit_book_currency">勘定通貨の編集</string>
+    <string name="settings_edit_default_currency">デフォルト通貨を編集</string>
+    <string name="settings_edit_default_currency_desc">為替レートをリアルタイム換算。新規帳簿の作成時にもこの設定が自動的に適用されます。</string>
     <string name="settings_view_members">メンバーを表示</string>
     <string name="settings_allow_members_edit">メンバーに編集を許可</string>
     <string name="settings_allow_members_edit_desc">メンバーが帳簿名、カテゴリ、通貨、すべての記録を編集できるようにします。</string>
@@ -191,10 +194,11 @@
     <string name="color_tone_applied_from_link">テーマカラーが適用されました、気に入ったら保存してください！</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">勘定通貨</string>
+    <string name="currency_picker_book_title">勘定通貨</string>
+    <string name="currency_picker_default_title">デフォルト通貨</string>
     <string name="currency_picker_hint">米ドルまたは USD</string>
-    <string name="currency_picker_no_conversion_disclaimer">勘定通貨の変更はアイコンの変更のみで、為替レートの変換は含まれません</string>
-    <string name="currency_picker_edit_success">%1$sの通貨が%2$sに変更されました</string>
+    <string name="currency_picker_book_edit_success">%1$sの通貨が%2$sに変更されました</string>
+    <string name="currency_picker_default_edit_success">デフォルト通貨が %1$s に設定されました</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">リンクを共有し、友達を招待して一緒に記帳しましょう</string>

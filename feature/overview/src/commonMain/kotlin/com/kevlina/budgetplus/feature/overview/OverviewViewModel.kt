@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.permission_hint
+import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
@@ -14,6 +15,7 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
+import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.RecordsObserver
 import com.kevlina.budgetplus.core.data.UserRepo
@@ -25,6 +27,7 @@ import com.kevlina.budgetplus.core.data.resolveAuthor
 import com.kevlina.budgetplus.core.settings.api.ChartModeViewModel
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
+import com.kevlina.budgetplus.feature.overview.ui.CurrencyToggleState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewContentState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewHeaderState
 import com.kevlina.budgetplus.feature.overview.ui.OverviewListState
@@ -60,11 +63,13 @@ class OverviewViewModel private constructor(
     private val bubbleRepo: BubbleRepo,
     private val csvExporter: CsvExporter,
     private val snackbarSender: SnackbarSender,
+    private val interstitialAdsHandler: InterstitialAdsHandler,
     val navController: NavController<BookDest>,
     val bookRepo: BookRepo,
     val timeModel: OverviewTimeViewModel,
     val chartModeModel: ChartModeViewModel,
     private val preference: Preference,
+    private val currencyExchangeRepo: CurrencyExchangeRepo,
 ) : ViewModel() {
 
     val bookName = bookRepo.bookState.mapState { it?.name }
@@ -112,14 +117,18 @@ class OverviewViewModel private constructor(
         records.orEmpty().sumOf { it.price }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0.0)
 
-    private val totalFormattedPrice = totalPrice.mapState {
-        bookRepo.formatPrice(it, alwaysShowSymbol = true)
-    }
+    private val totalFormattedPrice = combine(
+        totalPrice,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { price, _ ->
+        bookRepo.formatPrice(price, alwaysShowSymbol = true)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     private val formattedBalance = combine(
         recordsObserver.records.filterNotNull(),
-        selectedAuthor
-    ) { records, author ->
+        selectedAuthor,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { records, author, _ ->
         val authorId = author?.id
         val sum = withContext(Dispatchers.Default) {
             records
@@ -153,12 +162,30 @@ class OverviewViewModel private constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
+    private val currencyToggleState: StateFlow<CurrencyToggleState?> = combine(
+        bookRepo.currencySymbol,
+        currencyExchangeRepo.preferredCurrencySymbol,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { bookCurrencySymbol, preferredCurrencySymbol, currencyToggle ->
+        if (preferredCurrencySymbol == null || bookCurrencySymbol == preferredCurrencySymbol) {
+            return@combine null
+        }
+
+        CurrencyToggleState(
+            bookCurrencySymbol = bookCurrencySymbol,
+            preferredCurrencySymbol = preferredCurrencySymbol,
+            toggleState = currencyToggle,
+            onClick = ::onCurrencyToggled
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
     internal val state = OverviewContentState(
         headerState = OverviewHeaderState(
             type = type,
             totalPrice = totalFormattedPrice,
             balance = formattedBalance,
             recordGroups = recordGroups,
+            currencyToggleState = currencyToggleState,
             authors = authors,
             selectedAuthor = selectedAuthor,
             timePeriodSelectorState = timeModel.toState(),
@@ -174,6 +201,7 @@ class OverviewViewModel private constructor(
             recordList = recordList,
             recordGroups = recordGroups,
             isSoloAuthor = isSoloAuthor,
+            currencyToggleState = currencyToggleState.mapState { it?.toggleState ?: false },
             highlightTapHint = ::highlightTapHint,
             highlightPieChart = ::highlightPieChart,
             formatPrice = bookRepo::formatPrice,
@@ -196,6 +224,10 @@ class OverviewViewModel private constructor(
 
     fun exportToCsv() {
         tracker.logEvent("overview_export_to_csv")
+        interstitialAdsHandler.showAdThen(onComplete = ::performCsvExport)
+    }
+
+    private fun performCsvExport() {
         viewModelScope.launch {
             try {
                 val period = recordsObserver.timePeriod.first()
@@ -269,6 +301,15 @@ class OverviewViewModel private constructor(
             delay(animationDelay)
             bubbleRepo.addBubbleToQueue(dest)
         }
+    }
+
+    private fun onCurrencyToggled() {
+        if (authManager.isPremium.value) {
+            currencyExchangeRepo.toggleDisplayInPreferredCurrency()
+        } else {
+            navController.navigate(BookDest.UnlockPremium)
+        }
+        tracker.logEvent("currency_exchange_toggle_overview")
     }
 
     companion object {

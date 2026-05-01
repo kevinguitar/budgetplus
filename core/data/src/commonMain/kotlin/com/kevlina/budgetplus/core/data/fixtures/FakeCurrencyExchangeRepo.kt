@@ -1,0 +1,34 @@
+package com.kevlina.budgetplus.core.data.fixtures
+
+import androidx.annotation.VisibleForTesting
+import com.kevlina.budgetplus.core.common.Currency
+import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
+
+@VisibleForTesting
+class FakeCurrencyExchangeRepo(
+    override var preferredCurrencyCode: String = "USD",
+) : CurrencyExchangeRepo {
+
+    override val exchangeRateChange = MutableStateFlow(Unit)
+
+    override val preferredCurrencySymbol: Flow<String?> = flowOf(preferredCurrencyCode)
+
+    override val displayInPreferredCurrency: StateFlow<Boolean>
+        field = MutableStateFlow(true)
+
+    override fun updatePreferredCurrency(currency: Currency) {
+        preferredCurrencyCode = currency.currencyCode
+    }
+
+    override fun formatPreferredCurrency(price: Double, alwaysShowSymbol: Boolean): String {
+        return "$price $preferredCurrencyCode"
+    }
+
+    override fun toggleDisplayInPreferredCurrency() {
+        displayInPreferredCurrency.value = !displayInPreferredCurrency.value
+    }
+}

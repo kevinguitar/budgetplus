@@ -8,11 +8,16 @@ import com.kevlina.budgetplus.core.common.MutableEventFlow
 @VisibleForTesting
 class FakeInterstitialAdsHandler : InterstitialAdsHandler {
 
-    override val showAdEvent: EventFlow<Unit> = MutableEventFlow()
+    override val showAdEvent: EventFlow<() -> Unit> = MutableEventFlow()
 
     var count = 0
 
     override fun showAd() {
         count++
+    }
+
+    override fun showAdThen(onComplete: () -> Unit) {
+        count++
+        onComplete()
     }
 }

@@ -2,7 +2,7 @@
 # https://developer.android.com/reference/tools/gradle-api
 gradle-plugin = "8.13.2"
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
 coroutines = "1.10.2"
 # https://github.com/coil-kt/coil/releases
@@ -10,21 +10,21 @@ coil = "3.4.0"
 # https://github.com/JetBrains/compose-multiplatform/releases
 compose-multiplatform = "1.10.3"
 # https://github.com/ZacSweers/metro/releases
-metro = "0.12.1"
+metro = "1.0.0"
 # https://developer.android.com/jetpack/androidx/releases/navigation3
-navigation3 = "1.0.1"
+navigation3 = "1.1.1"
 # https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html#multiplatform-support
-navigation3-jb = "1.0.0-alpha06"
+navigation3-jb = "1.1.0"
 # https://firebase.google.com/support/release-notes/android
-firebase-bom = "34.11.0"
+firebase-bom = "34.12.0"
 # https://mvnrepository.com/artifact/com.google.firebase/firebase-crashlytics-gradle
-firebase-crashlytics = "3.0.6"
+firebase-crashlytics = "3.0.7"
 # https://github.com/GitLiveApp/firebase-kotlin-sdk/releases
 firebase-kmp = "2.4.0"
 # https://github.com/googleads/swift-package-manager-google-mobile-ads/releases
 google-ads-ios = "13.2.0"
 # https://developer.android.com/jetpack/androidx/releases/credentials
-android-credentials = "1.5.0"
+android-credentials = "1.6.0"
 # https://developer.android.com/jetpack/androidx/releases/lifecycle
 lifecycle = "2.10.0"
 # https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html#dependencies-setup
@@ -39,9 +39,9 @@ permissions = "0.20.1"
 # https://github.com/alexzhirkevich/compottie/releases
 compottie = "2.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
-revenuecat-kmp = "2.10.0+17.52.0"
+revenuecat-kmp = "2.10.2+17.55.1"
 # https://github.com/ktorio/ktor/releases
-ktor = "3.4.1"
+ktor = "3.4.3"
 # https://github.com/touchlab/Kermit/releases
 kermit = "2.1.0"
 
@@ -75,7 +75,7 @@ compose-material3-windowsizeclass = { module = "org.jetbrains.compose.material3:
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
 compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
-compose-android-uiTooling = "androidx.compose.ui:ui-tooling:1.10.6"
+compose-android-uiTooling = "androidx.compose.ui:ui-tooling:1.11.0"
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottie" }
 compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
@@ -95,8 +95,8 @@ firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = 
 firebase-functions = { module = "dev.gitlive:firebase-functions", version.ref = "firebase-kmp" }
 firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-kmp" }
 firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
-google-ads = "com.google.android.gms:play-services-ads:25.1.0"
-google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.21.0.1"
+google-ads = "com.google.android.gms:play-services-ads:25.2.0"
+google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.21.0.2"
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.2.0"
 google-play-review = "com.google.android.play:review-ktx:2.0.2"
 google-play-update = "com.google.android.play:app-update-ktx:2.1.0"
@@ -106,8 +106,10 @@ junit-compose = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.re
 junit-core = "junit:junit:4.13.2"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
-kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
@@ -118,11 +120,10 @@ navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", ver
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3-jb" }
 navigation3-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle-jb" }
 profile-installer = "androidx.profileinstaller:profileinstaller:1.4.1"
-reorderable = "sh.calvin.reorderable:reorderable:3.0.0"
+reorderable = "sh.calvin.reorderable:reorderable:3.1.0"
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat-kmp" }
 revenuecat-ui = { module = "com.revenuecat.purchases:purchases-kmp-ui", version.ref = "revenuecat-kmp" }
 test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
-truth = "com.google.truth:truth:1.4.5"
 turbine = "app.cash.turbine:turbine:1.2.1"
 permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "permissions" }
 permissions-microphone = { module = "dev.icerock.moko:permissions-microphone", version.ref = "permissions" }
@@ -154,7 +155,6 @@ test = [
     "junit-android",
     "junit-core",
     "mockk",
-    "truth",
     "turbine",
 ]
 
@@ -173,4 +173,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle-plugin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 spm-kmp = "io.github.frankois944.spmForKmp:1.9.1"
-buildkonfig = "com.codingfeline.buildkonfig:0.17.1"
+buildkonfig = "com.codingfeline.buildkonfig:0.18.0"

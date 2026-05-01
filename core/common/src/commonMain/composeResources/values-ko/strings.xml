@@ -18,7 +18,7 @@
     <string name="record_note">내용</string>
     <string name="record_note_placeholder_expense">어디에 사용했나요?</string>
     <string name="record_note_placeholder_income">돈은 어디서 왔나요?</string>
-    <string name="record_price">금액</string>
+    <string name="record_price">금액 (%1$s)</string>
     <string name="record_expense">지출</string>
     <string name="record_income">수입</string>
     <string name="record_empty_category">카테고리를 선택하세요</string>
@@ -33,6 +33,7 @@
     <string name="record_speech_recognition_no_result">식별할 수 없습니다. 다시 말씀해 주세요</string>
     <string name="record_freeze_book_title">구독이 취소되었습니다\n계속 기록할 가계부를 선택하세요</string>
     <string name="record_freeze_book_description">걱정하지 마세요! 모든 가계부 데이터는 그대로 보관됩니다</string>
+    <string name="record_currency_exchange">환율 변환</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">일괄 기록</string>
@@ -151,6 +152,8 @@
     <string name="settings_rename_book">가계부 이름 변경</string>
     <string name="settings_rename_book_success">가계부 이름이 %1$s(으)로 변경되었습니다</string>
     <string name="settings_edit_book_currency">가계부 통화 수정</string>
+    <string name="settings_edit_default_currency">기본 통화 편집</string>
+    <string name="settings_edit_default_currency_desc">실시간 환율 계산 및 표시. 신규 장부 생성 시 이 통화 설정이 기본 적용됩니다.</string>
     <string name="settings_view_members">멤버 보기</string>
     <string name="settings_allow_members_edit">멤버 편집 허용</string>
     <string name="settings_allow_members_edit_desc">멤버가 가계부 이름, 카테고리, 통화 및 모든 기록을 수정할 수 있습니다</string>
@@ -191,10 +194,11 @@
     <string name="color_tone_applied_from_link">테마 색상이 적용되었습니다. 마음에 들면 저장하세요!</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_title">가계부 통화</string>
+    <string name="currency_picker_book_title">가계부 통화</string>
+    <string name="currency_picker_default_title">기본 통화</string>
     <string name="currency_picker_hint">엔 또는 JPY</string>
-    <string name="currency_picker_no_conversion_disclaimer">통화를 변경해도 아이콘만 바뀌며 환율 변환은 적용되지 않습니다</string>
-    <string name="currency_picker_edit_success">%1$s의 통화가 %2$s(으)로 변경되었습니다</string>
+    <string name="currency_picker_book_edit_success">%1$s의 통화가 %2$s(으)로 변경되었습니다</string>
+    <string name="currency_picker_default_edit_success">기본 통화가 %1$s(으)로 설정되었습니다</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">공유 링크를 눌러 친구들을 초대하세요!</string>

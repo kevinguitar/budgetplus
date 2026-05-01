@@ -20,7 +20,7 @@ private typealias ConfigMap = Map<String, FirebaseRemoteConfigValue>
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class RemoteConfigImpl(
+internal class RemoteConfigImpl(
     @Named("is_debug") isDebug: Boolean,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : RemoteConfig {

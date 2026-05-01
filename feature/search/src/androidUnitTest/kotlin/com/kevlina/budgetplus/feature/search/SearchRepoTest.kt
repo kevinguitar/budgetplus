@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.feature.search
 
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import app.cash.turbine.test
-import com.google.common.truth.Truth.assertThat
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
@@ -15,7 +14,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SearchRepoTest {
 
@@ -41,7 +41,7 @@ class SearchRepoTest {
     fun `execute DB query when the query text is presented`() = runTest {
         repo.dbResult.test {
             repo.query.setTextAndPlaceCursorAtEnd("search")
-            assertThat(awaitItem()).isEqualTo(DbResult.Loading)
+            assertEquals(DbResult.Loading, awaitItem())
         }
     }
 
@@ -49,7 +49,7 @@ class SearchRepoTest {
     fun `execute DB query when the category is selected`() = runTest {
         repo.dbResult.test {
             repo.category.value = SearchCategory.Selected("food")
-            assertThat(awaitItem()).isEqualTo(DbResult.Loading)
+            assertEquals(DbResult.Loading, awaitItem())
         }
     }
 
@@ -57,7 +57,7 @@ class SearchRepoTest {
     fun `do not execute DB query again upon text changes`() = runTest {
         repo.dbResult.test {
             repo.query.setTextAndPlaceCursorAtEnd("search")
-            assertThat(awaitItem()).isEqualTo(DbResult.Loading)
+            assertEquals(DbResult.Loading, awaitItem())
 
             repo.query.setTextAndPlaceCursorAtEnd("search 1")
             repo.query.setTextAndPlaceCursorAtEnd("search 2")
@@ -71,7 +71,7 @@ class SearchRepoTest {
     fun `do not execute DB query again upon category changes`() = runTest {
         repo.dbResult.test {
             repo.category.value = SearchCategory.Selected("food")
-            assertThat(awaitItem()).isEqualTo(DbResult.Loading)
+            assertEquals(DbResult.Loading, awaitItem())
 
             repo.category.value = SearchCategory.Selected("daily")
             repo.category.value = SearchCategory.Selected("transport")

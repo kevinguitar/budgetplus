@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @ContributesBinding(AppScope::class)
-class InAppUpdateManagerImpl(
+internal class InAppUpdateManagerImpl(
     private val activity: ComponentActivity,
     private val tracker: Tracker,
     private val preference: Preference,

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">极简记帐</string>
+    <string name="app_language">zh-cn</string>
+
+    <!-- Auth -->
+    <string name="auth_welcome_title">欢迎加入极简记帐</string>
+    <string name="auth_welcome_description">飞快的记帐 App，从开启到完成记帐只要 5 秒钟\n快跟你的亲朋好友共同记帐吧！</string>
+    <string name="auth_google">以 Google 继续</string>
+    <string name="auth_apple">以 Apple 继续</string>
+    <string name="auth_success">欢迎，%1$s！</string>
+
+    <!-- Welcome -->
+    <string name="welcome_create_book_title">你可以创建帐本</string>
+    <string name="welcome_join_instruction">或是想加入好友创建的帐本一起记帐吗？\n快请他们分享加入连结给你吧！</string>
+
+    <!-- Record -->
+    <string name="record_note">内容</string>
+    <string name="record_note_placeholder_expense">花在哪裡？</string>
+    <string name="record_note_placeholder_income">钱从哪裡来？</string>
+    <string name="record_price">金额（%1$s）</string>
+    <string name="record_expense">支出</string>
+    <string name="record_income">收入</string>
+    <string name="record_empty_category">请选择类别</string>
+    <string name="record_empty_price">请输入金额</string>
+    <string name="record_edit_title">编辑帐目</string>
+    <string name="record_edited">已储存</string>
+    <string name="record_deleted">已删除%1$s</string>
+    <string name="record_confirm_delete">确认删除此笔帐目吗？</string>
+    <string name="record_duplicated">帐目已复制</string>
+    <string name="record_speech_recognition_format">请说出内容＋金额</string>
+    <string name="record_speech_recognition_not_supported">此装置未支援语音功能</string>
+    <string name="record_speech_recognition_no_result">无法辨识，请再说一次</string>
+    <string name="record_freeze_book_title">很遗憾您取消订阅了\n请选择一本帐本继续记帐</string>
+    <string name="record_freeze_book_description">别担心！您的所有帐本资料皆会保留</string>
+    <string name="record_currency_exchange">汇率换算</string>
+
+    <!-- Batch Record -->
+    <string name="batch_record_title">批次记帐</string>
+    <string name="batch_record_start_date">开始日期</string>
+    <string name="batch_record_frequency">循环周期</string>
+    <string name="batch_record_every_duration">每</string>
+    <string name="batch_record_unit_month">月</string>
+    <string name="batch_record_unit_week">周</string>
+    <string name="batch_record_unit_day">天</string>
+    <string name="batch_record_times">循环次数</string>
+    <string name="batch_record_cta">批次记帐</string>
+    <string name="batch_record_created">%1$s笔帐目已新增至%2$s</string>
+    <string name="batch_record_edit_confirmation">您要一并套用至未来的所有帐目吗？</string>
+    <string name="batch_record_delete_confirmation">您要一并删除未来的所有帐目吗？</string>
+    <string name="batch_record_only_this">这笔就好</string>
+    <string name="batch_record_all_future_records">所有帐目</string>
+    <string name="batch_record_edited">已编辑%1$s笔帐目</string>
+    <string name="batch_record_deleted">已删除%1$s笔帐目</string>
+
+    <!-- Book -->
+    <string name="book_selection">选择帐本</string>
+    <string name="book_create_success">“%1$s”已新增成功</string>
+    <string name="book_join_success">已加入“%1$s”</string>
+    <string name="book_join_link_expired">连结已失效ＱＱ</string>
+    <string name="book_already_archived">糟糕，帐本已经被删除了</string>
+    <string name="book_already_joined">您已加入帐本了</string>
+    <string name="book_join_exceed_free_limit">取得进阶版以创建、加入更多帐本</string>
+    <string name="book_exceed_maximum">已达帐本总数上限</string>
+
+    <!-- Category -->
+    <string name="category_title">类别名称</string>
+    <string name="category_edit_title">编辑类别</string>
+    <string name="category_edit_successful">类别清单已储存</string>
+    <string name="category_already_exist">类别%1$s已存在</string>
+
+    <string-array name="default_expense_categories">
+        <item>饮食</item>
+        <item>日常</item>
+        <item>交通</item>
+        <item>娱乐</item>
+        <item>房租</item>
+        <item>电信</item>
+        <item>水电</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="default_income_categories">
+        <item>薪水</item>
+        <item>奖金</item>
+        <item>现金回饋</item>
+        <item>其他</item>
+    </string-array>
+
+    <!-- Members -->
+    <string name="members_title">成员</string>
+    <string name="members_owner_label">创建者</string>
+    <string name="members_confirm_remove">确定要将%1$s从“%2$s”中移除吗？</string>
+
+    <!-- Review -->
+    <string name="review_request_message">希望你喜欢我们的 App！请问你愿意留个评价吗？</string>
+    <string name="review_request_yes">当然好！</string>
+    <string name="review_request_no">先不要</string>
+
+    <!-- Menu -->
+    <string name="menu_invite_to_book">点击下面的连结跟我一起记帐吧！\n%1$s</string>
+    <string name="menu_create_book">创建新帐本</string>
+    <string name="menu_share_colors">试试看我调的主题色调！\n%1$s</string>
+
+    <!-- Overview -->
+    <string name="overview_title">%1$s总览</string>
+    <string name="overview_total_price">合计</string>
+    <string name="overview_period_day">本日</string>
+    <string name="overview_period_week">本週</string>
+    <string name="overview_period_month">本月</string>
+    <string name="overview_period_last_month">上个月</string>
+    <string name="overview_exceed_max_period">解锁进阶版以筛选大于一个月的帐目</string>
+    <string name="overview_sort_by_date">依日期排序</string>
+    <string name="overview_sort_by_price">依金额排序</string>
+    <string name="overview_balance">结余</string>
+    <string name="overview_details_title">%1$s：%2$s</string>
+    <string name="overview_author_everyone">所有人</string>
+    <string name="overview_author_anonymous">匿名</string>
+
+    <!-- Export -->
+    <string name="export_cta">汇出报表</string>
+    <string name="export_csv_confirmation">您要汇出所有自%1$s至%2$s的帐目吗？</string>
+    <string name="export_csv_success">CSV 报表已储存至下载资料夹</string>
+    <string name="export_column_type">项目</string>
+    <string name="export_column_name">名称</string>
+    <string name="export_column_price">金额（%1$s）</string>
+    <string name="export_column_category">类别</string>
+    <string name="export_column_created_on">时间</string>
+    <string name="export_column_author">记帐人</string>
+
+    <!-- Search -->
+    <string name="search_title">搜寻</string>
+    <string name="search_field_placeholder">输入关键字</string>
+    <string name="search_all_categories">所有类别</string>
+    <string name="search_period_last_month">过去一个月</string>
+    <string name="search_period_last_half_year">过去半年</string>
+    <string name="search_period_last_year">过去一年</string>
+    <string name="search_period_custom">自订区间</string>
+    <string name="search_period_custom_range">自%1$s至%2$s</string>
+
+    <!-- Premium -->
+    <string name="premium_hide_ads">隐藏广告</string>
+    <string name="premium_unlock">解锁进阶版</string>
+    <string name="premium_unlocked">极简记帐进阶版，解锁！</string>
+    <string name="premium_acknowledge_fail">无法确认款项，请稍后再试</string>
+
+    <!-- Settings -->
+    <string name="settings_title">%1$s设定</string>
+    <string name="settings_description">设定</string>
+    <string name="settings_rename_user">编辑使用者名称</string>
+    <string name="settings_rename_user_success">使用者名称已更改为%1$s</string>
+    <string name="settings_rename_book">重新命名帐本</string>
+    <string name="settings_rename_book_success">帐本名称已更改为%1$s</string>
+    <string name="settings_edit_book_currency">编辑帐本币别</string>
+    <string name="settings_edit_default_currency">编辑预设币别</string>
+    <string name="settings_edit_default_currency_desc">即时换算显示汇率，且后续新增帐本时将预设沿用此币别设定</string>
+    <string name="settings_view_members">查看成员</string>
+    <string name="settings_allow_members_edit">允许成员编辑</string>
+    <string name="settings_allow_members_edit_desc">让成员编辑帐本名称、类别、币别及所有帐目</string>
+    <string name="settings_logout">登出</string>
+    <string name="settings_delete_book">删除帐本</string>
+    <string name="settings_leave_book">离开帐本</string>
+    <string name="settings_confirm_delete">确定要删除“%1$s”吗？</string>
+    <string name="settings_confirm_leave">确定要离开“%1$s”吗？</string>
+    <string name="settings_book_deleted">%1$s已被删除</string>
+    <string name="settings_book_left">您已离开%1$s</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_input_vibration">输入震动反馈</string>
+    <string name="settings_chart_mode">总览图表模式</string>
+    <string name="settings_bar_chart">长条图</string>
+    <string name="settings_pie_chart">圆饼图</string>
+    <string name="settings_share_app">分享 App 给好友</string>
+    <string name="settings_share_app_message">我发现了一款超好用的记帐 App，快下载来试试吧！\n%1$s</string>
+    <string name="settings_rate_us">在 %1$s 上评价</string>
+    <string name="settings_follow_on_instagram">追踪我们的 Instagram</string>
+    <string name="settings_contact_us">与我们联系</string>
+    <string name="settings_privacy_policy">隐私权条款</string>
+    <string name="settings_no_email_app_found">找不到 email 应用程式</string>
+    <string name="settings_delete_account">删除帐号</string>
+    <string name="settings_delete_account_description">确定要删除帐号吗？删除帐号后，所有帐本与帐目资料将一并清除，且无法恢复。</string>
+    <string name="settings_delete_account_description2">确认永久删除</string>
+
+    <!-- Color Tone Picker -->
+    <string name="color_tone_picker_title">主题调色盘</string>
+    <string name="color_tone_preview_title">色调预览</string>
+    <string name="color_tone_milk_tea">乌龙奶茶</string>
+    <string name="color_tone_dusk">夕暮暖调</string>
+    <string name="color_tone_countryside">田野乡村</string>
+    <string name="color_tone_barbie">芭比与肯尼</string>
+    <string name="color_tone_lavender">薰黄阳光</string>
+    <string name="color_tone_nemo_sea">尼莫与海</string>
+    <string name="color_tone_customized">我的调色盘</string>
+    <string name="color_tone_color_hex_code">Hex 色码</string>
+    <string name="color_tone_applied_from_link">已套用主题色调，喜欢记得储存！</string>
+
+    <!-- Currency Picker -->
+    <string name="currency_picker_book_title">帐本币别</string>
+    <string name="currency_picker_default_title">预设币别</string>
+    <string name="currency_picker_hint">日元或 JPY</string>
+    <string name="currency_picker_book_edit_success">%1$s的币别已更换为%2$s</string>
+    <string name="currency_picker_default_edit_success">预设币别已设定为%1$s</string>
+
+    <!-- Bubble -->
+    <string name="bubble_invite">点击分享连结，邀请好友们一起记帐！</string>
+    <string name="bubble_speak_to_record">长按开始语音记帐</string>
+    <string name="bubble_edit_category">点击以重新命名或删除，长按拖曳排序</string>
+    <string name="bubble_save_category">编辑完成后，记得储存喔！</string>
+    <string name="bubble_overview_mode">你可以选择用类别或明细显示帐目</string>
+    <string name="bubble_overview_export">输出帐目成 CSV 档保存</string>
+    <string name="bubble_overview_record_tap_hint">点击编辑，长按以复制或删除</string>
+    <string name="bubble_overview_pie_chart">长按查看更多资讯</string>
+    <string name="bubble_records_sorting">你可以选择用日期或是金额排序帐目</string>
+    <string name="bubble_colors_sharing">点击分享你的调色盘给好友们！</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_general">一般</string>
+    <string name="notification_channel_general_desc">一些提醒和 App 相关的通知</string>
+    <string name="notification_channel_new_member">新成员</string>
+    <string name="notification_channel_new_member_desc">当您的帐本有新成员加入时，我们会通知您</string>
+
+    <!-- General -->
+    <string name="cta_add">新增</string>
+    <string name="cta_create">建立</string>
+    <string name="cta_rename">储存</string>
+    <string name="cta_invite">邀请</string>
+    <string name="cta_edit">编辑</string>
+    <string name="cta_save">储存</string>
+    <string name="cta_share">分享</string>
+    <string name="cta_confirm">确认</string>
+    <string name="cta_go">Go</string>
+    <string name="cta_cancel">取消</string>
+    <string name="cta_back">返回</string>
+    <string name="cta_delete">删除</string>
+    <string name="cta_complete">完成</string>
+    <string name="cta_duplicate">复制</string>
+    <string name="select_date">选择日期</string>
+    <string name="date_to">至</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+    <string name="tomorrow">明天</string>
+    <string name="username_title">使用者名称</string>
+    <string name="book_name_title">帐本名称</string>
+    <string name="book_name_placeholder">我的记帐本</string>
+    <string name="ads_not_available">暂无广告</string>
+    <string name="fallback_error_message">出错了，请稍后再试</string>
+    <string name="permission_hint">如果您改变主意，请在设定中打开权限</string>
+    <string name="app_update_downloaded">极简记帐的更新已就绪！</string>
+    <string name="unsaved_warning_message">尚有未储存的变更，确定要离开吗？</string>
+</resources>

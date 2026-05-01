@@ -4,9 +4,8 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.snapshotFlow
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.MutableEventFlow
@@ -18,24 +17,22 @@ import com.kevlina.budgetplus.feature.add.record.ui.CalculatorAction
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
 import com.kevlina.budgetplus.feature.freeze.FreezeBookViewModel
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordViewModel
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-@ViewModelKey
-@ContributesIntoMap(AppScope::class)
+@Inject
 class CalculatorViewModel(
     val vibrator: VibratorManager,
     val speakToRecordVm: SpeakToRecordViewModel,
     val freezeBookVm: FreezeBookViewModel,
     private val snackbarSender: SnackbarSender,
     private val expressionEvaluator: ExpressionEvaluator,
-) : ViewModel() {
-
+    @AppCoroutineScope private val appScope: CoroutineScope,
+) {
     val priceText = TextFieldState(EMPTY_PRICE)
 
     val needEvaluate: Flow<Boolean> = snapshotFlow { priceText.text }
@@ -107,7 +104,7 @@ class CalculatorViewModel(
         when (val result = expressionEvaluator.evaluate(text)) {
             is ExpressionEvaluator.Result.Success -> setPrice(result.value)
             is ExpressionEvaluator.Result.Error -> {
-                viewModelScope.launch { snackbarSender.send(result.message) }
+                appScope.launch { snackbarSender.send(result.message) }
                 Logger.e(CalculatorException()) { "Validation error. Raw: $text" }
             }
         }

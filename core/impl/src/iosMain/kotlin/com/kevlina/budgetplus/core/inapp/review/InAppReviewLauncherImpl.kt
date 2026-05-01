@@ -8,7 +8,7 @@ import platform.UIKit.UISceneActivationStateForegroundActive
 import platform.UIKit.UIWindowScene
 
 @ContributesBinding(AppScope::class)
-class InAppReviewLauncherImpl : InAppReviewLauncher {
+internal class InAppReviewLauncherImpl : InAppReviewLauncher {
 
     override suspend fun launchReviewFlow() {
         val scene = UIApplication.sharedApplication.connectedScenes

@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @ContributesBinding(AppScope::class)
-class TranslatorImpl(
+internal class TranslatorImpl(
     @Named("google_api_key") googleApiKey: String,
 ) : Translator {
 

@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.DisableCacheInKotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCacheApi
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import java.net.URI
 
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
@@ -73,6 +74,13 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                     baseName = modulePath.replaceFirstChar { it.uppercase() }
                     freeCompilerArgs += listOf("-Xbinary=bundleId=$appId.$modulePath")
                     isStatic = true
+
+                    if (buildType == NativeBuildType.RELEASE) {
+                        freeCompilerArgs += listOf(
+                            "-Xbinary=stripDebugSymbols=true",
+                            "-Xbinary=sourceInfoType=none",
+                        )
+                    }
 
                     @OptIn(KotlinNativeCacheApi::class)
                     disableNativeCache(

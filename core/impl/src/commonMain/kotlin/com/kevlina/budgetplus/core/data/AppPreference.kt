@@ -19,7 +19,7 @@ import kotlinx.serialization.json.Json
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class AppPreference(
+internal class AppPreference(
     private val dataStore: DataStore<Preferences>,
     private val formatter: Json,
 ) : Preference {
