@@ -87,6 +87,7 @@ internal class AuthManagerImpl(
             setUserToPreference(premiumUser)
 
             if (isPremium) {
+                tracker.value.logEvent("buy_premium_success")
                 snackbarSender.send(Res.string.premium_unlocked)
             }
         } catch (e: Exception) {

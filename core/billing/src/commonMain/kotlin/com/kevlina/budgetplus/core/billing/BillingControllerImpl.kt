@@ -7,7 +7,6 @@ import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.data.AuthManager
-import com.kevlina.budgetplus.core.data.PurchaseRepo
 import com.revenuecat.purchases.kmp.models.CustomerInfo
 import com.revenuecat.purchases.kmp.models.Package
 import com.revenuecat.purchases.kmp.models.PackageType
@@ -27,7 +26,6 @@ internal class BillingControllerImpl(
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
     private val authManager: AuthManager,
-    private val purchaseRepo: PurchaseRepo,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : BillingController {
 
@@ -43,7 +41,7 @@ internal class BillingControllerImpl(
         }
 
         override fun onPurchaseCompleted(customerInfo: CustomerInfo, storeTransaction: StoreTransaction) {
-            customerInfo.verifyEntitlements(storeTransaction.transactionId)
+            customerInfo.verifyEntitlements()
         }
 
         override fun onPurchaseError(error: PurchasesError) {
@@ -67,7 +65,7 @@ internal class BillingControllerImpl(
         customerInfo.verifyEntitlements()
     }
 
-    private fun CustomerInfo.verifyEntitlements(transactionId: String? = null) {
+    private fun CustomerInfo.verifyEntitlements() {
         if (entitlements.all.isEmpty()) return
         if (entitlements.verification == VerificationResult.FAILED) {
             Logger.e { "Entitlement verification failed for user ${authManager.userId}" }
@@ -78,15 +76,6 @@ internal class BillingControllerImpl(
         val entitlement = entitlements[PREMIUM_ENTITLEMENT] ?: return
         appScope.launch {
             if (entitlement.isActive) {
-                if (transactionId != null) {
-                    purchaseRepo.recordPurchase(
-                        orderId = transactionId,
-                        productId = entitlement.productPlanIdentifier
-                            ?: entitlement.productIdentifier,
-                        client = purchasedClient
-                    )
-                    tracker.logEvent("buy_premium_success")
-                }
                 authManager.markPremium(true)
             } else {
                 authManager.markPremium(false)
