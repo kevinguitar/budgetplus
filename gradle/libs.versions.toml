@@ -22,7 +22,7 @@ firebase-crashlytics = "3.0.7"
 # https://github.com/GitLiveApp/firebase-kotlin-sdk/releases
 firebase-kmp = "2.4.0"
 # https://github.com/googleads/swift-package-manager-google-mobile-ads/releases
-google-ads-ios = "13.2.0"
+google-ads-ios = "13.3.0"
 # https://developer.android.com/jetpack/androidx/releases/credentials
 android-credentials = "1.6.0"
 # https://developer.android.com/jetpack/androidx/releases/lifecycle
@@ -172,5 +172,5 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle-plugin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-spm-kmp = "io.github.frankois944.spmForKmp:1.6.1"
+spm-kmp = "io.github.frankois944.spmForKmp:1.9.1"
 buildkonfig = "com.codingfeline.buildkonfig:0.18.0"
