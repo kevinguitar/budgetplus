@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber", "CyclomaticComplexMethod")
-
 package com.kevlina.budgetplus.feature.overview.ui
 
 import androidx.compose.animation.core.animateFloatAsState
