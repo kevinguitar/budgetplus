@@ -49,7 +49,6 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 - [Compottie](https://github.com/alexzhirkevich/compottie) for Lottie animations in Compose Multiplatform
 - [CrashKiOS](https://github.com/touchlab/CrashKiOS) for better crash reporting on iOS
 - [Csv](https://github.com/sergejsha/csv) for exporting data as CSV (KMP)
-- [Detekt](https://github.com/detekt/detekt) for Kotlin static code analysis
 - [Firebase Kotlin SDK](https://github.com/GitLiveApp/firebase-kotlin-sdk) for KMP support
 - [Kermit](https://github.com/touchlab/Kermit) for logging
 - [Keval](https://github.com/notKamui/Keval) for mathematical expression evaluation

@@ -34,7 +34,6 @@ internal class RemoteConfigImpl(
             // To be able to rapidly fetch config while debugging.
             appScope.launch {
                 remoteConfig.settings {
-                    @Suppress("MagicNumber")
                     minimumFetchInterval = 3600.milliseconds
                 }
             }

@@ -11,7 +11,6 @@ import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 
-@Suppress("MagicNumber")
 val chartColors = listOf(
     Color(0xFFEEE3D2),
     Color(0xFFD8E3DC),

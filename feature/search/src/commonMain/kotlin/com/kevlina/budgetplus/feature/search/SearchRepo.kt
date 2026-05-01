@@ -118,7 +118,6 @@ class SearchRepo(
         return flow
     }
 
-    @Suppress("MagicNumber")
     private fun SearchPeriod.fromDate(): LocalDate =
         when (this) {
             SearchPeriod.PastMonth -> LocalDate.now().minus(1, DateTimeUnit.MONTH)
