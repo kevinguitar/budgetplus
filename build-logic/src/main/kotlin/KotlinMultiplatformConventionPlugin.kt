@@ -84,7 +84,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                     @OptIn(KotlinNativeCacheApi::class)
                     disableNativeCache(
-                        version = DisableCacheInKotlinVersion.`2_3_20`,
+                        version = DisableCacheInKotlinVersion.`2_3_21`,
                         reason = "Crashkios caching workaround",
                         issueUrl = URI("https://crashkios.touchlab.co/docs/crashlytics/")
                     )
