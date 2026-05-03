@@ -1,22 +1,37 @@
 package com.kevlina.budgetplus.feature.settings.member
 
-import app.cash.turbine.test
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.data.UserRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.User
-import com.kevlina.budgetplus.core.unit.test.MainDispatcherRule
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import org.junit.Rule
+import kotlinx.coroutines.test.setMain
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MembersViewModelTest {
 
-    @get:Rule
-    val rule = MainDispatcherRule()
+    private val testDispatcher = UnconfinedTestDispatcher()
+
+    @BeforeTest
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     private val owner = User(id = "owner_id", name = "Owner")
     private val member1 = User(id = "member_1", name = "Member 1")
@@ -36,12 +51,9 @@ class MembersViewModelTest {
             ),
         )
 
-        model.bookMembers.test {
-            skipItems(1) // Skip initial empty list
-            val members = awaitItem()
-            assertEquals("owner_id", members.first().id)
-            assertEquals(3, members.size)
-        }
+        val members = model.bookMembers.first { it.isNotEmpty() }
+        assertEquals("owner_id", members.first().id)
+        assertEquals(3, members.size)
     }
 
     @Test
@@ -51,9 +63,7 @@ class MembersViewModelTest {
             users = emptyMap(),
         )
 
-        model.bookMembers.test {
-            assertEquals(emptyList(), awaitItem())
-        }
+        assertEquals(emptyList(), model.bookMembers.value)
     }
 
     @Test
@@ -66,12 +76,9 @@ class MembersViewModelTest {
             users = mapOf("owner_id" to owner),
         )
 
-        model.bookMembers.test {
-            skipItems(1) // Skip initial empty list
-            val members = awaitItem()
-            assertEquals(1, members.size)
-            assertEquals("owner_id", members.first().id)
-        }
+        val members = model.bookMembers.first { it.isNotEmpty() }
+        assertEquals(1, members.size)
+        assertEquals("owner_id", members.first().id)
     }
 
     @Test
