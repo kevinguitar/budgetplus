@@ -107,6 +107,10 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 commonTest.dependencies {
                     implementation(kotlin("test"))
                     implementation(project.libs.coroutines.test)
+
+                    if (project.path != ":core:unit-test") {
+                        implementation(project(":core:unit-test"))
+                    }
                 }
 
                 androidMain.dependencies {
@@ -116,10 +120,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 androidUnitTest.dependencies {
                     implementation(kotlin("test"))
                     implementation(project.libs.bundles.test)
-
-                    if (project.path != ":core:unit-test") {
-                        implementation(project(":core:unit-test"))
-                    }
                 }
 
                 named { it.lowercase().startsWith("ios") }.configureEach {
