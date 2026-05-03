@@ -9,14 +9,13 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.User
-import com.kevlina.budgetplus.core.unit.test.BaseTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BookSelectorViewModelTest : BaseTest() {
+class BookSelectorViewModelTest {
 
     @Test
     fun `createBookBtnState is Enabled when free user has no books`() = runTest {
@@ -54,7 +53,7 @@ class BookSelectorViewModelTest : BaseTest() {
     private fun TestScope.createModel(
         isPremium: Boolean = false,
         bookCount: Int = 0,
-        navController: NavController<BookDest> = NavController<BookDest>(startRoot = BookDest.Record),
+        navController: NavController<BookDest> = NavController(startRoot = BookDest.Record),
     ): BookSelectorViewModel {
         val books = (0 until bookCount).map { Book(id = "book_$it") }
         return BookSelectorViewModel(

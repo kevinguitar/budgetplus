@@ -150,12 +150,14 @@ compose = [
     "compose-uiTooling",
     "compose-foundation",
 ]
-test = [
+common-test = [
     "coroutines-test",
+    "turbine",
+]
+android-test = [
     "junit-android",
     "junit-core",
     "mockk",
-    "turbine",
 ]
 
 [plugins]

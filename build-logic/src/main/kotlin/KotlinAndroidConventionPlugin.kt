@@ -7,7 +7,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -70,7 +69,8 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
         project.dependencies {
             implementation(project.libs.bundles.android)
             implementation(project.libs.bundles.kmp)
-            testImplementation(project.libs.bundles.test)
+            testImplementation(project.libs.bundles.android.test)
+            testImplementation(project.libs.bundles.common.test)
 
             if (project.path != ":core:common") {
                 implementation(project(":core:common"))
