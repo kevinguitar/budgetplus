@@ -24,8 +24,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlin.test.Test
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
@@ -36,9 +36,9 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         model.previousDay()
 
         val yesterday = LocalDate.now().minus(1, DateTimeUnit.DAY)
-        assertContains(
-            recordsObserver.setTimePeriodCalls,
-            listOf(bookId to TimePeriod.Custom(yesterday, yesterday)),
+        assertEquals(
+            listOf<Pair<String, TimePeriod>>(bookId to TimePeriod.Custom(yesterday, yesterday)),
+            recordsObserver.setTimePeriodCalls
         )
     }
 
@@ -50,7 +50,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
         val tomorrow = LocalDate.now().plus(1, DateTimeUnit.DAY)
         assertEquals(
-            listOf(bookId to TimePeriod.Custom(tomorrow, tomorrow)),
+            listOf<Pair<String, TimePeriod>>(bookId to TimePeriod.Custom(tomorrow, tomorrow)),
             recordsObserver.setTimePeriodCalls
         )
     }
@@ -68,7 +68,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
         assertEquals(Res.string.overview_exceed_max_period, FakeSnackbarSender.lastSentMessageRes)
         assertEquals(
-            listOf(
+            listOf<Pair<String, TimePeriod>>(
                 bookId to TimePeriod.Custom(
                     from = LocalDate.now(),
                     until = LocalDate.now().plus(1, DateTimeUnit.MONTH)
@@ -96,7 +96,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         )
         model.setTimePeriod(customPeriod, isCustomized = true)
 
-        assert(model.customPeriod.value == customPeriod)
+        assertEquals(customPeriod, model.customPeriod.value)
     }
 
     @Test
@@ -117,7 +117,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         )
 
         model1.setTimePeriod(customPeriod1, isCustomized = true)
-        assert(model1.customPeriod.value == customPeriod1)
+        assertEquals(customPeriod1, model1.customPeriod.value)
 
         // Switch to another book by creating a new model with a different bookId
         val bookId2 = "another_book"
@@ -129,7 +129,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         )
 
         // Initially null for the new book
-        assert(model2.customPeriod.value == null)
+        assertNull(model2.customPeriod.value)
 
         // Set custom period for the new book
         val customPeriod2 = TimePeriod.Custom(
@@ -137,7 +137,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             until = LocalDate.now().plus(2, DateTimeUnit.WEEK)
         )
         model2.setTimePeriod(customPeriod2, isCustomized = true)
-        assert(model2.customPeriod.value == customPeriod2)
+        assertEquals(customPeriod2, model2.customPeriod.value)
 
         // Switch back to the first book
         val model3 = createModel(
@@ -145,7 +145,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             bookRepo = bookRepo1,
             preference = fakePreference
         )
-        assert(model3.customPeriod.value == customPeriod1)
+        assertEquals(customPeriod1, model3.customPeriod.value)
     }
 
     @Test
@@ -164,7 +164,7 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         val until = LocalDate.now().plus(3, DateTimeUnit.DAY)
         model.setDateRange(from, until, isCustomized = true)
 
-        assert(model.customPeriod.value == TimePeriod.Custom(from, until))
+        assertEquals(TimePeriod.Custom(from, until), model.customPeriod.value)
     }
 
     private val bookId = "my_book"

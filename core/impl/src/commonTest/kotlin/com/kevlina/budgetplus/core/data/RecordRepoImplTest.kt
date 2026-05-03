@@ -10,7 +10,9 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeRecordDbClient
 import com.kevlina.budgetplus.core.data.remote.Author
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -25,18 +27,19 @@ import kotlin.test.assertEquals
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 
-class RecordRepoImplTest {
+class RecordRepoImplTest : BaseTest(useUnconfinedDispatcher = true) {
 
     @Test
-    fun `createRecord should store the record in DB`() = runTest {
+    fun `createRecord should store the record in DB`() = runTest(testDispatcher) {
         createRepo().createRecord(testRecord)
+        runCurrent()
 
         assertEquals(listOf(testRecord), recordDbClient.addedRecords)
         assertEquals("record_created", tracker.lastEventName)
     }
 
     @Test
-    fun `batchRecord should record correct amount of records`() = runTest {
+    fun `batchRecord should record correct amount of records`() = runTest(testDispatcher) {
         val nTimes = 5
         val startDate = LocalDate.now()
 
@@ -46,6 +49,7 @@ class RecordRepoImplTest {
             frequency = BatchFrequency(duration = 3, unit = BatchUnit.Week),
             times = nTimes
         )
+        runCurrent()
 
         assertEquals(nTimes, recordDbClient.addedRecords.size)
         repeat(nTimes) { index ->
@@ -98,8 +102,9 @@ class RecordRepoImplTest {
 
     @Test
     fun `duplicateRecord should use the current user as author, and do not carry batch info`() =
-        runTest {
+        runTest(testDispatcher) {
             createRepo().duplicateRecord(testRecord)
+            runCurrent()
 
             assertEquals(1, recordDbClient.addedRecords.size)
             val addedRecord = recordDbClient.addedRecords.first()
