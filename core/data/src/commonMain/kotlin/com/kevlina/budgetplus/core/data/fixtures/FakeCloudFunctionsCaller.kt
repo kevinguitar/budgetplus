@@ -1,9 +1,9 @@
 package com.kevlina.budgetplus.core.data.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.data.CloudFunctionsCaller
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeCloudFunctionsCaller : CloudFunctionsCaller {
 
     var lastCall: Triple<String, String, Any?>? = null

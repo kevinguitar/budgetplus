@@ -1,9 +1,9 @@
 package com.kevlina.budgetplus.core.data.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.data.CrashlyticsProvider
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeCrashlyticsProvider : CrashlyticsProvider {
 
     var lastUserId: String? = null

@@ -1,10 +1,10 @@
 package com.kevlina.budgetplus.core.data.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.data.UserDbClient
 import com.kevlina.budgetplus.core.data.remote.User
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeUserDbClient : UserDbClient {
 
     val users = mutableMapOf<String, User>()

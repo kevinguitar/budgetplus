@@ -1,12 +1,12 @@
 package com.kevlina.budgetplus.core.data.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.data.AuthState
 import com.kevlina.budgetplus.core.data.remote.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeAuthState : AuthState {
 
     val authStateFlow = MutableSharedFlow<User?>(replay = 1)

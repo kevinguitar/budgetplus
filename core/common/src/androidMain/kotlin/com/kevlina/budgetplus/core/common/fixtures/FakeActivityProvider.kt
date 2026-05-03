@@ -3,11 +3,11 @@ package com.kevlina.budgetplus.core.common.fixtures
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.common.ActivityProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeActivityProvider(
     override val currentActivity: ComponentActivity,
 ) : ActivityProvider {
