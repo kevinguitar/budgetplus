@@ -6,6 +6,6 @@ interface RecordDbClient {
     suspend fun add(record: Record)
     suspend fun set(recordId: String, record: Record)
     suspend fun delete(recordId: String)
-    suspend fun queryByBatchAndDate(batchId: String?, fromDate: Int): List<Pair<String, Record>>
+    suspend fun queryByBatchAndDate(batchId: String?, fromDate: Long): List<Pair<String, Record>>
     suspend fun queryByCategory(category: String): List<Pair<String, Record>>
 }

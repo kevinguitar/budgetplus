@@ -93,7 +93,7 @@ class SearchRepo(
 
         recordsJob?.cancel()
         recordsJob = searchQueryClient
-            .queryRecords(bookId, period.fromDate().toEpochDays(), period.untilDate().toEpochDays())
+            .queryRecords(bookId, period.fromDate(), period.untilDate())
             .catch { snackbarSender.sendError(it) }
             .onEach { records ->
                 Logger.d { "Search: result size ${records.size}" }

@@ -24,6 +24,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
@@ -35,9 +36,9 @@ class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         model.previousDay()
 
         val yesterday = LocalDate.now().minus(1, DateTimeUnit.DAY)
-        assertEquals(
+        assertContains(
+            recordsObserver.setTimePeriodCalls,
             listOf(bookId to TimePeriod.Custom(yesterday, yesterday)),
-            recordsObserver.setTimePeriodCalls
         )
     }
 

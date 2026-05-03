@@ -9,6 +9,7 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
 
 @Inject
 @ContributesBinding(AppScope::class)
@@ -16,13 +17,13 @@ class SearchQueryClientImpl(
     @BooksDb private val booksDb: Lazy<CollectionReference>,
 ) : SearchQueryClient {
 
-    override fun queryRecords(bookId: String, fromDate: Int, untilDate: Int): Flow<List<Record>> {
+    override fun queryRecords(bookId: String, fromDate: LocalDate, untilDate: LocalDate): Flow<List<Record>> {
         return booksDb.value
             .document(bookId)
             .collection("records")
             .orderBy("date", Direction.DESCENDING)
-            .where { "date" greaterThanOrEqualTo fromDate }
-            .where { "date" lessThanOrEqualTo untilDate }
+            .where { "date" greaterThanOrEqualTo fromDate.toEpochDays() }
+            .where { "date" lessThanOrEqualTo untilDate.toEpochDays() }
             .snapshots
             .map { snapshot ->
                 snapshot.documents.map { doc -> doc.data<Record>().copy(id = doc.id) }

@@ -5,9 +5,7 @@ import com.kevlina.budgetplus.core.data.remote.RecordsDb
 import dev.gitlive.firebase.firestore.CollectionReference
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 
-@Inject
 @ContributesBinding(AppScope::class)
 internal class RecordDbClientImpl(
     @RecordsDb private val recordsDb: () -> CollectionReference,
@@ -25,7 +23,7 @@ internal class RecordDbClientImpl(
         recordsDb().document(recordId).delete()
     }
 
-    override suspend fun queryByBatchAndDate(batchId: String?, fromDate: Int): List<Pair<String, Record>> {
+    override suspend fun queryByBatchAndDate(batchId: String?, fromDate: Long): List<Pair<String, Record>> {
         val snapshot = recordsDb()
             .where { "batchId" equalTo batchId }
             .where { "date" greaterThanOrEqualTo fromDate }

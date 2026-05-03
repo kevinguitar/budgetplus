@@ -23,7 +23,7 @@ class FakeRecordDbClient : RecordDbClient {
         deletedRecordIds.add(recordId)
     }
 
-    override suspend fun queryByBatchAndDate(batchId: String?, fromDate: Int): List<Pair<String, Record>> {
+    override suspend fun queryByBatchAndDate(batchId: String?, fromDate: Long): List<Pair<String, Record>> {
         return emptyList()
     }
 
