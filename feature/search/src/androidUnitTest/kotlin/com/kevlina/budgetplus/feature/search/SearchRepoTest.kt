@@ -7,11 +7,8 @@ import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.unit.test.BaseTest
 import com.kevlina.budgetplus.feature.search.SearchRepo.DbResult
+import com.kevlina.budgetplus.feature.search.fixtures.FakeSearchQueryClient
 import com.kevlina.budgetplus.feature.search.ui.SearchCategory
-import dev.gitlive.firebase.firestore.CollectionReference
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -59,7 +56,7 @@ class SearchRepoTest : BaseTest(observeComposeSnapshots = true) {
             repo.query.setTextAndPlaceCursorAtEnd("search 2")
             repo.query.setTextAndPlaceCursorAtEnd("search 3")
             expectNoEvents()
-            verify(exactly = 1) { booksDb.document(any()) }
+            assertEquals(1, searchQueryClient.queryCalls.size)
         }
     }
 
@@ -73,16 +70,14 @@ class SearchRepoTest : BaseTest(observeComposeSnapshots = true) {
             repo.category.value = SearchCategory.Selected("transport")
             repo.category.value = SearchCategory.Selected("loan")
             expectNoEvents()
-            verify(exactly = 1) { booksDb.document(any()) }
+            assertEquals(1, searchQueryClient.queryCalls.size)
         }
     }
 
-    private val booksDb = mockk<CollectionReference> {
-        every { document(any()) } returns mockk(relaxed = true)
-    }
+    private val searchQueryClient = FakeSearchQueryClient()
 
     private val repo = SearchRepo(
-        booksDb = lazy { booksDb },
+        searchQueryClient = searchQueryClient,
         bookRepo = FakeBookRepo(currentBookId = "book_id"),
         snackbarSender = FakeSnackbarSender,
         tracker = FakeTracker()

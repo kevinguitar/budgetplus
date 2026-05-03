@@ -56,7 +56,7 @@ import kotlin.time.Duration.Companion.days
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
 internal class BookRepoImpl(
     private val authManager: AuthManager,
-    private val joinInfoProcessor: JoinInfoProcessor,
+    private val joinInfoProcessor: JoinInfoHandler,
     private val currencyExchangeRepo: Lazy<CurrencyExchangeRepo>,
     private val tracker: Tracker,
     private val preference: Preference,

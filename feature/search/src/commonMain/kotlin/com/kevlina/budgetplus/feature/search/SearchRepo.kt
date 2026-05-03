@@ -9,12 +9,9 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.data.BookRepo
-import com.kevlina.budgetplus.core.data.remote.BooksDb
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.feature.search.ui.SearchCategory
 import com.kevlina.budgetplus.feature.search.ui.SearchPeriod
-import dev.gitlive.firebase.firestore.CollectionReference
-import dev.gitlive.firebase.firestore.Direction
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
@@ -38,7 +35,7 @@ import kotlinx.datetime.minus
 
 @Inject
 class SearchRepo(
-    @BooksDb private val booksDb: Lazy<CollectionReference>,
+    private val searchQueryClient: SearchQueryClient,
     private val bookRepo: BookRepo,
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
@@ -95,17 +92,10 @@ class SearchRepo(
         flow.tryEmit(DbResult.Loading)
 
         recordsJob?.cancel()
-        recordsJob = booksDb.value
-            .document(bookId)
-            .collection("records")
-            .orderBy("date", Direction.DESCENDING)
-            .where { "date" greaterThanOrEqualTo period.fromDate().toEpochDays() }
-            .where { "date" lessThanOrEqualTo period.untilDate().toEpochDays() }
-            .snapshots
+        recordsJob = searchQueryClient
+            .queryRecords(bookId, period.fromDate().toEpochDays(), period.untilDate().toEpochDays())
             .catch { snackbarSender.sendError(it) }
-            .onEach { snapshot ->
-                val records = snapshot.documents
-                    .map { doc -> doc.data<Record>().copy(id = doc.id) }
+            .onEach { records ->
                 Logger.d { "Search: result size ${records.size}" }
                 tracker.logEvent(
                     event = "search_queried_from_db",

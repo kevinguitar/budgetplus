@@ -4,11 +4,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
+import com.kevlina.budgetplus.core.data.fixtures.FakeJoinInfoProcessor
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.User
-import dev.gitlive.firebase.firestore.CollectionReference
-import io.mockk.mockk
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
@@ -43,13 +42,13 @@ internal class BookRepoImplTest {
 
     private fun TestScope.createRepo(book: Book?) = BookRepoImpl(
         authManager = FakeAuthManager(user = User(id = "my_user")),
-        joinInfoProcessor = mockk(),
+        joinInfoProcessor = FakeJoinInfoProcessor(),
         tracker = tracker,
         preference = FakePreference {
             set(stringPreferencesKey("currentBook"), Json.encodeToString(book))
         },
         appScope = backgroundScope,
-        booksDb = lazy { mockk<CollectionReference>(relaxed = true) },
+        booksDb = lazy { error("booksDb should not be accessed in this test") },
         currencyExchangeRepo = lazy { FakeCurrencyExchangeRepo() }
     )
 }

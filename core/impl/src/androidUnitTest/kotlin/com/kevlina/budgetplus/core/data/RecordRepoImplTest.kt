@@ -6,16 +6,10 @@ import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.withCurrentTime
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
+import com.kevlina.budgetplus.core.data.fixtures.FakeRecordDbClient
 import com.kevlina.budgetplus.core.data.remote.Author
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
-import dev.gitlive.firebase.firestore.CollectionReference
-import dev.gitlive.firebase.firestore.DocumentReference
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
@@ -25,7 +19,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import org.junit.Ignore
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Clock
@@ -38,7 +32,7 @@ class RecordRepoImplTest {
     fun `createRecord should store the record in DB`() = runTest {
         createRepo().createRecord(testRecord)
 
-        coVerify { recordsDb.add(testRecord) }
+        assertEquals(listOf(testRecord), recordDbClient.addedRecords)
         assertEquals("record_created", tracker.lastEventName)
     }
 
@@ -54,25 +48,18 @@ class RecordRepoImplTest {
             times = nTimes
         )
 
+        assertEquals(nTimes, recordDbClient.addedRecords.size)
         repeat(nTimes) { index ->
             val multiplier = 3 * index.toLong()
             val batchDate = startDate.plus(multiplier, DateTimeUnit.WEEK)
-            coVerify(exactly = 1) {
-                recordsDb.add(
-                    match<Record> { arg ->
-                        arg.date == batchDate.toEpochDays() &&
-                            arg.batchId == batchId &&
-                            // For other properties from testRecord, ensure they match if they
-                            // are not supposed to change.
-                            arg.type == testRecord.type &&
-                            arg.category == testRecord.category &&
-                            arg.name == testRecord.name &&
-                            arg.price == testRecord.price &&
-                            arg.author == testRecord.author &&
-                            arg.id == testRecord.id
-                    }
-                )
-            }
+            val addedRecord = recordDbClient.addedRecords[index]
+            assertEquals(batchDate.toEpochDays(), addedRecord.date)
+            assertEquals(batchId, addedRecord.batchId)
+            assertEquals(testRecord.type, addedRecord.type)
+            assertEquals(testRecord.category, addedRecord.category)
+            assertEquals(testRecord.name, addedRecord.name)
+            assertEquals(testRecord.price, addedRecord.price)
+            assertEquals(testRecord.author, addedRecord.author)
         }
         assertEquals("record_batched", tracker.lastEventName)
     }
@@ -95,18 +82,14 @@ class RecordRepoImplTest {
             newPriceText = "12345.6"
         )
 
-        verify { recordsDb.document("old_record_id") }
-        coVerify {
-            documentReference.set(
-                oldRecord.copy(
-                    date = newDate.toEpochDays(),
-                    timestamp = LocalDateTime(newDate, localDateTime.time).toInstant(TimeZone.UTC).epochSeconds,
-                    category = "New category",
-                    name = "New name",
-                    price = 12345.6
-                )
-            )
-        }
+        assertEquals(1, recordDbClient.setRecords.size)
+        val (id, record) = recordDbClient.setRecords.first()
+        assertEquals("old_record_id", id)
+        assertEquals(newDate.toEpochDays(), record.date)
+        assertEquals(LocalDateTime(newDate, localDateTime.time).toInstant(TimeZone.UTC).epochSeconds, record.timestamp)
+        assertEquals("New category", record.category)
+        assertEquals("New name", record.name)
+        assertEquals(12345.6, record.price)
         assertEquals("record_edited", tracker.lastEventName)
     }
 
@@ -119,13 +102,9 @@ class RecordRepoImplTest {
         runTest {
             createRepo().duplicateRecord(testRecord)
 
-            coVerify {
-                recordsDb.add(
-                    testRecord.copy(
-                        author = Author(name = "My user")
-                    )
-                )
-            }
+            assertEquals(1, recordDbClient.addedRecords.size)
+            val addedRecord = recordDbClient.addedRecords.first()
+            assertEquals(Author(name = "My user"), addedRecord.author)
             assertEquals("record_duplicated", tracker.lastEventName)
         }
 
@@ -133,8 +112,7 @@ class RecordRepoImplTest {
     fun `deleteRecord should delete the record`() = runTest {
         createRepo().deleteRecord("old_record_id")
 
-        verify { recordsDb.document("old_record_id") }
-        coVerify { documentReference.delete() }
+        assertEquals(listOf("old_record_id"), recordDbClient.deletedRecordIds)
         assertEquals("record_deleted", tracker.lastEventName)
     }
 
@@ -153,20 +131,14 @@ class RecordRepoImplTest {
         timestamp = LocalDate.now().withCurrentTime,
     )
 
-    private val documentReference = mockk<DocumentReference>(relaxed = true)
-
-    private val recordsDb = mockk<CollectionReference> {
-        coEvery { add(any()) } returns mockk()
-        every { document(any()) } returns documentReference
-    }
-
-    private val authManger = FakeAuthManager(user = User(name = "My user"))
+    private val recordDbClient = FakeRecordDbClient()
+    private val authManager = FakeAuthManager(user = User(name = "My user"))
     private val tracker = FakeTracker()
 
     private fun TestScope.createRepo() = RecordRepoImpl(
-        recordsDb = { recordsDb },
+        recordDbClient = recordDbClient,
         appScope = backgroundScope,
-        authManager = authManger,
+        authManager = authManager,
         tracker = tracker,
         snackbarSender = FakeSnackbarSender
     )
