@@ -6,14 +6,12 @@ import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.Direction
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
 
-@Inject
 @ContributesBinding(AppScope::class)
-class SearchQueryClientImpl(
+internal class SearchQueryClientImpl(
     @BooksDb private val booksDb: Lazy<CollectionReference>,
 ) : SearchQueryClient {
 

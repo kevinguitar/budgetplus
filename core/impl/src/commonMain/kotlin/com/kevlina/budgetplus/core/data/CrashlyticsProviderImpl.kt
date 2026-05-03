@@ -6,7 +6,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class CrashlyticsProviderImpl : CrashlyticsProvider {
+internal class CrashlyticsProviderImpl : CrashlyticsProvider {
 
     override fun setUserId(userId: String) {
         Firebase.crashlytics.setUserId(userId)

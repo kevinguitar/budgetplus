@@ -8,7 +8,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class UserDbClientImpl(
+internal class UserDbClientImpl(
     @UsersDb private val usersDb: Lazy<CollectionReference>,
 ) : UserDbClient {
 

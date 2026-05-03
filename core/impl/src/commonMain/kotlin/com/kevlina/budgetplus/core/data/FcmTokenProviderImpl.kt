@@ -7,7 +7,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class FcmTokenProviderImpl : FcmTokenProvider {
+internal class FcmTokenProviderImpl : FcmTokenProvider {
 
     override suspend fun getToken(): String? {
         return try {
