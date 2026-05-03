@@ -13,7 +13,7 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.TimePeriod
-import com.kevlina.budgetplus.core.unit.test.MainDispatcherRule
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -28,13 +28,9 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import org.junit.Rule
 import org.junit.Test
 
-class OverviewTimeViewModelTest {
-
-    @get:Rule
-    val rule = MainDispatcherRule()
+class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true){
 
     @Test
     fun `setting the period by clicking on previous day`() = runTest {
@@ -170,10 +166,10 @@ class OverviewTimeViewModelTest {
             tracker = FakeTracker(),
             preference = preference
         )
-        backgroundScope.launch(rule.testDispatcher) {
+        backgroundScope.launch(testDispatcher) {
             model.timePeriod.collect()
         }
-        backgroundScope.launch(rule.testDispatcher) {
+        backgroundScope.launch(testDispatcher) {
             model.customPeriod.collect()
         }
         return model

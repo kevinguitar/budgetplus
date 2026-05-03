@@ -14,7 +14,7 @@ abstract class BaseTest(
     val observeComposeSnapshots: Boolean = false,
 ) {
 
-    private val testDispatcher by lazy {
+    val testDispatcher by lazy {
         UnconfinedTestDispatcher()
     }
 

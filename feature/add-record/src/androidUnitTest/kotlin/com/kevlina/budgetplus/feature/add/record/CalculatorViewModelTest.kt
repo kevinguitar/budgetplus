@@ -4,22 +4,18 @@ import app.cash.turbine.test
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
-import com.kevlina.budgetplus.core.unit.test.SnapshotFlowRule
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorAction
 import com.kevlina.budgetplus.feature.add.record.ui.CalculatorButton
 import com.kevlina.budgetplus.feature.freeze.createFreezeBookVm
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CalculatorViewModelTest {
-
-    @get:Rule
-    val rule = SnapshotFlowRule()
+class CalculatorViewModelTest: BaseTest(observeComposeSnapshots = true) {
 
     @Test
     fun `clearing the pricing`() = runTest {
