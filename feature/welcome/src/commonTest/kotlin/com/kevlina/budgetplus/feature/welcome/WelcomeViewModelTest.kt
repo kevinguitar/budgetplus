@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 
 class WelcomeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
@@ -34,9 +35,7 @@ class WelcomeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
         // After books become non-empty, the ViewModel navigates to Record
         val lastDest = navController.backStack.last()
-        assert(lastDest is BookDest.Record) {
-            "Expected navigation to BookDest.Record but was $lastDest"
-        }
+        assertIs<BookDest.Record>(lastDest, "Expected navigation to BookDest.Record but was $lastDest")
     }
 
     @Test
@@ -48,9 +47,7 @@ class WelcomeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
         // Books remain null, should stay on welcome
         val lastDest = navController.backStack.last()
-        assert(lastDest is BookDest.Welcome) {
-            "Expected to remain on BookDest.Welcome but was $lastDest"
-        }
+        assertIs<BookDest.Welcome>(lastDest, "Expected navigation to BookDest.Welcome but was $lastDest")
     }
 
     private fun TestScope.createModel(

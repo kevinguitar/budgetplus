@@ -14,9 +14,5 @@ kotlin {
 
             implementation(libs.firebase.firestore)
         }
-        androidUnitTest.dependencies {
-            implementation(projects.core.common)
-            implementation(projects.core.data)
-        }
     }
 }

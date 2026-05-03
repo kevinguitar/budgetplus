@@ -7,7 +7,7 @@ import dev.zacsweers.metro.ContributesBinding
 import org.jetbrains.compose.resources.getString
 
 @ContributesBinding(AppScope::class)
-class AppLanguageProviderImpl : AppLanguageProvider {
+internal class AppLanguageProviderImpl : AppLanguageProvider {
 
     override suspend fun getLanguage(): String {
         return getString(Res.string.app_language)

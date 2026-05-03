@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @ContributesBinding(AppScope::class)
-class AuthStateImpl : AuthState {
+internal class AuthStateImpl : AuthState {
 
     override val authStateChanged: Flow<User?> =
         Firebase.auth.authStateChanged.map { firebaseUser ->

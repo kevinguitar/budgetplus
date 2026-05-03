@@ -67,13 +67,11 @@ internal class BookRepoImpl(
     private val currentBookKey = stringPreferencesKey("currentBook")
     private val currentBookFlow = preference.of(currentBookKey, Book.serializer())
 
-    override val bookState: StateFlow<Book?> = runBlocking {
-        currentBookFlow.stateIn(
-            scope = appScope,
-            started = SharingStarted.Eagerly,
-            initialValue = currentBookFlow.first()
-        )
-    }
+    override val bookState: StateFlow<Book?> = currentBookFlow.stateIn(
+        scope = appScope,
+        started = SharingStarted.Eagerly,
+        initialValue = runBlocking { currentBookFlow.first() }
+    )
 
     override val booksState: StateFlow<List<Book>?>
         field = MutableStateFlow<List<Book>?>(null)

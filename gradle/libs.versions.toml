@@ -102,8 +102,6 @@ google-play-review = "com.google.android.play:review-ktx:2.0.2"
 google-play-update = "com.google.android.play:app-update-ktx:2.1.0"
 install-referrer = "com.android.installreferrer:installreferrer:2.2"
 junit-android = "androidx.test.ext:junit:1.3.0"
-junit-compose = { module = "org.jetbrains.compose.ui:ui-test-junit4", version.ref = "compose-multiplatform" }
-junit-core = "junit:junit:4.13.2"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
 kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
@@ -114,7 +112,6 @@ ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
 metrox-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
-mockk = "io.mockk:mockk:1.14.9"
 navigation-event = "org.jetbrains.androidx.navigationevent:navigationevent-compose:1.0.1"
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3-jb" }
@@ -150,14 +147,9 @@ compose = [
     "compose-uiTooling",
     "compose-foundation",
 ]
-common-test = [
+test = [
     "coroutines-test",
     "turbine",
-]
-android-test = [
-    "junit-android",
-    "junit-core",
-    "mockk",
 ]
 
 [plugins]

@@ -6,7 +6,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class CloudFunctionsCallerImpl : CloudFunctionsCaller {
+internal class CloudFunctionsCallerImpl : CloudFunctionsCaller {
 
     override suspend fun call(functionName: String, region: String, data: Any?) {
         val functions = Firebase.functions(region)
