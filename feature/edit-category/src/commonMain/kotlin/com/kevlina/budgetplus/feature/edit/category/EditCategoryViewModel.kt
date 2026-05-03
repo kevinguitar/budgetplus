@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.feature.edit.category
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
@@ -40,7 +40,7 @@ class EditCategoryViewModel(
     val incomeCategories
         get() = bookRepo.bookState.value?.incomeCategories.orEmpty()
 
-    @VisibleForTesting
+    @RestrictTo(RestrictTo.Scope.TESTS)
     val categoryRenameEvents = mutableListOf<CategoryRenameEvent>()
 
     private var saveBubbleJob: Job? = null

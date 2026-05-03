@@ -24,7 +24,7 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeRecordRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.ui.bubble.FakeBubbleRepo
-import com.kevlina.budgetplus.core.unit.test.MainDispatcherRule
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
 import com.kevlina.budgetplus.feature.freeze.createFreezeBookVm
 import com.kevlina.budgetplus.feature.speak.record.RecordActor
@@ -39,16 +39,12 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
-import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class RecordViewModelTest {
-
-    @get:Rule
-    val rule = MainDispatcherRule()
+class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
     @Test
     fun `show message when category is empty`() = runTest {
@@ -224,7 +220,7 @@ class RecordViewModelTest {
         canEditBook: Boolean = true,
         isPremium: Boolean = false,
         currencyExchangeRepo: CurrencyExchangeRepo = FakeCurrencyExchangeRepo(),
-        calculatorVm: CalculatorViewModel = createCalculatorVm()
+        calculatorVm: CalculatorViewModel = createCalculatorVm(),
     ) = RecordViewModel(
         calculatorVm = calculatorVm,
         categoriesVm = categoriesVm,

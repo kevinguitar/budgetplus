@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.core.data.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.mutablePreferencesOf
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakePreference(
     mapBuilder: MutablePreferences.() -> Unit = {},
 ) : Preference {

@@ -5,7 +5,7 @@ import app.cash.turbine.test
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
-import com.kevlina.budgetplus.core.unit.test.SnapshotFlowRule
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import com.kevlina.budgetplus.feature.search.SearchRepo.DbResult
 import com.kevlina.budgetplus.feature.search.ui.SearchCategory
 import dev.gitlive.firebase.firestore.CollectionReference
@@ -13,14 +13,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
-import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SearchRepoTest {
-
-    @get:Rule
-    val rule = SnapshotFlowRule()
+class SearchRepoTest : BaseTest(observeComposeSnapshots = true) {
 
     @Test
     fun `do not execute DB query on repo init`() = runTest {
