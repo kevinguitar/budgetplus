@@ -152,8 +152,8 @@
     <string name="settings_rename_book">가계부 이름 변경</string>
     <string name="settings_rename_book_success">가계부 이름이 %1$s(으)로 변경되었습니다</string>
     <string name="settings_edit_book_currency">가계부 통화 수정</string>
-    <string name="settings_edit_default_currency">기본 통화 편집</string>
-    <string name="settings_edit_default_currency_desc">실시간 환율 계산 및 표시. 신규 장부 생성 시 이 통화 설정이 기본 적용됩니다.</string>
+    <string name="settings_edit_preferred_currency">선호통화 떤질</string>
+    <string name="settings_edit_preferred_currency_desc">실시간 환율 계산 및 표시. 신규 장부 생성 시 이 통화 설정이 기본 적용됩니다.</string>
     <string name="settings_view_members">멤버 보기</string>
     <string name="settings_allow_members_edit">멤버 편집 허용</string>
     <string name="settings_allow_members_edit_desc">멤버가 가계부 이름, 카테고리, 통화 및 모든 기록을 수정할 수 있습니다</string>
@@ -195,10 +195,10 @@
 
     <!-- Currency Picker -->
     <string name="currency_picker_book_title">가계부 통화</string>
-    <string name="currency_picker_default_title">기본 통화</string>
+    <string name="currency_picker_preferred_title">선호통화</string>
     <string name="currency_picker_hint">엔 또는 JPY</string>
     <string name="currency_picker_book_edit_success">%1$s의 통화가 %2$s(으)로 변경되었습니다</string>
-    <string name="currency_picker_default_edit_success">기본 통화가 %1$s(으)로 설정되었습니다</string>
+    <string name="currency_picker_preferred_edit_success">기본 통화가 %1$s(으)로 설정되었습니다</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">공유 링크를 눌러 친구들을 초대하세요!</string>

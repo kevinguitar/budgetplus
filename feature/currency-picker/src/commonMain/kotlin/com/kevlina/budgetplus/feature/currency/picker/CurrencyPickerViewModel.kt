@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.currency_picker_book_edit_success
 import budgetplus.core.common.generated.resources.currency_picker_book_title
-import budgetplus.core.common.generated.resources.currency_picker_default_edit_success
-import budgetplus.core.common.generated.resources.currency_picker_default_title
+import budgetplus.core.common.generated.resources.currency_picker_preferred_edit_success
+import budgetplus.core.common.generated.resources.currency_picker_preferred_title
 import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
@@ -46,7 +46,7 @@ class CurrencyPickerViewModel(
     val title: StringResource
         get() = when (params.purpose) {
             Purpose.Book -> Res.string.currency_picker_book_title
-            Purpose.Preferred -> Res.string.currency_picker_default_title
+            Purpose.Preferred -> Res.string.currency_picker_preferred_title
         }
 
     private val currentCurrencyCode = when (params.purpose) {
@@ -100,7 +100,7 @@ class CurrencyPickerViewModel(
 
             Purpose.Preferred -> {
                 currencyExchangeRepo.updatePreferredCurrency(currency)
-                snackbarSender.send(getString(Res.string.currency_picker_default_edit_success, currency.name))
+                snackbarSender.send(getString(Res.string.currency_picker_preferred_edit_success, currency.name))
             }
         }
         navigateUp()

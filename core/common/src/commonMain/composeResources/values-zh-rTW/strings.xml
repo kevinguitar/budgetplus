@@ -152,8 +152,8 @@
     <string name="settings_rename_book">重新命名帳本</string>
     <string name="settings_rename_book_success">帳本名稱已更改為%1$s</string>
     <string name="settings_edit_book_currency">編輯帳本幣別</string>
-    <string name="settings_edit_default_currency">編輯預設幣別</string>
-    <string name="settings_edit_default_currency_desc">即時換算顯示匯率，且後續新增帳本時將預設沿用此幣別設定</string>
+    <string name="settings_edit_preferred_currency">編輯偏好幣別</string>
+    <string name="settings_edit_preferred_currency_desc">即時換算顯示匯率，且後續新增帳本時將預設沿用此幣別設定</string>
     <string name="settings_view_members">查看成員</string>
     <string name="settings_allow_members_edit">允許成員編輯</string>
     <string name="settings_allow_members_edit_desc">讓成員編輯帳本名稱、類別、幣別及所有帳目</string>
@@ -195,10 +195,10 @@
 
     <!-- Currency Picker -->
     <string name="currency_picker_book_title">帳本幣別</string>
-    <string name="currency_picker_default_title">預設幣別</string>
+    <string name="currency_picker_preferred_title">偏好幣別</string>
     <string name="currency_picker_hint">日圓或 JPY</string>
     <string name="currency_picker_book_edit_success">%1$s的幣別已設定為%2$s</string>
-    <string name="currency_picker_default_edit_success">預設幣別已設定為%1$s</string>
+    <string name="currency_picker_preferred_edit_success">偏好幣別已設定為%1$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">點擊分享連結，邀請好友們一起記帳！</string>

@@ -152,8 +152,8 @@
     <string name="settings_rename_book">Rename Book</string>
     <string name="settings_rename_book_success">Renamed the book to %1$s</string>
     <string name="settings_edit_book_currency">Edit Book Currency</string>
-    <string name="settings_edit_default_currency">Edit Default Currency</string>
-    <string name="settings_edit_default_currency_desc">RReal-time exchange rate conversion. This setting will be the default for new books.</string>
+    <string name="settings_edit_preferred_currency">Edit Preferred Currency</string>
+    <string name="settings_edit_preferred_currency_desc">Real-time exchange rate conversion. This setting will be the default for new books.</string>
     <string name="settings_view_members">View Members</string>
     <string name="settings_allow_members_edit">Allow Members to Edit</string>
     <string name="settings_allow_members_edit_desc">Let your book members edit name, categories, currency and all records.</string>
@@ -195,10 +195,10 @@
 
     <!-- Currency Picker -->
     <string name="currency_picker_book_title">Book's Currency</string>
-    <string name="currency_picker_default_title">Default Currency</string>
+    <string name="currency_picker_preferred_title">Preferred Currency</string>
     <string name="currency_picker_hint">US Dollar or USD</string>
     <string name="currency_picker_book_edit_success">%1$s's currency has been changed to %2$s</string>
-    <string name="currency_picker_default_edit_success">The default currency has been changed to %1$s</string>
+    <string name="currency_picker_preferred_edit_success">The preferred currency has been changed to %1$s</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">Invite fellows to track expenses together!</string>
