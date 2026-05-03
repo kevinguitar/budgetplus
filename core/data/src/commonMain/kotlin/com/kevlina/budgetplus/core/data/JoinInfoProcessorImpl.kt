@@ -32,8 +32,7 @@ internal class JoinInfoProcessorImpl(
 
         return try {
             joinInfoDb.value.document(joinId).get().data()
-        } catch (e: Exception) {
-            e.toString()
+        } catch (_: Exception) {
             throw JoinBookException.JoinInfoNotFound("Couldn't resolve the join id. $joinId")
         }
     }

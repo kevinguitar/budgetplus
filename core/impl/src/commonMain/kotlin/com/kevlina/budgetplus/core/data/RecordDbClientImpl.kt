@@ -8,23 +8,23 @@ import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
 internal class RecordDbClientImpl(
-    @RecordsDb private val recordsDb: Lazy<CollectionReference>,
+    @RecordsDb private val recordsDb: () -> CollectionReference,
 ) : RecordDbClient {
 
     override suspend fun add(record: Record) {
-        recordsDb.value.add(record)
+        recordsDb().add(record)
     }
 
     override suspend fun set(recordId: String, record: Record) {
-        recordsDb.value.document(recordId).set(record)
+        recordsDb().document(recordId).set(record)
     }
 
     override suspend fun delete(recordId: String) {
-        recordsDb.value.document(recordId).delete()
+        recordsDb().document(recordId).delete()
     }
 
     override suspend fun queryByBatchAndDate(batchId: String?, fromDate: Long): List<Pair<String, Record>> {
-        val snapshot = recordsDb.value
+        val snapshot = recordsDb()
             .where { "batchId" equalTo batchId }
             .where { "date" greaterThanOrEqualTo fromDate }
             .get()
@@ -34,7 +34,7 @@ internal class RecordDbClientImpl(
     }
 
     override suspend fun queryByCategory(category: String): List<Pair<String, Record>> {
-        val snapshot = recordsDb.value
+        val snapshot = recordsDb()
             .where { "category" equalTo category }
             .get()
         return snapshot.documents.map { doc ->
