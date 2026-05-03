@@ -52,7 +52,6 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 - [Firebase Kotlin SDK](https://github.com/GitLiveApp/firebase-kotlin-sdk) for KMP support
 - [Kermit](https://github.com/touchlab/Kermit) for logging
 - [Keval](https://github.com/notKamui/Keval) for mathematical expression evaluation
-- [MockK](https://github.com/mockk/mockk) for mocking classes in unit tests
 - [Moko-permissions](https://github.com/icerockdev/moko-permissions) for KMP permission handling
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for reordering items in Compose
 

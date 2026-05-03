@@ -25,7 +25,6 @@ import kotlin.test.assertEquals
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 
-@Ignore("Disable due to Firebase KMP migration")
 class RecordRepoImplTest {
 
     @Test
