@@ -4,8 +4,12 @@ plugins {
 
 kotlin {
     sourceSets {
-        androidMain.dependencies {
+        commonMain.dependencies {
+            api(kotlin("test"))
             implementation(libs.coroutines.test)
+        }
+        androidMain.dependencies {
+            api(kotlin("test-junit"))
             implementation(libs.junit.compose)
         }
     }

@@ -9,33 +9,14 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.User
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class BookSelectorViewModelTest {
-
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+class BookSelectorViewModelTest : BaseTest() {
 
     @Test
     fun `createBookBtnState is Enabled when free user has no books`() = runTest {
@@ -63,7 +44,7 @@ class BookSelectorViewModelTest {
 
     @Test
     fun `unlockPremium navigates to UnlockPremium`() = runTest {
-        val navController = NavController(startRoot = BookDest.Record)
+        val navController = NavController<BookDest>(startRoot = BookDest.Record)
         val model = createModel(navController = navController)
         model.unlockPremium()
 
@@ -73,7 +54,7 @@ class BookSelectorViewModelTest {
     private fun TestScope.createModel(
         isPremium: Boolean = false,
         bookCount: Int = 0,
-        navController: NavController<BookDest> = NavController(startRoot = BookDest.Record),
+        navController: NavController<BookDest> = NavController<BookDest>(startRoot = BookDest.Record),
     ): BookSelectorViewModel {
         val books = (0 until bookCount).map { Book(id = "book_$it") }
         return BookSelectorViewModel(

@@ -6,32 +6,14 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.remote.Book
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.kevlina.budgetplus.core.unit.test.BaseTest
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class WelcomeViewModelTest {
-
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @BeforeTest
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+class WelcomeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
     @Test
     fun `isCreatingBook is initially false`() = runTest {
@@ -41,13 +23,14 @@ class WelcomeViewModelTest {
 
     @Test
     fun `navigates to Record when books are available`() = runTest {
-        val navController = NavController(startRoot = BookDest.Welcome)
+        val navController = NavController<BookDest>(startRoot = BookDest.Welcome)
         val bookRepo = FakeBookRepo(books = emptyList())
 
         createModel(bookRepo = bookRepo, navController = navController)
 
         // Simulate books becoming available
         bookRepo.booksState.value = listOf(Book(id = "book_1"))
+        runCurrent()
 
         // After books become non-empty, the ViewModel navigates to Record
         val lastDest = navController.backStack.last()
@@ -58,7 +41,7 @@ class WelcomeViewModelTest {
 
     @Test
     fun `does not navigate when books list is null`() = runTest {
-        val navController = NavController(startRoot = BookDest.Welcome)
+        val navController = NavController<BookDest>(startRoot = BookDest.Welcome)
         val bookRepo = FakeBookRepo(books = null)
 
         createModel(bookRepo = bookRepo, navController = navController)
