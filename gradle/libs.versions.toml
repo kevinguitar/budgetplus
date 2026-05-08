@@ -4,7 +4,7 @@ gradle-plugin = "8.13.2"
 # https://kotlinlang.org/docs/releases.html#release-details
 kotlin = "2.3.21"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 # https://github.com/coil-kt/coil/releases
 coil = "3.4.0"
 # https://github.com/JetBrains/compose-multiplatform/releases
