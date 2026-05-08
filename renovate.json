@@ -17,6 +17,11 @@
       "matchManagers": ["github-actions"],
       "matchPackageNames": ["gradle/actions"],
       "allowedVersions": "<=5"
+    },
+    {
+      "description": "Exclude kotlinx-datetime versions with -compat suffix.",
+      "matchPackageNames": ["org.jetbrains.kotlinx:kotlinx-datetime"],
+      "allowedVersions": "!/-compat$/"
     }
   ]
 }
