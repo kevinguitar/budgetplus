@@ -1,5 +1,5 @@
 {
-  "originHash" : "138f2948d46bedfa859e653ed801a07384b9320303f6f7ad8547f1c35eece7d3",
+  "originHash" : "9b314944d69e9e6141edef8a92ef2cc4ee83652ded63a2efd67c19efd2773228",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -161,24 +161,6 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
-      }
-    },
-    {
-      "identity" : "purchases-hybrid-common",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RevenueCat/purchases-hybrid-common",
-      "state" : {
-        "revision" : "aa2bfca14cb6e393a9b2a813a4eed770544b2193",
-        "version" : "17.55.1"
-      }
-    },
-    {
-      "identity" : "purchases-ios-spm",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RevenueCat/purchases-ios-spm",
-      "state" : {
-        "revision" : "66f81c19e29170cecc1f155c62cd586cf53b8400",
-        "version" : "5.67.1"
       }
     },
     {
