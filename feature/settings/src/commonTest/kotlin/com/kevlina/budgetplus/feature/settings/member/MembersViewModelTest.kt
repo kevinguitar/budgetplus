@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.feature.settings.member
 
-import app.cash.turbine.test
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.data.UserRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
@@ -32,12 +31,9 @@ class MembersViewModelTest {
             ),
         )
 
-        model.bookMembers.test {
-            skipItems(1) // Skip initial empty list
-            val members = awaitItem()
-            assertEquals("owner_id", members.first().id)
-            assertEquals(3, members.size)
-        }
+        val members = model.bookMembers.first { it.isNotEmpty() }
+        assertEquals("owner_id", members.first().id)
+        assertEquals(3, members.size)
     }
 
     @Test
