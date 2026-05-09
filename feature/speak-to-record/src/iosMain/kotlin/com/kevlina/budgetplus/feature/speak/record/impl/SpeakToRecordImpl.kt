@@ -31,11 +31,11 @@ internal class SpeakToRecordImpl(
     private val speechRecognizer = SFSpeechRecognizer(locale = NSLocale.currentLocale)
 
     override val isAvailableOnDevice: Boolean
-        get() = speechRecognizer?.isAvailable() == true &&
+        get() = speechRecognizer.isAvailable() &&
             SFSpeechRecognizer.authorizationStatus() == SFSpeechRecognizerAuthorizationStatus.SFSpeechRecognizerAuthorizationStatusAuthorized
 
     override fun startRecording(): RecordActor {
-        if (speechRecognizer == null || !speechRecognizer.isAvailable()) {
+        if (!speechRecognizer.isAvailable()) {
             Logger.e(SpeakToRecordException("Feature is not supported")) { "Feature is not supported" }
             return RecordActor(
                 statusFlow = flowOf(SpeakToRecordStatus.DeviceNotSupported),
@@ -91,7 +91,7 @@ internal class SpeakToRecordImpl(
 
         // Configure audio session
         val audioSession = AVAudioSession.sharedInstance()
-        audioSession.setCategory(AVAudioSessionCategoryRecord, AVAudioSessionModeMeasurement, null)
+        audioSession.setCategory(AVAudioSessionCategoryRecord, AVAudioSessionModeMeasurement, options = 0u, null)
         audioSession.setActive(true, null)
 
         // Install tap on the audio input node
