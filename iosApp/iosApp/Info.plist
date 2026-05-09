@@ -34,6 +34,10 @@
 	<dict/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Budget+ needs microphone access to use the Speak to Record feature.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Budget+ needs speech recognition access to convert your voice into records.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This app uses your data to deliver personalized ads and improve your experience.</string>
     <key>SKAdNetworkItems</key>
