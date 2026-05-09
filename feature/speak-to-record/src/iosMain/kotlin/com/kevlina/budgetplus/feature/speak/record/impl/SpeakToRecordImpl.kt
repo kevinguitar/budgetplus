@@ -10,7 +10,6 @@ import dev.zacsweers.metro.ContributesBinding
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onSubscription
 import platform.AVFAudio.AVAudioEngine
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryRecord
@@ -21,7 +20,6 @@ import platform.Foundation.currentLocale
 import platform.Foundation.localeIdentifier
 import platform.Speech.SFSpeechAudioBufferRecognitionRequest
 import platform.Speech.SFSpeechRecognizer
-import platform.Speech.SFSpeechRecognizerAuthorizationStatus
 
 @ContributesBinding(AppScope::class)
 internal class SpeakToRecordImpl(
@@ -29,13 +27,8 @@ internal class SpeakToRecordImpl(
     private val tracker: Tracker,
 ) : SpeakToRecord {
 
-    private val speechRecognizer = SFSpeechRecognizer(locale = NSLocale.currentLocale)
-
-    override val isAvailableOnDevice: Boolean
-        get() = speechRecognizer.isAvailable() &&
-            SFSpeechRecognizer.authorizationStatus() == SFSpeechRecognizerAuthorizationStatus.SFSpeechRecognizerAuthorizationStatusAuthorized
-
     override fun startRecording(): RecordActor {
+        val speechRecognizer = SFSpeechRecognizer(locale = NSLocale.currentLocale)
         if (!speechRecognizer.isAvailable()) {
             Logger.e(SpeakToRecordException("Feature is not supported")) { "Feature is not supported" }
             return RecordActor(
@@ -45,6 +38,8 @@ internal class SpeakToRecordImpl(
         }
 
         val statusFlow = MutableSharedFlow<SpeakToRecordStatus>(
+            // The default value is emitted before the flow being subscribed
+            replay = 1,
             // Not acceptable to lose any events
             extraBufferCapacity = Int.MAX_VALUE,
             onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -115,9 +110,7 @@ internal class SpeakToRecordImpl(
         tracker.logEvent("speak_to_record_start")
 
         return RecordActor(
-            statusFlow = statusFlow.onSubscription {
-                statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
-            },
+            statusFlow = statusFlow,
             stopRecording = {
                 statusFlow.tryEmit(SpeakToRecordStatus.Recognizing)
                 recognitionRequest.endAudio()
