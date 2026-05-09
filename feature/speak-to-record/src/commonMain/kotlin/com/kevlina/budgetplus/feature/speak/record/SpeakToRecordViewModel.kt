@@ -13,16 +13,20 @@ import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Inject
 class SpeakToRecordViewModel(
@@ -40,7 +44,24 @@ class SpeakToRecordViewModel(
         .flatMapLatest { it?.statusFlow ?: emptyFlow() }
 
     val showLoader: StateFlow<Boolean> = recordStatusFlow
-        .map { it is SpeakToRecordStatus.ReadyToSpeak || it is SpeakToRecordStatus.Recognizing }
+        .flatMapLatest {
+            when (it) {
+                SpeakToRecordStatus.ReadyToSpeak -> flowOf(true)
+                SpeakToRecordStatus.Recognizing -> flow {
+                    emit(true)
+                    // Give recognition a small timeout, if for some reason the speech recognition stuck,
+                    // user will be able to retry without seeing an infinite loader.
+                    delay(1.seconds)
+                    emit(false)
+                }
+
+                SpeakToRecordStatus.DeviceNotSupported,
+                is SpeakToRecordStatus.Error,
+                SpeakToRecordStatus.NoResult,
+                is SpeakToRecordStatus.Success,
+                    -> flowOf(false)
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     val showRecordingDialog: StateFlow<Boolean> = recordStatusFlow
