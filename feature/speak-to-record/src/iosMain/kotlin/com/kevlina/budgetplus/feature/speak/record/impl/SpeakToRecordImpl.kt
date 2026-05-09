@@ -10,6 +10,7 @@ import dev.zacsweers.metro.ContributesBinding
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onSubscription
 import platform.AVFAudio.AVAudioEngine
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryRecord
@@ -108,10 +109,11 @@ internal class SpeakToRecordImpl(
 
         Logger.d { "SpeechRecognizer: Start listening, locale=${NSLocale.currentLocale.localeIdentifier}" }
         tracker.logEvent("speak_to_record_start")
-        statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
 
         return RecordActor(
-            statusFlow = statusFlow,
+            statusFlow = statusFlow.onSubscription {
+                statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
+            },
             stopRecording = {
                 statusFlow.tryEmit(SpeakToRecordStatus.Recognizing)
                 recognitionRequest.endAudio()
