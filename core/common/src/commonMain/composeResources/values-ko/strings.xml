@@ -28,6 +28,7 @@
     <string name="record_deleted">%1$s 삭제되었습니다</string>
     <string name="record_confirm_delete">이 기록을 삭제하시겠습니까?</string>
     <string name="record_duplicated">기록이 복사되었습니다</string>
+    <string name="record_speech_recognition_code">ko-KR</string>
     <string name="record_speech_recognition_format">내용 + 금액을 말씀해 주세요</string>
     <string name="record_speech_recognition_not_supported">이 기기에서는 음성 기능을 지원하지 않습니다</string>
     <string name="record_speech_recognition_no_result">식별할 수 없습니다. 다시 말씀해 주세요</string>

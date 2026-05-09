@@ -28,6 +28,7 @@
     <string name="record_deleted">%1$sを削除しました" となります</string>
     <string name="record_confirm_delete">この帳面を削除してもよろしいですか？</string>
     <string name="record_duplicated">帳面がコピーされました</string>
+    <string name="record_speech_recognition_code">ja-JP</string>
     <string name="record_speech_recognition_format">内容と金額</string>
     <string name="record_speech_recognition_not_supported">このデバイスは音声機能に対応していません。</string>
     <string name="record_speech_recognition_no_result">認識できませんでした。もう一度お話しください。</string>

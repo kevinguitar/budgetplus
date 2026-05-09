@@ -28,6 +28,7 @@
     <string name="record_deleted">已刪除%1$s</string>
     <string name="record_confirm_delete">確認刪除此筆帳目嗎？</string>
     <string name="record_duplicated">帳目已複製</string>
+    <string name="record_speech_recognition_code">cmn-Hant-TW</string>
     <string name="record_speech_recognition_format">請說出內容＋金額</string>
     <string name="record_speech_recognition_not_supported">此裝置未支援語音功能</string>
     <string name="record_speech_recognition_no_result">無法辨識，請再說一次</string>

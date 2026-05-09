@@ -28,6 +28,7 @@
     <string name="record_deleted">已删除%1$s</string>
     <string name="record_confirm_delete">确认删除此笔帐目吗？</string>
     <string name="record_duplicated">帐目已复制</string>
+    <string name="record_speech_recognition_code">zh-CN</string>
     <string name="record_speech_recognition_format">请说出内容＋金额</string>
     <string name="record_speech_recognition_not_supported">此装置未支援语音功能</string>
     <string name="record_speech_recognition_no_result">无法辨识，请再说一次</string>

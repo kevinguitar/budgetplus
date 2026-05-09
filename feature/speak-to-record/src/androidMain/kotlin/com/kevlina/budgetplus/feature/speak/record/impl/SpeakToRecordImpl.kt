@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.app_language
+import budgetplus.core.common.generated.resources.record_speech_recognition_code
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.settings.api.SpeakToRecordLanguage
@@ -104,7 +104,9 @@ internal class SpeakToRecordImpl(
     private suspend fun resolveSpeakToRecordLocale(): Locale {
         return when (settings.speakToRecordLanguage.first()) {
             SpeakToRecordLanguage.SystemLanguage -> Locale.getDefault()
-            SpeakToRecordLanguage.AppLanguage -> Locale.forLanguageTag(getString(Res.string.app_language))
+            SpeakToRecordLanguage.AppLanguage -> {
+                Locale.forLanguageTag(getString(Res.string.record_speech_recognition_code))
+            }
         }
     }
 }

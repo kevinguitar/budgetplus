@@ -28,6 +28,7 @@
     <string name="record_deleted">Record %1$s is deleted</string>
     <string name="record_confirm_delete">Are you sure you want to delete the record?</string>
     <string name="record_duplicated">Record duplicated</string>
+    <string name="record_speech_recognition_code">en</string>
     <string name="record_speech_recognition_format">Say the note and price</string>
     <string name="record_speech_recognition_not_supported">Feature is not supported on this device</string>
     <string name="record_speech_recognition_no_result">Cannot recognize, please try again</string>
