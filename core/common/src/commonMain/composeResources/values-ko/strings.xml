@@ -169,6 +169,9 @@
     <string name="settings_chart_mode">개요 차트 모드</string>
     <string name="settings_bar_chart">막대 차트</string>
     <string name="settings_pie_chart">파이 차트</string>
+    <string name="settings_speak_to_record_language">음성 입력 언어</string>
+    <string name="settings_speak_to_record_system_language">시스템 언어</string>
+    <string name="settings_speak_to_record_app_language">앱 언어</string>
     <string name="settings_share_app">앱을 친구에게 공유</string>
     <string name="settings_share_app_message">정말 좋은 가계부 앱을 발견했어요. 한번 사용해 보세요!\n%1$s</string>
     <string name="settings_rate_us">%1$s에서 평가하기</string>

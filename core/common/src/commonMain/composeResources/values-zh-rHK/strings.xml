@@ -169,6 +169,9 @@
     <string name="settings_chart_mode">總覽圖表模式</string>
     <string name="settings_bar_chart">長條圖</string>
     <string name="settings_pie_chart">圓餅圖</string>
+    <string name="settings_speak_to_record_language">語音輸入語言</string>
+    <string name="settings_speak_to_record_system_language">系統語言</string>
+    <string name="settings_speak_to_record_app_language">App 語言</string>
     <string name="settings_share_app">分享 App 給好友</string>
     <string name="settings_share_app_message">我發現了一款超好用的記帳 App，快下載來試試吧！\n%1$s</string>
     <string name="settings_rate_us">在 %1$s 上評價</string>

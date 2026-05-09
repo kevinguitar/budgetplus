@@ -169,6 +169,9 @@
     <string name="settings_chart_mode">Overview Chart Mode</string>
     <string name="settings_bar_chart">Bar Chart</string>
     <string name="settings_pie_chart">Pie Chart</string>
+    <string name="settings_speak_to_record_language">Speak To Record Language</string>
+    <string name="settings_speak_to_record_system_language">System Language</string>
+    <string name="settings_speak_to_record_app_language">App Language</string>
     <string name="settings_share_app">Share the app with friends</string>
     <string name="settings_share_app_message">I found an awesome budget app! Try it out!\n%1$s</string>
     <string name="settings_rate_us">Rate Us on %1$s</string>
