@@ -69,14 +69,18 @@ internal class SpeakToRecordImpl(
                 val errorMessage = error.localizedDescription
                 Logger.e(SpeakToRecordException(errorMessage)) { "SpeechRecognizer Error: $errorMessage" }
 
-                // Error code 1 = "Retry" which is like no match
-                // Error code 216 = request was cancelled (user stopped)
-                if (error.code != 1L && error.code != 216L) {
-                    statusFlow.tryEmit(SpeakToRecordStatus.Error(errorMessage))
-                    tracker.logEvent(
-                        event = "speak_to_record_error",
-                        params = mapOf("code" to error.code)
-                    )
+                when (error.code) {
+                    // Error code 1 = "Retry" which is like no match
+                    1L, 203L -> statusFlow.tryEmit(SpeakToRecordStatus.NoResult)
+                    // Error code 216 = request was cancelled (user stopped), ignore
+                    216L -> Unit
+                    else -> {
+                        statusFlow.tryEmit(SpeakToRecordStatus.Error(errorMessage))
+                        tracker.logEvent(
+                            event = "speak_to_record_error",
+                            params = mapOf("code" to error.code)
+                        )
+                    }
                 }
                 return@recognitionTaskWithRequest
             }
