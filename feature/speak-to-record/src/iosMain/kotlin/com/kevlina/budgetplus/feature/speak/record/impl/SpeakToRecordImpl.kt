@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.speak.record.impl
 
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.Tracker
+import com.kevlina.budgetplus.core.common.appLocale
 import com.kevlina.budgetplus.feature.speak.record.RecordActor
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecord
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordStatus
@@ -16,7 +17,6 @@ import platform.AVFAudio.AVAudioSessionCategoryRecord
 import platform.AVFAudio.AVAudioSessionModeMeasurement
 import platform.AVFAudio.setActive
 import platform.Foundation.NSLocale
-import platform.Foundation.currentLocale
 import platform.Foundation.localeIdentifier
 import platform.Speech.SFSpeechAudioBufferRecognitionRequest
 import platform.Speech.SFSpeechRecognizer
@@ -28,7 +28,7 @@ internal class SpeakToRecordImpl(
 ) : SpeakToRecord {
 
     override fun startRecording(): RecordActor {
-        val speechRecognizer = SFSpeechRecognizer(locale = NSLocale.currentLocale)
+        val speechRecognizer = SFSpeechRecognizer(locale = NSLocale.appLocale)
         if (!speechRecognizer.isAvailable()) {
             Logger.e(SpeakToRecordException("Feature is not supported")) { "Feature is not supported" }
             return RecordActor(
@@ -105,8 +105,9 @@ internal class SpeakToRecordImpl(
 
         audioEngine.prepare()
         audioEngine.startAndReturnError(null)
+        statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
 
-        Logger.d { "SpeechRecognizer: Start listening, locale=${NSLocale.currentLocale.localeIdentifier}" }
+        Logger.d { "SpeechRecognizer: Start listening, locale=${NSLocale.appLocale.localeIdentifier}" }
         tracker.logEvent("speak_to_record_start")
 
         return RecordActor(
