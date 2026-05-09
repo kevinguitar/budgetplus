@@ -39,6 +39,7 @@ import budgetplus.core.common.generated.resources.ic_lock_person
 import budgetplus.core.common.generated.resources.ic_logout
 import budgetplus.core.common.generated.resources.ic_paid
 import budgetplus.core.common.generated.resources.ic_privacy_tip
+import budgetplus.core.common.generated.resources.ic_record_voice_over
 import budgetplus.core.common.generated.resources.ic_share
 import budgetplus.core.common.generated.resources.ic_show_chart
 import budgetplus.core.common.generated.resources.ic_star
@@ -70,6 +71,9 @@ import budgetplus.core.common.generated.resources.settings_rate_us
 import budgetplus.core.common.generated.resources.settings_rename_book
 import budgetplus.core.common.generated.resources.settings_rename_user
 import budgetplus.core.common.generated.resources.settings_share_app
+import budgetplus.core.common.generated.resources.settings_speak_to_record_app_language
+import budgetplus.core.common.generated.resources.settings_speak_to_record_language
+import budgetplus.core.common.generated.resources.settings_speak_to_record_system_language
 import budgetplus.core.common.generated.resources.settings_view_members
 import budgetplus.core.common.generated.resources.username_title
 import co.touchlab.kermit.Logger
@@ -77,6 +81,7 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.settings.api.ChartMode
+import com.kevlina.budgetplus.core.settings.api.SpeakToRecordLanguage
 import com.kevlina.budgetplus.core.settings.api.icon
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.typographyScale
@@ -107,11 +112,14 @@ internal fun SettingsContent(
     val isPremium by vm.isPremium.collectAsStateWithLifecycle()
     val vibrateOnInput by vm.vibrator.vibrateOnInput.collectAsStateWithLifecycle()
     val chartMode by vm.chartModel.chartMode.collectAsStateWithLifecycle()
+    val speakToRecordLanguage by vm.speakToRecordSettings.speakToRecordLanguage
+        .collectAsStateWithLifecycle(SpeakToRecordLanguage.SystemLanguage)
 
     var isRenameUserDialogShown by remember { mutableStateOf(false) }
     var isRenameBookDialogShown by remember { mutableStateOf(false) }
     var isMembersDialogShown by rememberSaveable { mutableStateOf(showMembers) }
     var isChartModeDropdownShown by remember { mutableStateOf(false) }
+    var isSpeakToRecordLanguageDropdownShown by remember { mutableStateOf(false) }
 
     var isDeleteOrLeaveDialogShown by remember { mutableStateOf(false) }
     var isDeleteAccountDialogShown by remember { mutableStateOf(false) }
@@ -124,7 +132,6 @@ internal fun SettingsContent(
             .containerPadding()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-
         // Content section
         SettingsItem(
             text = stringResource(Res.string.batch_record_title),
@@ -277,6 +284,45 @@ internal fun SettingsContent(
                             onClick = {
                                 vm.chartModel.setChartMode(ChartMode.PieChart)
                                 isChartModeDropdownShown = false
+                            }
+                        )
+                    }
+                }
+            }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.settings_speak_to_record_language),
+            icon = vectorResource(Res.drawable.ic_record_voice_over),
+            onClick = { isSpeakToRecordLanguageDropdownShown = true },
+            action = {
+                Box {
+                    Image(
+                        imageVector = speakToRecordLanguage.icon,
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(LocalAppColors.current.dark),
+                        modifier = Modifier.padding(end = 16.dp).typographyScale()
+                    )
+
+                    DropdownMenu(
+                        expanded = isSpeakToRecordLanguageDropdownShown,
+                        onDismissRequest = { isSpeakToRecordLanguageDropdownShown = false }
+                    ) {
+                        DropdownItem(
+                            name = stringResource(Res.string.settings_speak_to_record_system_language),
+                            icon = SpeakToRecordLanguage.SystemLanguage.icon,
+                            onClick = {
+                                vm.speakToRecordSettings.setSpeakToRecordLanguage(SpeakToRecordLanguage.SystemLanguage)
+                                isSpeakToRecordLanguageDropdownShown = false
+                            }
+                        )
+
+                        DropdownItem(
+                            name = stringResource(Res.string.settings_speak_to_record_app_language),
+                            icon = SpeakToRecordLanguage.AppLanguage.icon,
+                            onClick = {
+                                vm.speakToRecordSettings.setSpeakToRecordLanguage(SpeakToRecordLanguage.AppLanguage)
+                                isSpeakToRecordLanguageDropdownShown = false
                             }
                         )
                     }

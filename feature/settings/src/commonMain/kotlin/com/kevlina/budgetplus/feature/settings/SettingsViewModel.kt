@@ -17,6 +17,7 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.settings.api.ChartModeViewModel
+import com.kevlina.budgetplus.core.settings.api.SpeakToRecordSettingsViewModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -34,6 +35,7 @@ class SettingsViewModel private constructor(
     private val tracker: Tracker,
     val vibrator: VibratorManager,
     val chartModel: ChartModeViewModel,
+    val speakToRecordSettings: SpeakToRecordSettingsViewModel,
     val navController: NavController<BookDest>,
     internal val navigation: SettingsNavigationViewModel,
 ) : ViewModel() {

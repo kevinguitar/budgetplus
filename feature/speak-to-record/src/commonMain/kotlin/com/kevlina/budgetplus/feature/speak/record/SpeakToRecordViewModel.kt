@@ -75,7 +75,9 @@ class SpeakToRecordViewModel(
     }
 
     fun onButtonTap() {
-        recordActorFlow.value = speakToRecord.startRecording()
+        viewModelScope.launch {
+            recordActorFlow.value = speakToRecord.startRecording()
+        }
     }
 
     fun onButtonReleased() {

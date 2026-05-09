@@ -9,6 +9,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.ui)
             implementation(projects.core.data)
+            implementation(projects.core.settingsApi)
 
             implementation(libs.compottie)
             implementation(libs.permissions.compose)

@@ -249,10 +249,7 @@ private suspend fun EventFlow<Unit>.awaitUnconsumedEvent() {
 val fakeSpeakToRecordVm = SpeakToRecordViewModel(
     snackbarSender = FakeSnackbarSender,
     speakToRecord = object : SpeakToRecord {
-        override val isAvailableOnDevice: Boolean
-            get() = true
-
-        override fun startRecording(): RecordActor = RecordActor(
+        override suspend fun startRecording(): RecordActor = RecordActor(
             statusFlow = emptyFlow(),
             stopRecording = {}
         )

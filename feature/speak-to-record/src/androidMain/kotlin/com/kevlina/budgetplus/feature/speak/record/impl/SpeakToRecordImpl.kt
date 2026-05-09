@@ -5,8 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.app_language
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.Tracker
+import com.kevlina.budgetplus.core.settings.api.SpeakToRecordLanguage
+import com.kevlina.budgetplus.core.settings.api.SpeakToRecordSettingsViewModel
 import com.kevlina.budgetplus.feature.speak.record.RecordActor
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecord
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordStatus
@@ -14,20 +18,21 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import org.jetbrains.compose.resources.getString
 import java.util.*
 
 @ContributesBinding(AppScope::class)
 internal class SpeakToRecordImpl(
     private val context: Context,
+    private val settings: SpeakToRecordSettingsViewModel,
     private val speakResultParser: SpeakResultParser,
     private val tracker: Tracker,
 ) : SpeakToRecord {
 
-    override val isAvailableOnDevice = SpeechRecognizer.isRecognitionAvailable(context)
-
-    override fun startRecording(): RecordActor {
-        if (!isAvailableOnDevice) {
+    override suspend fun startRecording(): RecordActor {
+        if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             Logger.e(SpeakToRecordException("Feature is not supported")) { "Feature is not supported" }
             return RecordActor(
                 statusFlow = flowOf(SpeakToRecordStatus.DeviceNotSupported),
@@ -72,6 +77,7 @@ internal class SpeakToRecordImpl(
             }
         })
 
+        val speakToRecordLocale = resolveSpeakToRecordLocale()
         val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             .putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -79,10 +85,10 @@ internal class SpeakToRecordImpl(
             )
             .putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE,
-                Locale.getDefault()
+                speakToRecordLocale
             )
 
-        Logger.d { "SpeechRecognizer: Start listening, locale=${Locale.getDefault()}" }
+        Logger.d { "SpeechRecognizer: Start listening, locale=${speakToRecordLocale}" }
         tracker.logEvent("speak_to_record_start")
         recognizer.startListening(recognizerIntent)
 
@@ -93,6 +99,13 @@ internal class SpeakToRecordImpl(
                 recognizer.stopListening()
             }
         )
+    }
+
+    private suspend fun resolveSpeakToRecordLocale(): Locale {
+        return when (settings.speakToRecordLanguage.first()) {
+            SpeakToRecordLanguage.SystemLanguage -> Locale.getDefault()
+            SpeakToRecordLanguage.AppLanguage -> Locale.forLanguageTag(getString(Res.string.app_language))
+        }
     }
 }
 
