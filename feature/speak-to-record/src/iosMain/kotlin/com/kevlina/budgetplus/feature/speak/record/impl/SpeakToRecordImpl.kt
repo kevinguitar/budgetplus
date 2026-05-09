@@ -53,19 +53,24 @@ internal class SpeakToRecordImpl(
         val recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         recognitionRequest.shouldReportPartialResults = false
 
-        val recognitionTask = speechRecognizer.recognitionTaskWithRequest(recognitionRequest) { result, error ->
+        var isStopped = false
+        fun stopAudioEngine() {
+            if (isStopped) return
+            isStopped = true
+            audioEngine.stop()
+            audioEngine.inputNode.removeTapOnBus(0u)
+        }
+
+        speechRecognizer.recognitionTaskWithRequest(recognitionRequest) { result, error ->
             if (error != null) {
-                audioEngine.stop()
-                audioEngine.inputNode.removeTapOnBus(0u)
+                stopAudioEngine()
 
                 val errorMessage = error.localizedDescription
                 Logger.e(SpeakToRecordException(errorMessage)) { "SpeechRecognizer Error: $errorMessage" }
 
                 // Error code 1 = "Retry" which is like no match
                 // Error code 216 = request was cancelled (user stopped)
-                if (error.code == 1L || error.code == 216L) {
-                    // Ignore cancellation errors from stopping
-                } else {
+                if (error.code != 1L && error.code != 216L) {
                     statusFlow.tryEmit(SpeakToRecordStatus.Error(errorMessage))
                     tracker.logEvent(
                         event = "speak_to_record_error",
@@ -76,8 +81,7 @@ internal class SpeakToRecordImpl(
             }
 
             if (result != null && result.isFinal()) {
-                audioEngine.stop()
-                audioEngine.inputNode.removeTapOnBus(0u)
+                stopAudioEngine()
 
                 val text = result.bestTranscription.formattedString
                 Logger.d { "SpeechRecognizer: Results received $text" }
@@ -111,14 +115,9 @@ internal class SpeakToRecordImpl(
             stopRecording = {
                 statusFlow.tryEmit(SpeakToRecordStatus.Recognizing)
                 recognitionRequest.endAudio()
-                audioEngine.stop()
-                audioEngine.inputNode.removeTapOnBus(0u)
-
-                // If no result came through after stopping, check if task already finished
-                if (recognitionTask?.isFinishing() != true) {
-                    recognitionTask?.finish()
-                }
+                stopAudioEngine()
             }
         )
     }
 }
+
