@@ -14,7 +14,6 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onSubscription
 import platform.AVFAudio.AVAudioEngine
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryRecord
@@ -48,6 +47,7 @@ internal class SpeakToRecordImpl(
         }
 
         val statusFlow = MutableSharedFlow<SpeakToRecordStatus>(
+            replay = 1,
             // Not acceptable to lose any events
             extraBufferCapacity = Int.MAX_VALUE,
             onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -113,14 +113,13 @@ internal class SpeakToRecordImpl(
 
         audioEngine.prepare()
         audioEngine.startAndReturnError(null)
+        statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
 
         Logger.d { "SpeechRecognizer: Start listening, locale=${locale.localeIdentifier}" }
         tracker.logEvent("speak_to_record_start")
 
         return RecordActor(
-            statusFlow = statusFlow.onSubscription {
-                statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
-            },
+            statusFlow = statusFlow,
             stopRecording = {
                 statusFlow.tryEmit(SpeakToRecordStatus.Recognizing)
                 recognitionRequest.endAudio()
