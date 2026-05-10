@@ -18,16 +18,14 @@ import kotlinx.coroutines.flow.flowOf
 import java.util.*
 
 @ContributesBinding(AppScope::class)
-class SpeakToRecordImpl(
+internal class SpeakToRecordImpl(
     private val context: Context,
     private val speakResultParser: SpeakResultParser,
     private val tracker: Tracker,
 ) : SpeakToRecord {
 
-    override val isAvailableOnDevice = SpeechRecognizer.isRecognitionAvailable(context)
-
     override fun startRecording(): RecordActor {
-        if (!isAvailableOnDevice) {
+        if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             Logger.e(SpeakToRecordException("Feature is not supported")) { "Feature is not supported" }
             return RecordActor(
                 statusFlow = flowOf(SpeakToRecordStatus.DeviceNotSupported),
@@ -79,7 +77,7 @@ class SpeakToRecordImpl(
             )
             .putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE,
-                Locale.getDefault()
+                Locale.getDefault().toLanguageTag()
             )
 
         Logger.d { "SpeechRecognizer: Start listening, locale=${Locale.getDefault()}" }

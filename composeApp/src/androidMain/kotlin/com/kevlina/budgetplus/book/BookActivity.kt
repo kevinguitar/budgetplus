@@ -10,6 +10,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.app_update_downloaded
@@ -17,22 +18,20 @@ import budgetplus.core.common.generated.resources.cta_complete
 import com.kevlina.budgetplus.book.ui.BookBinding
 import com.kevlina.budgetplus.core.common.SnackbarDuration
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelGraphProvider
 import com.kevlina.budgetplus.core.common.di.resolveGraphExtensionFactory
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
+import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
-import com.kevlina.budgetplus.core.common.nav.consumeNavigation
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.utils.LocalViewModelGraphProvider
-import com.kevlina.budgetplus.core.utils.setStatusBarColor
-import com.kevlina.budgetplus.feature.auth.AuthActivity
-import com.kevlina.budgetplus.feature.welcome.WelcomeActivity
 import com.kevlina.budgetplus.inapp.update.InAppUpdateManager
 import com.kevlina.budgetplus.inapp.update.InAppUpdateState
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 class BookActivity : ComponentActivity() {
 
@@ -41,11 +40,13 @@ class BookActivity : ComponentActivity() {
     @Inject private lateinit var themeManager: ThemeManager
     @Inject private lateinit var inAppUpdateManager: InAppUpdateManager
     @Inject private lateinit var snackbarSender: SnackbarSender
-    @Inject private lateinit var viewModelGraphProvider: ViewModelGraphProvider
+    @Inject private lateinit var viewModelFactory: MetroViewModelFactory
+    @Inject private lateinit var navController: NavController<BookDest>
 
-    private val viewModel by viewModels<BookViewModel>(
-        factoryProducer = ::viewModelGraphProvider
-    )
+    private val viewModel by viewModels<BookViewModel>()
+
+    override val defaultViewModelProviderFactory: ViewModelProvider.Factory
+        get() = viewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         resolveGraphExtensionFactory<BookActivityGraph.Factory>()
@@ -58,24 +59,22 @@ class BookActivity : ComponentActivity() {
         }
 
         enableEdgeToEdge()
-        setStatusBarColor(isLight = false)
         super.onCreate(savedInstanceState)
 
         viewModel.handleDeeplink(intent.dataString)
 
         val destination = when {
-            authManager.userState.value == null -> AuthActivity::class.java
-            bookRepo.currentBookId == null -> WelcomeActivity::class.java
+            authManager.userState.value == null -> BookDest.Auth()
+            bookRepo.currentBookId == null -> BookDest.Welcome
             else -> null
         }
 
         if (destination != null) {
-            startActivity(Intent(this, destination))
-            finish()
+            navController.selectRootAndClearAll(destination)
         }
 
         setContent {
-            CompositionLocalProvider(LocalViewModelGraphProvider provides viewModelGraphProvider) {
+            CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
                 val themeColors by themeManager.themeColors.collectAsStateWithLifecycle()
                 AppTheme(themeColors) {
                     BookBinding(vm = viewModel)
@@ -94,8 +93,6 @@ class BookActivity : ComponentActivity() {
                 }
             }
         }
-
-        consumeNavigation(viewModel.navigation)
 
         addOnNewIntentListener { newIntent ->
             viewModel.handleDeeplink(newIntent.dataString)

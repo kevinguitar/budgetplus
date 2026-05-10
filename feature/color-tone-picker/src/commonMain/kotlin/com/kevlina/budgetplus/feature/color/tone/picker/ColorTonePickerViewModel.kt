@@ -10,8 +10,8 @@ import budgetplus.core.common.generated.resources.menu_share_colors
 import com.kevlina.budgetplus.core.common.ShareHelper
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.theme.ColorTone
 import com.kevlina.budgetplus.core.theme.ThemeColorSemantic
@@ -19,7 +19,9 @@ import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,9 +30,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(ColorTonePickerViewModel::class)
-@ContributesIntoMap(ViewModelScope::class)
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class ColorTonePickerViewModel(
+    val navController: NavController<BookDest>,
     authManager: AuthManager,
     private val themeManager: ThemeManager,
     private val bubbleRepo: BubbleRepo,
@@ -64,10 +67,10 @@ class ColorTonePickerViewModel(
         selectedColorTone.value = colorTone
     }
 
-    fun setColorTone(colorTone: ColorTone, onDone: () -> Unit) {
+    fun setColorTone(colorTone: ColorTone) {
         viewModelScope.launch {
             themeManager.setColorTone(colorTone)
-            onDone()
+            navController.navigateUp()
         }
     }
 
@@ -89,7 +92,8 @@ class ColorTonePickerViewModel(
         }
     }
 
-    fun trackUnlockPremium() {
+    fun unlockPremium() {
+        navController.navigate(BookDest.UnlockPremium)
         tracker.logEvent("color_tone_unlock_premium")
     }
 

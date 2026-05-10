@@ -10,15 +10,11 @@ import com.kevlina.budgetplus.core.common.parseToPrice
 import com.kevlina.budgetplus.core.common.randomUUID
 import com.kevlina.budgetplus.core.common.withCurrentTime
 import com.kevlina.budgetplus.core.data.remote.Record
-import com.kevlina.budgetplus.core.data.remote.RecordsDb
 import com.kevlina.budgetplus.core.data.remote.createdOn
 import com.kevlina.budgetplus.core.data.remote.isBatched
 import com.kevlina.budgetplus.core.data.remote.toAuthor
-import dev.gitlive.firebase.firestore.CollectionReference
-import dev.gitlive.firebase.firestore.QuerySnapshot
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,8 +32,8 @@ import kotlin.time.Instant
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class RecordRepoImpl(
-    @RecordsDb private val recordsDb: Provider<CollectionReference>,
+internal class RecordRepoImpl(
+    private val recordDbClient: RecordDbClient,
     @AppCoroutineScope private val appScope: CoroutineScope,
     private val authManager: AuthManager,
     private val tracker: Tracker,
@@ -47,7 +43,7 @@ class RecordRepoImpl(
     override fun createRecord(record: Record) {
         appScope.launch {
             try {
-                recordsDb().add(record)
+                recordDbClient.add(record)
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             }
@@ -102,7 +98,7 @@ class RecordRepoImpl(
             name = newName,
             price = newPriceText.parseToPrice()
         )
-        recordsDb().document(oldRecord.id).set(newRecord)
+        recordDbClient.set(oldRecord.id, newRecord)
         tracker.logEvent("record_edited")
     }
 
@@ -128,9 +124,8 @@ class RecordRepoImpl(
         val oldDate = LocalDate.fromEpochDays(oldRecord.date)
         val daysDiff = newDate.minus(oldDate).days
 
-        val records = getAllTheFutureRecords(oldRecord)
-        records.documents.forEach { doc ->
-            val record = doc.data<Record>().copy(id = doc.id)
+        val records = recordDbClient.queryByBatchAndDate(oldRecord.batchId, oldRecord.date)
+        records.forEach { (_, record) ->
             val date = LocalDate.fromEpochDays(record.date)
             editRecord(
                 oldRecord = record,
@@ -142,7 +137,7 @@ class RecordRepoImpl(
         }
 
         tracker.logEvent("record_batch_edited")
-        return records.documents.size
+        return records.size
     }
 
     override fun duplicateRecord(record: Record) {
@@ -155,7 +150,7 @@ class RecordRepoImpl(
         )
         appScope.launch {
             try {
-                recordsDb().add(duplicatedRecord)
+                recordDbClient.add(duplicatedRecord)
                 snackbarSender.send(Res.string.record_duplicated)
                 tracker.logEvent("record_duplicated")
             } catch (e: Exception) {
@@ -165,7 +160,7 @@ class RecordRepoImpl(
     }
 
     override suspend fun deleteRecord(recordId: String) {
-        recordsDb().document(recordId).delete()
+        recordDbClient.delete(recordId)
         tracker.logEvent("record_deleted")
     }
 
@@ -176,40 +171,30 @@ class RecordRepoImpl(
             return 1
         }
 
-        val records = getAllTheFutureRecords(record)
-        records.documents.forEach { snapshot ->
-            deleteRecord(snapshot.id)
+        val records = recordDbClient.queryByBatchAndDate(record.batchId, record.date)
+        records.forEach { (id, _) ->
+            deleteRecord(id)
         }
 
         tracker.logEvent("record_batch_deleted")
-        return records.documents.size
-    }
-
-    private suspend fun getAllTheFutureRecords(record: Record): QuerySnapshot {
-        return recordsDb()
-            .where { "batchId" equalTo record.batchId }
-            .where { "date" greaterThanOrEqualTo record.date }
-            .get()
+        return records.size
     }
 
     override fun renameCategories(
         events: List<CategoryRenameEvent>,
     ) {
         appScope.launch(Dispatchers.IO) {
-            val db = recordsDb()
             var dbUpdateCount = 0
 
             events.forEach { event ->
                 try {
-                    val records = db
-                        .where { "category" equalTo event.from }
-                        .get()
+                    val records = recordDbClient.queryByCategory(event.from)
 
-                    records.documents.forEach { doc ->
-                        val newRecord = doc.data<Record>().copy(category = event.to)
-                        db.document(doc.id).set(newRecord)
+                    records.forEach { (docId, record) ->
+                        val newRecord = record.copy(category = event.to)
+                        recordDbClient.set(docId, newRecord)
                     }
-                    dbUpdateCount += records.documents.size
+                    dbUpdateCount += records.size
                 } catch (e: Exception) {
                     Logger.e(e) { "RecordRepo: renameCategories failed" }
                 }

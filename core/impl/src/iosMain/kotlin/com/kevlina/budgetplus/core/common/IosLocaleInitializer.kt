@@ -8,7 +8,7 @@ import platform.Foundation.NSUserDefaults
 import platform.Foundation.preferredLanguages
 
 @ContributesIntoSet(AppScope::class)
-class IosLocaleInitializer : AppStartAction {
+internal class IosLocaleInitializer : AppStartAction {
 
     override fun onAppStart() {
         val userDefaults = NSUserDefaults.standardUserDefaults

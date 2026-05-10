@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.feature.edit.category
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
@@ -8,23 +8,26 @@ import budgetplus.core.common.generated.resources.category_already_exist
 import budgetplus.core.common.generated.resources.category_edit_successful
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.CategoryRenameEvent
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleRepo
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import kotlin.time.Duration.Companion.seconds
 
-@ViewModelKey(EditCategoryViewModel::class)
-@ContributesIntoMap(ViewModelScope::class)
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class EditCategoryViewModel(
+    val navController: NavController<BookDest>,
     private val bookRepo: BookRepo,
     private val recordRepo: RecordRepo,
     private val bubbleRepo: BubbleRepo,
@@ -37,7 +40,7 @@ class EditCategoryViewModel(
     val incomeCategories
         get() = bookRepo.bookState.value?.incomeCategories.orEmpty()
 
-    @VisibleForTesting
+    @RestrictTo(RestrictTo.Scope.TESTS)
     val categoryRenameEvents = mutableListOf<CategoryRenameEvent>()
 
     private var saveBubbleJob: Job? = null
@@ -50,6 +53,7 @@ class EditCategoryViewModel(
                     recordRepo.renameCategories(categoryRenameEvents)
                 }
                 snackbarSender.send(Res.string.category_edit_successful)
+                navController.navigateUp()
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             }

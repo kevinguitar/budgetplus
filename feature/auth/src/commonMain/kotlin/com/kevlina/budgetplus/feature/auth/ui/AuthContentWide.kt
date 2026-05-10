@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
+import com.kevlina.budgetplus.feature.auth.isAppleSignInAvailable
 
 @Composable
 fun AuthContentWide(
     signInWithGoogle: () -> Unit,
-    signInWithApple: (() -> Unit)? = null,
+    signInWithApple: () -> Unit,
     isLoading: Boolean = false,
 ) {
     Row(
@@ -64,7 +65,7 @@ fun AuthContentWide(
                 onClick = signInWithGoogle,
             )
 
-            if (signInWithApple != null) {
+            if (isAppleSignInAvailable) {
                 SocialSignInButton(
                     provider = SocialSignInProvider.Apple,
                     onClick = signInWithApple,
@@ -77,7 +78,7 @@ fun AuthContentWide(
 @Preview(widthDp = 800, heightDp = 600)
 @Composable
 private fun AuthContentWide_Preview() = AppTheme {
-    AuthContentWide(signInWithGoogle = {})
+    AuthContentWide(signInWithGoogle = {}, signInWithApple = {})
 }
 
 @Preview(widthDp = 800, heightDp = 600)

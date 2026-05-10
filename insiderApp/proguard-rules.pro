@@ -30,6 +30,14 @@
 }
 
 # Required rules for r8
+-dontwarn com.google.appengine.api.urlfetch.FetchOptions$Builder
+-dontwarn com.google.appengine.api.urlfetch.FetchOptions
+-dontwarn com.google.appengine.api.urlfetch.HTTPHeader
+-dontwarn com.google.appengine.api.urlfetch.HTTPMethod
+-dontwarn com.google.appengine.api.urlfetch.HTTPRequest
+-dontwarn com.google.appengine.api.urlfetch.HTTPResponse
+-dontwarn com.google.appengine.api.urlfetch.URLFetchService
+-dontwarn com.google.appengine.api.urlfetch.URLFetchServiceFactory
 -dontwarn com.google.protobuf.AbstractMessage$Builder
 -dontwarn com.google.protobuf.AbstractMessage$BuilderParent
 -dontwarn com.google.protobuf.AbstractMessage
@@ -62,16 +70,15 @@
 -dontwarn com.google.protobuf.TypeRegistry$Builder
 -dontwarn com.google.protobuf.TypeRegistry
 -dontwarn com.google.protobuf.UnknownFieldSet
--dontwarn org.bouncycastle.asn1.pkcs.PrivateKeyInfo
--dontwarn org.bouncycastle.openssl.PEMDecryptorProvider
--dontwarn org.bouncycastle.openssl.PEMEncryptedKeyPair
--dontwarn org.bouncycastle.openssl.PEMKeyPair
--dontwarn org.bouncycastle.openssl.PEMParser
--dontwarn org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
--dontwarn org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8DecryptorProviderBuilder
--dontwarn org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder
--dontwarn org.bouncycastle.operator.InputDecryptorProvider
--dontwarn org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo
+-dontwarn org.apache.log4j.Level
+-dontwarn org.apache.log4j.Logger
+-dontwarn org.apache.log4j.Priority
+-dontwarn org.apache.logging.log4j.Level
+-dontwarn org.apache.logging.log4j.LogManager
+-dontwarn org.apache.logging.log4j.Logger
+-dontwarn org.apache.logging.log4j.message.MessageFactory
+-dontwarn org.apache.logging.log4j.spi.ExtendedLogger
+-dontwarn org.apache.logging.log4j.spi.ExtendedLoggerWrapper
 -dontwarn org.eclipse.jetty.alpn.ALPN$ClientProvider
 -dontwarn org.eclipse.jetty.alpn.ALPN$Provider
 -dontwarn org.eclipse.jetty.alpn.ALPN$ServerProvider

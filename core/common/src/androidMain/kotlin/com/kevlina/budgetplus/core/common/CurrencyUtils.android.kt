@@ -37,7 +37,12 @@ actual fun formatPriceWithCurrency(price: Double, currencyCode: String?, alwaysS
 }
 
 actual fun getDefaultCurrencyCode(): String {
-    return JavaCurrency.getInstance(Locale.getDefault()).currencyCode
+    return try {
+        JavaCurrency.getInstance(Locale.getDefault()).currencyCode
+    } catch (_: Exception) {
+        // It fails on CI
+        fallbackCurrencyCode
+    }
 }
 
 actual fun getAvailableCurrencies(): List<Currency> {

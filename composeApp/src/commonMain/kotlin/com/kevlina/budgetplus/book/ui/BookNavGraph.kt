@@ -1,16 +1,15 @@
 package com.kevlina.budgetplus.book.ui
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation3.runtime.NavEntry
 import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
-import com.kevlina.budgetplus.core.utils.assistedMetroViewModel
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.add.record.ui.RecordScreen
 import com.kevlina.budgetplus.feature.auth.AuthViewModel
 import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
 import com.kevlina.budgetplus.feature.batch.record.ui.BatchRecordScreen
 import com.kevlina.budgetplus.feature.color.tone.picker.ColorTonePickerScreen
 import com.kevlina.budgetplus.feature.currency.picker.CurrencyPickerScreen
+import com.kevlina.budgetplus.feature.currency.picker.CurrencyPickerViewModel
 import com.kevlina.budgetplus.feature.edit.category.EditCategoryScreen
 import com.kevlina.budgetplus.feature.overview.ui.OverviewScreen
 import com.kevlina.budgetplus.feature.records.RecordsScreen
@@ -18,20 +17,22 @@ import com.kevlina.budgetplus.feature.records.RecordsViewModel
 import com.kevlina.budgetplus.feature.search.SearchScreen
 import com.kevlina.budgetplus.feature.search.SearchViewModel
 import com.kevlina.budgetplus.feature.settings.SettingsScreen
-import com.kevlina.budgetplus.feature.unlock.premium.PremiumScreen
+import com.kevlina.budgetplus.feature.unlock.premium.UnlockPremiumScreen
 import com.kevlina.budgetplus.feature.welcome.ui.WelcomeBinding
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
-internal fun bookNavGraph(
-    navController: NavController<BookDest>,
-    bookDest: BookDest,
-): NavEntry<BookDest> {
+internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
     return when (bookDest) {
-        BookDest.Auth -> NavEntry(bookDest) {
+        is BookDest.Auth -> NavEntry(bookDest) {
             val vm = metroViewModel<AuthViewModel>()
+            LaunchedEffect(bookDest) {
+                vm.checkAuthorizedAccounts(enableAutoSignIn = bookDest.enableAutoSignIn)
+            }
             AuthBinding(
-                vm.commonAuthViewModel,
-                vm::signInWithGoogle,
-                vm::signInWithApple
+                vm = vm.commonAuthViewModel,
+                signInWithGoogle = vm::signInWithGoogle,
+                signInWithApple = vm::signInWithApple,
             )
         }
 
@@ -40,56 +41,47 @@ internal fun bookNavGraph(
         }
 
         BookDest.Record -> NavEntry(bookDest) {
-            RecordScreen(navController)
+            RecordScreen()
         }
 
         is BookDest.EditCategory -> NavEntry(bookDest) {
-            EditCategoryScreen(
-                navController = navController,
-                type = bookDest.type
-            )
+            EditCategoryScreen(type = bookDest.type)
         }
 
         is BookDest.Settings -> NavEntry(bookDest) {
-            SettingsScreen(
-                navController = navController,
-                showMembers = bookDest.showMembers
-            )
+            SettingsScreen(showMembers = bookDest.showMembers)
         }
 
         BookDest.UnlockPremium -> NavEntry(bookDest) {
-            PremiumScreen(navController)
+            UnlockPremiumScreen()
         }
 
         BookDest.BatchRecord -> NavEntry(bookDest) {
-            BatchRecordScreen(navController)
+            BatchRecordScreen()
         }
 
         is BookDest.Colors -> NavEntry(bookDest) {
-            ColorTonePickerScreen(
-                navController = navController,
-                hexFromLink = bookDest.hex
+            ColorTonePickerScreen(hexFromLink = bookDest.hex)
+        }
+
+        is BookDest.CurrencyPicker -> NavEntry(bookDest) {
+            CurrencyPickerScreen(
+                vm = assistedMetroViewModel<CurrencyPickerViewModel, CurrencyPickerViewModel.Factory> { create(bookDest) }
             )
         }
 
-        BookDest.CurrencyPicker -> NavEntry(bookDest) {
-            CurrencyPickerScreen(navController)
-        }
-
         BookDest.Overview -> NavEntry(bookDest) {
-            OverviewScreen(navController)
+            OverviewScreen()
         }
 
         is BookDest.Records -> NavEntry(bookDest) {
             RecordsScreen(
-                navController = navController,
                 vm = assistedMetroViewModel<RecordsViewModel, RecordsViewModel.Factory> { create(bookDest) }
             )
         }
 
         is BookDest.Search -> NavEntry(bookDest) {
             SearchScreen(
-                navController = navController,
                 vm = assistedMetroViewModel<SearchViewModel, SearchViewModel.Factory> { create(bookDest) }
             )
         }

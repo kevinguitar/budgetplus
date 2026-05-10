@@ -1,0 +1,54 @@
+package com.kevlina.budgetplus.core.data
+
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
+import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
+import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
+import com.kevlina.budgetplus.core.data.fixtures.FakeJoinInfoProcessor
+import com.kevlina.budgetplus.core.data.fixtures.FakePreference
+import com.kevlina.budgetplus.core.data.remote.Book
+import com.kevlina.budgetplus.core.data.remote.User
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+
+internal class BookRepoImplTest {
+
+    @Test
+    fun `canEdit is true when Book#allowMembersEdit is null`() = runTest {
+        val repo = createRepo(book = Book(allowMembersEdit = null))
+        repo.bookState.filterNotNull().first()
+        assertTrue(repo.canEdit)
+    }
+
+    @Test
+    fun `canEdit is false when Book#allowMembersEdit is false and you're not the owner`() = runTest {
+        val repo = createRepo(
+            book = Book(
+                ownerId = "not_my_user",
+                allowMembersEdit = false
+            )
+        )
+        repo.bookState.filterNotNull().first()
+        assertFalse(repo.canEdit)
+    }
+
+    private val tracker = FakeTracker()
+
+    private fun TestScope.createRepo(book: Book?) = BookRepoImpl(
+        authManager = FakeAuthManager(user = User(id = "my_user")),
+        joinInfoProcessor = FakeJoinInfoProcessor(),
+        tracker = tracker,
+        preference = FakePreference {
+            set(stringPreferencesKey("currentBook"), Json.encodeToString(book))
+        },
+        appScope = backgroundScope,
+        booksDb = lazy { error("booksDb should not be accessed in this test") },
+        currencyExchangeRepo = lazy { FakeCurrencyExchangeRepo() }
+    )
+}

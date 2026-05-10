@@ -3,6 +3,8 @@ package com.kevlina.budgetplus.core.ads
 import GoogleMobileAds.GADAdSizeBanner
 import GoogleMobileAds.GADBannerView
 import GoogleMobileAds.GADBannerViewDelegateProtocol
+import GoogleMobileAds.GADFullScreenContentDelegateProtocol
+import GoogleMobileAds.GADFullScreenPresentingAdProtocol
 import GoogleMobileAds.GADInterstitialAd
 import GoogleMobileAds.GADRequest
 import androidx.compose.runtime.Composable
@@ -72,19 +74,45 @@ actual fun HandleInterstitialAd(
     handler: InterstitialAdsHandler,
 ) {
     LaunchedEffect(handler) {
-        handler.showAdEvent.consumeEach {
+        // Prevent garbage collection of the delegate while the ad is being shown,
+        // since GADInterstitialAd holds a weak reference to it.
+        var currentDelegate: NSObject? = null
+
+        handler.showAdEvent.consumeEach { onComplete ->
             GADInterstitialAd.loadWithAdUnitID(
                 adUnitID = adUnitId,
                 request = GADRequest(),
                 completionHandler = { ad, error ->
                     if (ad != null) {
+                        val delegate = object : NSObject(), GADFullScreenContentDelegateProtocol {
+                            override fun adDidDismissFullScreenContent(ad: GADFullScreenPresentingAdProtocol) {
+                                onComplete()
+                                currentDelegate = null
+                            }
+
+                            override fun ad(
+                                ad: GADFullScreenPresentingAdProtocol,
+                                didFailToPresentFullScreenContentWithError: platform.Foundation.NSError,
+                            ) {
+                                onComplete()
+                                currentDelegate = null
+                            }
+                        }
+                        currentDelegate = delegate
+                        ad.fullScreenContentDelegate = delegate
+
                         val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
                         if (rootViewController != null) {
                             ad.presentFromRootViewController(rootViewController)
+                        } else {
+                            onComplete()
+                            currentDelegate = null
                         }
-                    }
-                    if (error != null) {
-                        Logger.e { "InterstitialAd: Load failed with error: $error" }
+                    } else {
+                        if (error != null) {
+                            Logger.e { "InterstitialAd: Load failed with error: $error" }
+                        }
+                        onComplete()
                     }
                 }
             )

@@ -35,8 +35,8 @@ import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.SingleDatePicker
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.batch.record.BatchRecordViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource

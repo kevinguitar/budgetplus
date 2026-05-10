@@ -12,7 +12,7 @@ interface TopicMessaging {
 }
 
 @ContributesBinding(AppScope::class)
-class FirebaseTopicMessaging : TopicMessaging {
+internal class FirebaseTopicMessaging : TopicMessaging {
     override fun subscribeToTopic(topic: String) {
         Firebase.messaging.subscribeToTopic(topic)
         Logger.d { "Notification: Subscribed to $topic topic" }

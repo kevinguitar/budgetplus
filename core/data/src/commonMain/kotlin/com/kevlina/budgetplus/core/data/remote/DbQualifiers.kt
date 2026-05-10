@@ -15,7 +15,4 @@ annotation class RecordsDb
 annotation class JoinInfoDb
 
 @Qualifier
-annotation class PurchasesDb
-
-@Qualifier
 annotation class PushNotificationsDb

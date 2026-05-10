@@ -20,7 +20,7 @@ private typealias ConfigMap = Map<String, FirebaseRemoteConfigValue>
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class RemoteConfigImpl(
+internal class RemoteConfigImpl(
     @Named("is_debug") isDebug: Boolean,
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : RemoteConfig {
@@ -34,7 +34,6 @@ class RemoteConfigImpl(
             // To be able to rapidly fetch config while debugging.
             appScope.launch {
                 remoteConfig.settings {
-                    @Suppress("MagicNumber")
                     minimumFetchInterval = 3600.milliseconds
                 }
             }

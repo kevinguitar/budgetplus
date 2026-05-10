@@ -10,8 +10,8 @@ import budgetplus.core.common.generated.resources.batch_record_created
 import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
+import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BatchFrequency
@@ -23,7 +23,9 @@ import com.kevlina.budgetplus.core.data.remote.toAuthor
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel.Companion.EMPTY_PRICE
 import com.kevlina.budgetplus.feature.add.record.RecordDateState
 import com.kevlina.budgetplus.feature.category.pills.CategoriesViewModel
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,11 +36,12 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(BatchRecordViewModel::class)
-@ContributesIntoMap(ViewModelScope::class)
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class BatchRecordViewModel(
     val categoriesVm: CategoriesViewModel,
     val bookRepo: BookRepo,
+    val navController: NavController<BookDest>,
     private val recordRepo: RecordRepo,
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,

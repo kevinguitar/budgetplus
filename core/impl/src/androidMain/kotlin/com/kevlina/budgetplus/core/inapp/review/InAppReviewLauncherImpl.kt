@@ -9,7 +9,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 
 @ContributesBinding(AppScope::class)
-class InAppReviewLauncherImpl(
+internal class InAppReviewLauncherImpl(
     private val activityProvider: ActivityProvider,
     private val context: Context,
 ) : InAppReviewLauncher {

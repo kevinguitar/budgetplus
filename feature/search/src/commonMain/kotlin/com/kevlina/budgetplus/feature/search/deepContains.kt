@@ -14,7 +14,6 @@ package com.kevlina.budgetplus.feature.search
  * deepContains("abc", "") == true // Empty search string is always contained
  * deepContains("", "a") == false // Cannot find non-empty search in empty target
  */
-@Suppress("ReturnCount")
 fun deepContains(target: String, search: CharSequence): Boolean {
     // 1. Handle edge case: An empty search string is always "found".
     if (search.isEmpty()) {

@@ -25,7 +25,6 @@ internal fun OverviewContent(
         header = {
             OverviewHeader(
                 state = state.headerState,
-                navController = navController,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         },

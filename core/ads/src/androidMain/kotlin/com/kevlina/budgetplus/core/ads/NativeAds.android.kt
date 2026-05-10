@@ -8,10 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import co.touchlab.kermit.Logger
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -52,18 +54,28 @@ actual fun HandleInterstitialAd(
 ) {
     val context = LocalContext.current
     LaunchedEffect(handler) {
-        handler.showAdEvent.consumeEach {
+        handler.showAdEvent.consumeEach { onComplete ->
             InterstitialAd.load(
                 context,
                 adUnitId,
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                            override fun onAdDismissedFullScreenContent() {
+                                onComplete()
+                            }
+
+                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                onComplete()
+                            }
+                        }
                         interstitialAd.show(context as Activity)
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         Logger.e { "InterstitialAd failed to load: $adError" }
+                        onComplete()
                     }
                 }
             )

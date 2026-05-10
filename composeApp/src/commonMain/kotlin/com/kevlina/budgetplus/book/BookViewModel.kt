@@ -9,8 +9,6 @@ import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.SnackbarSender
-import com.kevlina.budgetplus.core.common.di.ViewModelKey
-import com.kevlina.budgetplus.core.common.di.ViewModelScope
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.BookDest
@@ -21,15 +19,13 @@ import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_UNLOCK_PREMIUM_PATH
 import com.kevlina.budgetplus.core.common.nav.NavController
-import com.kevlina.budgetplus.core.common.nav.NavigationAction
-import com.kevlina.budgetplus.core.common.nav.NavigationFlow
-import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.JoinBookException
 import com.kevlina.budgetplus.core.theme.ThemeManager
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metro.Named
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,34 +36,34 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-@ViewModelKey(BookViewModel::class)
-@ContributesIntoMap(ViewModelScope::class)
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class BookViewModel(
     val navController: NavController<BookDest>,
     val snackbarSender: SnackbarSender,
     val themeManager: ThemeManager,
-    val navigation: NavigationFlow,
     val bubbleViewModel: BubbleViewModel,
     val adUnitId: AdUnitId,
     val interstitialAdsHandler: InterstitialAdsHandler,
     val admobInitializer: AdmobInitializer,
     private val bookRepo: BookRepo,
-    @Named("welcome") private val welcomeNavigationAction: NavigationAction,
     authManager: AuthManager,
 ) : ViewModel() {
 
-    private val hideBottomNavDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
-    private val hideAdsDestinations = setOf(BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium)
+    private val hideBottomNavDestinations =
+        setOf(BookDest.Auth::class, BookDest.Welcome::class, BookDest.UnlockPremium::class)
+    private val hideAdsDestinations =
+        setOf(BookDest.Auth::class, BookDest.Welcome::class, BookDest.UnlockPremium::class)
 
     val showBottomNav = navController.currentNavKeyFlow
-        .map { it !in hideBottomNavDestinations }
+        .map { it::class !in hideBottomNavDestinations }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
 
     val showBannerAd = combine(
         authManager.isPremium,
         navController.currentNavKeyFlow
     ) { isPremium, currentNavKey ->
-        !isPremium && currentNavKey !in hideAdsDestinations
+        !isPremium && currentNavKey::class !in hideAdsDestinations
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     val isEligibleForInterstitialAds = authManager.isPremium.mapState { !it }
@@ -79,15 +75,19 @@ class BookViewModel(
             bookRepo.booksState
         ) { userId, books ->
             if (userId != null && books?.isEmpty() == true) {
-                navigation.sendEvent(welcomeNavigationAction)
+                navController.selectRootAndClearAll(BookDest.Welcome)
             }
         }.launchIn(viewModelScope)
 
         navController.currentNavKeyFlow
             .onEach { key ->
                 // Clear the preview colors if the user navigates out of the picker screen.
-                if (key != BookDest.Colors) {
+                if (key !is BookDest.Colors) {
                     themeManager.clearPreviewColors()
+                }
+
+                if (key is BookDest.Welcome) {
+                    handleJoinRequest()
                 }
             }
             .launchIn(viewModelScope)

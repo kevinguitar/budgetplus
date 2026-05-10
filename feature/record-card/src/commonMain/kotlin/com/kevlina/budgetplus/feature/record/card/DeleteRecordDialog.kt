@@ -7,7 +7,7 @@ import budgetplus.core.common.generated.resources.record_confirm_delete
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.isBatched
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
-import com.kevlina.budgetplus.core.utils.metroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

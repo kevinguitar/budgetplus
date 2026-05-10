@@ -31,7 +31,6 @@ internal fun OverviewContentWide(
     ) {
         OverviewHeader(
             state = state.headerState,
-            navController = navController,
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1F)

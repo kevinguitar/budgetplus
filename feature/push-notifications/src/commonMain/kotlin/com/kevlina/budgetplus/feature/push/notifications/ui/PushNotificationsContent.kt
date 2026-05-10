@@ -50,9 +50,9 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
 import com.kevlina.budgetplus.core.ui.containerPadding
 import com.kevlina.budgetplus.core.ui.rippleClick
-import com.kevlina.budgetplus.core.utils.metroViewModel
 import com.kevlina.budgetplus.feature.push.notifications.AudienceTarget
 import com.kevlina.budgetplus.feature.push.notifications.PushNotificationsViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import budgetplus.core.common.generated.resources.Res as CommonRes

@@ -17,11 +17,11 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup JDK 21
+      - name: Configure JDK
         uses: actions/setup-java@v5
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version-file: .github/workflows/.java-version
+          distribution: 'zulu'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -70,4 +70,4 @@ jobs:
           echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
 
       - name: Build with Gradle
-        run: ./gradlew test detekt lint :androidApp:assemble :insiderApp:assemble --continue --quiet --parallel
+        run: ./gradlew test lint :androidApp:assemble :insiderApp:assemble --continue --parallel

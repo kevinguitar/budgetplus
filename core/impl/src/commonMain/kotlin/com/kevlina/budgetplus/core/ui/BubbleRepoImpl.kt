@@ -20,14 +20,14 @@ import kotlinx.coroutines.sync.withLock
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class BubbleRepoImpl(
+internal class BubbleRepoImpl(
     @AppCoroutineScope private val appScope: CoroutineScope,
     private val preference: Preference,
 ) : BubbleRepo {
 
     private val bubblesQueue = mutableListOf<BubbleDest>()
 
-    final override val bubble: StateFlow<BubbleDest?>
+    override val bubble: StateFlow<BubbleDest?>
         field = MutableStateFlow<BubbleDest?>(null)
 
     private var bubbleShownJob: Job? = null

@@ -1,0 +1,195 @@
+package com.kevlina.budgetplus.feature.overview
+
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.overview_exceed_max_period
+import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
+import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
+import com.kevlina.budgetplus.core.common.nav.NavController
+import com.kevlina.budgetplus.core.common.now
+import com.kevlina.budgetplus.core.data.BookRepo
+import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
+import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
+import com.kevlina.budgetplus.core.data.fixtures.FakePreference
+import com.kevlina.budgetplus.core.data.fixtures.FakeRecordsObserver
+import com.kevlina.budgetplus.core.data.remote.Book
+import com.kevlina.budgetplus.core.data.remote.TimePeriod
+import com.kevlina.budgetplus.core.unit.test.BaseTest
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+
+class OverviewTimeViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
+
+    @Test
+    fun `setting the period by clicking on previous day`() = runTest {
+        val recordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod))
+        val model = createModel(recordsObserver = recordsObserver)
+        model.previousDay()
+
+        val yesterday = LocalDate.now().minus(1, DateTimeUnit.DAY)
+        assertEquals(
+            listOf<Pair<String, TimePeriod>>(bookId to TimePeriod.Custom(yesterday, yesterday)),
+            recordsObserver.setTimePeriodCalls
+        )
+    }
+
+    @Test
+    fun `setting the period by clicking on next day`() = runTest {
+        val recordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod))
+        val model = createModel(recordsObserver = recordsObserver)
+        model.nextDay()
+
+        val tomorrow = LocalDate.now().plus(1, DateTimeUnit.DAY)
+        assertEquals(
+            listOf<Pair<String, TimePeriod>>(bookId to TimePeriod.Custom(tomorrow, tomorrow)),
+            recordsObserver.setTimePeriodCalls
+        )
+    }
+
+    @Test
+    fun `WHEN the period is more than one month THEN make it one month`() = runTest {
+        val recordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod))
+        val model = createModel(recordsObserver = recordsObserver)
+        model.setTimePeriod(
+            TimePeriod.Custom(
+                from = LocalDate.now(),
+                until = LocalDate.now().plus(3, DateTimeUnit.MONTH)
+            )
+        )
+
+        assertEquals(Res.string.overview_exceed_max_period, FakeSnackbarSender.lastSentMessageRes)
+        assertEquals(
+            listOf<Pair<String, TimePeriod>>(
+                bookId to TimePeriod.Custom(
+                    from = LocalDate.now(),
+                    until = LocalDate.now().plus(1, DateTimeUnit.MONTH)
+                )
+            ),
+            recordsObserver.setTimePeriodCalls
+        )
+    }
+
+    @Test
+    fun `setting the custom period saves it to preference`() = runTest {
+        val fakePreference = FakePreference()
+        val bookRepo = FakeBookRepo(currentBookId = bookId, book = Book(id = bookId))
+        val recordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod))
+
+        val model = createModel(
+            recordsObserver = recordsObserver,
+            bookRepo = bookRepo,
+            preference = fakePreference
+        )
+
+        val customPeriod = TimePeriod.Custom(
+            from = LocalDate.now(),
+            until = LocalDate.now().plus(1, DateTimeUnit.WEEK)
+        )
+        model.setTimePeriod(customPeriod, isCustomized = true)
+
+        assertEquals(customPeriod, model.customPeriod.value)
+    }
+
+    @Test
+    fun `changing book updates custom period`() = runTest {
+        val fakePreference = FakePreference()
+        val recordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod))
+
+        val bookRepo1 = FakeBookRepo(currentBookId = bookId, book = Book(id = bookId))
+        val model1 = createModel(
+            recordsObserver = recordsObserver,
+            bookRepo = bookRepo1,
+            preference = fakePreference
+        )
+
+        val customPeriod1 = TimePeriod.Custom(
+            from = LocalDate.now(),
+            until = LocalDate.now().plus(1, DateTimeUnit.WEEK)
+        )
+
+        model1.setTimePeriod(customPeriod1, isCustomized = true)
+        assertEquals(customPeriod1, model1.customPeriod.value)
+
+        // Switch to another book by creating a new model with a different bookId
+        val bookId2 = "another_book"
+        val bookRepo2 = FakeBookRepo(currentBookId = bookId2, book = Book(id = bookId2))
+        val model2 = createModel(
+            recordsObserver = recordsObserver,
+            bookRepo = bookRepo2,
+            preference = fakePreference
+        )
+
+        // Initially null for the new book
+        assertNull(model2.customPeriod.value)
+
+        // Set custom period for the new book
+        val customPeriod2 = TimePeriod.Custom(
+            from = LocalDate.now(),
+            until = LocalDate.now().plus(2, DateTimeUnit.WEEK)
+        )
+        model2.setTimePeriod(customPeriod2, isCustomized = true)
+        assertEquals(customPeriod2, model2.customPeriod.value)
+
+        // Switch back to the first book
+        val model3 = createModel(
+            recordsObserver = recordsObserver,
+            bookRepo = bookRepo1,
+            preference = fakePreference
+        )
+        assertEquals(customPeriod1, model3.customPeriod.value)
+    }
+
+    @Test
+    fun `setting the date range with customization saves it to preference`() = runTest {
+        val fakePreference = FakePreference()
+        val bookRepo = FakeBookRepo(currentBookId = bookId, book = Book(id = bookId))
+        val recordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod))
+
+        val model = createModel(
+            recordsObserver = recordsObserver,
+            bookRepo = bookRepo,
+            preference = fakePreference
+        )
+
+        val from = LocalDate.now()
+        val until = LocalDate.now().plus(3, DateTimeUnit.DAY)
+        model.setDateRange(from, until, isCustomized = true)
+
+        assertEquals(TimePeriod.Custom(from, until), model.customPeriod.value)
+    }
+
+    private val bookId = "my_book"
+    private val oneDayPeriod = TimePeriod.Custom(LocalDate.now(), LocalDate.now())
+
+    private fun TestScope.createModel(
+        recordsObserver: FakeRecordsObserver = FakeRecordsObserver(timePeriodFlow = flowOf(oneDayPeriod)),
+        bookRepo: BookRepo = FakeBookRepo(currentBookId = bookId, book = Book(id = bookId)),
+        preference: FakePreference = FakePreference(),
+    ): OverviewTimeViewModel {
+        val model = OverviewTimeViewModel(
+            navController = NavController.preview,
+            recordsObserver = recordsObserver,
+            bookRepo = bookRepo,
+            authManager = FakeAuthManager(),
+            snackbarSender = FakeSnackbarSender,
+            tracker = FakeTracker(),
+            preference = preference
+        )
+        backgroundScope.launch(testDispatcher) {
+            model.timePeriod.collect()
+        }
+        backgroundScope.launch(testDispatcher) {
+            model.customPeriod.collect()
+        }
+        return model
+    }
+}

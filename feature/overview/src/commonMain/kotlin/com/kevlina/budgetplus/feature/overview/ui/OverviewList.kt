@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -67,6 +68,7 @@ internal fun OverviewList(
     val recordList = state.recordList.collectAsStateWithLifecycle().value
     val recordGroups by state.recordGroups.collectAsStateWithLifecycle()
     val isSoloAuthor by state.isSoloAuthor.collectAsStateWithLifecycle()
+    val currencyToggleState by state.currencyToggleState.collectAsStateWithLifecycle()
 
     var editRecordDialog by remember { mutableStateOf<Record?>(null) }
     var deleteRecordDialog by remember { mutableStateOf<Record?>(null) }
@@ -128,34 +130,36 @@ internal fun OverviewList(
                         key = { _, record -> record.id },
                         contentType = { _, _ -> OverviewUiType.Record }
                     ) { index, record ->
-                        RecordCard(
-                            state = RecordCardState(
-                                item = record,
-                                formattedPrice = state.formatPrice(record.price),
-                                isLast = index == recordList.lastIndex,
-                                canEdit = state.canEditRecord(record),
-                                showCategory = true,
-                                showAuthor = !isSoloAuthor,
-                                onEdit = { editRecordDialog = record },
-                                onDuplicate = { state.duplicateRecord(record) },
-                                onDelete = { deleteRecordDialog = record }
-                            ),
-                            modifier = Modifier.thenIf(index == 0) {
-                                val bubbleShape = with(LocalDensity.current) {
-                                    BubbleShape.RoundedRect(AppTheme.cornerRadius.toPx())
-                                }
-
-                                Modifier
-                                    .padding(top = 8.dp)
-                                    .onPlaced {
-                                        state.highlightTapHint(BubbleDest.OverviewRecordTapHint(
-                                            size = it.size,
-                                            offset = it::positionInRoot,
-                                            shape = bubbleShape
-                                        ))
+                        key(currencyToggleState) {
+                            RecordCard(
+                                state = RecordCardState(
+                                    item = record,
+                                    formattedPrice = state.formatPrice(record.price),
+                                    isLast = index == recordList.lastIndex,
+                                    canEdit = state.canEditRecord(record),
+                                    showCategory = true,
+                                    showAuthor = !isSoloAuthor,
+                                    onEdit = { editRecordDialog = record },
+                                    onDuplicate = { state.duplicateRecord(record) },
+                                    onDelete = { deleteRecordDialog = record }
+                                ),
+                                modifier = Modifier.thenIf(index == 0) {
+                                    val bubbleShape = with(LocalDensity.current) {
+                                        BubbleShape.RoundedRect(AppTheme.cornerRadius.toPx())
                                     }
-                            }
-                        )
+
+                                    Modifier
+                                        .padding(top = 8.dp)
+                                        .onPlaced {
+                                            state.highlightTapHint(BubbleDest.OverviewRecordTapHint(
+                                                size = it.size,
+                                                offset = it::positionInRoot,
+                                                shape = bubbleShape
+                                            ))
+                                        }
+                                }
+                            )
+                        }
                     }
 
                     OverviewMode.GroupByCategories -> when (chartMode) {
@@ -168,34 +172,38 @@ internal fun OverviewList(
                             val groupRecords = recordGroups.orEmpty()[key].orEmpty()
                             val sum = groupRecords.sumOf { it.price }
 
-                            OverviewGroup(
-                                modifier = Modifier.thenIf(index == 0) {
-                                    Modifier.padding(top = 8.dp)
-                                },
-                                state = OverviewGroupState(
-                                    category = key,
-                                    records = groupRecords,
-                                    sumPrice = state.formatPrice(sum),
-                                    percentage = remember(sum, totalPrice) { sum / totalPrice },
-                                    color = chartColors[index % chartColors.size],
-                                    isLast = index == recordGroups.orEmpty().size - 1,
-                                    onClick = { navigateToRecords(key) }
-                                ),
-                            )
+                            key(currencyToggleState) {
+                                OverviewGroup(
+                                    modifier = Modifier.thenIf(index == 0) {
+                                        Modifier.padding(top = 8.dp)
+                                    },
+                                    state = OverviewGroupState(
+                                        category = key,
+                                        records = groupRecords,
+                                        sumPrice = state.formatPrice(sum),
+                                        percentage = remember(sum, totalPrice) { sum / totalPrice },
+                                        color = chartColors[index % chartColors.size],
+                                        isLast = index == recordGroups.orEmpty().size - 1,
+                                        onClick = { navigateToRecords(key) }
+                                    ),
+                                )
+                            }
                         }
 
                         ChartMode.PieChart -> item(
                             key = OverviewUiType.PieChart.name,
                             contentType = OverviewUiType.PieChart,
                             content = {
-                                PieChart(
-                                    modifier = Modifier.fillMaxSize(),
-                                    totalPrice = totalPrice,
-                                    recordGroups = recordGroups.orEmpty(),
-                                    formatPrice = state.formatPrice,
-                                    highlightPieChart = state.highlightPieChart,
-                                    onClick = ::navigateToRecords
-                                )
+                                key(currencyToggleState) {
+                                    PieChart(
+                                        modifier = Modifier.fillMaxSize(),
+                                        totalPrice = totalPrice,
+                                        recordGroups = recordGroups.orEmpty(),
+                                        formatPrice = state.formatPrice,
+                                        highlightPieChart = state.highlightPieChart,
+                                        onClick = ::navigateToRecords
+                                    )
+                                }
                             }
                         )
                     }
@@ -236,6 +244,7 @@ internal data class OverviewListState(
     val recordList: StateFlow<List<Record>?>,
     val recordGroups: StateFlow<Map<String, List<Record>>?>,
     val isSoloAuthor: StateFlow<Boolean>,
+    val currencyToggleState: StateFlow<Boolean>,
     val highlightTapHint: (BubbleDest) -> Unit,
     val highlightPieChart: (BubbleDest) -> Unit,
     val formatPrice: (Double) -> String,
@@ -271,6 +280,7 @@ internal data class OverviewListState(
             recordList = MutableStateFlow(foodRecords),
             recordGroups = MutableStateFlow(recordGroupsPreview),
             isSoloAuthor = MutableStateFlow(false),
+            currencyToggleState = MutableStateFlow(false),
             highlightTapHint = {},
             highlightPieChart = {},
             formatPrice = { "$$it" },

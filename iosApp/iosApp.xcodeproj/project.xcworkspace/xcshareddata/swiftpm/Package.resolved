@@ -1,5 +1,5 @@
 {
-  "originHash" : "138f2948d46bedfa859e653ed801a07384b9320303f6f7ad8547f1c35eece7d3",
+  "originHash" : "9b314944d69e9e6141edef8a92ef2cc4ee83652ded63a2efd67c19efd2773228",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
-        "revision" : "52548902007e7beda99fcdca31f62eccc4befe38",
-        "version" : "12.11.0"
+        "revision" : "d10045cace0b4c335c4efa8f7df7e9a9fc5a7c60",
+        "version" : "12.13.0"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
       "state" : {
-        "revision" : "7b722132d1f2ab421c88a2e5c384c984cebd0d00",
-        "version" : "3.4.0"
+        "revision" : "19dffda9a9caf8d86570ff846535902d8509d7bf",
+        "version" : "3.5.0"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "1657f705bc70255ff9d66dfcc697a85db164998f",
-        "version" : "12.11.0"
+        "revision" : "c2c76bebcfbb90d90ea10599f934f9af160e1604",
+        "version" : "12.13.0"
       }
     },
     {
@@ -164,30 +164,12 @@
       }
     },
     {
-      "identity" : "purchases-hybrid-common",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RevenueCat/purchases-hybrid-common",
-      "state" : {
-        "revision" : "95a919f1d2d64b7495a5b2fa967d14d1e87a7e0d",
-        "version" : "17.52.0"
-      }
-    },
-    {
-      "identity" : "purchases-ios-spm",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RevenueCat/purchases-ios-spm",
-      "state" : {
-        "revision" : "2913a336eb37dc06795cdbaa5b5de330b6707669",
-        "version" : "5.65.0"
-      }
-    },
-    {
       "identity" : "swift-package-manager-google-mobile-ads",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/swift-package-manager-google-mobile-ads.git",
       "state" : {
-        "revision" : "1a1a5ee5563b8e9ef57ba82c4a570e2e47078dc1",
-        "version" : "13.0.0"
+        "revision" : "e2b1c31cdf11cb4b57b4e70ae4c313d4e48c444a",
+        "version" : "13.3.0"
       }
     },
     {

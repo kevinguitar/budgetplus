@@ -4,9 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -17,8 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kevlina.budgetplus.core.common.RecordType
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.theme.LocalAppColors
@@ -30,14 +29,13 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 internal fun OverviewHeader(
     state: OverviewHeaderState,
-    navController: NavController<BookDest>,
     modifier: Modifier = Modifier,
 ) {
-
     val type by state.type.collectAsStateWithLifecycle()
     val totalPrice by state.totalPrice.collectAsStateWithLifecycle()
     val balance by state.balance.collectAsStateWithLifecycle()
     val recordGroups by state.recordGroups.collectAsStateWithLifecycle()
+    val currencyToggleState = state.currencyToggleState.collectAsStateWithLifecycle().value
     val authors by state.authors.collectAsStateWithLifecycle()
     val selectedAuthor by state.selectedAuthor.collectAsStateWithLifecycle()
 
@@ -53,19 +51,26 @@ internal fun OverviewHeader(
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
         )
 
-        if (authors.size > 1) {
-            AuthorSelector(
-                authors = authors,
-                selectedAuthor = selectedAuthor,
-                setAuthor = state.setAuthor
-            )
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.heightIn(min = 8.dp)
+        ) {
+            if (authors.size > 1) {
+                AuthorSelector(
+                    authors = authors,
+                    selectedAuthor = selectedAuthor,
+                    setAuthor = state.setAuthor
+                )
+            }
+
+            if (currencyToggleState != null) {
+                CurrencyToggle(state = currencyToggleState)
+            }
         }
 
         TimePeriodSelector(
             state = state.timePeriodSelectorState,
-            navController = navController,
         )
 
         AnimatedVisibility(
@@ -87,6 +92,7 @@ internal data class OverviewHeaderState(
     val totalPrice: StateFlow<String>,
     val balance: StateFlow<String>,
     val recordGroups: StateFlow<Map<String, List<Record>>?>,
+    val currencyToggleState: StateFlow<CurrencyToggleState?>,
     val authors: StateFlow<List<User>>,
     val selectedAuthor: StateFlow<User?>,
     val timePeriodSelectorState: TimePeriodSelectorState,
@@ -99,6 +105,7 @@ internal data class OverviewHeaderState(
             totalPrice = MutableStateFlow("$245.25"),
             balance = MutableStateFlow("$52.45"),
             recordGroups = MutableStateFlow(mapOf("Food" to emptyList())),
+            currencyToggleState = MutableStateFlow(null),
             authors = MutableStateFlow(listOf(User(name = "Kevin"), User(name = "Alina"))),
             selectedAuthor = MutableStateFlow(User(name = "Kevin")),
             timePeriodSelectorState = TimePeriodSelectorState.preview,
@@ -113,7 +120,6 @@ internal data class OverviewHeaderState(
 private fun OverviewHeader_Preview() = AppTheme {
     OverviewHeader(
         state = OverviewHeaderState.preview,
-        navController = NavController.preview,
         modifier = Modifier
             .background(LocalAppColors.current.light)
             .padding(horizontal = 16.dp)

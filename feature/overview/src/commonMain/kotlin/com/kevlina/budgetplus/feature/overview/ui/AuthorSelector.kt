@@ -32,7 +32,6 @@ internal fun AuthorSelector(
     selectedAuthor: User?,
     setAuthor: (User?) -> Unit,
 ) {
-
     var isAuthorPickerShown by rememberSaveable { mutableStateOf(false) }
 
     Row(
@@ -41,14 +40,12 @@ internal fun AuthorSelector(
             .rippleClick { isAuthorPickerShown = true }
             .padding(horizontal = 8.dp)
     ) {
-
         Icon(
             imageVector = vectorResource(Res.drawable.ic_person_search),
             tint = LocalAppColors.current.dark
         )
 
         Box {
-
             Text(
                 text = selectedAuthor?.name
                     ?: stringResource(Res.string.overview_author_everyone),
@@ -59,7 +56,6 @@ internal fun AuthorSelector(
                 expanded = isAuthorPickerShown,
                 onDismissRequest = { isAuthorPickerShown = false }
             ) {
-
                 DropdownItem(
                     name = stringResource(Res.string.overview_author_everyone),
                 ) {

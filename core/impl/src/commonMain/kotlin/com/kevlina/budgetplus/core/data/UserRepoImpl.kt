@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.launchIn
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<UserRepo>())
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
-class UserRepoImpl(
+internal class UserRepoImpl(
     private val authManager: AuthManager,
     @UsersDb private val usersDb: Lazy<CollectionReference>,
     @AppCoroutineScope private val appScope: CoroutineScope,

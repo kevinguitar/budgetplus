@@ -16,7 +16,6 @@ import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.formatPriceWithCurrency
 import com.kevlina.budgetplus.core.common.getCurrencySymbol
-import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_JOIN_PATH
@@ -55,9 +54,10 @@ import kotlin.time.Duration.Companion.days
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<BookRepo>())
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
-class BookRepoImpl(
+internal class BookRepoImpl(
     private val authManager: AuthManager,
     private val joinInfoProcessor: JoinInfoProcessor,
+    private val currencyExchangeRepo: Lazy<CurrencyExchangeRepo>,
     private val tracker: Tracker,
     private val preference: Preference,
     @AppCoroutineScope private val appScope: CoroutineScope,
@@ -67,15 +67,13 @@ class BookRepoImpl(
     private val currentBookKey = stringPreferencesKey("currentBook")
     private val currentBookFlow = preference.of(currentBookKey, Book.serializer())
 
-    override val bookState: StateFlow<Book?> = runBlocking {
-        currentBookFlow.stateIn(
-            scope = appScope,
-            started = SharingStarted.Eagerly,
-            initialValue = currentBookFlow.first()
-        )
-    }
+    override val bookState: StateFlow<Book?> = currentBookFlow.stateIn(
+        scope = appScope,
+        started = SharingStarted.Eagerly,
+        initialValue = runBlocking { currentBookFlow.first() }
+    )
 
-    final override val booksState: StateFlow<List<Book>?>
+    override val booksState: StateFlow<List<Book>?>
         field = MutableStateFlow<List<Book>?>(null)
 
     override val currentBookId: String? get() = bookState.value?.id
@@ -139,6 +137,7 @@ class BookRepoImpl(
     }
 
     override suspend fun handlePendingJoinRequest(): String? {
+        val userId = authManager.userId ?: return null
         val joinId = requireNotNull(pendingJoinId.value) { "Doesn't have pending join request" }
         pendingJoinId.value = null
 
@@ -146,7 +145,6 @@ class BookRepoImpl(
         val bookId = joinInfo.bookId
         val validBefore = joinInfo.generatedOn + linkExpirationMillis
 
-        val userId = authManager.requireUserId()
         val isPremium = authManager.userState.value?.premium == true
         val bookCount = booksState.filterNotNull().first().size
         val book = getLatestBook(bookId)
@@ -224,7 +222,7 @@ class BookRepoImpl(
             authors = listOf(userId),
             expenseCategories = expenses.toList(),
             incomeCategories = incomes.toList(),
-            currencyCode = getDefaultCurrencyCode()
+            currencyCode = currencyExchangeRepo.value.preferredCurrencyCode
         )
         val doc = booksDb.value.add(newBook)
         selectBook(newBook.copy(id = doc.id))
@@ -311,7 +309,14 @@ class BookRepoImpl(
     }
 
     override fun formatPrice(price: Double, alwaysShowSymbol: Boolean): String {
-        return formatPriceWithCurrency(
+        val currencyExchangeRepo = currencyExchangeRepo.value
+        val preferredPrice = if (currencyExchangeRepo.displayInPreferredCurrency.value) {
+            currencyExchangeRepo.formatPreferredCurrency(price, alwaysShowSymbol)
+        } else {
+            null
+        }
+
+        return preferredPrice ?: formatPriceWithCurrency(
             price = price,
             currencyCode = bookState.value?.currencyCode,
             alwaysShowSymbol = alwaysShowSymbol

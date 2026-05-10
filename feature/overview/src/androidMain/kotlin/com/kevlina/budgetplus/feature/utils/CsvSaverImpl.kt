@@ -18,17 +18,18 @@ import com.kevlina.budgetplus.feature.overview.utils.CsvSaver
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Named
-import dev.zacsweers.metro.Provider
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.invoke
 import java.io.File
 import java.io.IOException
 
 @ContributesBinding(AppScope::class)
-class CsvSaverImpl(
+internal class CsvSaverImpl(
     private val context: Context,
     @Named("app_package") private val appPackage: String,
-    @Named("share_cache") private val shareCacheDir: Provider<File>,
+    @Named("share_cache") private val shareCacheDir: () -> File,
     private val activityProvider: ActivityProvider,
     private val snackbarSender: SnackbarSender,
 ) : CsvSaver {
@@ -36,8 +37,7 @@ class CsvSaverImpl(
     private val contentResolver get() = context.contentResolver
 
     override suspend fun saveToDownload(fileName: String, csvText: String) = IO {
-        val activity = activityProvider.currentActivity ?: error("Cannot find current activity")
-
+        val activity = activityProvider.activityFlow.filterNotNull().first()
         val cacheFile = File(shareCacheDir(), "$fileName.csv")
         val outputStream = contentResolver.openOutputStream(cacheFile.toUri())
             ?: throw IOException("Cannot open output stream from $cacheFile")

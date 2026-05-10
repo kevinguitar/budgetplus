@@ -19,6 +19,8 @@ class BudgetPlusInsiderApp : Application(), HasServiceProvider {
     override fun onCreate() {
         super.onCreate()
 
+        registerActivityLifecycleCallbacks(appGraph.activityProvider)
+
         Logger.setLogWriters(LogcatWriter())
         Firebase.analytics.setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
         Firebase.crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)

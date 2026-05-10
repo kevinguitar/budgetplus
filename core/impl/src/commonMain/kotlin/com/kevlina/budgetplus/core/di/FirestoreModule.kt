@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.core.di
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.remote.BooksDb
 import com.kevlina.budgetplus.core.data.remote.JoinInfoDb
-import com.kevlina.budgetplus.core.data.remote.PurchasesDb
 import com.kevlina.budgetplus.core.data.remote.PushNotificationsDb
 import com.kevlina.budgetplus.core.data.remote.RecordsDb
 import com.kevlina.budgetplus.core.data.remote.UsersDb
@@ -45,13 +44,6 @@ interface FirestoreModule {
     @Provides
     fun provideJoinInfoDb(): CollectionReference {
         return Firebase.firestore.collection("join_info")
-    }
-
-    @PurchasesDb
-    @SingleIn(AppScope::class)
-    @Provides
-    fun providePurchasesDb(): CollectionReference {
-        return Firebase.firestore.collection("purchases")
     }
 
     @PushNotificationsDb

@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.DisableCacheInKotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCacheApi
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import java.net.URI
 
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
@@ -32,6 +33,9 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 compilerOptions {
                     jvmTarget.set(project.libs.versions.jvmTarget.map(JvmTarget::fromTarget))
                 }
+                lint {
+                    warningsAsErrors = true
+                }
                 withHostTest {}
                 packaging.resources {
                     excludes.add("META-INF/*.kotlin_module")
@@ -54,9 +58,16 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                     freeCompilerArgs += listOf("-Xbinary=bundleId=$appId.$modulePath")
                     isStatic = true
 
+                    if (buildType == NativeBuildType.RELEASE) {
+                        freeCompilerArgs += listOf(
+                            "-Xbinary=stripDebugSymbols=true",
+                            "-Xbinary=sourceInfoType=none",
+                        )
+                    }
+
                     @OptIn(KotlinNativeCacheApi::class)
                     disableNativeCache(
-                        version = DisableCacheInKotlinVersion.`2_3_20`,
+                        version = DisableCacheInKotlinVersion.`2_3_21`,
                         reason = "Crashkios caching workaround",
                         issueUrl = URI("https://crashkios.touchlab.co/docs/crashlytics/")
                     )
@@ -78,21 +89,15 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                 commonTest.dependencies {
                     implementation(kotlin("test"))
-                    implementation(project.libs.coroutines.test)
-                }
-
-                androidMain.dependencies {
-                    implementation(project.libs.bundles.android)
-                    implementation(project.dependencies.platform(project.libs.firebase.bom))
-                }
-
-                getByName("androidHostTest").dependencies {
-                    implementation(kotlin("test"))
                     implementation(project.libs.bundles.test)
 
                     if (project.path != ":core:unit-test") {
                         implementation(project(":core:unit-test"))
                     }
+                }
+
+                androidMain.dependencies {
+                    implementation(project.libs.bundles.android)
                 }
 
                 named { it.lowercase().startsWith("ios") }.configureEach {
@@ -103,8 +108,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             }
 
             compilerOptions {
-                // Due to https://youtrack.jetbrains.com/issue/CMP-8498/KLIB-name-conflict-with-AndroidX-libraries
-                allWarningsAsErrors.set(false)
+                allWarningsAsErrors.set(true)
                 freeCompilerArgs.addAll(
                     "-Xcontext-parameters",
                     "-Xexplicit-backing-fields",

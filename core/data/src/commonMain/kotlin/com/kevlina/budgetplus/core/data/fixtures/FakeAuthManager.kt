@@ -1,12 +1,12 @@
 package com.kevlina.budgetplus.core.data.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.remote.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeAuthManager(
     user: User? = null,
     isPremium: Boolean = false,

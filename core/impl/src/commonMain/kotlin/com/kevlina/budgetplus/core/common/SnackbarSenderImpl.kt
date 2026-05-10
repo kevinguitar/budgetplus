@@ -14,11 +14,11 @@ import org.jetbrains.compose.resources.getString
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class SnackbarSenderImpl(
+internal class SnackbarSenderImpl(
     @AppCoroutineScope private val appScope: CoroutineScope,
 ) : SnackbarSender {
 
-    final override val snackbarEvent: EventFlow<SnackbarData>
+    override val snackbarEvent: EventFlow<SnackbarData>
         field = MutableEventFlow<SnackbarData>()
 
     override suspend fun send(

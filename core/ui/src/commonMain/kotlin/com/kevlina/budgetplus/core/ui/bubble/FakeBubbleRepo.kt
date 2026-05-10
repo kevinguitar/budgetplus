@@ -1,9 +1,9 @@
 package com.kevlina.budgetplus.core.ui.bubble
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeBubbleRepo : BubbleRepo {
 
     override val bubble = MutableStateFlow<BubbleDest?>(null)

@@ -1,9 +1,9 @@
 package com.kevlina.budgetplus.inapp.review.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.inapp.review.InAppReviewManager
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 class FakeInAppReviewManager(
     private val isEligibleForReview: Boolean = true,
 ) : InAppReviewManager {

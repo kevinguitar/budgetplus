@@ -2,16 +2,24 @@ package com.kevlina.budgetplus.insider.app
 
 import android.app.Application
 import android.content.Context
+import com.kevlina.budgetplus.core.common.ActivityProvider
+import com.kevlina.budgetplus.core.common.AppStartAction
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Binds
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
+import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 
 @DependencyGraph(AppScope::class)
-interface BudgetPlusInsiderAppGraph {
+interface BudgetPlusInsiderAppGraph : ViewModelGraph {
 
     @Binds val BudgetPlusInsiderApp.bindApplication: Application
     @Binds val BudgetPlusInsiderApp.bindContext: Context
+
+    val activityProvider: ActivityProvider
+
+    // Collect it here to avoid metro's SuspiciousUnusedMultibinding warning, we don't need to invoke them.
+    val appStartActions: Set<AppStartAction>
 
     @DependencyGraph.Factory
     fun interface Factory {

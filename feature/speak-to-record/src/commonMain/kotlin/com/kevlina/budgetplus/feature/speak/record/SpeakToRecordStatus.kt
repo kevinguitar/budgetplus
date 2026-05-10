@@ -1,5 +1,8 @@
 package com.kevlina.budgetplus.feature.speak.record
 
+/**
+ * Represents the various states or results of a speech-to-record process.
+ */
 sealed interface SpeakToRecordStatus {
 
     data object DeviceNotSupported : SpeakToRecordStatus

@@ -49,6 +49,5 @@ fun PagerIndicator(
 @Preview
 @Composable
 private fun PagerIndicator_Preview() = AppTheme {
-    @Suppress("MagicNumber")
     PagerIndicator(pagerState = rememberPagerState { 8 })
 }

@@ -10,7 +10,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 @ContributesBinding(AppScope::class)
-class IosGoogleSignInProviderImpl : IosGoogleSignInProvider {
+internal class IosGoogleSignInProviderImpl : IosGoogleSignInProvider {
 
     override suspend fun signInWithGoogle(): IosGoogleSignInProvider.Result {
         val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController

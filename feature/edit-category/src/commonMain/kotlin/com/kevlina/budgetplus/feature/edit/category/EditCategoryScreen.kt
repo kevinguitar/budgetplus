@@ -23,14 +23,12 @@ import budgetplus.core.common.generated.resources.cta_save
 import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.unsaved_warning_message
 import com.kevlina.budgetplus.core.common.RecordType
-import com.kevlina.budgetplus.core.common.nav.BookDest
-import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
-import com.kevlina.budgetplus.core.utils.metroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -39,7 +37,6 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 @Composable
 fun EditCategoryScreen(
     vm: EditCategoryViewModel = metroViewModel(),
-    navController: NavController<BookDest>,
     type: RecordType,
 ) {
 
@@ -63,7 +60,7 @@ fun EditCategoryScreen(
         if (originalCategories != list) {
             isExitDialogShown = true
         } else {
-            navController.navigateUp()
+            vm.navController.navigateUp()
         }
     }
 
@@ -97,7 +94,6 @@ fun EditCategoryScreen(
                     },
                     onClick = {
                         vm.updateCategories(type, list)
-                        navController.navigateUp()
                     }
                 )
             }
@@ -156,7 +152,7 @@ fun EditCategoryScreen(
         ConfirmDialog(
             message = stringResource(Res.string.unsaved_warning_message),
             onConfirm = {
-                navController.navigateUp()
+                vm.navController.navigateUp()
                 isExitDialogShown = false
             },
             onDismiss = { isExitDialogShown = false }

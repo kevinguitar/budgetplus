@@ -60,6 +60,76 @@
         }
       }
     },
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Budget+ needs microphone access to use the Speak to Record feature."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニマリストな帳簿は音声記録機能を使用するためにマイクへのアクセスが必要です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미니멀 가계부에서 음성 기록 기능을 사용하려면 마이크 접근 권한이 필요합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "极简记帐需要麦克风权限来使用语音记账功能"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "極簡記帳需要麥克風權限來使用語音記帳功能"
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Budget+ needs speech recognition access to convert your voice into records."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ミニマリストな帳簿は音声を記録に変換するために音声認識へのアクセスが必要です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미니멀 가계부에서 음성을 기록으로 변환하려면 음성 인식 접근 권한이 필요합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "极简记帐需要语音识别权限将您的语音转换为帐目"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "極簡記帳需要語音辨識權限將您的語音轉換為帳目"
+          }
+        }
+      }
+    },
     "NSUserTrackingUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {

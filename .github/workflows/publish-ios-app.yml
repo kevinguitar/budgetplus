@@ -31,11 +31,11 @@ jobs:
           echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
           echo "Parsed version: $VERSION ($BUILD_NUMBER)"
 
-      - name: Setup JDK 21
+      - name: Configure JDK
         uses: actions/setup-java@v5
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version-file: .github/workflows/.java-version
+          distribution: 'zulu'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -130,7 +130,7 @@ jobs:
         run: |
           mkdir -p $(pwd)/private_keys
           API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$API_KEY_PATH"
           echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
 
       - name: Archive iOS App
@@ -236,7 +236,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0.2'
+          ruby-version: '4.0.3'
 
       - name: Install Fastlane
         run: gem install fastlane
@@ -248,7 +248,7 @@ jobs:
         run: |
           mkdir -p $(pwd)/private_keys
           API_KEY_PATH="$(pwd)/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8"
-          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$API_KEY_PATH"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$API_KEY_PATH"
           echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
 
       - name: Wait for Apple Processing and Submit with Metadata

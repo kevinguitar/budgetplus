@@ -1,13 +1,13 @@
 package com.kevlina.budgetplus.core.common.fixtures
 
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
 import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.SnackbarDuration
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import org.jetbrains.compose.resources.StringResource
 
-@VisibleForTesting
+@RestrictTo(RestrictTo.Scope.TESTS)
 object FakeSnackbarSender : SnackbarSender {
 
     var lastSentMessageRes: StringResource? = null

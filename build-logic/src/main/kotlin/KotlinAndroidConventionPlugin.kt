@@ -6,7 +6,6 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -38,6 +37,10 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
                 excludes.add("META-INF/LICENSE-notice.md")
                 excludes.add("META-INF/LGPL2.1")
                 excludes.add("**/*.kotlin_metadata")
+            }
+
+            lint {
+                warningsAsErrors = true
             }
 
             project.tasks.withType<KotlinCompile>().configureEach {

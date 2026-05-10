@@ -2,7 +2,7 @@
 *.aab
 .gradle
 /local.properties
-/.kotlin
+.kotlin
 /.idea
 .DS_Store
 build
@@ -10,7 +10,6 @@ build
 /captures
 .externalNativeBuild
 .cxx
-*.storekit
 local.properties
 BudgetKey
 xcuserdata

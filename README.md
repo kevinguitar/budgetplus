@@ -1,7 +1,7 @@
 # Budget+ Multiplatform App（極簡記帳）
 
-[![Android CI](https://github.com/kevinguitar/budgetplus/actions/workflows/android-ci.yml/badge.svg)](https://github.com/kevinguitar/budgetplus/actions/workflows/android-ci.yml)
-[![iOS CI](https://github.com/kevinguitar/budgetplus/actions/workflows/ios-ci.yml/badge.svg)](https://github.com/kevinguitar/budgetplus/actions/workflows/ios-ci.yml)
+[![Android CI](https://github.com/kevinguitar/budgetplus/actions/workflows/android-ci.yml/badge.svg?event=pull_request)](https://github.com/kevinguitar/budgetplus/actions/workflows/android-ci.yml)
+[![iOS CI](https://github.com/kevinguitar/budgetplus/actions/workflows/ios-ci.yml/badge.svg?event=pull_request)](https://github.com/kevinguitar/budgetplus/actions/workflows/ios-ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 Budget+ is an easy-to-use co-spending tracker to track expenses together with your friends and family.
@@ -49,11 +49,9 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 - [Compottie](https://github.com/alexzhirkevich/compottie) for Lottie animations in Compose Multiplatform
 - [CrashKiOS](https://github.com/touchlab/CrashKiOS) for better crash reporting on iOS
 - [Csv](https://github.com/sergejsha/csv) for exporting data as CSV (KMP)
-- [Detekt](https://github.com/detekt/detekt) for Kotlin static code analysis
 - [Firebase Kotlin SDK](https://github.com/GitLiveApp/firebase-kotlin-sdk) for KMP support
 - [Kermit](https://github.com/touchlab/Kermit) for logging
 - [Keval](https://github.com/notKamui/Keval) for mathematical expression evaluation
-- [MockK](https://github.com/mockk/mockk) for mocking classes in unit tests
 - [Moko-permissions](https://github.com/icerockdev/moko-permissions) for KMP permission handling
 - [Reorderable](https://github.com/Calvin-LL/Reorderable) for reordering items in Compose
 
@@ -91,6 +89,41 @@ Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` d
 ```bash
 ./gradlew :benchmark:connectedReleaseAndroidTest -P android.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=Macrobenchmark
 ```
+
+---
+
+## Build the Project Locally
+If you want to build the project locally, follow these steps:
+
+1. Clone the repository.
+2. Add a `google-services.json` file under `:androidApp` folder. Here's a valid dummy file you can use:
+```json
+{
+  "project_info": {
+    "project_number": "dummy_project_number",
+    "project_id": "dummy_project_id"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "dummy_app_id",
+        "android_client_info": {
+          "package_name": "com.kevlina.budgetplus"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "dummy_api_key"
+        }
+      ]
+    }
+  ]
+}
+```
+3. Now you should be able to build both Android and iOS apps:
+   - Build the Android app, run `./gradlew assembleDebug`
+   - Build the iOS app, run `./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64`
+4. If you want to have the app running with real functionalities, you'll need to create a new project on Firebase and wire your API keys in the project.
 
 ---
 
