@@ -36,7 +36,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 lint {
                     warningsAsErrors = true
                 }
-                withHostTest {}
                 packaging.resources {
                     excludes.add("META-INF/*.kotlin_module")
                     excludes.add("META-INF/AL2.0")
