@@ -19,4 +19,5 @@ kotlin {
             implementation(libs.permissions.notifications)
         }
     }
+    android.androidResources.enable = true
 }

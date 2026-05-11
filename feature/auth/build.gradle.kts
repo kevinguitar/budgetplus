@@ -21,4 +21,5 @@ kotlin {
             implementation(libs.google.id)
         }
     }
+    android.androidResources.enable = true
 }

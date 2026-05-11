@@ -18,4 +18,5 @@ kotlin {
             implementation(libs.permissions.storage)
         }
     }
+    android.androidResources.enable = true
 }

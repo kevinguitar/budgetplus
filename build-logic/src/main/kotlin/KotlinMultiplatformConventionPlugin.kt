@@ -1,11 +1,11 @@
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import common.libs
-import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.DisableCacheInKotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCacheApi
@@ -22,49 +22,31 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             .joinToString(".")
 
         project.apply(plugin = project.libs.plugins.kotlin.multiplatform.get().pluginId)
-        project.apply(plugin = project.libs.plugins.android.library.get().pluginId)
-//        project.apply(plugin = project.libs.plugins.android.kotlin.multiplatform.library.get().pluginId)
+        project.apply(plugin = project.libs.plugins.android.kotlin.multiplatform.library.get().pluginId)
         project.apply(plugin = project.libs.plugins.kotlin.serialization.get().pluginId)
 
-        project.extensions.configure(CommonExtension::class.java) {
-            namespace = "$appId.$modulePath"
-            compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
-            defaultConfig.minSdk = project.libs.versions.minAndroidSdk.get().toInt()
-
-            val javaVersion = JavaVersion.toVersion(project.libs.versions.jvmTarget.get())
-            compileOptions.sourceCompatibility = javaVersion
-            compileOptions.targetCompatibility = javaVersion
-
-            lint {
-                warningsAsErrors = true
-            }
-
-            packaging.resources {
-                excludes.add("META-INF/*.kotlin_module")
-                excludes.add("META-INF/AL2.0")
-                excludes.add("META-INF/LICENSE.md")
-                excludes.add("META-INF/LICENSE-notice.md")
-                excludes.add("META-INF/LGPL2.1")
-                excludes.add("**/*.kotlin_metadata")
-            }
-        }
-
         project.extensions.configure<KotlinMultiplatformExtension> {
-            /*@Suppress("UnstableApiUsage")
-            androidLibrary {
+            extensions.configure<KotlinMultiplatformAndroidLibraryTarget> {
                 namespace = "$appId.$modulePath"
                 compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
                 minSdk = project.libs.versions.minAndroidSdk.get().toInt()
                 compilerOptions {
                     jvmTarget.set(project.libs.versions.jvmTarget.map(JvmTarget::fromTarget))
                 }
-                //TODO: After this all resources can live in core:common
-                androidResources.enable = true
-            }*/
+                lint {
+                    warningsAsErrors = true
+                }
+                packaging.resources {
+                    excludes.add("META-INF/*.kotlin_module")
+                    excludes.add("META-INF/AL2.0")
+                    excludes.add("META-INF/LICENSE.md")
+                    excludes.add("META-INF/LICENSE-notice.md")
+                    excludes.add("META-INF/LGPL2.1")
+                    excludes.add("**/*.kotlin_metadata")
+                }
+            }
 
             applyDefaultHierarchyTemplate()
-
-            androidTarget()
 
             listOf(
                 iosArm64(),
@@ -115,6 +97,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                 androidMain.dependencies {
                     implementation(project.libs.bundles.android)
+                    implementation(project.dependencies.platform(project.libs.firebase.bom))
                 }
 
                 named { it.lowercase().startsWith("ios") }.configureEach {
