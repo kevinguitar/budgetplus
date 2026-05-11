@@ -1,10 +1,11 @@
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
 import common.implementation
 import common.libs
 import common.testImplementation
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
@@ -16,7 +17,7 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val appId: String by project
 
-        project.extensions.configure(CommonExtension::class.java) {
+        project.extensions.configure<ApplicationExtension> {
             val modulePath = project.path
                 .drop(1)
                 .split(':', '-')

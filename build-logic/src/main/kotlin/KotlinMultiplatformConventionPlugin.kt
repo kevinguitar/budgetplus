@@ -97,6 +97,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                 androidMain.dependencies {
                     implementation(project.libs.bundles.android)
+                    implementation(project.dependencies.platform(project.libs.firebase.bom))
                 }
 
                 named { it.lowercase().startsWith("ios") }.configureEach {

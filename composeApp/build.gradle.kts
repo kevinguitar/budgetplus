@@ -90,39 +90,3 @@ kotlin {
         }
     }
 }
-
-swiftPackageConfig {
-    create("nativeBridge") {
-        dependency {
-            minIos = "16.6"
-            linkerOpts = listOf("-ObjC")
-            exportedPackageSettings { includeProduct = listOf("FirebaseFirestore") }
-            remotePackageVersion(
-                url = uri("https://github.com/firebase/firebase-ios-sdk.git"),
-                products = {
-                    // Export to Kotlin for use in shared Kotlin code and use it in your swift code
-                    // the export doesn't work when gitlive is implemented, my guess is a bug with cinterop
-                    // because gitlive already use cinterop
-                    listOf(
-                        "FirebaseAnalytics",
-                        "FirebaseAuth",
-                        "FirebaseCore",
-                        "FirebaseCrashlytics",
-                        "FirebaseFirestore",
-                        "FirebaseFunctions",
-                        "FirebaseMessaging",
-                        "FirebaseRemoteConfig",
-                    ).forEach { add(it, exportToKotlin = false) }
-                },
-                version = "12.10.0",
-            )
-            remotePackageVersion(
-                url = uri("https://github.com/google/GoogleSignIn-iOS.git"),
-                products = {
-                    add("GoogleSignIn", exportToKotlin = true)
-                },
-                version = "9.1.0"
-            )
-        }
-    }
-}
