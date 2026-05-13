@@ -8,7 +8,7 @@ coroutines = "1.11.0"
 # https://github.com/coil-kt/coil/releases
 coil = "3.4.0"
 # https://github.com/JetBrains/compose-multiplatform/releases
-compose-multiplatform = "1.10.3"
+compose-multiplatform = "1.11.0"
 # https://github.com/ZacSweers/metro/releases
 metro = "1.0.0"
 # https://developer.android.com/jetpack/androidx/releases/navigation3
