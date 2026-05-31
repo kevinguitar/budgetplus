@@ -233,6 +233,7 @@
     <string name="cta_delete">Delete</string>
     <string name="cta_complete">Complete</string>
     <string name="cta_duplicate">Duplicate</string>
+    <string name="cta_pin">Pin</string>
     <string name="select_date">Select Date</string>
     <string name="date_to">to</string>
     <string name="today">Today</string>

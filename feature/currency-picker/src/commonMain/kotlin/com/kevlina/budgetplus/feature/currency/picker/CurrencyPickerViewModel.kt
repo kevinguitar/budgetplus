@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.currency.picker
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
@@ -18,6 +19,7 @@ import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
+import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -25,10 +27,11 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 
@@ -38,6 +41,7 @@ class CurrencyPickerViewModel(
     private val navController: NavController<BookDest>,
     private val bookRepo: BookRepo,
     private val currencyExchangeRepo: CurrencyExchangeRepo,
+    private val preference: Preference,
     private val snackbarSender: SnackbarSender,
 ) : ViewModel() {
 
@@ -49,42 +53,46 @@ class CurrencyPickerViewModel(
             Purpose.Preferred -> Res.string.currency_picker_preferred_title
         }
 
+    private val pinnedCurrenciesKey = stringSetPreferencesKey("pinnedCurrencies")
+    private val pinnedCurrencies = preference.of(pinnedCurrenciesKey)
+
     private val currentCurrencyCode = when (params.purpose) {
         Purpose.Book -> bookRepo.bookState.value?.currencyCode
         Purpose.Preferred -> currencyExchangeRepo.preferredCurrencyCode
     }
 
     private val defaultCurrencyCode = getDefaultCurrencyCode()
+    private val availableCurrencies = getAvailableCurrencies()
 
-    private val allCurrencies = getAvailableCurrencies()
-        .map { currency ->
-            CurrencyState(
-                currency = currency,
-                isSelected = currentCurrencyCode == currency.currencyCode
-            )
+    val currencies: StateFlow<List<CurrencyState>> = combine(
+        snapshotFlow { keyword.text },
+        pinnedCurrencies
+    ) { keyword, pinned ->
+        if (keyword.isBlank()) {
+            availableCurrencies
+        } else {
+            availableCurrencies.filter {
+                it.name.contains(keyword, ignoreCase = true) ||
+                    it.currencyCode.contains(keyword, ignoreCase = true)
+            }
         }
-        // Sort by symbol, so it looks nicer from the beginning
-        .sortedByDescending { it.currency.symbol }
-        // Then place the default currency at the front
-        .sortedByDescending { it.currency.currencyCode == defaultCurrencyCode }
-        // Then place the selected one (if exists) at the front
-        .sortedByDescending { it.isSelected }
-
-    val currencies: StateFlow<List<CurrencyState>>
-        field = MutableStateFlow(allCurrencies)
-
-    init {
-        snapshotFlow { keyword.text }
-            .onEach(::onSearch)
-            .launchIn(viewModelScope)
+            .map { currency ->
+                CurrencyState(
+                    currency = currency,
+                    isSelected = currentCurrencyCode == currency.currencyCode,
+                    isPinned = currency.currencyCode in pinned.orEmpty(),
+                )
+            }
+            // Sort by symbol, so it looks nicer from the beginning
+            .sortedByDescending { it.currency.symbol }
+            // Then place the default currency at the front
+            .sortedByDescending { it.currency.currencyCode == defaultCurrencyCode }
+            // Then place the pinned currencies at the front
+            .sortedByDescending { it.isPinned }
+            // Then place the selected one (if exists) at the front
+            .sortedByDescending { it.isSelected }
     }
-
-    private fun onSearch(keyword: CharSequence) {
-        currencies.value = allCurrencies.filter {
-            it.currency.name.contains(keyword, ignoreCase = true) ||
-                it.currency.currencyCode.contains(keyword, ignoreCase = true)
-        }
-    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     suspend fun onCurrencyPicked(currency: Currency) {
         when (params.purpose) {
@@ -104,6 +112,19 @@ class CurrencyPickerViewModel(
             }
         }
         navigateUp()
+    }
+
+    suspend fun onCurrencyPinned(currency: Currency) {
+        val pinnedCurrencies = pinnedCurrencies.first().orEmpty()
+        val isPinned = currency.currencyCode in pinnedCurrencies
+        preference.update(
+            key = pinnedCurrenciesKey,
+            value = if (isPinned) {
+                pinnedCurrencies - currency.currencyCode
+            } else {
+                pinnedCurrencies + currency.currencyCode
+            }
+        )
     }
 
     fun navigateUp() {
