@@ -7,9 +7,10 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            api(libs.compose.resources)
             api(libs.navigation3.runtime)
             implementation(libs.coil)
-            api(libs.compose.resources)
+            implementation(libs.keval)
         }
 
         androidMain.dependencies {

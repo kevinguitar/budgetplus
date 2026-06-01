@@ -7,4 +7,5 @@ import com.kevlina.budgetplus.core.common.Currency
 data class CurrencyState(
     val currency: Currency,
     val isSelected: Boolean,
+    val isPinned: Boolean,
 )

@@ -47,6 +47,11 @@ fun CurrencyPickerScreen(
                     coroutineScope.launch {
                         vm.onCurrencyPicked(currency)
                     }
+                },
+                onCurrencyPinned = { currency ->
+                    coroutineScope.launch {
+                        vm.onCurrencyPinned(currency)
+                    }
                 }
             )
         }

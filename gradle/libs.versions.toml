@@ -16,7 +16,7 @@ navigation3 = "1.1.2"
 # https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html#multiplatform-support
 navigation3-jb = "1.1.1"
 # https://firebase.google.com/support/release-notes/android
-firebase-bom = "34.13.0"
+firebase-bom = "34.14.0"
 # https://mvnrepository.com/artifact/com.google.firebase/firebase-crashlytics-gradle
 firebase-crashlytics = "3.0.7"
 # https://github.com/GitLiveApp/firebase-kotlin-sdk/releases
@@ -39,7 +39,7 @@ permissions = "0.20.1"
 # https://github.com/alexzhirkevich/compottie/releases
 compottie = "2.1.0"
 # https://github.com/RevenueCat/purchases-kmp/releases
-revenuecat-kmp = "3.0.2"
+revenuecat-kmp = "3.0.3"
 # https://github.com/ktorio/ktor/releases
 ktor = "3.4.3"
 # https://github.com/touchlab/Kermit/releases
@@ -104,6 +104,7 @@ install-referrer = "com.android.installreferrer:installreferrer:2.2"
 junit-android = "androidx.test.ext:junit:1.3.0"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
+keval = "com.notkamui.libs:keval:2.0.0"
 kotlin-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.8.0"
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

@@ -233,6 +233,7 @@
     <string name="cta_delete">削除する</string>
     <string name="cta_complete">完了する</string>
     <string name="cta_duplicate">コピー</string>
+    <string name="cta_pin">トップに固定</string>
     <string name="select_date">日付を選択</string>
     <string name="date_to">～</string>
     <string name="today">今日</string>
