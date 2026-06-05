@@ -30,6 +30,8 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 namespace = "$appId.$modulePath"
                 compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
                 minSdk = project.libs.versions.minAndroidSdk.get().toInt()
+                // I don't want this, but without it, there's a warning that I cannot suppress.
+                withHostTest {  }
                 compilerOptions {
                     jvmTarget.set(project.libs.versions.jvmTarget.map(JvmTarget::fromTarget))
                 }
