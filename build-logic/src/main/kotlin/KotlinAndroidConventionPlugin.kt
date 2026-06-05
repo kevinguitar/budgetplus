@@ -48,11 +48,6 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
                 compilerOptions {
                     // Due to https://youtrack.jetbrains.com/issue/CMP-8498/KLIB-name-conflict-with-AndroidX-libraries
                     allWarningsAsErrors.set(false)
-                    freeCompilerArgs.addAll(
-                        "-Xcontext-parameters",
-                        "-Xexplicit-backing-fields",
-                        "-Xannotation-default-target=param-property"
-                    )
                     optIn.addAll(
                         "kotlin.contracts.ExperimentalContracts",
                         "kotlinx.coroutines.ExperimentalCoroutinesApi",

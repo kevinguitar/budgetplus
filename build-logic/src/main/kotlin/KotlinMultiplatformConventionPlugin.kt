@@ -7,10 +7,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.DisableCacheInKotlinVersion
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCacheApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-import java.net.URI
 
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
@@ -65,13 +62,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                             "-Xbinary=sourceInfoType=none",
                         )
                     }
-
-                    @OptIn(KotlinNativeCacheApi::class)
-                    disableNativeCache(
-                        version = DisableCacheInKotlinVersion.`2_3_21`,
-                        reason = "Crashkios caching workaround",
-                        issueUrl = URI("https://crashkios.touchlab.co/docs/crashlytics/")
-                    )
                 }
             }
 
@@ -112,9 +102,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             compilerOptions {
                 allWarningsAsErrors.set(true)
                 freeCompilerArgs.addAll(
-                    "-Xcontext-parameters",
-                    "-Xexplicit-backing-fields",
-                    "-Xannotation-default-target=param-property",
                     "-Xexpect-actual-classes"
                 )
                 optIn.addAll(
