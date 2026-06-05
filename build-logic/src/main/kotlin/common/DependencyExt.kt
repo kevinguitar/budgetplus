@@ -19,3 +19,7 @@ fun DependencyHandlerScope.debugImplementation(module: Any) {
 fun DependencyHandlerScope.testImplementation(module: Any) {
     add("testImplementation", module)
 }
+
+fun DependencyHandlerScope.androidRuntimeClasspath(module: Any) {
+    add("androidRuntimeClasspath", module)
+}

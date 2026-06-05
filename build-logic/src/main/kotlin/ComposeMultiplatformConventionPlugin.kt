@@ -1,8 +1,10 @@
+import common.androidRuntimeClasspath
 import common.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -27,6 +29,9 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                     implementation(project.libs.ktor.ios)
                 }
             }
+        }
+        project.dependencies {
+            androidRuntimeClasspath(project.libs.compose.android.uiTooling)
         }
     }
 }
