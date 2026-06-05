@@ -45,7 +45,7 @@ ktor = "3.4.3"
 # https://github.com/touchlab/Kermit/releases
 kermit = "2.1.0"
 
-compileAndroidSdk = "36"
+compileAndroidSdk = "37"
 minAndroidSdk = "26"
 jvmTarget = "21"
 
