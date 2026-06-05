@@ -102,9 +102,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             compilerOptions {
                 allWarningsAsErrors.set(true)
                 freeCompilerArgs.addAll(
-                    "-Xcontext-parameters",
-                    "-Xexplicit-backing-fields",
-                    "-Xannotation-default-target=param-property",
                     "-Xexpect-actual-classes"
                 )
                 optIn.addAll(
