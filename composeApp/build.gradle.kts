@@ -1,4 +1,5 @@
 import io.github.frankois944.spmForKmp.swiftPackageConfig
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
 plugins {
     alias(budgetplus.plugins.kotlin.multiplatform)
@@ -12,6 +13,19 @@ kotlin {
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach { target ->
+        target.binaries.framework {
+            baseName = "ComposeApp"
+            freeCompilerArgs += listOf("-Xbinary=bundleId=com.kevlina.budgetplus.composeApp")
+            isStatic = true
+
+            if (buildType == NativeBuildType.RELEASE) {
+                freeCompilerArgs += listOf(
+                    "-Xbinary=stripDebugSymbols=true",
+                    "-Xbinary=sourceInfoType=none",
+                )
+            }
+        }
+
         target.swiftPackageConfig(cinteropName = "nativeBridge") {
             dependency {
                 minIos = "16.6"

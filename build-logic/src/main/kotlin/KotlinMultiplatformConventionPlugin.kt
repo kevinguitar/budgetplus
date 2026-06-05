@@ -7,7 +7,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
@@ -28,7 +27,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                 compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
                 minSdk = project.libs.versions.minAndroidSdk.get().toInt()
                 // I don't want this, but without it, there's a warning that I cannot suppress.
-                withHostTest {  }
+                withHostTest { }
                 compilerOptions {
                     jvmTarget.set(project.libs.versions.jvmTarget.map(JvmTarget::fromTarget))
                 }
@@ -47,23 +46,8 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
             applyDefaultHierarchyTemplate()
 
-            listOf(
-                iosArm64(),
-                iosSimulatorArm64()
-            ).forEach { iosTarget ->
-                iosTarget.binaries.framework {
-                    baseName = modulePath.replaceFirstChar { it.uppercase() }
-                    freeCompilerArgs += listOf("-Xbinary=bundleId=$appId.$modulePath")
-                    isStatic = true
-
-                    if (buildType == NativeBuildType.RELEASE) {
-                        freeCompilerArgs += listOf(
-                            "-Xbinary=stripDebugSymbols=true",
-                            "-Xbinary=sourceInfoType=none",
-                        )
-                    }
-                }
-            }
+            iosArm64()
+            iosSimulatorArm64()
 
             jvmToolchain(project.libs.versions.jvmTarget.get().toInt())
 
