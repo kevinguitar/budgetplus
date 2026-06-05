@@ -1,4 +1,5 @@
 import io.github.frankois944.spmForKmp.swiftPackageConfig
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
 plugins {
     alias(budgetplus.plugins.kotlin.multiplatform)
@@ -12,6 +13,18 @@ kotlin {
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach { target ->
+        target.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+
+            if (buildType == NativeBuildType.RELEASE) {
+                freeCompilerArgs += listOf(
+                    "-Xbinary=stripDebugSymbols=true",
+                    "-Xbinary=sourceInfoType=none",
+                )
+            }
+        }
+
         target.swiftPackageConfig(cinteropName = "nativeBridge") {
             dependency {
                 minIos = "16.6"
@@ -34,7 +47,7 @@ kotlin {
                             "FirebaseRemoteConfig",
                         ).forEach { add(it, exportToKotlin = false) }
                     },
-                    version = "12.13.0",
+                    version = "12.14.0",
                 )
                 remotePackageVersion(
                     url = uri("https://github.com/google/GoogleSignIn-iOS.git"),
