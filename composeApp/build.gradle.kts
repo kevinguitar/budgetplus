@@ -15,7 +15,6 @@ kotlin {
     ).forEach { target ->
         target.binaries.framework {
             baseName = "ComposeApp"
-            freeCompilerArgs += listOf("-Xbinary=bundleId=com.kevlina.budgetplus.composeApp")
             isStatic = true
 
             if (buildType == NativeBuildType.RELEASE) {
@@ -48,7 +47,7 @@ kotlin {
                             "FirebaseRemoteConfig",
                         ).forEach { add(it, exportToKotlin = false) }
                     },
-                    version = "12.13.0",
+                    version = "12.14.0",
                 )
                 remotePackageVersion(
                     url = uri("https://github.com/google/GoogleSignIn-iOS.git"),
