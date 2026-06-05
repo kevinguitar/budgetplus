@@ -1,4 +1,4 @@
-import common.debugImplementation
+import common.androidRuntimeClasspath
 import common.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -21,9 +21,6 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                     implementation(project.libs.coil.compose)
                     implementation(project.libs.coil.ktor)
                 }
-                commonTest.dependencies {
-                    implementation(kotlin("test"))
-                }
                 androidMain.dependencies {
                     implementation(project.libs.android.activity.compose)
                     implementation(project.libs.ktor.android)
@@ -33,9 +30,8 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                 }
             }
         }
-
         project.dependencies {
-            debugImplementation(project.libs.compose.android.uiTooling)
+            androidRuntimeClasspath(project.libs.compose.android.uiTooling)
         }
     }
 }

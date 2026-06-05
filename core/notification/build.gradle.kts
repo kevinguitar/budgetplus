@@ -10,4 +10,5 @@ kotlin {
             api(libs.firebase.messaging)
         }
     }
+    android.androidResources.enable = true
 }
