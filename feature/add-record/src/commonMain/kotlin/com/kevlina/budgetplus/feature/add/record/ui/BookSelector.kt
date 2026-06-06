@@ -17,10 +17,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.book_name_placeholder
-import budgetplus.core.common.generated.resources.book_name_title
 import budgetplus.core.common.generated.resources.book_selection
-import budgetplus.core.common.generated.resources.cta_create
 import budgetplus.core.common.generated.resources.ic_arrow_drop_down
 import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.ic_lock
@@ -31,7 +28,6 @@ import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
-import com.kevlina.budgetplus.core.ui.InputDialog
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.add.record.BookSelectorViewModel
@@ -134,11 +130,9 @@ fun BookSelector() {
     }
 
     if (isBookCreationDialogShown) {
-        InputDialog(
-            buttonText = stringResource(Res.string.cta_create),
-            title = stringResource(Res.string.book_name_title),
-            placeholder = stringResource(Res.string.book_name_placeholder),
-            onButtonClicked = viewModel::createBook,
+        CreateBookDialog(
+            books = booksState.orEmpty(),
+            onCreate = viewModel::createBook,
             onDismiss = { isBookCreationDialogShown = false }
         )
     }

@@ -62,6 +62,8 @@
     <string name="book_already_joined">이미 이 가계부에 참여했습니다</string>
     <string name="book_join_exceed_free_limit">프리미엄을 이용해 더 많은 가계부를 생성하거나 참여하세요</string>
     <string name="book_exceed_maximum">가계부 최대 개수에 도달했습니다</string>
+    <string name="book_copy_categories_from">카테고리 복사 원본</string>
+    <string name="book_copy_categories_default">기본값</string>
 
     <!-- Category -->
     <string name="category_title">카테고리 이름</string>

@@ -203,7 +203,7 @@ internal class BookRepoImpl(
         return hasBook
     }
 
-    override suspend fun createBook(name: String, source: String) {
+    override suspend fun createBook(name: String, source: String, fromBook: Book?) {
         val isPremium = authManager.userState.value?.premium == true
         val bookCount = booksState.filterNotNull().first().size
 
@@ -214,14 +214,16 @@ internal class BookRepoImpl(
         }
 
         val userId = authManager.requireUserId()
-        val expenses = getStringArray(Res.array.default_expense_categories)
-        val incomes = getStringArray(Res.array.default_income_categories)
+        val expenses = fromBook?.expenseCategories
+            ?: getStringArray(Res.array.default_expense_categories).toList()
+        val incomes = fromBook?.incomeCategories
+            ?: getStringArray(Res.array.default_income_categories).toList()
         val newBook = Book(
             name = name,
             ownerId = userId,
             authors = listOf(userId),
-            expenseCategories = expenses.toList(),
-            incomeCategories = incomes.toList(),
+            expenseCategories = expenses,
+            incomeCategories = incomes,
             currencyCode = currencyExchangeRepo.value.preferredCurrencyCode
         )
         val doc = booksDb.value.add(newBook)

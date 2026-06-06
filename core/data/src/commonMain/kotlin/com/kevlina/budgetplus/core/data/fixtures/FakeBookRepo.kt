@@ -40,7 +40,7 @@ class FakeBookRepo(
         error("Not yet implemented")
     }
 
-    override suspend fun createBook(name: String, source: String) {
+    override suspend fun createBook(name: String, source: String, fromBook: Book?) {
         error("Not yet implemented")
     }
 

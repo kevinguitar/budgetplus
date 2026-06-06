@@ -62,6 +62,8 @@
     <string name="book_already_joined">您已加入帳本了</string>
     <string name="book_join_exceed_free_limit">取得進階版以創建、加入更多帳本</string>
     <string name="book_exceed_maximum">已達帳本總數上限</string>
+    <string name="book_copy_categories_from">複製類別來源</string>
+    <string name="book_copy_categories_default">預設</string>
 
     <!-- Category -->
     <string name="category_title">類別名稱</string>

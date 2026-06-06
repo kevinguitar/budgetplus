@@ -33,7 +33,11 @@ interface BookRepo {
      */
     suspend fun isUserHasBooks(): Boolean
 
-    suspend fun createBook(name: String, source: String)
+    /**
+     * @param fromBook The book to copy the categories from. When null, the default
+     *  categories are used.
+     */
+    suspend fun createBook(name: String, source: String, fromBook: Book? = null)
 
     suspend fun renameBook(newName: String)
 

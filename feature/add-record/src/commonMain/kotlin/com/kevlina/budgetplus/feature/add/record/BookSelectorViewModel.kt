@@ -50,10 +50,10 @@ class BookSelectorViewModel(
         viewModelScope.launch { bookRepo.selectBook(book) }
     }
 
-    fun createBook(name: String) {
+    fun createBook(name: String, fromBook: Book? = null) {
         viewModelScope.launch {
             try {
-                bookRepo.createBook(name = name, source = "selector")
+                bookRepo.createBook(name = name, source = "selector", fromBook = fromBook)
                 snackbarSender.send(getString(Res.string.book_create_success, name))
             } catch (e: Exception) {
                 snackbarSender.sendError(e)

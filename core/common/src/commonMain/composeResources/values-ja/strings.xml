@@ -62,6 +62,8 @@
     <string name="book_already_joined">その帳簿は既に参加しました</string>
     <string name="book_join_exceed_free_limit">進化版を取得して、さらに多くの帳簿を作成したり参加したりできます。</string>
     <string name="book_exceed_maximum">帳簿の合計数が上限に達しました</string>
+    <string name="book_copy_categories_from">カテゴリのコピー元</string>
+    <string name="book_copy_categories_default">デフォルト</string>
 
     <!-- Category -->
     <string name="category_title">カテゴリ名</string>
