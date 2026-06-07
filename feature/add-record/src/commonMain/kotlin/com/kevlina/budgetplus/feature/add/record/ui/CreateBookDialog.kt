@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -82,7 +83,10 @@ internal fun CreateBookDialog(
                     text = stringResource(Res.string.book_copy_categories_from),
                     fontSize = FontSize.SemiLarge,
                     fontWeight = FontWeight.SemiBold,
+                    singleLine = true
                 )
+
+                Spacer(Modifier.weight(1f))
 
                 Box {
                     Row(
