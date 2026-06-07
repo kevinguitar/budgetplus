@@ -62,6 +62,8 @@
     <string name="book_already_joined">You have already joined</string>
     <string name="book_join_exceed_free_limit">Unlock premium to create/ join more books!</string>
     <string name="book_exceed_maximum">You have reached the maximum books limit</string>
+    <string name="book_copy_categories_from">Copy categories from</string>
+    <string name="book_copy_categories_default">Default</string>
 
     <!-- Category -->
     <string name="category_title">Category</string>
