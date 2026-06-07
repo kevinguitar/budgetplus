@@ -62,7 +62,7 @@
     <string name="book_already_joined">您已加入帐本了</string>
     <string name="book_join_exceed_free_limit">取得进阶版以创建、加入更多帐本</string>
     <string name="book_exceed_maximum">已达帐本总数上限</string>
-    <string name="book_copy_categories_from">复制类别来源</string>
+    <string name="book_copy_categories_from">复制帐本类别</string>
     <string name="book_copy_categories_default">默认</string>
 
     <!-- Category -->
