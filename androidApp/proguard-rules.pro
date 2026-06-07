@@ -29,6 +29,25 @@
   *;
 }
 
+# Keep WorkManager / Room / App Startup generated classes and workers for androidx.startup.InitializationProvider,
+# this reulted in a crash in AGP9.
+-keep class androidx.work.impl.** { *; }
+-keep class androidx.work.** { *; }
+-keep class androidx.work.impl.WorkDatabase_Impl { *; }
+-keep class androidx.work.impl.db.WorkDatabase_Impl { *; }
+-keep class * extends androidx.work.Worker { *; }
+-keep class * extends androidx.work.ListenableWorker { *; }
+-keepclassmembers class * {
+@androidx.room.* <fields>;
+}
+-keep @androidx.room.Database class * { *; }
+-keep @androidx.room.Entity class * { *; }
+-keep @androidx.room.Dao class * { *; }
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep class androidx.startup.** { *; }
+-keep class androidx.startup.InitializationProvider { *; }
+-keep class * implements androidx.startup.Initializer { *; }
+
 # Required rules for r8
 -dontwarn android.media.LoudnessCodecController$OnLoudnessCodecUpdateListener
 -dontwarn android.media.LoudnessCodecController
