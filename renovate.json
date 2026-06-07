@@ -13,15 +13,14 @@
       "enabled": false
     },
     {
-      "description": "Pin gradle/actions to v5, do not upgrade to newer major versions.",
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["gradle/actions"],
-      "allowedVersions": "<=5"
-    },
-    {
       "description": "Exclude kotlinx-datetime versions with -compat suffix.",
       "matchPackageNames": ["org.jetbrains.kotlinx:kotlinx-datetime"],
       "allowedVersions": "!/-compat$/"
+    },
+    {
+      "description": "Pin Ruby version to last known working version for fastlane compatibility.",
+      "matchDepNames": ["ruby"],
+      "enabled": false
     }
   ]
 }
