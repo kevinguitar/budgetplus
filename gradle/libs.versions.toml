@@ -6,7 +6,7 @@ kotlin = "2.4.0"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
 coroutines = "1.11.0"
 # https://github.com/coil-kt/coil/releases
-coil = "3.4.0"
+coil = "3.5.0"
 # https://github.com/JetBrains/compose-multiplatform/releases
 compose-multiplatform = "1.11.1"
 # https://github.com/ZacSweers/metro/releases
