@@ -18,7 +18,7 @@ let package = Package(
         .target(
             name: "exportedNativeBridge",
             dependencies: [
-                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),.product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
+                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
             ],
             path: "Sources"
             

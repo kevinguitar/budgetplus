@@ -11,5 +11,5 @@ dependencies {
 
     implementation(libs.profile.installer)
 
-    implementation(projects.composeApp)
+    implementation(projects.shared)
 }

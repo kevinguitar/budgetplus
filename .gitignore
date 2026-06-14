@@ -16,7 +16,7 @@ xcuserdata
 bin
 .vscode
 iosApp/.xcode.env
-composeApp/exportedNativeExample/.build
+shared/exportedNativeExample/.build
 StartYourBridgeHere.swift
 DummySPMFile.swift
 GoogleService-Info.plist
