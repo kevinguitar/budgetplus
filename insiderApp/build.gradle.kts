@@ -11,6 +11,7 @@ dependencies {
     implementation(libs.firebase.firestore)
 
     implementation(libs.android.activity)
+    implementation(libs.kermit)
     implementation(libs.navigation3.ui)
     implementation(libs.navigation3.viewmodel)
 

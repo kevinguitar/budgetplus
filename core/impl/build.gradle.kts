@@ -12,6 +12,7 @@ kotlin {
             implementation(projects.core.ui)
 
             implementation(libs.crashkios)
+            implementation(libs.kermit)
             implementation(libs.kermit.crashlytics)
             implementation(libs.kotlin.serialization)
             implementation(libs.ktor.core)
