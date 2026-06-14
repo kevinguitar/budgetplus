@@ -135,7 +135,6 @@ kmp = [
     "android-viewmodel",
     "android-viewmodel-savedstate",
     "coroutines-core",
-    "kermit",
     "kotlin-datetime",
 ]
 compose = [

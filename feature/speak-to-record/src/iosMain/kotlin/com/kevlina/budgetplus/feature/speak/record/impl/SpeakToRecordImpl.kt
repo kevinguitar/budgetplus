@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.feature.speak.record.impl
 
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.appLocale
 import com.kevlina.budgetplus.feature.speak.record.RecordActor
@@ -30,7 +30,7 @@ internal class SpeakToRecordImpl(
     override fun startRecording(): RecordActor {
         val speechRecognizer = SFSpeechRecognizer(locale = NSLocale.appLocale)
         if (!speechRecognizer.isAvailable()) {
-            Logger.e(SpeakToRecordException("Feature is not supported")) { "Feature is not supported" }
+            Logger.e(SpeakToRecordException("Feature is not supported"), "Feature is not supported")
             return RecordActor(
                 statusFlow = flowOf(SpeakToRecordStatus.DeviceNotSupported),
                 stopRecording = {}
@@ -62,7 +62,7 @@ internal class SpeakToRecordImpl(
                 stopAudioEngine()
 
                 val errorMessage = error.localizedDescription
-                Logger.e(SpeakToRecordException(errorMessage)) { "SpeechRecognizer Error: $errorMessage" }
+                Logger.e(SpeakToRecordException(errorMessage), "SpeechRecognizer Error: $errorMessage")
 
                 when (error.code) {
                     // Error code 1 = "Retry" which is like no match
@@ -84,7 +84,7 @@ internal class SpeakToRecordImpl(
                 stopAudioEngine()
 
                 val text = result.bestTranscription.formattedString
-                Logger.d { "SpeechRecognizer: Results received $text" }
+                Logger.d("SpeechRecognizer: Results received $text")
                 statusFlow.tryEmit(speakResultParser.parse(text))
             }
         }
@@ -107,7 +107,7 @@ internal class SpeakToRecordImpl(
         audioEngine.startAndReturnError(null)
         statusFlow.tryEmit(SpeakToRecordStatus.ReadyToSpeak)
 
-        Logger.d { "SpeechRecognizer: Start listening, locale=${NSLocale.appLocale.localeIdentifier}" }
+        Logger.d("SpeechRecognizer: Start listening, locale=${NSLocale.appLocale.localeIdentifier}")
         tracker.logEvent("speak_to_record_start")
 
         return RecordActor(

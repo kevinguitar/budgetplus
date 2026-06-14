@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.toSize
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.export_cta
 import budgetplus.core.common.generated.resources.ic_file_download
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -208,7 +208,7 @@ private fun Bubble_Preview(
 private fun BubbleDest.getOffsetSafe(): Offset? = try {
     offset()
 } catch (e: Exception) {
-    Logger.d(e) { "Fail to retrieve offset for ${key}, skip showing" }
+    Logger.d(e, "Fail to retrieve offset for ${key}, skip showing")
     null
 }
 

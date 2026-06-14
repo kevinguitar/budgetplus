@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.messaging.messaging
 import dev.zacsweers.metro.AppScope
@@ -13,7 +13,7 @@ internal class FcmTokenProviderImpl : FcmTokenProvider {
         return try {
             Firebase.messaging.getToken()
         } catch (e: Exception) {
-            Logger.w(e) { "Failed to retrieve the fcm token" }
+            Logger.w(e, "Failed to retrieve the fcm token")
             null
         }
     }

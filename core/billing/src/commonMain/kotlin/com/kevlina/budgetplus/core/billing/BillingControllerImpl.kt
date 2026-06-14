@@ -2,8 +2,8 @@ package com.kevlina.budgetplus.core.billing
 
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.premium_acknowledge_fail
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.data.AuthManager
@@ -68,7 +68,7 @@ internal class BillingControllerImpl(
     private fun CustomerInfo.verifyEntitlements() {
         if (entitlements.all.isEmpty()) return
         if (entitlements.verification == VerificationResult.FAILED) {
-            Logger.e { "Entitlement verification failed for user ${authManager.userId}" }
+            Logger.e("Entitlement verification failed for user ${authManager.userId}")
             appScope.launch { snackbarSender.send(Res.string.premium_acknowledge_fail) }
             return
         }

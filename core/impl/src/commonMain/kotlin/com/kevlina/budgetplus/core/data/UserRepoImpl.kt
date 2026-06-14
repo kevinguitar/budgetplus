@@ -1,8 +1,8 @@
 package com.kevlina.budgetplus.core.data
 
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.data.remote.UsersDb
@@ -69,7 +69,7 @@ internal class UserRepoImpl(
             val user = usersDb.value.document(userId).get().data<User>()
             userMapping[userId] = user
         } catch (e: Exception) {
-            Logger.e(e) { "UserRepo: loadUser failed" }
+            Logger.e(e, "UserRepo: loadUser failed")
         }
     }
 }

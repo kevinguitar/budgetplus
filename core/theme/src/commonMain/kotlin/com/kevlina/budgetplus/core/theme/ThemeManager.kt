@@ -1,8 +1,8 @@
 package com.kevlina.budgetplus.core.theme
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_COLORS_PATH
@@ -95,7 +95,7 @@ class ThemeManager(
 
     suspend fun setColorTone(newColorTone: ColorTone) {
         if (!authManager.isPremium.value && newColorTone.requiresPremium) {
-            Logger.e { "ThemeManager: Attempting to apply a premium theme for a free user. $colorTone" }
+            Logger.e("ThemeManager: Attempting to apply a premium theme for a free user. $colorTone")
             return
         }
 
@@ -122,7 +122,7 @@ class ThemeManager(
         val newColor = try {
             colorHexCode.convertHexToColor()
         } catch (e: Exception) {
-            Logger.e(e) { "Failed to parse the picked color $colorHexCode" }
+            Logger.e(e, "Failed to parse the picked color $colorHexCode")
             return
         }
 
@@ -194,7 +194,7 @@ class ThemeManager(
                 dark = hexCodes[3].convertHexToColor(),
             )
         } catch (e: Exception) {
-            Logger.e(e) { "Failed to decode the theme colors. raw value=$value" }
+            Logger.e(e, "Failed to decode the theme colors. raw value=$value")
             null
         }
     }

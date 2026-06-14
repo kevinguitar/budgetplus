@@ -1,7 +1,7 @@
 package com.kevlina.budgetplus.core.data
 
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.Tracker
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.analytics.analytics
@@ -31,7 +31,7 @@ internal class TrackerImpl(
     }
 
     override fun logEvent(event: String, params: Map<String, Any>?) {
-        Logger.d { "Analytics:: $event" + if (params == null) "" else ", $params" }
+        Logger.d("Analytics:: $event" + if (params == null) "" else ", $params")
         if (!isDebug) {
             analytics.logEvent(event, params)
         }

@@ -29,11 +29,11 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.color_tone_color_hex_code
 import budgetplus.core.common.generated.resources.cta_cancel
 import budgetplus.core.common.generated.resources.cta_confirm
-import co.touchlab.kermit.Logger
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.convertHexToColor
 import com.kevlina.budgetplus.core.theme.toHexCode
@@ -72,7 +72,7 @@ internal fun ColorPickerDialog(
         try {
             userInputColor = hexCode.text.convertHexToColor()
         } catch (e: Exception) {
-            Logger.d(e) { "Failed to parse color hex from user input. $newHexCode" }
+            Logger.d(e, "Failed to parse color hex from user input. $newHexCode")
         }
     }
 

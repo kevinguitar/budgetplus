@@ -1,10 +1,10 @@
 package com.kevlina.budgetplus.feature.auth
 
 import androidx.activity.ComponentActivity
-import co.touchlab.kermit.Logger
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerClient.InstallReferrerResponse
 import com.android.installreferrer.api.InstallReferrerStateListener
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.data.BookRepo
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -30,23 +30,23 @@ class ReferrerHandler(
         when (responseCode) {
             InstallReferrerResponse.OK -> {
                 val joinId = referrerClient.installReferrer.installReferrer
-                Logger.d { "ReferrerClient: Ok. JoinId=$joinId" }
+                Logger.d("ReferrerClient: Ok. JoinId=$joinId")
                 bookRepo.setPendingJoinRequest(joinId)
                 referrerClient.endConnection()
             }
 
             InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
-                Logger.w { "ReferrerClient: Feature not supported" }
+                Logger.w("ReferrerClient: Feature not supported")
             }
 
             InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
-                Logger.w { "ReferrerClient: Service Unavailable" }
+                Logger.w("ReferrerClient: Service Unavailable")
             }
         }
     }
 
     override fun onInstallReferrerServiceDisconnected() {
-        Logger.d { "ReferrerClient: Disconnected" }
+        Logger.d("ReferrerClient: Disconnected")
     }
 
     @AssistedFactory

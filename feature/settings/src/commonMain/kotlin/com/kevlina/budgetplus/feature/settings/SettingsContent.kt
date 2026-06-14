@@ -72,7 +72,7 @@ import budgetplus.core.common.generated.resources.settings_rename_user
 import budgetplus.core.common.generated.resources.settings_share_app
 import budgetplus.core.common.generated.resources.settings_view_members
 import budgetplus.core.common.generated.resources.username_title
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController

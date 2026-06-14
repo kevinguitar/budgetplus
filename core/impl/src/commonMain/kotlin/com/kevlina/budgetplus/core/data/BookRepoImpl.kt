@@ -9,9 +9,9 @@ import budgetplus.core.common.generated.resources.book_join_exceed_free_limit
 import budgetplus.core.common.generated.resources.book_join_link_expired
 import budgetplus.core.common.generated.resources.default_expense_categories
 import budgetplus.core.common.generated.resources.default_income_categories
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.formatPriceWithCurrency
@@ -279,7 +279,7 @@ internal class BookRepoImpl(
             .where { archivedField equalTo false }
             .orderBy(createdOnField, Direction.ASCENDING)
             .snapshots
-            .catch { Logger.e(it) { "BookRepo: Listen failed." } }
+            .catch { Logger.e(it, "BookRepo: Listen failed.") }
             .onEach { snapshot ->
                 val books = snapshot.documents.map { doc -> doc.data<Book>().copy(id = doc.id) }
                 booksState.value = books

@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_join_success
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
@@ -95,7 +95,7 @@ class BookViewModel(
 
     fun handleDeeplink(url: String?): DeeplinkType? {
         if (url == null || !url.startsWith(APP_DEEPLINK)) return null
-        Logger.i { "Handle Deeplink: $url" }
+        Logger.i("Handle Deeplink: $url")
 
         val pathAndQuery = url.removePrefix(APP_DEEPLINK).removePrefix("/")
         val path = pathAndQuery.substringBefore("?")
@@ -129,7 +129,7 @@ class BookViewModel(
                 navController.navigate(BookDest.Colors(hex = hex))
             }
 
-            else -> Logger.d { "Deeplink: Unknown segment $firstSegment. Url=$url" }
+            else -> Logger.d("Deeplink: Unknown segment $firstSegment. Url=$url")
         }
         return DeeplinkType.Normal
     }
@@ -147,7 +147,7 @@ class BookViewModel(
             } catch (e: JoinBookException.General) {
                 snackbarSender.send(e.message)
             } catch (e: JoinBookException.JoinInfoNotFound) {
-                Logger.e(e) { "JoinInfo not found in DB" }
+                Logger.e(e, "JoinInfo not found in DB")
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             }

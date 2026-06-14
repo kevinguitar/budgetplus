@@ -9,6 +9,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
 
+    implementation(libs.kermit)
     implementation(libs.profile.installer)
 
     implementation(projects.shared)

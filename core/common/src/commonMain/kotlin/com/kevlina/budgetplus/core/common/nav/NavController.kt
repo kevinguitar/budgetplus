@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 
@@ -79,11 +79,11 @@ class NavController<T : NavKey>(
             val stack = rootBackStacks[root] ?: return@forEach
             backStack.addAll(stack)
         }
-        Logger.i { "NavController: BackStack=${backStack.toList()}" }
+        Logger.i("NavController: BackStack=${backStack.toList()}")
 
         if (backStack.isEmpty()) {
             backStack.add(startRoot)
-            Logger.w { "NavController: BackStack is empty, added $startRoot to avoid crash" }
+            Logger.w("NavController: BackStack is empty, added $startRoot to avoid crash")
         }
     }
 

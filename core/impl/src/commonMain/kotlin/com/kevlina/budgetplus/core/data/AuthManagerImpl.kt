@@ -3,8 +3,8 @@ package com.kevlina.budgetplus.core.data
 import androidx.datastore.preferences.core.stringPreferencesKey
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.premium_unlocked
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.mapState
@@ -96,10 +96,10 @@ internal class AuthManagerImpl(
     }
 
     override fun updateFcmToken(newToken: String) {
-        Logger.d { "New fcm token: $newToken" }
+        Logger.d("New fcm token: $newToken")
         if (!allowUpdateFcmToken) return
         if (currentUser?.fcmToken == newToken) {
-            Logger.d { "Fcm token is the same, skip the update." }
+            Logger.d("Fcm token is the same, skip the update.")
             return
         }
 
@@ -109,7 +109,7 @@ internal class AuthManagerImpl(
                 userDbClient.setUser(userWithNewToken)
                 setUserToPreference(userWithNewToken)
             } catch (e: Exception) {
-                Logger.w(e) { "Failed to update fcm token" }
+                Logger.w(e, "Failed to update fcm token")
             }
         }
     }
@@ -157,7 +157,7 @@ internal class AuthManagerImpl(
         } else {
             null
         }
-        Logger.d { "Fcm token: $fcmToken" }
+        Logger.d("Fcm token: $fcmToken")
 
         try {
             // Get the latest remote user from the server
@@ -175,11 +175,11 @@ internal class AuthManagerImpl(
 
                 userDbClient.setUser(mergedUser)
             } else {
-                Logger.i { "Can't find user in the db yet, set it with the data what we have in place." }
+                Logger.i("Can't find user in the db yet, set it with the data what we have in place.")
                 userDbClient.setUser(userWithExclusiveFields.copy(fcmToken = fcmToken))
             }
         } catch (e: Exception) {
-            Logger.w(e) { "AuthManager update failed" }
+            Logger.w(e, "AuthManager update failed")
         }
     }
 

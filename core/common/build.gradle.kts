@@ -10,6 +10,7 @@ kotlin {
             api(libs.compose.resources)
             api(libs.navigation3.runtime)
             implementation(libs.coil)
+            implementation(libs.kermit)
             implementation(libs.keval)
         }
 

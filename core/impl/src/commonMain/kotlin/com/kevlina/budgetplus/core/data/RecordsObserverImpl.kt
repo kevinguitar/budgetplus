@@ -1,8 +1,8 @@
 package com.kevlina.budgetplus.core.data
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.tickerFlow
 import com.kevlina.budgetplus.core.data.local.Preference
@@ -132,7 +132,7 @@ internal class RecordsObserverImpl(
             .where { "date" greaterThanOrEqualTo period.from.toEpochDays() }
             .where { "date" lessThanOrEqualTo period.until.toEpochDays() }
             .snapshots
-            .catch { Logger.e(it) { "RecordsObserver: Listen failed." } }
+            .catch { Logger.e(it, "RecordsObserver: Listen failed.") }
             .onEach { snapshot ->
                 records.value = snapshot.documents
                     .map { doc -> doc.data<Record>().copy(id = doc.id) }

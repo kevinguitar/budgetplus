@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.core.common
 
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.fallback_error_message
-import co.touchlab.kermit.Logger
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -39,7 +38,7 @@ internal class SnackbarSenderImpl(
         duration: SnackbarDuration,
         action: () -> Unit,
     ) {
-        Logger.d { "SnackbarSender: Show snackbar $message" }
+        Logger.d("SnackbarSender: Show snackbar $message")
         snackbarEvent.sendEvent(SnackbarData(
             message = message,
             actionLabel = actionLabel?.let { getString(it) },
@@ -50,7 +49,7 @@ internal class SnackbarSenderImpl(
 
     override fun sendError(e: Throwable) {
         val error = e.message
-        Logger.e(e) { "SnackbarSender: sendError $error" }
+        Logger.e(e, "SnackbarSender: sendError $error")
         when {
             // Do not toast the cancellation error
             e is CancellationException -> Unit

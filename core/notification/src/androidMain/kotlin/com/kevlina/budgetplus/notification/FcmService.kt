@@ -7,11 +7,11 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
-import co.touchlab.kermit.Logger
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.ImageLoader
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.di.resolveGraphExtensionFactory
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
@@ -48,7 +48,7 @@ class FcmService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Logger.d { "RemoteMessage: ${message.data}" }
+        Logger.d("RemoteMessage: ${message.data}")
 
         val channelId = when (message.data["type"]) {
             CHANNEL_NEW_MEMBER -> CHANNEL_NEW_MEMBER

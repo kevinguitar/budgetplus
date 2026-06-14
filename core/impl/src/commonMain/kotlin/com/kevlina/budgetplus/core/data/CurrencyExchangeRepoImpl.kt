@@ -1,10 +1,10 @@
 package com.kevlina.budgetplus.core.data
 
 import androidx.datastore.preferences.core.stringPreferencesKey
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.Currency
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.formatPriceWithCurrency
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.common.getDefaultCurrencyCode
@@ -14,9 +14,9 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
-import io.ktor.client.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -124,7 +124,7 @@ internal class CurrencyExchangeRepoImpl(
         val currentRates = cachedRates.first() ?: ExchangeRates(emptyMap())
         val cachedRate = currentRates.map[baseCurrency]
         if (cachedRate != null && (Clock.System.now() - cachedRate.cachedAt) < CACHE_VALIDITY) {
-            Logger.d { "CurrencyExchange: Cache is valid, skipping the request" }
+            Logger.d("CurrencyExchange: Cache is valid, skipping the request")
             return
         }
 
@@ -151,11 +151,11 @@ internal class CurrencyExchangeRepoImpl(
         return try {
             fetchRates(primaryUrl, baseCurrency)
         } catch (e: Exception) {
-            Logger.w(e) { "CurrencyExchangeRepo: Primary URL failed, trying fallback" }
+            Logger.w(e, "CurrencyExchangeRepo: Primary URL failed, trying fallback")
             try {
                 fetchRates(fallbackUrl, baseCurrency)
             } catch (e2: Exception) {
-                Logger.e(e2) { "CurrencyExchangeRepo: Fallback URL also failed" }
+                Logger.e(e2, "CurrencyExchangeRepo: Fallback URL also failed")
                 null
             }
         }

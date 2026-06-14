@@ -11,12 +11,12 @@ import androidx.credentials.exceptions.NoCredentialException
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.kevlina.budgetplus.core.common.ActivityProvider
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
@@ -67,7 +67,7 @@ actual class AuthViewModel(
                 handleSignIn(result)
             } catch (e: GetCredentialCancellationException) {
                 // Ignore cancellation exception
-                Logger.d(e) { "Google sign in canceled" }
+                Logger.d(e, "Google sign in canceled")
             } catch (e: GetCredentialException) {
                 snackbarSender.sendError(e)
             }
@@ -98,11 +98,11 @@ actual class AuthViewModel(
                 handleSignIn(result)
             } catch (e: GetCredentialCancellationException) {
                 // Ignore cancellation exception
-                Logger.d(e) { "Google sign in canceled" }
+                Logger.d(e, "Google sign in canceled")
             } catch (e: NoCredentialException) {
-                Logger.w(e) { "No credential is found" }
+                Logger.w(e, "No credential is found")
             } catch (e: GetCredentialException) {
-                Logger.e(e) { "Fail to get credential" }
+                Logger.e(e, "Fail to get credential")
             }
         }
     }
@@ -114,7 +114,7 @@ actual class AuthViewModel(
             credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
         ) {
             viewModelScope.launch { snackbarSender.send("Unexpected type of credential") }
-            Logger.e { "Unexpected type of credential. ${credential.type}" }
+            Logger.e("Unexpected type of credential. ${credential.type}")
             return
         }
 

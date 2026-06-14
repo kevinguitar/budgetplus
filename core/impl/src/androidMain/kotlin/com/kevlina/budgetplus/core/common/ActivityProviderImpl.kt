@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.core.common
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import co.touchlab.kermit.Logger
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -19,7 +18,7 @@ internal class ActivityProviderImpl : ActivityProvider {
 
     override val currentActivity: ComponentActivity?
         get() = activityFlow.value as? ComponentActivity ?: run {
-            Logger.e(MissingActivityException()) { "Missing current activity" }
+            Logger.e(MissingActivityException(), "Missing current activity")
             null
         }
 

@@ -4,7 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.now
@@ -88,7 +88,7 @@ class SearchRepo(
             replay = 1
         )
 
-        Logger.d { "Search: Performing DB query with period $period" }
+        Logger.d("Search: Performing DB query with period $period")
         flow.tryEmit(DbResult.Loading)
 
         recordsJob?.cancel()
@@ -96,7 +96,7 @@ class SearchRepo(
             .queryRecords(bookId, period.fromDate(), period.untilDate())
             .catch { snackbarSender.sendError(it) }
             .onEach { records ->
-                Logger.d { "Search: result size ${records.size}" }
+                Logger.d("Search: result size ${records.size}")
                 tracker.logEvent(
                     event = "search_queried_from_db",
                     params = mapOf("db_read_count" to records.size)
