@@ -1,13 +1,13 @@
 package com.kevlina.budgetplus.feature.edit.category
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -23,6 +23,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppDialog
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
+import com.kevlina.budgetplus.core.ui.ButtonRow
 import com.kevlina.budgetplus.core.ui.FocusRequestDelay
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
@@ -60,11 +61,7 @@ fun EditCategoryDialog(
                 }
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-
+            ButtonRow {
                 if (mode is CategoryEditMode.Rename) {
                     Button(onClick = {
                         onDelete()
@@ -117,10 +114,12 @@ sealed class CategoryEditMode {
 @Preview
 @Composable
 private fun EditCategoryDialog() = AppTheme {
-    EditCategoryDialog(
-        mode = CategoryEditMode.Rename("My Awesome Category"),
-        onConfirm = {},
-        onDismiss = {},
-        onDelete = {}
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        EditCategoryDialog(
+            mode = CategoryEditMode.Rename("My Awesome Category"),
+            onConfirm = {},
+            onDismiss = {},
+            onDelete = {}
+        )
+    }
 }

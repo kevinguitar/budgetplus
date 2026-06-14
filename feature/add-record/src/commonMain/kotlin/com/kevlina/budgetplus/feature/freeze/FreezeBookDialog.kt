@@ -1,11 +1,11 @@
 package com.kevlina.budgetplus.feature.freeze
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -37,6 +37,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppDialog
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
+import com.kevlina.budgetplus.core.ui.ButtonRow
 import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -143,9 +144,7 @@ internal fun FreezeBookDialog(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            ButtonRow {
                 Button(onClick = unlockPremium) {
                     Text(
                         text = stringResource(Res.string.premium_unlock),
@@ -164,16 +163,19 @@ internal fun FreezeBookDialog(
     }
 }
 
-@Preview
+@Preview(locale = "ja")
+@Preview(locale = "en")
 @Composable
 private fun FreezeBookDialog_Preview() = AppTheme {
-    FreezeBookDialog(
-        books = listOf(
-            Book(id = "1", name = "Book 1"),
-            Book(id = "2", name = "Book 2"),
-            Book(id = "3", name = "Book 3"),
-        ),
-        unlockPremium = {},
-        activateBook = {}
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        FreezeBookDialog(
+            books = listOf(
+                Book(id = "1", name = "Book 1"),
+                Book(id = "2", name = "Book 2"),
+                Book(id = "3", name = "Book 3"),
+            ),
+            unlockPremium = {},
+            activateBook = {}
+        )
+    }
 }
