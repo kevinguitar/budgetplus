@@ -7,7 +7,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import co.touchlab.kermit.Logger
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -17,6 +16,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.consumeEach
 import kotlinx.coroutines.flow.collect
 
@@ -74,7 +74,7 @@ actual fun HandleInterstitialAd(
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
-                        Logger.e { "InterstitialAd failed to load: $adError" }
+                        Logger.e("InterstitialAd failed to load: $adError")
                         onComplete()
                     }
                 }

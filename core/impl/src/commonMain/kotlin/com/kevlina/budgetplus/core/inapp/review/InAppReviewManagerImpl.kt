@@ -2,8 +2,8 @@ package com.kevlina.budgetplus.core.inapp.review
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.now
@@ -76,7 +76,7 @@ internal class InAppReviewManagerImpl(
             preference.update(hasRequestedBeforeKey, true)
         } catch (e: Exception) {
             snackbarSender.sendError(e)
-            Logger.e(e) { "Failed to launch the review flow" }
+            Logger.e(e, "Failed to launch the review flow")
         }
     }
 

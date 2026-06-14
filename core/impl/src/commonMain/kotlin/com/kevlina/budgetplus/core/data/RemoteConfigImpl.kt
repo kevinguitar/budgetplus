@@ -1,7 +1,7 @@
 package com.kevlina.budgetplus.core.data
 
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.mapState
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.remoteconfig.FirebaseRemoteConfigValue
@@ -50,9 +50,9 @@ internal class RemoteConfigImpl(
             try {
                 remoteConfig.fetchAndActivate()
                 allConfigs.value = remoteConfig.all
-                Logger.d { "RemoteConfig: Configs fetched ${allConfigs.value.keys}" }
+                Logger.d("RemoteConfig: Configs fetched ${allConfigs.value.keys}")
             } catch (e: Exception) {
-                Logger.w(e) { "RemoteConfig: Fetch failed" }
+                Logger.w(e, "RemoteConfig: Fetch failed")
             }
         }
     }
@@ -60,10 +60,10 @@ internal class RemoteConfigImpl(
     override fun getString(key: String, defaultValue: String): String {
         val value = allConfigs.value[key]?.asString()
         return if (value == null) {
-            Logger.d { "RemoteConfig: No string config found for $key, fallback to $defaultValue" }
+            Logger.d("RemoteConfig: No string config found for $key, fallback to $defaultValue")
             defaultValue
         } else {
-            Logger.d { "RemoteConfig: Resolved $key to $value" }
+            Logger.d("RemoteConfig: Resolved $key to $value")
             value
         }
     }
@@ -71,10 +71,10 @@ internal class RemoteConfigImpl(
     override fun getInt(key: String, defaultValue: Int): Int {
         val value = allConfigs.value[key]?.asLong()?.toInt()
         return if (value == null) {
-            Logger.d { "RemoteConfig: No long config found for $key, fallback to $defaultValue" }
+            Logger.d("RemoteConfig: No long config found for $key, fallback to $defaultValue")
             defaultValue
         } else {
-            Logger.d { "RemoteConfig: Resolved $key to $value" }
+            Logger.d("RemoteConfig: Resolved $key to $value")
             value
         }
     }

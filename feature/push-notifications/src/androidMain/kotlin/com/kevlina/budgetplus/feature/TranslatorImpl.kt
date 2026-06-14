@@ -1,9 +1,9 @@
 package com.kevlina.budgetplus.feature
 
-import co.touchlab.kermit.Logger
 import com.google.auth.ApiKeyCredentials
 import com.google.cloud.translate.Translate.TranslateOption
 import com.google.cloud.translate.TranslateOptions
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.feature.push.notifications.Translator
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -35,7 +35,7 @@ internal class TranslatorImpl(
                 TranslateOption.targetLanguage(targetLanCode)
             ).translatedText
         } catch (e: Exception) {
-            Logger.e(e) { "Translation failed, return original text as fallback." }
+            Logger.e(e, "Translation failed, return original text as fallback.")
             text
         }
     }

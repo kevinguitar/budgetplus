@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.UIKitView
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -37,7 +37,7 @@ actual fun NativeBannerAd(
             }
 
             override fun bannerView(bannerView: GADBannerView, didFailToReceiveAdWithError: platform.Foundation.NSError) {
-                Logger.w { "BannerAd: Failed to load. ${didFailToReceiveAdWithError.localizedDescription}" }
+                Logger.w("BannerAd: Failed to load. ${didFailToReceiveAdWithError.localizedDescription}")
                 onStateUpdate(AdBannerState.NotAvailable)
             }
         }
@@ -110,7 +110,7 @@ actual fun HandleInterstitialAd(
                         }
                     } else {
                         if (error != null) {
-                            Logger.e { "InterstitialAd: Load failed with error: $error" }
+                            Logger.e("InterstitialAd: Load failed with error: $error")
                         }
                         onComplete()
                     }

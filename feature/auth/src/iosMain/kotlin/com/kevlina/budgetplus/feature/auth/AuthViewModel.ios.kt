@@ -2,7 +2,7 @@ package com.kevlina.budgetplus.feature.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -51,7 +51,7 @@ actual class AuthViewModel(
                     accessToken = result.accessToken
                 )
             } catch (e: CancellationException) {
-                Logger.d(e) { "Google sign in canceled" }
+                Logger.d(e, "Google sign in canceled")
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             }
@@ -134,7 +134,7 @@ actual class AuthViewModel(
                 if (didCompleteWithError.domain == platform.AuthenticationServices.ASAuthorizationErrorDomain &&
                     didCompleteWithError.code == platform.AuthenticationServices.ASAuthorizationErrorCanceled
                 ) {
-                    Logger.d { "Apple sign-in canceled" }
+                    Logger.d("Apple sign-in canceled")
                 } else {
                     snackbarSender.send(didCompleteWithError.localizedDescription)
                 }

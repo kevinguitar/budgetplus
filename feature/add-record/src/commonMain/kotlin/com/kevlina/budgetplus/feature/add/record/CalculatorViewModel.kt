@@ -4,10 +4,10 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.snapshotFlow
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.VibratorManager
@@ -105,7 +105,7 @@ class CalculatorViewModel(
             is ExpressionEvaluator.Result.Success -> setPrice(result.value)
             is ExpressionEvaluator.Result.Error -> {
                 appScope.launch { snackbarSender.send(result.message) }
-                Logger.e(CalculatorException()) { "Validation error. Raw: $text" }
+                Logger.e(CalculatorException(), "Validation error. Raw: $text")
             }
         }
     }

@@ -3,13 +3,13 @@ package com.kevlina.budgetplus.core.inapp.update
 import androidx.activity.ComponentActivity
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.lifecycleScope
-import co.touchlab.kermit.Logger
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.AppUpdateResult
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.android.play.core.ktx.requestUpdateFlow
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.data.local.Preference
 import com.kevlina.budgetplus.core.inapp.update.InAppUpdateManagerImpl.Companion.DAYS_FOR_FLEXIBLE_UPDATE
@@ -44,7 +44,7 @@ internal class InAppUpdateManagerImpl(
     init {
         appUpdateManager.requestUpdateFlow()
             .onEach(::processResult)
-            .catch { e -> Logger.e(e) { "AppUpdate flow failed" } }
+            .catch { e -> Logger.e(e, "AppUpdate flow failed") }
             .launchIn(scope)
     }
 
@@ -105,7 +105,7 @@ internal class InAppUpdateManagerImpl(
                 result.completeUpdate()
                 tracker.logEvent("inapp_update_flexible_complete")
             } catch (e: Exception) {
-                Logger.e(e) { "Fail to complete flexible update" }
+                Logger.e(e, "Fail to complete flexible update")
             }
         }
     }

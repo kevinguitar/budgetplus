@@ -1,9 +1,8 @@
 package com.kevlina.budgetplus.core.common
 
-import co.touchlab.kermit.Logger
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 import java.util.Currency as JavaCurrency
 
 actual fun getCurrencySymbol(currencyCode: String?): String {
@@ -11,7 +10,7 @@ actual fun getCurrencySymbol(currencyCode: String?): String {
     return try {
         JavaCurrency.getInstance(code).getSymbol(Locale.getDefault())
     } catch (e: Exception) {
-        Logger.e(e) { "Failed to get currency symbol for code: $code" }
+        Logger.e(e, "Failed to get currency symbol for code: $code")
         code
     }
 }

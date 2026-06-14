@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.feature.speak.record.impl
 
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.feature.speak.record.SpeakToRecordStatus
 import dev.zacsweers.metro.Inject
@@ -20,7 +20,7 @@ class SpeakResultParser(
         return if (matchResult != null) {
             val name = matchResult.groupValues[1].trim()
             val price = matchResult.groupValues[2].toDoubleOrNull()
-            Logger.d { "SpeechRecognizer: Parsed $name, $price" }
+            Logger.d("SpeechRecognizer: Parsed $name, $price")
             SpeakToRecordStatus.Success(name, price)
         } else {
             // No price found, use text as name and ignore price

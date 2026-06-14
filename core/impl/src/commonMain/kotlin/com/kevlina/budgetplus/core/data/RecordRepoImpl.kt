@@ -2,8 +2,8 @@ package com.kevlina.budgetplus.core.data
 
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_duplicated
-import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.parseToPrice
@@ -196,7 +196,7 @@ internal class RecordRepoImpl(
                     }
                     dbUpdateCount += records.size
                 } catch (e: Exception) {
-                    Logger.e(e) { "RecordRepo: renameCategories failed" }
+                    Logger.e(e, "RecordRepo: renameCategories failed")
                 }
             }
 

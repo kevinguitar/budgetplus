@@ -3,7 +3,7 @@ package com.kevlina.budgetplus.core.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -29,7 +29,7 @@ internal class AppPreference(
             try {
                 it[key]
             } catch (e: Exception) {
-                Logger.e(e) { "Preference: Read ${key.name} failed" }
+                Logger.e(e, "Preference: Read ${key.name} failed")
                 null
             }
         }
@@ -48,7 +48,7 @@ internal class AppPreference(
                 try {
                     formatter.decodeFromString(serializer, savedValue)
                 } catch (e: Exception) {
-                    Logger.e(e) { "Preference: Decode failed, key=${key.name}, savedValue=$savedValue" }
+                    Logger.e(e, "Preference: Decode failed, key=${key.name}, savedValue=$savedValue")
                     null
                 }
             }
@@ -75,7 +75,7 @@ internal class AppPreference(
         val encoded = try {
             formatter.encodeToString(serializer, value)
         } catch (e: Exception) {
-            Logger.e(e) { "Preference: Encode failed, key=${key.name}, value=$value" }
+            Logger.e(e, "Preference: Encode failed, key=${key.name}, value=$value")
             return
         }
         dataStore.edit { prefs ->

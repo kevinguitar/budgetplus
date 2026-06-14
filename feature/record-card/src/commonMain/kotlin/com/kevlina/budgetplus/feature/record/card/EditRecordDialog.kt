@@ -33,7 +33,7 @@ import budgetplus.core.common.generated.resources.cta_save
 import budgetplus.core.common.generated.resources.record_edit_title
 import budgetplus.core.common.generated.resources.record_note
 import budgetplus.core.common.generated.resources.record_price
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.parseToPrice
 import com.kevlina.budgetplus.core.common.plainPriceString
 import com.kevlina.budgetplus.core.data.remote.Record
@@ -245,7 +245,7 @@ private fun CharSequence.isPriceTextValid(): Boolean {
     return isNotBlank() && try {
         parseToPrice() > 0.0
     } catch (e: Exception) {
-        Logger.d(e) { "Invalid price editing: $this" }
+        Logger.d(e, "Invalid price editing: $this")
         false
     }
 }

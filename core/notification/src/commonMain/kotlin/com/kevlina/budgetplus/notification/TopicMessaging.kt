@@ -1,6 +1,6 @@
 package com.kevlina.budgetplus.notification
 
-import co.touchlab.kermit.Logger
+import com.kevlina.budgetplus.core.common.Logger
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.messaging.messaging
 import dev.zacsweers.metro.AppScope
@@ -15,12 +15,12 @@ interface TopicMessaging {
 internal class FirebaseTopicMessaging : TopicMessaging {
     override fun subscribeToTopic(topic: String) {
         Firebase.messaging.subscribeToTopic(topic)
-        Logger.d { "Notification: Subscribed to $topic topic" }
+        Logger.d("Notification: Subscribed to $topic topic")
     }
 
     override fun unsubscribeFromTopic(topic: String) {
         Firebase.messaging.unsubscribeFromTopic(topic)
-        Logger.d { "Notification: Subscribed to $topic topic" }
+        Logger.d("Notification: Unsubscribed from $topic topic")
     }
 }
 
