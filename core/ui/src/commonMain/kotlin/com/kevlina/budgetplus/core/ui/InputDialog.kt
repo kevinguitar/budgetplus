@@ -1,7 +1,9 @@
 package com.kevlina.budgetplus.core.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,12 +79,14 @@ fun InputDialog(
 @Preview
 @Composable
 private fun InputDialog_Preview() = AppTheme(themeColors = ThemeColors.Countryside) {
-    InputDialog(
-        currentInput = null,
-        title = "Username",
-        placeholder = "Your username",
-        buttonText = "Save",
-        onButtonClicked = {},
-        onDismiss = {}
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        InputDialog(
+            currentInput = null,
+            title = "Username",
+            placeholder = "Your username",
+            buttonText = "Save",
+            onButtonClicked = {},
+            onDismiss = {}
+        )
+    }
 }

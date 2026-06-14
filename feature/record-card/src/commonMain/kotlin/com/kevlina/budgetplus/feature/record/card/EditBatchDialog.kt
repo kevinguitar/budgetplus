@@ -1,8 +1,9 @@
 package com.kevlina.budgetplus.feature.record.card
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppDialog
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
+import com.kevlina.budgetplus.core.ui.ButtonRow
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
 import org.jetbrains.compose.resources.stringResource
@@ -48,10 +50,7 @@ internal fun EditBatchDialog(
                 lineHeight = 24.sp
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-
+            ButtonRow {
                 Button(onClick = onSelectOne) {
                     Text(
                         text = stringResource(Res.string.batch_record_only_this),
@@ -70,13 +69,16 @@ internal fun EditBatchDialog(
     }
 }
 
-@Preview
+@Preview(locale = "ja")
+@Preview(locale = "en")
 @Composable
 private fun EditBatchDialog_Preview() = AppTheme {
-    EditBatchDialog(
-        onDismiss = { },
-        text = stringResource(Res.string.batch_record_edit_confirmation),
-        onSelectOne = { },
-        onSelectAll = {}
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        EditBatchDialog(
+            onDismiss = { },
+            text = stringResource(Res.string.batch_record_edit_confirmation),
+            onSelectOne = { },
+            onSelectAll = {}
+        )
+    }
 }

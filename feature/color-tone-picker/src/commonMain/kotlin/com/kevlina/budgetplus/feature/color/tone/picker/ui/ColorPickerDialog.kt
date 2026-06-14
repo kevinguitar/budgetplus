@@ -2,10 +2,12 @@ package com.kevlina.budgetplus.feature.color.tone.picker.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -38,6 +40,7 @@ import com.kevlina.budgetplus.core.theme.toHexCode
 import com.kevlina.budgetplus.core.ui.AppDialog
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
+import com.kevlina.budgetplus.core.ui.ButtonRow
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
 import org.jetbrains.compose.resources.stringResource
@@ -124,10 +127,7 @@ internal fun ColorPickerDialog(
                 )
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-
+            ButtonRow {
                 Button(onClick = onDismiss) {
                     Text(
                         text = stringResource(Res.string.cta_cancel),
@@ -151,5 +151,7 @@ internal fun ColorPickerDialog(
 @Preview
 @Composable
 private fun ColorPickerDialog_Preview() = AppTheme {
-    ColorPickerDialog(Color.Black, {}) {}
+    Box(modifier = Modifier.fillMaxSize()) {
+        ColorPickerDialog(Color.Cyan, {}) {}
+    }
 }
