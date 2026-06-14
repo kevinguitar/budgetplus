@@ -6,5 +6,5 @@ PRODUCT_BUNDLE_IDENTIFIER=com.kevlina.budgetplus
 CURRENT_PROJECT_VERSION=1
 MARKETING_VERSION=1.3.1
 
-FRAMEWORK_SEARCH_PATHS = $(inherited) $(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
-OTHER_LDFLAGS = $(inherited) -framework composeApp
+FRAMEWORK_SEARCH_PATHS = $(inherited) $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+OTHER_LDFLAGS = $(inherited) -framework shared

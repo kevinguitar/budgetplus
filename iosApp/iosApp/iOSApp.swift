@@ -1,5 +1,5 @@
 import Combine
-import ComposeApp
+import Shared
 import FBAudienceNetwork
 import FirebaseCore
 import FirebaseFirestore

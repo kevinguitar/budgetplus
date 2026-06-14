@@ -122,7 +122,7 @@ If you want to build the project locally, follow these steps:
 ```
 3. Now you should be able to build both Android and iOS apps:
    - Build the Android app, run `./gradlew assembleDebug`
-   - Build the iOS app, run `./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64`
+   - Build the iOS app, run `./gradlew :shared:linkDebugFrameworkIosSimulatorArm64`
 4. If you want to have the app running with real functionalities, you'll need to create a new project on Firebase and wire your API keys in the project.
 
 ---
