@@ -14,7 +14,7 @@ jobs:
       build_number: ${{ steps.version.outputs.build_number }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Latest Stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -231,7 +231,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
