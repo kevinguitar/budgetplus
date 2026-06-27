@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <application>
         <service
             android:name="com.kevlina.budgetplus.notification.FcmService"
             android:exported="false">
@@ -10,7 +11,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
+        <meta-data
+            android:name="firebase_messaging_installation_id_enabled"
+            android:value="true" />
     </application>
 
 </manifest>

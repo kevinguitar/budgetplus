@@ -5,7 +5,7 @@ import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
 import com.kevlina.budgetplus.core.common.ActivityProvider
 import com.kevlina.budgetplus.core.common.AppStartAction
-import com.kevlina.budgetplus.core.common.di.HasServiceProvider
+import com.kevlina.budgetplus.core.common.di.HasDependencyGraph
 import com.kevlina.budgetplus.core.utils.CrashReportingLogWriter
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.analytics.analytics
@@ -14,7 +14,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.createGraphFactory
 
-class BudgetPlusApp : Application(), HasServiceProvider {
+class BudgetPlusApp : Application(), HasDependencyGraph {
 
     @Inject lateinit var activityProvider: ActivityProvider
     @Inject lateinit var appStartActions: Set<AppStartAction>
