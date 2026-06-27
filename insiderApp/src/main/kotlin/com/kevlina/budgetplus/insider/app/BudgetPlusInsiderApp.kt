@@ -3,14 +3,14 @@ package com.kevlina.budgetplus.insider.app
 import android.app.Application
 import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
-import com.kevlina.budgetplus.core.common.di.HasServiceProvider
+import com.kevlina.budgetplus.core.common.di.HasDependencyGraph
 import com.kevlina.budgetplus.insiderApp.BuildConfig
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.analytics.analytics
 import dev.gitlive.firebase.crashlytics.crashlytics
 import dev.zacsweers.metro.createGraphFactory
 
-class BudgetPlusInsiderApp : Application(), HasServiceProvider {
+class BudgetPlusInsiderApp : Application(), HasDependencyGraph {
 
     private val appGraph by lazy {
         createGraphFactory<BudgetPlusInsiderAppGraph.Factory>().create(this)

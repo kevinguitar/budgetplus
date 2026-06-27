@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.notification
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
@@ -42,9 +41,9 @@ class FcmService : FirebaseMessagingService() {
         super.onCreate()
     }
 
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        authManager.value.updateFcmToken(newToken = token)
+    override fun onRegistered(installationId: String) {
+        super.onRegistered(installationId)
+        authManager.value.updateFcmToken(newToken = installationId)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -101,7 +100,6 @@ class FcmService : FirebaseMessagingService() {
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun showNotification(notification: Notification) {
         val notificationManager = NotificationManagerCompat.from(this)
         notificationManager.notify(notificationId++, notification)
