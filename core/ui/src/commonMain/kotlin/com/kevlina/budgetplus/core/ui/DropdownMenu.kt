@@ -100,7 +100,7 @@ fun DropdownDivider() {
 
 @Preview
 @Composable
-private fun DropdownMenu_Preview() = AppTheme(themeColors = ThemeColors.Lavender) {
+private fun DropdownMenu_Preview() = AppTheme(themeColors = ThemeColors.Dusk) {
     DropdownMenu(
         expanded = true,
         onDismissRequest = { }

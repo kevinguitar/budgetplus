@@ -189,8 +189,7 @@
     <string name="color_tone_dusk">夕暮暖調</string>
     <string name="color_tone_countryside">田野鄉村</string>
     <string name="color_tone_barbie">芭比與肯尼</string>
-    <string name="color_tone_lavender">薰黃陽光</string>
-    <string name="color_tone_nemo_sea">尼莫與海</string>
+    <string name="color_tone_azure_coast">蔚藍海岸</string>
     <string name="color_tone_customized">我的調色盤</string>
     <string name="color_tone_color_hex_code">Hex 色碼</string>
     <string name="color_tone_applied_from_link">已套用主題色調，喜歡記得儲存！</string>

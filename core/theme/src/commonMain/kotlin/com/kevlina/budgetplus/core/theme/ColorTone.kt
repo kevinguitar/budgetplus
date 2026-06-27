@@ -4,19 +4,18 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.color_tone_azure_coast
 import budgetplus.core.common.generated.resources.color_tone_barbie
 import budgetplus.core.common.generated.resources.color_tone_countryside
 import budgetplus.core.common.generated.resources.color_tone_customized
 import budgetplus.core.common.generated.resources.color_tone_dusk
-import budgetplus.core.common.generated.resources.color_tone_lavender
 import budgetplus.core.common.generated.resources.color_tone_milk_tea
-import budgetplus.core.common.generated.resources.color_tone_nemo_sea
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 
 @Serializable
 enum class ColorTone {
-    MilkTea, Dusk, Countryside, Barbie, Lavender, NemoSea, Customized;
+    MilkTea, Dusk, Countryside, Barbie, AzureCoast, Customized;
 
     val nameRes: StringResource
         get() = when (this) {
@@ -24,15 +23,14 @@ enum class ColorTone {
             Dusk -> Res.string.color_tone_dusk
             Countryside -> Res.string.color_tone_countryside
             Barbie -> Res.string.color_tone_barbie
-            Lavender -> Res.string.color_tone_lavender
-            NemoSea -> Res.string.color_tone_nemo_sea
+            AzureCoast -> Res.string.color_tone_azure_coast
             Customized -> Res.string.color_tone_customized
         }
 
     val requiresPremium: Boolean
         get() = when (this) {
             MilkTea, Dusk, Countryside -> false
-            Barbie, Lavender, NemoSea, Customized -> true
+            Barbie, AzureCoast, Customized -> true
         }
 }
 
@@ -78,18 +76,11 @@ data class ThemeColors(
             dark = Color(0xFF849FAF)
         )
 
-        val Lavender = ThemeColors(
-            light = Color(0xFFfdfbf7),
-            lightBg = Color(0xFFf5edd6),
-            primary = Color(0xFFc6a4ea),
-            dark = Color(0xFF9081d0)
-        )
-
-        val NemoSea = ThemeColors(
-            light = Color(0xFFFFFFFF),
-            lightBg = Color(0xFFe3f5fc),
-            primary = Color(0xFF61c7f0),
-            dark = Color(0xFFEC7C1E)
+        val AzureCoast = ThemeColors(
+            light = Color(0xFFfff3e0),
+            lightBg = Color(0xFFe8dfcc),
+            primary = Color(0xFF8fadc1),
+            dark = Color(0xFF777580)
         )
     }
 }

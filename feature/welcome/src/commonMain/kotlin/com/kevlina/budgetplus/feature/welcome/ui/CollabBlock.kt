@@ -67,6 +67,6 @@ internal fun CollabBlock(
 
 @Preview(heightDp = 360)
 @Composable
-private fun CollabBlock_Preview() = AppTheme(themeColors = ThemeColors.NemoSea) {
+private fun CollabBlock_Preview() = AppTheme(themeColors = ThemeColors.AzureCoast) {
     CollabBlock()
 }

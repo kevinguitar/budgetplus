@@ -88,8 +88,7 @@ class ThemeManager(
         ColorTone.Dusk -> ThemeColors.Dusk
         ColorTone.Countryside -> ThemeColors.Countryside
         ColorTone.Barbie -> ThemeColors.Barbie
-        ColorTone.Lavender -> ThemeColors.Lavender
-        ColorTone.NemoSea -> ThemeColors.NemoSea
+        ColorTone.AzureCoast -> ThemeColors.AzureCoast
         ColorTone.Customized -> editedCustomColors
     }
 

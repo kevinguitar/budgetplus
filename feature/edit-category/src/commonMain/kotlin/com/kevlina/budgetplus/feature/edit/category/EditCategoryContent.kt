@@ -99,7 +99,7 @@ internal fun EditCategoryContent(
 
 @PreviewScreenSizes
 @Composable
-private fun EditCategoryContent_Preview() = AppTheme(themeColors = ThemeColors.NemoSea) {
+private fun EditCategoryContent_Preview() = AppTheme(themeColors = ThemeColors.AzureCoast) {
     val listState = rememberLazyListState()
     EditCategoryContent(
         categories = listOf("Food", "Education", "Daily", "Transport", "Entertainment", "Clothes"),

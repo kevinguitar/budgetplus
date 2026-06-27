@@ -88,7 +88,7 @@ fun BoxScope.DoneAnimator(eventTrigger: EventTrigger<Unit>) {
 
 @Preview
 @Composable
-private fun DoneAnimator_Preview() = AppTheme(themeColors = ThemeColors.Lavender) {
+private fun DoneAnimator_Preview() = AppTheme(themeColors = ThemeColors.Dusk) {
     val eventTrigger = remember { EventTrigger<Unit>() }
     Box {
         DoneAnimator(eventTrigger = eventTrigger)

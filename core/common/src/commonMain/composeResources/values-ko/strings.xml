@@ -189,8 +189,7 @@
     <string name="color_tone_dusk">황혼의 따뜻한 색</string>
     <string name="color_tone_countryside">시골 풍경</string>
     <string name="color_tone_barbie">바비와 켄</string>
-    <string name="color_tone_lavender">라벤더 햇살</string>
-    <string name="color_tone_nemo_sea">니모와 바다</string>
+    <string name="color_tone_azure_coast">푸른 해안</string>
     <string name="color_tone_customized">내 팔레트</string>
     <string name="color_tone_color_hex_code">Hex 색상 코드</string>
     <string name="color_tone_applied_from_link">테마 색상이 적용되었습니다. 마음에 들면 저장하세요!</string>

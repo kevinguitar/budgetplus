@@ -72,7 +72,7 @@ private const val SEARCH_GRADIENT_END = 1F
 
 @PreviewScreenSizes
 @Composable
-private fun SearchContent_Preview() = AppTheme(themeColors = ThemeColors.Lavender) {
+private fun SearchContent_Preview() = AppTheme(themeColors = ThemeColors.Dusk) {
     SearchContent(
         state = SearchState.preview,
         modifier = Modifier.background(LocalAppColors.current.light)
