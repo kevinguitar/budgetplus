@@ -109,7 +109,7 @@ private fun AdsBannerNotAvailable() {
 
 @Preview(heightDp = 50, showBackground = true)
 @Composable
-private fun AdsBannerLoader_Preview() = AppTheme(themeColors = ThemeColors.NemoSea) {
+private fun AdsBannerLoader_Preview() = AppTheme(themeColors = ThemeColors.AzureCoast) {
     AdsBannerLoader()
 }
 

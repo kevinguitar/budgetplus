@@ -44,7 +44,7 @@ internal fun RecordContentWide(
 @Preview(widthDp = 800, heightDp = 360)
 @Preview(widthDp = 960, heightDp = 400)
 @Composable
-private fun RecordContentWide_Preview() = AppTheme(themeColors = ThemeColors.NemoSea) {
+private fun RecordContentWide_Preview() = AppTheme(themeColors = ThemeColors.AzureCoast) {
     RecordContentWide(
         state = RecordContentState(
             recordInfoState = RecordInfoState.preview,

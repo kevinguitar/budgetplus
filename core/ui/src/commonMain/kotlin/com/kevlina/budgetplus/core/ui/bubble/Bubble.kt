@@ -176,7 +176,7 @@ private class HollowShape(private val dest: BubbleDest) : Shape {
 private fun Bubble_Preview(
     @PreviewParameter(BubbleTextDirectionParams::class)
     textDirection: BubbleTextDirection,
-) = AppTheme(ThemeColors.Lavender) {
+) = AppTheme(ThemeColors.Dusk) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 

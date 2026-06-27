@@ -437,7 +437,7 @@ private fun Calculator_Preview() = AppTheme {
 
 @Preview(widthDp = 400, heightDp = 600)
 @Composable
-private fun CalculatorAdaptive_Preview() = AppTheme(themeColors = ThemeColors.Lavender) {
+private fun CalculatorAdaptive_Preview() = AppTheme(themeColors = ThemeColors.Dusk) {
     Calculator(
         state = CalculatorState.preview,
         adaptiveButton = true,

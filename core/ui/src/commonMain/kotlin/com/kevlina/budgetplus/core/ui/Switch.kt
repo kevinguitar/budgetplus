@@ -37,7 +37,7 @@ fun Switch(
 
 @Preview
 @Composable
-private fun Switch_Preview() = AppTheme(themeColors = ThemeColors.NemoSea) {
+private fun Switch_Preview() = AppTheme(themeColors = ThemeColors.AzureCoast) {
     var checked by remember { mutableStateOf(false) }
     Switch(checked = checked, onCheckedChange = { checked = !checked })
 }
