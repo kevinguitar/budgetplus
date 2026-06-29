@@ -11,4 +11,5 @@ kotlin {
             implementation(projects.core.ui)
         }
     }
+    android.androidResources.enable = true
 }

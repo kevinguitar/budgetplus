@@ -18,4 +18,5 @@ kotlin {
             }
         }
     }
+    android.androidResources.enable = true
 }
