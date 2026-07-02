@@ -119,7 +119,7 @@ profile-installer = "androidx.profileinstaller:profileinstaller:1.4.1"
 reorderable = "sh.calvin.reorderable:reorderable:3.1.0"
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat-kmp" }
 revenuecat-ui = { module = "com.revenuecat.purchases:purchases-kmp-ui", version.ref = "revenuecat-kmp" }
-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
+test-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
 turbine = "app.cash.turbine:turbine:1.2.1"
 permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "permissions" }
 permissions-microphone = { module = "dev.icerock.moko:permissions-microphone", version.ref = "permissions" }
