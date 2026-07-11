@@ -205,6 +205,7 @@
     <!-- Bubble -->
     <string name="bubble_invite">リンクを共有し、友達を招待して一緒に記帳しましょう</string>
     <string name="bubble_speak_to_record">長押しして音声記帳を開始しましょう</string>
+    <string name="bubble_scroll_to_select_currency">スクロールして記帳する通貨を切り替えられます</string>
     <string name="bubble_edit_category">クリックして名前を変更または削除し、長押しして並び替えます</string>
     <string name="bubble_save_category">編集が完了したら、保存をお忘れなく！</string>
     <string name="bubble_overview_mode">カテゴリまたは詳細で収支を表示することができます</string>

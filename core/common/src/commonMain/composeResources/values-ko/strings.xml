@@ -205,6 +205,7 @@
     <!-- Bubble -->
     <string name="bubble_invite">공유 링크를 눌러 친구들을 초대하세요!</string>
     <string name="bubble_speak_to_record">길게 눌러 음성으로 기록하세요</string>
+    <string name="bubble_scroll_to_select_currency">스크롤하여 기록 통화를 변경하세요</string>
     <string name="bubble_edit_category">탭하여 이름 변경 또는 삭제, 길게 눌러 드래그로 정렬</string>
     <string name="bubble_save_category">편집이 끝나면 저장을 잊지 마세요!</string>
     <string name="bubble_overview_mode">카테고리 또는 상세 보기로 표시할 수 있습니다</string>

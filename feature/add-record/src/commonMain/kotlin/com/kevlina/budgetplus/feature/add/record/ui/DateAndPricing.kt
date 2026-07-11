@@ -28,8 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -37,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,6 +57,8 @@ import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.SingleDatePicker
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
+import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
+import com.kevlina.budgetplus.core.ui.bubble.BubbleShape
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordDateState
@@ -127,6 +133,7 @@ internal fun DateAndPricing(
                         selectedCurrency = selectedCurrency,
                         onBookCurrencyClick = state.onBookCurrencyClick,
                         onPreferredCurrencyClick = state.onPreferredCurrencyClick,
+                        highlightCurrencyToggle = state.highlightCurrencyToggle,
                     )
                 }
             )
@@ -188,6 +195,7 @@ private fun CurrencyToggle(
     selectedCurrency: SelectedCurrency,
     onBookCurrencyClick: () -> Unit,
     onPreferredCurrencyClick: () -> Unit,
+    highlightCurrencyToggle: (BubbleDest) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // Derive the item height from the actual rendered text instead of hardcoding it, so it always
@@ -216,12 +224,29 @@ private fun CurrencyToggle(
 
     val scope = rememberCoroutineScope()
 
+    val bubbleExtendSize = with(density) { 8.dp.toPx() }
+    val bubbleShape = with(LocalDensity.current) {
+        BubbleShape.RoundedRect(AppTheme.cornerRadius.toPx())
+    }
+
     // Fill the field's full height so the neighboring symbol peeks all the way to the top/bottom
     // edge instead of leaving padding from the TextField's vertical centering.
     BoxWithConstraints(
         modifier = modifier
             .fillMaxHeight()
-            .clipToBounds(),
+            .clipToBounds()
+            .onPlaced {
+                highlightCurrencyToggle(
+                    BubbleDest.ScrollToSelectCurrency(
+                        size = IntSize(
+                            it.size.width + bubbleExtendSize.toInt(),
+                            it.size.height + bubbleExtendSize.toInt()
+                        ),
+                        offset = { it.positionInRoot() - Offset(bubbleExtendSize / 2, bubbleExtendSize / 2) },
+                        shape = bubbleShape
+                    )
+                )
+            },
     ) {
         val containerPx = constraints.maxHeight.toFloat()
 
@@ -333,6 +358,7 @@ internal class DateAndPricingState(
     val onBookCurrencyClick: () -> Unit,
     val onPreferredCurrencyClick: () -> Unit,
     val editPreferredCurrency: () -> Unit,
+    val highlightCurrencyToggle: (BubbleDest) -> Unit,
 ) {
     companion object {
         val preview = DateAndPricingState(
@@ -347,7 +373,8 @@ internal class DateAndPricingState(
             setDate = {},
             onBookCurrencyClick = {},
             onPreferredCurrencyClick = {},
-            editPreferredCurrency = {}
+            editPreferredCurrency = {},
+            highlightCurrencyToggle = {}
         )
     }
 }

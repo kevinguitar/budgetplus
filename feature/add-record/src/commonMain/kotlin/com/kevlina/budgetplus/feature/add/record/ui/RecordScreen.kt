@@ -174,7 +174,8 @@ private fun RecordViewModel.toState(scrollable: Boolean) = RecordContentState(
             setDate = ::setDate,
             onBookCurrencyClick = ::onBookCurrencyClick,
             onPreferredCurrencyClick = ::onPreferredCurrencyClick,
-            editPreferredCurrency = ::editPreferredCurrency
+            editPreferredCurrency = ::editPreferredCurrency,
+            highlightCurrencyToggle = ::highlightCurrencyToggle
         ),
     ),
     calculatorState = calculatorVm.toState(recordEvent),

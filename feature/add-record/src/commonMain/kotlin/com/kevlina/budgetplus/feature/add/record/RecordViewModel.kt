@@ -199,6 +199,10 @@ class RecordViewModel(
         viewModelScope.launch { bubbleRepo.addBubbleToQueue(dest) }
     }
 
+    fun highlightCurrencyToggle(dest: BubbleDest) {
+        viewModelScope.launch { bubbleRepo.addBubbleToQueue(dest) }
+    }
+
     fun launchReviewFlow() {
         viewModelScope.launch {
             inAppReviewManager.launchReviewFlow()

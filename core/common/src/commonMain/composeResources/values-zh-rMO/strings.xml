@@ -205,6 +205,7 @@
     <!-- Bubble -->
     <string name="bubble_invite">點擊分享連結，邀請好友們一起記帳！</string>
     <string name="bubble_speak_to_record">長按開始語音記帳</string>
+    <string name="bubble_scroll_to_select_currency">滑動以切換記帳幣別</string>
     <string name="bubble_edit_category">點擊以重新命名或刪除，長按拖曳排序</string>
     <string name="bubble_save_category">編輯完成後，記得儲存喔！</string>
     <string name="bubble_overview_mode">你可以選擇用類別或明細顯示帳目</string>

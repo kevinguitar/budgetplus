@@ -205,6 +205,7 @@
     <!-- Bubble -->
     <string name="bubble_invite">点击分享连结，邀请好友们一起记帐！</string>
     <string name="bubble_speak_to_record">长按开始语音记帐</string>
+    <string name="bubble_scroll_to_select_currency">滑动以切换记帐币别</string>
     <string name="bubble_edit_category">点击以重新命名或删除，长按拖曳排序</string>
     <string name="bubble_save_category">编辑完成后，记得储存喔！</string>
     <string name="bubble_overview_mode">你可以选择用类别或明细显示帐目</string>
