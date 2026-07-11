@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.feature.add.record.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -106,13 +107,27 @@ internal fun DateAndPricing(
                 modifier = Modifier.weight(1F),
                 leadingContent = {
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        val bookCurrencyColor by animateColorAsState(
+                            targetValue = if (selectedCurrency == SelectedCurrency.Book) {
+                                LocalAppColors.current.dark
+                            } else {
+                                LocalAppColors.current.dark.copy(alpha = DISABLED_ALPHA)
+                            }
+                        )
+
+                        val preferredCurrencyColor by animateColorAsState(
+                            targetValue = if (selectedCurrency == SelectedCurrency.Preferred) {
+                                LocalAppColors.current.dark
+                            } else {
+                                LocalAppColors.current.dark.copy(alpha = DISABLED_ALPHA)
+                            }
+                        )
+
                         Text(
                             text = currencySymbol,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = FontSize.Header,
-                            color = LocalAppColors.current.dark.copy(
-                                alpha = if (selectedCurrency == SelectedCurrency.Book) 1F else 0.5F
-                            ),
+                            color = bookCurrencyColor,
                             modifier = Modifier.rippleClick(
                                 borderless = true,
                                 onClick = state.onBookCurrencyClick
@@ -124,9 +139,7 @@ internal fun DateAndPricing(
                                 text = symbol,
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = FontSize.Header,
-                                color = LocalAppColors.current.dark.copy(
-                                    alpha = if (selectedCurrency == SelectedCurrency.Preferred) 1F else 0.5F
-                                ),
+                                color = preferredCurrencyColor,
                                 modifier = Modifier.rippleClick(
                                     borderless = true,
                                     onClick = state.onPreferredCurrencyClick
@@ -175,6 +188,8 @@ internal fun DateAndPricing(
         }
     }
 }
+
+private const val DISABLED_ALPHA = 0.38f
 
 @Stable
 internal class DateAndPricingState(
