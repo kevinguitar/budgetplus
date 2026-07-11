@@ -1,12 +1,17 @@
 package com.kevlina.budgetplus.feature.add.record.ui
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,12 +23,20 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,6 +45,7 @@ import budgetplus.core.common.generated.resources.ic_currency_exchange
 import budgetplus.core.common.generated.resources.record_currency_exchange
 import com.kevlina.budgetplus.core.lottie.PremiumCrown
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -45,6 +59,7 @@ import com.kevlina.budgetplus.feature.add.record.RecordDateState
 import com.kevlina.budgetplus.feature.add.record.SelectedCurrency
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -106,47 +121,13 @@ internal fun DateAndPricing(
                 scrollState = priceTextScrollState,
                 modifier = Modifier.weight(1F),
                 leadingContent = {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        val bookCurrencyColor by animateColorAsState(
-                            targetValue = if (selectedCurrency == SelectedCurrency.Book) {
-                                LocalAppColors.current.dark
-                            } else {
-                                LocalAppColors.current.dark.copy(alpha = DISABLED_ALPHA)
-                            }
-                        )
-
-                        val preferredCurrencyColor by animateColorAsState(
-                            targetValue = if (selectedCurrency == SelectedCurrency.Preferred) {
-                                LocalAppColors.current.dark
-                            } else {
-                                LocalAppColors.current.dark.copy(alpha = DISABLED_ALPHA)
-                            }
-                        )
-
-                        Text(
-                            text = currencySymbol,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = FontSize.Header,
-                            color = bookCurrencyColor,
-                            modifier = Modifier.rippleClick(
-                                borderless = true,
-                                onClick = state.onBookCurrencyClick
-                            )
-                        )
-
-                        preferredCurrencySymbol?.let { symbol ->
-                            Text(
-                                text = symbol,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = FontSize.Header,
-                                color = preferredCurrencyColor,
-                                modifier = Modifier.rippleClick(
-                                    borderless = true,
-                                    onClick = state.onPreferredCurrencyClick
-                                )
-                            )
-                        }
-                    }
+                    CurrencyToggle(
+                        bookCurrencySymbol = currencySymbol,
+                        preferredCurrencySymbol = preferredCurrencySymbol,
+                        selectedCurrency = selectedCurrency,
+                        onBookCurrencyClick = state.onBookCurrencyClick,
+                        onPreferredCurrencyClick = state.onPreferredCurrencyClick,
+                    )
                 }
             )
         }
@@ -189,6 +170,153 @@ internal fun DateAndPricing(
     }
 }
 
+/**
+ * A vertical, wheel-like toggle between the preferred currency (top) and the book's currency (bottom).
+ *
+ * The currently [selectedCurrency] is snapped into the center of the viewport while the other
+ * currency peeks in from the neighboring edge. The toggle fills the field's full height so the
+ * peeking symbol reaches the top/bottom edge. The user can drag vertically to switch the
+ * selection (scroll up to select the book's currency, scroll down to select the preferred
+ * currency), and any selection driven by the view model is reflected with a spring animation.
+ *
+ * When there is no [preferredCurrencySymbol] we simply render the book's symbol without the toggle.
+ */
+@Composable
+private fun CurrencyToggle(
+    bookCurrencySymbol: String,
+    preferredCurrencySymbol: String?,
+    selectedCurrency: SelectedCurrency,
+    onBookCurrencyClick: () -> Unit,
+    onPreferredCurrencyClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // Derive the item height from the actual rendered text instead of hardcoding it, so it always
+    // matches the currency symbol's line height (respecting the typography scale).
+    val textMeasurer = rememberTextMeasurer()
+    val symbolStyle = TextStyle(
+        fontSize = FontSize.Header.withTypographyScale(),
+        fontWeight = FontWeight.SemiBold,
+    )
+    val itemHeightPx = remember(textMeasurer, symbolStyle) {
+        textMeasurer.measure(text = "0", style = symbolStyle).size.height.toFloat()
+    }
+    val density = LocalDensity.current
+    val itemHeight = with(density) { itemHeightPx.toDp() }
+
+    if (preferredCurrencySymbol == null) {
+        CurrencySymbol(
+            symbol = bookCurrencySymbol,
+            selected = true,
+            itemHeight = itemHeight,
+            onClick = onBookCurrencyClick,
+            modifier = modifier,
+        )
+        return
+    }
+
+    val scope = rememberCoroutineScope()
+
+    // Fill the field's full height so the neighboring symbol peeks all the way to the top/bottom
+    // edge instead of leaving padding from the TextField's vertical centering.
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxHeight()
+            .clipToBounds(),
+    ) {
+        val containerPx = constraints.maxHeight.toFloat()
+
+        // The translation applied to the stacked column so the selected item lands in the center.
+        // Column order is [Preferred, Book], so the preferred symbol sits on top.
+        val preferredOffset = (containerPx - itemHeightPx) / 2f
+        val bookOffset = preferredOffset - itemHeightPx
+        fun targetOffset(currency: SelectedCurrency): Float =
+            if (currency == SelectedCurrency.Book) bookOffset else preferredOffset
+
+        val offset = remember { Animatable(targetOffset(selectedCurrency)) }
+
+        // Animate to the selection whenever it changes, including when set by the view model.
+        LaunchedEffect(selectedCurrency) {
+            offset.animateTo(targetOffset(selectedCurrency))
+        }
+
+        Column(
+            modifier = Modifier
+                .graphicsLayer { translationY = offset.value }
+                .pointerInput(selectedCurrency) {
+                    var totalDrag = 0f
+                    detectVerticalDragGestures(
+                        onDragStart = { totalDrag = 0f },
+                        onDragEnd = {
+                            when {
+                                // Dragging down reveals the preferred symbol sitting above.
+                                totalDrag >= CURRENCY_DRAG_THRESHOLD_PX &&
+                                    selectedCurrency == SelectedCurrency.Book -> onPreferredCurrencyClick()
+
+                                // Dragging up reveals the book symbol sitting below.
+                                totalDrag <= -CURRENCY_DRAG_THRESHOLD_PX &&
+                                    selectedCurrency == SelectedCurrency.Preferred -> onBookCurrencyClick()
+
+                                // Not enough drag to switch, settle back to the current selection.
+                                else -> scope.launch { offset.animateTo(targetOffset(selectedCurrency)) }
+                            }
+                        },
+                    ) { _, dragAmount ->
+                        totalDrag += dragAmount
+                        scope.launch {
+                            offset.snapTo((offset.value + dragAmount).coerceIn(bookOffset, preferredOffset))
+                        }
+                    }
+                },
+        ) {
+            CurrencySymbol(
+                symbol = preferredCurrencySymbol,
+                selected = selectedCurrency == SelectedCurrency.Preferred,
+                itemHeight = itemHeight,
+                onClick = onPreferredCurrencyClick,
+            )
+
+            CurrencySymbol(
+                symbol = bookCurrencySymbol,
+                selected = selectedCurrency == SelectedCurrency.Book,
+                itemHeight = itemHeight,
+                onClick = onBookCurrencyClick,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CurrencySymbol(
+    symbol: String,
+    selected: Boolean,
+    itemHeight: Dp,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val color by animateColorAsState(
+        targetValue = if (selected) {
+            LocalAppColors.current.dark
+        } else {
+            LocalAppColors.current.dark.copy(alpha = DISABLED_ALPHA)
+        }
+    )
+
+    Box(
+        modifier = modifier
+            .height(itemHeight)
+            .rippleClick(borderless = true, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = symbol,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = FontSize.Header,
+            color = color,
+        )
+    }
+}
+
+private const val CURRENCY_DRAG_THRESHOLD_PX = 24f
 private const val DISABLED_ALPHA = 0.38f
 
 @Stable
