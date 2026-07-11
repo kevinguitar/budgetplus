@@ -12,6 +12,14 @@
 				<string>com.googleusercontent.apps.919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.kevlina.budgetplus</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>budgetplus</string>
+			</array>
+		</dict>
 	</array>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
