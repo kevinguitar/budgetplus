@@ -11,11 +11,18 @@ import kotlinx.coroutines.flow.flowOf
 @RestrictTo(RestrictTo.Scope.TESTS)
 class FakeCurrencyExchangeRepo(
     override var preferredCurrencyCode: String = "USD",
+    preferredCurrencySymbol: String? = null,
+    /**
+     * The rate applied when converting from the preferred currency into the book's currency.
+     * A null value simulates an unresolved exchange rate.
+     */
+    var bookCurrencyRate: Double? = 1.0,
 ) : CurrencyExchangeRepo {
 
     override val exchangeRateChange = MutableStateFlow(Unit)
 
-    override val preferredCurrencySymbol: Flow<String?> = flowOf(preferredCurrencyCode)
+    override val preferredCurrencySymbol: Flow<String?> =
+        flowOf(preferredCurrencySymbol ?: preferredCurrencyCode)
 
     override val displayInPreferredCurrency: StateFlow<Boolean>
         field = MutableStateFlow(true)
@@ -32,8 +39,8 @@ class FakeCurrencyExchangeRepo(
         return "$price"
     }
 
-    override fun convertToBookCurrency(price: Double, fromCurrencyCode: String): Double {
-        return price
+    override fun convertToBookCurrency(price: Double, fromCurrencyCode: String): Double? {
+        return bookCurrencyRate?.let { price * it }
     }
 
     override fun toggleDisplayInPreferredCurrency() {

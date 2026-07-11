@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.feature.add.record
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.datastore.preferences.core.intPreferencesKey
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.record_currency_rate_unavailable
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
@@ -198,6 +199,151 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         assertEquals("100.0 EUR", model.convertedPrice.first { it != null })
     }
 
+    @Test
+    fun `convertedPrice should show book currency amount when preferred currency is selected`() = runTest {
+        val currencyExchangeRepo = FakeCurrencyExchangeRepo(
+            preferredCurrencyCode = "EUR",
+            bookCurrencyRate = 0.5,
+        )
+        val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
+        model.onPreferredCurrencyClick()
+
+        model.calculatorVm.input("100")
+        assertEquals("50.0", model.convertedPrice.first { it != null })
+    }
+
+    @Test
+    fun `convertedPrice should emit null when preferred is selected but rate is unavailable`() = runTest {
+        val currencyExchangeRepo = FakeCurrencyExchangeRepo(
+            preferredCurrencyCode = "EUR",
+            bookCurrencyRate = null,
+        )
+        val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
+        model.onPreferredCurrencyClick()
+
+        model.calculatorVm.input("100")
+        assertNull(model.convertedPrice.value)
+    }
+
+    @Test
+    fun `onBookCurrencyClick should select the book currency when preferred is selected`() = runTest {
+        val model = createModel(isPremium = true)
+        model.onPreferredCurrencyClick()
+        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+
+        model.onBookCurrencyClick()
+        assertEquals(SelectedCurrency.Book, model.selectedCurrency.value)
+    }
+
+    @Test
+    fun `onBookCurrencyClick should edit the book currency when already selected`() = runTest {
+        val model = createModel(canEditBook = true)
+        // Book currency is selected by default.
+        model.onBookCurrencyClick()
+
+        assertEquals(
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Book),
+            model.navController.backStack.last()
+        )
+    }
+
+    @Test
+    fun `onPreferredCurrencyClick should select the preferred currency when premium`() = runTest {
+        val model = createModel(isPremium = true)
+        model.onPreferredCurrencyClick()
+
+        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+    }
+
+    @Test
+    fun `onPreferredCurrencyClick should navigate to UnlockPremium when not premium`() = runTest {
+        val model = createModel(isPremium = false)
+        model.onPreferredCurrencyClick()
+
+        assertEquals(SelectedCurrency.Book, model.selectedCurrency.value)
+        assertEquals(BookDest.UnlockPremium, model.navController.backStack.last())
+    }
+
+    @Test
+    fun `onPreferredCurrencyClick should edit the preferred currency when already selected`() = runTest {
+        val model = createModel(isPremium = true)
+        model.onPreferredCurrencyClick()
+        // Now the preferred currency is selected, clicking again edits it.
+        model.onPreferredCurrencyClick()
+
+        assertEquals(
+            BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Preferred),
+            model.navController.backStack.last()
+        )
+    }
+
+    @Test
+    fun `editPreferredCurrency should log tracker event`() = runTest {
+        val model = createModel(isPremium = true)
+        model.editPreferredCurrency()
+
+        assertEquals("currency_exchange_edit_preferred", tracker.lastEventName)
+    }
+
+    @Test
+    fun `record should be created with preferred currency info when preferred is selected`() = runTest {
+        val currencyExchangeRepo = FakeCurrencyExchangeRepo(
+            preferredCurrencyCode = "EUR",
+            bookCurrencyRate = 0.5,
+        )
+        val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
+        model.onPreferredCurrencyClick()
+
+        model.calculatorVm.input("100")
+        model.calculatorVm.evaluate()
+
+        assertEquals(
+            Record(
+                type = RecordType.Expense,
+                category = "Test category",
+                name = "Test category",
+                date = LocalDate.now().toEpochDays(),
+                price = 50.0,
+                preferredPrice = 100.0,
+                preferredCurrencyCode = "EUR",
+            ),
+            // Do not verify timestamp as it depends on test execution time
+            FakeRecordRepo.lastCreatedRecord?.copy(timestamp = null)
+        )
+    }
+
+    @Test
+    fun `record should show message when preferred currency rate is unavailable`() = runTest {
+        FakeRecordRepo.lastCreatedRecord = null
+        val currencyExchangeRepo = FakeCurrencyExchangeRepo(
+            preferredCurrencyCode = "EUR",
+            bookCurrencyRate = null,
+        )
+        val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
+        model.onPreferredCurrencyClick()
+
+        model.calculatorVm.input("100")
+        model.calculatorVm.evaluate()
+
+        assertEquals(
+            Res.string.record_currency_rate_unavailable,
+            FakeSnackbarSender.lastSentMessageRes
+        )
+        assertNull(FakeRecordRepo.lastCreatedRecord)
+    }
+
+    @Test
+    fun `reset screen should reset selected currency to book after recording`() = runTest {
+        val model = createModel(isPremium = true)
+        model.onPreferredCurrencyClick()
+        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+
+        model.calculatorVm.input("1")
+        model.calculatorVm.evaluate()
+
+        assertEquals(SelectedCurrency.Book, model.selectedCurrency.value)
+    }
+
 
     private fun TestScope.createCalculatorVm() = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
@@ -214,6 +360,7 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     private val interstitialAdsHandler = FakeInterstitialAdsHandler()
+    private val tracker = FakeTracker()
 
     private fun TestScope.createModel(
         recordCount: Int = 0,
@@ -238,7 +385,7 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         preference = FakePreference {
             set(intPreferencesKey("recordCount"), recordCount)
         },
-        tracker = FakeTracker(),
+        tracker = tracker,
     )
 }
 
