@@ -190,12 +190,12 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
-    fun `preferredCurrencyPrice should emit formatted price from currencyExchangeRepo`() = runTest {
+    fun `convertedPrice should emit formatted price from currencyExchangeRepo`() = runTest {
         val currencyExchangeRepo = FakeCurrencyExchangeRepo(preferredCurrencyCode = "EUR")
         val model = createModel(currencyExchangeRepo = currencyExchangeRepo)
 
         model.calculatorVm.input("100")
-        assertEquals("100.0 EUR", model.preferredCurrencyPrice.first { it != null })
+        assertEquals("100.0 EUR", model.convertedPrice.first { it != null })
     }
 
 

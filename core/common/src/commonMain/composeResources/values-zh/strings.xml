@@ -34,6 +34,7 @@
     <string name="record_freeze_book_title">很遗憾您取消订阅了\n请选择一本帐本继续记帐</string>
     <string name="record_freeze_book_description">别担心！您的所有帐本资料皆会保留</string>
     <string name="record_currency_exchange">汇率换算</string>
+    <string name="record_currency_rate_unavailable">汇率尚未获取，请稍后再试</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">批次记帐</string>

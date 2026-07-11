@@ -101,11 +101,11 @@ internal class CurrencyExchangeRepoImpl(
     }
 
     override fun formatPreferredCurrency(price: Double, alwaysShowSymbol: Boolean): String? {
-        val bookCurrencyCode = bookRepo.bookState.value?.currencyCode?.lowercase() ?: return null
-        val preferred = (preferredCurrencyState.value).lowercase()
+        val bookCurrencyCode = bookRepo.bookState.value?.currencyCode ?: return null
+        val preferred = preferredCurrencyState.value
 
         // No conversion needed if currencies match.
-        if (bookCurrencyCode == preferred) return null
+        if (bookCurrencyCode.equals(preferred, ignoreCase = true)) return null
 
         val rate = getRateFor(preferred, bookCurrencyCode) ?: return null
         return if (rate == 0.0) {
@@ -113,6 +113,26 @@ internal class CurrencyExchangeRepoImpl(
         } else {
             formatPriceWithCurrency(price / rate, preferred, alwaysShowSymbol)
         }
+    }
+
+    override fun formatBookCurrency(price: Double, alwaysShowSymbol: Boolean): String? {
+        val bookCurrencyCode = bookRepo.bookState.value?.currencyCode ?: return null
+        val preferred = preferredCurrencyState.value
+
+        // No conversion needed if currencies match.
+        if (bookCurrencyCode.equals(preferred, ignoreCase = true)) return null
+
+        return formatPriceWithCurrency(price, bookCurrencyCode, alwaysShowSymbol)
+    }
+
+    override fun convertToBookCurrency(price: Double, fromCurrencyCode: String): Double? {
+        val bookCurrencyCode = bookRepo.bookState.value?.currencyCode ?: return null
+
+        // No conversion needed if currencies match.
+        if (fromCurrencyCode.equals(bookCurrencyCode, ignoreCase = true)) return price
+
+        val rate = getRateFor(fromCurrencyCode, bookCurrencyCode) ?: return null
+        return if (rate == 0.0) null else price * rate
     }
 
     override fun toggleDisplayInPreferredCurrency() {
@@ -172,7 +192,7 @@ internal class CurrencyExchangeRepoImpl(
         baseCurrency: String,
         targetCurrency: String,
     ): Double? {
-        return cachedRatesState.value.map[baseCurrency]?.rates?.get(targetCurrency)
+        return cachedRatesState.value.map[baseCurrency.lowercase()]?.rates?.get(targetCurrency.lowercase())
     }
 
     private companion object {

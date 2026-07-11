@@ -34,6 +34,7 @@ import budgetplus.core.common.generated.resources.record_edit_title
 import budgetplus.core.common.generated.resources.record_note
 import budgetplus.core.common.generated.resources.record_price
 import com.kevlina.budgetplus.core.common.Logger
+import com.kevlina.budgetplus.core.common.getCurrencySymbol
 import com.kevlina.budgetplus.core.common.parseToPrice
 import com.kevlina.budgetplus.core.common.plainPriceString
 import com.kevlina.budgetplus.core.data.remote.Record
@@ -66,6 +67,13 @@ fun EditRecordDialog(
 ) {
     val currencySymbol by vm.currencySymbol.collectAsStateWithLifecycle()
 
+    // If the record was created in the preferred currency, edit its preferred price and show the
+    // preferred currency symbol so the number in the field matches the currency it represents.
+    val displayedCurrencySymbol = remember(editRecord, currencySymbol) {
+        editRecord.preferredCurrencyCode?.let(::getCurrencySymbol)
+            ?: currencySymbol
+    }
+
     var date by remember {
         mutableStateOf(LocalDate.fromEpochDays(editRecord.date))
     }
@@ -76,7 +84,9 @@ fun EditRecordDialog(
 
     val name = rememberTextFieldState(initialText = editRecord.name)
 
-    val priceText = rememberTextFieldState(initialText = editRecord.price.plainPriceString)
+    val priceText = rememberTextFieldState(
+        initialText = (editRecord.preferredPrice ?: editRecord.price).plainPriceString
+    )
 
     var dialogState by remember { mutableStateOf(EditRecordDialogState.ShowRecord) }
 
@@ -144,7 +154,7 @@ fun EditRecordDialog(
                     TextField(
                         state = priceText,
                         modifier = Modifier.focusRequester(priceFocus),
-                        title = stringResource(Res.string.record_price, currencySymbol),
+                        title = stringResource(Res.string.record_price, displayedCurrencySymbol),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = if (isSaveEnabled) ImeAction.Done else ImeAction.None

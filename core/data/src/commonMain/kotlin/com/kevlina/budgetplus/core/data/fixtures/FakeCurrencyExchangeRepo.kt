@@ -28,6 +28,14 @@ class FakeCurrencyExchangeRepo(
         return "$price $preferredCurrencyCode"
     }
 
+    override fun formatBookCurrency(price: Double, alwaysShowSymbol: Boolean): String {
+        return "$price"
+    }
+
+    override fun convertToBookCurrency(price: Double, fromCurrencyCode: String): Double {
+        return price
+    }
+
     override fun toggleDisplayInPreferredCurrency() {
         displayInPreferredCurrency.value = !displayInPreferredCurrency.value
     }

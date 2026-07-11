@@ -34,6 +34,7 @@
     <string name="record_freeze_book_title">解約は残念です。\n引き続き記帳する帳簿を1つお選びください。</string>
     <string name="record_freeze_book_description">ご安心ください！これまでのデータはすべて残ります。</string>
     <string name="record_currency_exchange">通貨換算</string>
+    <string name="record_currency_rate_unavailable">為替レートをまだ取得できていません。後でもう一度お試しください</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">一括で記帳する</string>

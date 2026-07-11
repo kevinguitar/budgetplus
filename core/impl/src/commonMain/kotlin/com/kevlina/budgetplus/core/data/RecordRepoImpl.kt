@@ -36,6 +36,7 @@ internal class RecordRepoImpl(
     private val recordDbClient: RecordDbClient,
     @AppCoroutineScope private val appScope: CoroutineScope,
     private val authManager: AuthManager,
+    private val currencyExchangeRepo: CurrencyExchangeRepo,
     private val tracker: Tracker,
     private val snackbarSender: SnackbarSender,
 ) : RecordRepo {
@@ -91,15 +92,46 @@ internal class RecordRepoImpl(
             .toLocalDateTime(TimeZone.UTC)
             .time
 
+        // If the record was created in the preferred currency, the edited price text represents
+        // the preferred price, so recalculate the book's price from the current exchange rate.
+        val newPrice: Double
+        val newPreferredPrice: Double?
+        val preferredCurrencyCode = oldRecord.preferredCurrencyCode
+        if (preferredCurrencyCode != null) {
+            val preferredPrice = newPriceText.parseToPrice()
+            newPreferredPrice = preferredPrice
+            newPrice = currencyExchangeRepo.convertToBookCurrency(
+                price = preferredPrice,
+                fromCurrencyCode = preferredCurrencyCode,
+            ) ?: fallbackBookPrice(oldRecord, preferredPrice)
+        } else {
+            newPrice = newPriceText.parseToPrice()
+            newPreferredPrice = null
+        }
+
         val newRecord = oldRecord.copy(
             date = newDate.toEpochDays(),
             timestamp = LocalDateTime(newDate, originalTime).toInstant(TimeZone.UTC).epochSeconds,
             category = newCategory,
             name = newName,
-            price = newPriceText.parseToPrice()
+            price = newPrice,
+            preferredPrice = newPreferredPrice
         )
         recordDbClient.set(oldRecord.id, newRecord)
         tracker.logEvent("record_edited")
+    }
+
+    /**
+     * When the live exchange rate can't be resolved, preserve the record's original conversion
+     * ratio (book price / preferred price) so editing still yields a sensible book price.
+     */
+    private fun fallbackBookPrice(oldRecord: Record, newPreferredPrice: Double): Double {
+        val oldPreferredPrice = oldRecord.preferredPrice
+        return if (oldPreferredPrice != null && oldPreferredPrice != 0.0) {
+            newPreferredPrice * (oldRecord.price / oldPreferredPrice)
+        } else {
+            oldRecord.price
+        }
     }
 
     override suspend fun editBatch(

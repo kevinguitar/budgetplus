@@ -7,6 +7,12 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.serialization.Serializable
 
+/**
+ * Represents a financial record, which can be either an expense or income.
+ *
+ * @param preferredPrice presented only when the record was created in the preferred currency.
+ * @param preferredCurrencyCode presented only when [preferredPrice] is not null.
+ */
 @Immutable
 @Serializable
 data class Record(
@@ -15,6 +21,8 @@ data class Record(
     val category: String = "",
     val name: String = "",
     val price: Double = 0.0,
+    val preferredPrice: Double? = null,
+    val preferredCurrencyCode: String? = null,
     val author: Author? = null,
     val date: Long = 0,
     val timestamp: Long? = null,

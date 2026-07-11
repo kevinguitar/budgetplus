@@ -34,6 +34,7 @@
     <string name="record_freeze_book_title">Sad to see you go\nPlease choose a book to continue recording</string>
     <string name="record_freeze_book_description">Don't worry! All your data will be preserved</string>
     <string name="record_currency_exchange">Currency Converter</string>
+    <string name="record_currency_rate_unavailable">Exchange rate is not available yet, please try again later</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">Batch Record</string>

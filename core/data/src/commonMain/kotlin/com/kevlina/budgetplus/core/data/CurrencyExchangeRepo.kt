@@ -35,6 +35,26 @@ interface CurrencyExchangeRepo {
     fun formatPreferredCurrency(price: Double, alwaysShowSymbol: Boolean = false): String?
 
     /**
+     * Formats the given book's currency price.
+     * @return Formatted price string, or null if the book's currency matches the preferred currency
+     *  (i.e. no conversion is meaningful) or the book's currency is unknown.
+     */
+    fun formatBookCurrency(price: Double, alwaysShowSymbol: Boolean = false): String?
+
+    /**
+     * Converts a price expressed in [fromCurrencyCode] into the book's currency.
+     *
+     * @param price The amount expressed in [fromCurrencyCode].
+     * @param fromCurrencyCode The currency code the [price] is expressed in, defaults to the
+     *  preferred currency.
+     * @return The converted amount in the book's currency, or null if the rate is not resolved.
+     */
+    fun convertToBookCurrency(
+        price: Double,
+        fromCurrencyCode: String = preferredCurrencyCode,
+    ): Double?
+
+    /**
      * Toggle whether to display prices in the preferred currency or book's currency.
      */
     fun toggleDisplayInPreferredCurrency()

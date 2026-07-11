@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +41,7 @@ import com.kevlina.budgetplus.core.ui.TextField
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordDateState
+import com.kevlina.budgetplus.feature.add.record.SelectedCurrency
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
@@ -54,6 +56,8 @@ internal fun DateAndPricing(
 ) {
     val recordDate by state.recordDate.collectAsStateWithLifecycle()
     val currencySymbol by state.currencySymbol.collectAsStateWithLifecycle()
+    val preferredCurrencySymbol by state.preferredCurrencySymbol.collectAsStateWithLifecycle()
+    val selectedCurrency by state.selectedCurrency.collectAsStateWithLifecycle()
 
     var showDatePicker by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -98,17 +102,46 @@ internal fun DateAndPricing(
                 fontSize = FontSize.Header,
                 letterSpacing = 0.5.sp,
                 readOnly = true,
-                title = currencySymbol,
-                onTitleClick = state.editCurrency,
                 scrollState = priceTextScrollState,
-                modifier = Modifier.weight(1F)
+                modifier = Modifier.weight(1F),
+                leadingContent = {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(
+                            text = currencySymbol,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = FontSize.Header,
+                            color = LocalAppColors.current.dark.copy(
+                                alpha = if (selectedCurrency == SelectedCurrency.Book) 1F else 0.5F
+                            ),
+                            modifier = Modifier.rippleClick(
+                                borderless = true,
+                                onClick = state.onBookCurrencyClick
+                            )
+                        )
+
+                        preferredCurrencySymbol?.let { symbol ->
+                            Text(
+                                text = symbol,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = FontSize.Header,
+                                color = LocalAppColors.current.dark.copy(
+                                    alpha = if (selectedCurrency == SelectedCurrency.Preferred) 1F else 0.5F
+                                ),
+                                modifier = Modifier.rippleClick(
+                                    borderless = true,
+                                    onClick = state.onPreferredCurrencyClick
+                                )
+                            )
+                        }
+                    }
+                }
             )
         }
 
         val isPremium by state.isPremium.collectAsStateWithLifecycle()
-        val preferredCurrencyPrice = state.preferredCurrencyPrice.collectAsStateWithLifecycle().value
+        val convertedPrice = state.convertedPrice.collectAsStateWithLifecycle().value
 
-        if (preferredCurrencyPrice != null) {
+        if (convertedPrice != null) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -123,7 +156,7 @@ internal fun DateAndPricing(
                         tint = LocalAppColors.current.dark,
                         size = 20.dp
                     )
-                    Text(text = preferredCurrencyPrice)
+                    Text(text = convertedPrice)
                 } else {
                     PremiumCrown(modifier = Modifier.size(24.dp))
                     Text(text = stringResource(Res.string.record_currency_exchange))
@@ -147,24 +180,30 @@ internal fun DateAndPricing(
 internal class DateAndPricingState(
     val recordDate: StateFlow<RecordDateState>,
     val currencySymbol: StateFlow<String>,
+    val preferredCurrencySymbol: StateFlow<String?>,
+    val selectedCurrency: StateFlow<SelectedCurrency>,
     val priceText: TextFieldState,
     val isPremium: StateFlow<Boolean>,
-    val preferredCurrencyPrice: StateFlow<String?>,
+    val convertedPrice: StateFlow<String?>,
     val scrollable: Boolean,
     val setDate: (LocalDate) -> Unit,
-    val editCurrency: () -> Unit,
+    val onBookCurrencyClick: () -> Unit,
+    val onPreferredCurrencyClick: () -> Unit,
     val editPreferredCurrency: () -> Unit,
 ) {
     companion object {
         val preview = DateAndPricingState(
             recordDate = MutableStateFlow(RecordDateState.Now),
             currencySymbol = MutableStateFlow("$"),
+            preferredCurrencySymbol = MutableStateFlow("¥"),
+            selectedCurrency = MutableStateFlow(SelectedCurrency.Book),
             priceText = TextFieldState("2344"),
             isPremium = MutableStateFlow(true),
-            preferredCurrencyPrice = MutableStateFlow("USD100"),
+            convertedPrice = MutableStateFlow("USD100"),
             scrollable = false,
             setDate = {},
-            editCurrency = {},
+            onBookCurrencyClick = {},
+            onPreferredCurrencyClick = {},
             editPreferredCurrency = {}
         )
     }
