@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.data.remote.Record
+import com.kevlina.budgetplus.core.lottie.NotFoundZeroCase
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -28,7 +29,6 @@ import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.feature.record.card.DeleteRecordDialog
 import com.kevlina.budgetplus.feature.record.card.EditRecordDialog
 import com.kevlina.budgetplus.feature.record.card.RecordCard
-import com.kevlina.budgetplus.feature.record.card.RecordCardZeroCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 
@@ -57,7 +57,7 @@ internal fun SearchResult(
                 key = SearchResultUiType.ZeroCase.name,
                 contentType = SearchResultUiType.ZeroCase,
                 content = {
-                    RecordCardZeroCase(modifier = Modifier.padding(top = 32.dp))
+                    NotFoundZeroCase(modifier = Modifier.padding(top = 32.dp))
                 }
             )
 

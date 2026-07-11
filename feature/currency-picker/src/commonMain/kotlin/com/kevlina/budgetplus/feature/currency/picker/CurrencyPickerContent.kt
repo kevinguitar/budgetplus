@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
@@ -35,6 +36,7 @@ import budgetplus.core.common.generated.resources.currency_picker_hint
 import budgetplus.core.common.generated.resources.ic_push_pin
 import com.kevlina.budgetplus.core.common.Currency
 import com.kevlina.budgetplus.core.common.getAvailableCurrencies
+import com.kevlina.budgetplus.core.lottie.NotFoundZeroCase
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DropdownItem
@@ -52,7 +54,7 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 internal fun CurrencyPickerContent(
     keyword: TextFieldState,
-    currencyStates: List<CurrencyState>,
+    currencyStates: List<CurrencyState>?,
     onCurrencyPicked: (Currency) -> Unit,
     onCurrencyPinned: (Currency) -> Unit,
     modifier: Modifier = Modifier,
@@ -74,10 +76,17 @@ internal fun CurrencyPickerContent(
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize()
         ) {
-            if (currencyStates.isEmpty()) {
+            if (currencyStates == null) {
                 InfiniteCircularProgress(
                     modifier = Modifier.align(Alignment.Center)
                 )
+            } else if (currencyStates.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    NotFoundZeroCase()
+                }
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 136.dp),
@@ -215,6 +224,18 @@ private fun CurrencyPickerContent_Preview() = AppTheme {
                 isPinned = index < 4
             )
         },
+        onCurrencyPicked = {},
+        onCurrencyPinned = {},
+        modifier = Modifier.background(LocalAppColors.current.light)
+    )
+}
+
+@Preview
+@Composable
+private fun CurrencyPickerContent_Empty_Preview() = AppTheme {
+    CurrencyPickerContent(
+        keyword = TextFieldState(),
+        currencyStates = emptyList(),
         onCurrencyPicked = {},
         onCurrencyPinned = {},
         modifier = Modifier.background(LocalAppColors.current.light)

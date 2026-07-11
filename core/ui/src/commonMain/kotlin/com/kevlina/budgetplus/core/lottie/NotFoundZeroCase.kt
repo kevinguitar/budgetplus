@@ -1,4 +1,4 @@
-package com.kevlina.budgetplus.feature.record.card
+package com.kevlina.budgetplus.core.lottie
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kevlina.budgetplus.core.lottie.loadLottieSpec
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -20,7 +19,7 @@ import io.github.alexzhirkevich.compottie.rememberLottiePainter
 private const val BG_DARKEN_FACTOR = 0.5F
 
 @Composable
-fun RecordCardZeroCase(modifier: Modifier = Modifier) {
+fun NotFoundZeroCase(modifier: Modifier = Modifier) {
 
     val composition by rememberLottieComposition { loadLottieSpec("img_empty") }
 
@@ -112,6 +111,6 @@ fun RecordCardZeroCase(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun RecordCardZeroCase_Preview() = AppTheme(themeColors = ThemeColors.Countryside) {
-    RecordCardZeroCase()
+private fun NotFoundZeroCase_Preview() = AppTheme(themeColors = ThemeColors.Countryside) {
+    NotFoundZeroCase()
 }
