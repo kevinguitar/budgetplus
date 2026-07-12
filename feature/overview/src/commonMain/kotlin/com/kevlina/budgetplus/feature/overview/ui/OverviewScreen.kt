@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.export_csv_confirmation
+import budgetplus.core.common.generated.resources.export_csv_confirmation_single_day
 import budgetplus.core.common.generated.resources.export_cta
 import budgetplus.core.common.generated.resources.ic_file_download
 import budgetplus.core.common.generated.resources.ic_format_list_numbered
@@ -122,11 +123,18 @@ fun OverviewScreen() {
 
     if (isExportDialogShown) {
         ConfirmDialog(
-            message = stringResource(
-                Res.string.export_csv_confirmation,
-                fromDate.shortFormatted,
-                untilDate.shortFormatted
-            ),
+            message = if (fromDate == untilDate) {
+                stringResource(
+                    Res.string.export_csv_confirmation_single_day,
+                    fromDate.shortFormatted
+                )
+            } else {
+                stringResource(
+                    Res.string.export_csv_confirmation,
+                    fromDate.shortFormatted,
+                    untilDate.shortFormatted
+                )
+            },
             onConfirm = {
                 if (shouldRequestStoragePermission) {
                     scope.launch {

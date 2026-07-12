@@ -123,6 +123,7 @@
     <!-- Export -->
     <string name="export_cta">匯出報表</string>
     <string name="export_csv_confirmation">您要匯出所有自%1$s至%2$s的帳目嗎？</string>
+    <string name="export_csv_confirmation_single_day">您要匯出所有%1$s的帳目嗎？</string>
     <string name="export_csv_success">CSV 報表已儲存至下載資料夾</string>
     <string name="export_column_type">項目</string>
     <string name="export_column_name">名稱</string>
