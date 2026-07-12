@@ -29,13 +29,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         // This must be called before initializing Admob SDK.
         FBAdSettings.setAdvertiserTrackingEnabled(true)
 
-        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
-            (action as? CommonAppStartAction)?.onAppStart()
-        }
-
         #if !DEBUG
         CrashlyticsInitializer.initialize()
         #endif
+
+        BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
+            (action as? CommonAppStartAction)?.onAppStart()
+        }
 
         return true
     }

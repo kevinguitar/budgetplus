@@ -24,6 +24,8 @@ internal class TrackerImpl(
     private val analytics by lazy { Firebase.analytics }
 
     init {
+        analytics.setAnalyticsCollectionEnabled(!isDebug)
+
         authManager.value
             .userState
             .onEach { analytics.setUserId(it?.id) }
