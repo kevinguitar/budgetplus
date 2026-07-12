@@ -6,10 +6,12 @@ import budgetplus.core.common.generated.resources.export_column_category
 import budgetplus.core.common.generated.resources.export_column_created_on
 import budgetplus.core.common.generated.resources.export_column_name
 import budgetplus.core.common.generated.resources.export_column_price
+import budgetplus.core.common.generated.resources.export_column_recorded_price
 import budgetplus.core.common.generated.resources.export_column_type
 import budgetplus.core.common.generated.resources.record_expense
 import budgetplus.core.common.generated.resources.record_income
 import com.kevlina.budgetplus.core.common.RecordType
+import com.kevlina.budgetplus.core.common.getCurrencySymbol
 import com.kevlina.budgetplus.core.common.plainPriceString
 import com.kevlina.budgetplus.core.common.shortFormatted
 import com.kevlina.budgetplus.core.data.BookRepo
@@ -42,6 +44,7 @@ internal class CsvExporter(
             getString(Res.string.export_column_created_on),
             getString(Res.string.export_column_name),
             getString(Res.string.export_column_price, bookRepo.currencySymbol.value),
+            getString(Res.string.export_column_recorded_price),
             getString(Res.string.export_column_type),
             getString(Res.string.export_column_category),
             getString(Res.string.export_column_author),
@@ -75,6 +78,7 @@ internal class CsvExporter(
                     record.parseDatetime(),
                     record.name,
                     record.price.plainPriceString,
+                    record.recordedPriceOrEmpty(),
                     when (record.type) {
                         RecordType.Expense -> recordExpenseString
                         RecordType.Income -> recordIncomeString
@@ -90,4 +94,14 @@ internal class CsvExporter(
             .toLocalDateTime(TimeZone.UTC)
             .shortFormatted
     }
+}
+
+/**
+ * The recorded price presented as "$preferredPrice $currencySymbol", or an empty string
+ * when the record has no [Record.preferredPrice].
+ */
+internal fun Record.recordedPriceOrEmpty(): String {
+    return preferredPrice?.let { preferredPrice ->
+        "${preferredPrice.plainPriceString} ${getCurrencySymbol(preferredCurrencyCode)}"
+    }.orEmpty()
 }
