@@ -128,6 +128,7 @@
     <string name="export_column_type">Type</string>
     <string name="export_column_name">Name</string>
     <string name="export_column_price">Price (%1$s)</string>
+    <string name="export_column_recorded_price">Recorded Price</string>
     <string name="export_column_category">Category</string>
     <string name="export_column_created_on">Created On</string>
     <string name="export_column_author">Author</string>

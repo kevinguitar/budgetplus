@@ -128,6 +128,7 @@
     <string name="export_column_type">항목</string>
     <string name="export_column_name">이름</string>
     <string name="export_column_price">금액 (%1$s)</string>
+    <string name="export_column_recorded_price">기록 금액</string>
     <string name="export_column_category">카테고리</string>
     <string name="export_column_created_on">시간</string>
     <string name="export_column_author">작성자</string>
