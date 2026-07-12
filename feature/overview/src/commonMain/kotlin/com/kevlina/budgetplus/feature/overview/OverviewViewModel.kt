@@ -231,7 +231,11 @@ class OverviewViewModel private constructor(
         viewModelScope.launch {
             try {
                 val period = recordsObserver.timePeriod.first()
-                val name = "${bookName.value}_${period.from.mediumFormatted}_${period.until.mediumFormatted}"
+                val name = if (period.from == period.until) {
+                    "${bookName.value}_${period.from.mediumFormatted}"
+                } else {
+                    "${bookName.value}_${period.from.mediumFormatted}_${period.until.mediumFormatted}"
+                }
                 csvExporter.downloadRecordsToCsv(name)
             } catch (e: Exception) {
                 snackbarSender.sendError(e)

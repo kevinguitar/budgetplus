@@ -123,6 +123,7 @@
     <!-- Export -->
     <string name="export_cta">Export csv</string>
     <string name="export_csv_confirmation">Do you want to export all the records from %1$s to %2$s?</string>
+    <string name="export_csv_confirmation_single_day">Do you want to export all the records on %1$s?</string>
     <string name="export_csv_success">Your report has been saved to the Download folder</string>
     <string name="export_column_type">Type</string>
     <string name="export_column_name">Name</string>

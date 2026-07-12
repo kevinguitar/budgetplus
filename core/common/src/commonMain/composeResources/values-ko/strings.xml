@@ -123,6 +123,7 @@
     <!-- Export -->
     <string name="export_cta">보고서 내보내기</string>
     <string name="export_csv_confirmation">%1$s부터 %2$s까지의 모든 기록을 내보내시겠습니까?</string>
+    <string name="export_csv_confirmation_single_day">%1$s의 모든 기록을 내보내시겠습니까?</string>
     <string name="export_csv_success">CSV 보고서가 다운로드 폴더에 저장되었습니다</string>
     <string name="export_column_type">항목</string>
     <string name="export_column_name">이름</string>

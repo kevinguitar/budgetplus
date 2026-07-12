@@ -123,6 +123,7 @@
     <!-- Export -->
     <string name="export_cta">報告書を出力する</string>
     <string name="export_csv_confirmation">%1$sから%2$sまでのすべての帳面をエクスポートしますか？</string>
+    <string name="export_csv_confirmation_single_day">%1$sのすべての帳面をエクスポートしますか？</string>
     <string name="export_csv_success">CSVレポートはダウンロードフォルダに保存されました</string>
     <string name="export_column_type">項目</string>
     <string name="export_column_name">内容</string>
