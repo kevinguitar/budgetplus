@@ -224,7 +224,8 @@ private fun CurrencyToggle(
 
     val scope = rememberCoroutineScope()
 
-    val bubbleExtendSize = with(density) { 8.dp.toPx() }
+    val bubbleExtendHeight = with(density) { 8.dp.toPx() }
+    val bubbleExtendWidth = with(density) { 16.dp.toPx() }
     val bubbleShape = with(LocalDensity.current) {
         BubbleShape.RoundedRect(AppTheme.cornerRadius.toPx())
     }
@@ -239,10 +240,15 @@ private fun CurrencyToggle(
                 highlightCurrencyToggle(
                     BubbleDest.ScrollToSelectCurrency(
                         size = IntSize(
-                            it.size.width + bubbleExtendSize.toInt(),
-                            it.size.height + bubbleExtendSize.toInt()
+                            it.size.width + bubbleExtendWidth.toInt(),
+                            it.size.height + bubbleExtendHeight.toInt()
                         ),
-                        offset = { it.positionInRoot() - Offset(bubbleExtendSize / 2, bubbleExtendSize / 2) },
+                        offset = {
+                            it.positionInRoot() - Offset(
+                                x = bubbleExtendWidth / 2,
+                                y = bubbleExtendHeight / 2
+                            )
+                        },
                         shape = bubbleShape
                     )
                 )
