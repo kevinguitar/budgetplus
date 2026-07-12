@@ -3,6 +3,9 @@
     <component name="JavaProjectCodeInsightSettings">
         <excluded-names>
             <name>coil3.util.Logger</name>
+            <name>io.github.alexzhirkevich.compottie.LottieLogger</name>
+            <name>io.ktor.util.logging.KtorSimpleLogger</name>
+            <name>io.ktor.util.logging.Logger</name>
             <name>java.lang.reflect.Modifier</name>
             <name>java.nio.file.WatchEvent.Modifier</name>
             <name>java.security.Provider</name>

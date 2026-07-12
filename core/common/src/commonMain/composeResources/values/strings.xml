@@ -34,6 +34,7 @@
     <string name="record_freeze_book_title">Sad to see you go\nPlease choose a book to continue recording</string>
     <string name="record_freeze_book_description">Don't worry! All your data will be preserved</string>
     <string name="record_currency_exchange">Currency Converter</string>
+    <string name="record_currency_rate_unavailable">Exchange rate is not available yet, please try again later</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">Batch Record</string>
@@ -204,6 +205,7 @@
     <!-- Bubble -->
     <string name="bubble_invite">Invite fellows to track expenses together!</string>
     <string name="bubble_speak_to_record">Long tap to record your expenses by voice</string>
+    <string name="bubble_scroll_to_select_currency">Scroll to switch the record currency</string>
     <string name="bubble_edit_category">Tap to rename or delete, long tap to reorder</string>
     <string name="bubble_save_category">Click save after you finish editing</string>
     <string name="bubble_overview_mode">Tap to group the records by category</string>

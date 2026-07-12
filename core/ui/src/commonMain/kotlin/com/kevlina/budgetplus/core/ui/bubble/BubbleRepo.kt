@@ -12,6 +12,7 @@ import budgetplus.core.common.generated.resources.bubble_overview_pie_chart
 import budgetplus.core.common.generated.resources.bubble_overview_record_tap_hint
 import budgetplus.core.common.generated.resources.bubble_records_sorting
 import budgetplus.core.common.generated.resources.bubble_save_category
+import budgetplus.core.common.generated.resources.bubble_scroll_to_select_currency
 import budgetplus.core.common.generated.resources.bubble_speak_to_record
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.StringResource
@@ -54,6 +55,15 @@ sealed class BubbleDest {
         override val shape: BubbleShape = BubbleShape.Circle,
         override val textRes: StringResource = Res.string.bubble_speak_to_record,
         override val textDirection: BubbleTextDirection = BubbleTextDirection.TopEnd,
+    ) : BubbleDest()
+
+    data class ScrollToSelectCurrency(
+        override val key: String = "isScrollToSelectCurrencyBubbleShown",
+        override val size: IntSize,
+        override val offset: () -> Offset,
+        override val shape: BubbleShape,
+        override val textRes: StringResource = Res.string.bubble_scroll_to_select_currency,
+        override val textDirection: BubbleTextDirection = BubbleTextDirection.BottomCenter,
     ) : BubbleDest()
 
     data class EditCategoriesHint(

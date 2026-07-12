@@ -34,6 +34,7 @@
     <string name="record_freeze_book_title">很遺憾您取消訂閱了\n請選擇一本帳本繼續記帳</string>
     <string name="record_freeze_book_description">別擔心！您的所有帳本資料皆會保留</string>
     <string name="record_currency_exchange">匯率換算</string>
+    <string name="record_currency_rate_unavailable">匯率尚未取得，請稍後再試</string>
 
     <!-- Batch Record -->
     <string name="batch_record_title">批次記帳</string>
@@ -204,6 +205,7 @@
     <!-- Bubble -->
     <string name="bubble_invite">點擊分享連結，邀請好友們一起記帳！</string>
     <string name="bubble_speak_to_record">長按開始語音記帳</string>
+    <string name="bubble_scroll_to_select_currency">滑動以切換記帳幣別</string>
     <string name="bubble_edit_category">點擊以重新命名或刪除，長按拖曳排序</string>
     <string name="bubble_save_category">編輯完成後，記得儲存喔！</string>
     <string name="bubble_overview_mode">你可以選擇用類別或明細顯示帳目</string>

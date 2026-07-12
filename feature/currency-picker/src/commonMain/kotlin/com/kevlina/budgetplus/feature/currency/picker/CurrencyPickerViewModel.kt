@@ -64,7 +64,7 @@ class CurrencyPickerViewModel(
     private val defaultCurrencyCode = getDefaultCurrencyCode()
     private val availableCurrencies = getAvailableCurrencies()
 
-    val currencies: StateFlow<List<CurrencyState>> = combine(
+    val currencies: StateFlow<List<CurrencyState>?> = combine(
         snapshotFlow { keyword.text },
         pinnedCurrencies
     ) { keyword, pinned ->
@@ -92,7 +92,7 @@ class CurrencyPickerViewModel(
             // Then place the selected one (if exists) at the front
             .sortedByDescending { it.isSelected }
     }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     suspend fun onCurrencyPicked(currency: Currency) {
         when (params.purpose) {

@@ -11,11 +11,13 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_invite
 import budgetplus.core.common.generated.resources.menu_invite_to_book
 import budgetplus.core.common.generated.resources.permission_hint
+import budgetplus.core.common.generated.resources.record_currency_rate_unavailable
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.EventTrigger
+import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.ShareHelper
@@ -52,7 +54,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -97,20 +98,58 @@ class RecordViewModel(
 
     val isPremium = authManager.isPremium
 
-    val preferredCurrencyPrice = combine(
+    /**
+     * Which currency the typed price is currently expressed in. Defaults to the book's currency.
+     */
+    val selectedCurrency: StateFlow<SelectedCurrency>
+        field = MutableStateFlow(SelectedCurrency.Book)
+
+    /**
+     * The preferred currency symbol, only presented when it differs from the book's currency.
+     */
+    val preferredCurrencySymbol: StateFlow<String?> = combine(
+        bookRepo.bookState.map { it?.currencyCode },
+        currencyExchangeRepo.preferredCurrencySymbol,
+    ) { bookCurrencyCode, preferredSymbol ->
+        val preferredCode = currencyExchangeRepo.preferredCurrencyCode
+        if (bookCurrencyCode != null && !bookCurrencyCode.equals(preferredCode, ignoreCase = true)) {
+            preferredSymbol
+        } else {
+            // Fallback to the book's currency whenever the preferred currency symbol is hidden
+            // (i.e. currencies match), so a stale preferred selection can't linger.
+            selectedCurrency.value = SelectedCurrency.Book
+            null
+        }
+    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    /**
+     * The price converted into the currency that is NOT currently selected, so the user always
+     * sees the counterpart amount. When the book's currency is selected it shows the preferred
+     * currency amount, and vice versa.
+     */
+    val convertedPrice = combine(
         snapshotFlow { calculatorVm.priceText.text },
         bookRepo.bookState.map { it?.currencyCode },
         currencyExchangeRepo.exchangeRateChange.onStart { emit(Unit) },
-        ::Triple
-    )
-        .mapLatest { (priceText, _, _) ->
-            val price = try {
-                priceText.parseToPrice()
-            } catch (_: Exception) {
-                return@mapLatest null
-            }
-            currencyExchangeRepo.formatPreferredCurrency(price, alwaysShowSymbol = true)
+        selectedCurrency,
+    ) { priceText, _, _, selected ->
+        val price = try {
+            priceText.parseToPrice()
+        } catch (_: Exception) {
+            return@combine null
         }
+        when (selected) {
+            SelectedCurrency.Book -> {
+                currencyExchangeRepo.formatPreferredCurrency(price, alwaysShowSymbol = true)
+            }
+
+            SelectedCurrency.Preferred -> {
+                val bookPrice = currencyExchangeRepo.convertToBookCurrency(price) ?: return@combine null
+                currencyExchangeRepo.formatBookCurrency(bookPrice, alwaysShowSymbol = true)
+            }
+        }
+    }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     private val recordCountKey = intPreferencesKey("recordCount")
@@ -160,6 +199,10 @@ class RecordViewModel(
         viewModelScope.launch { bubbleRepo.addBubbleToQueue(dest) }
     }
 
+    fun highlightCurrencyToggle(dest: BubbleDest) {
+        viewModelScope.launch { bubbleRepo.addBubbleToQueue(dest) }
+    }
+
     fun launchReviewFlow() {
         viewModelScope.launch {
             inAppReviewManager.launchReviewFlow()
@@ -189,6 +232,33 @@ class RecordViewModel(
         tracker.logEvent("currency_exchange_edit_preferred")
     }
 
+    /**
+     * Tapping the book's currency symbol selects it, or edits it when it's already selected.
+     */
+    fun onBookCurrencyClick() {
+        if (selectedCurrency.value == SelectedCurrency.Book) {
+            editCurrency()
+        } else {
+            selectedCurrency.value = SelectedCurrency.Book
+        }
+    }
+
+    /**
+     * Tapping the preferred currency symbol selects it, or edits it when it's already selected.
+     * Non-premium users are always routed to the paywall.
+     */
+    fun onPreferredCurrencyClick() {
+        if (selectedCurrency.value == SelectedCurrency.Preferred) {
+            editPreferredCurrency()
+        } else {
+            if (isPremium.value) {
+                selectedCurrency.value = SelectedCurrency.Preferred
+            } else {
+                navController.navigate(BookDest.UnlockPremium)
+            }
+        }
+    }
+
     private fun record() {
         val category = categoriesVm.category.value
         val price = calculatorVm.priceText.text.parseToPrice()
@@ -203,13 +273,37 @@ class RecordViewModel(
             return
         }
 
+        // Resolve the book price depending on which currency the user typed the price in.
+        val priceToRecord: Double
+        val preferredPrice: Double?
+        val preferredCurrencyCode: String?
+        if (selectedCurrency.value == SelectedCurrency.Book) {
+            priceToRecord = price
+            preferredPrice = null
+            preferredCurrencyCode = null
+        } else {
+            val converted = currencyExchangeRepo.convertToBookCurrency(price)
+            if (converted == null) {
+                viewModelScope.launch {
+                    snackbarSender.send(Res.string.record_currency_rate_unavailable)
+                    Logger.e("Fail to convert price to book currency: $price ${currencyExchangeRepo.preferredCurrencyCode}")
+                }
+                return
+            }
+            priceToRecord = converted
+            preferredPrice = price
+            preferredCurrencyCode = currencyExchangeRepo.preferredCurrencyCode
+        }
+
         val record = Record(
             type = type.value,
             date = recordDate.value.date.toEpochDays(),
             timestamp = recordDate.value.date.withCurrentTime,
             category = category,
             name = note.text.trim().ifEmpty { category }.toString(),
-            price = price,
+            price = priceToRecord,
+            preferredPrice = preferredPrice,
+            preferredCurrencyCode = preferredCurrencyCode,
             author = authManager.userState.value?.toAuthor()
         )
 
@@ -227,6 +321,7 @@ class RecordViewModel(
         categoriesVm.setCategory(null)
         note.clearText()
         calculatorVm.clearPrice()
+        selectedCurrency.value = SelectedCurrency.Book
     }
 
     /**
@@ -256,4 +351,12 @@ class RecordViewModel(
         const val RECORD_REQUEST_PERMISSION = 2
         const val RECORD_REQUEST_REVIEW = 4
     }
+}
+
+/**
+ * Represents which currency the typed price on the record screen is expressed in.
+ */
+enum class SelectedCurrency {
+    Book,
+    Preferred,
 }

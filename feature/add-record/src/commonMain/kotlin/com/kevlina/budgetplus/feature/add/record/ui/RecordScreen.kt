@@ -165,13 +165,17 @@ private fun RecordViewModel.toState(scrollable: Boolean) = RecordContentState(
         dateAndPricingState = DateAndPricingState(
             recordDate = recordDate,
             currencySymbol = bookRepo.currencySymbol,
+            preferredCurrencySymbol = preferredCurrencySymbol,
+            selectedCurrency = selectedCurrency,
             priceText = calculatorVm.priceText,
             isPremium = isPremium,
-            preferredCurrencyPrice = preferredCurrencyPrice,
+            convertedPrice = convertedPrice,
             scrollable = scrollable,
             setDate = ::setDate,
-            editCurrency = ::editCurrency,
-            editPreferredCurrency = ::editPreferredCurrency
+            onBookCurrencyClick = ::onBookCurrencyClick,
+            onPreferredCurrencyClick = ::onPreferredCurrencyClick,
+            editPreferredCurrency = ::editPreferredCurrency,
+            highlightCurrencyToggle = ::highlightCurrencyToggle
         ),
     ),
     calculatorState = calculatorVm.toState(recordEvent),

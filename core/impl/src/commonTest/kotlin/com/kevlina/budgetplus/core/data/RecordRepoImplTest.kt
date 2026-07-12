@@ -6,6 +6,7 @@ import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.withCurrentTime
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
+import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeRecordDbClient
 import com.kevlina.budgetplus.core.data.remote.Author
 import com.kevlina.budgetplus.core.data.remote.Record
@@ -143,6 +144,7 @@ class RecordRepoImplTest : BaseTest(useUnconfinedDispatcher = true) {
         recordDbClient = recordDbClient,
         appScope = backgroundScope,
         authManager = authManager,
+        currencyExchangeRepo = FakeCurrencyExchangeRepo(),
         tracker = tracker,
         snackbarSender = FakeSnackbarSender
     )

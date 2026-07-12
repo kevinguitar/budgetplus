@@ -34,6 +34,7 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.remote.Author
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
+import com.kevlina.budgetplus.core.lottie.NotFoundZeroCase
 import com.kevlina.budgetplus.core.settings.api.ChartMode
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -47,7 +48,6 @@ import com.kevlina.budgetplus.feature.record.card.DeleteRecordDialog
 import com.kevlina.budgetplus.feature.record.card.EditRecordDialog
 import com.kevlina.budgetplus.feature.record.card.RecordCard
 import com.kevlina.budgetplus.feature.record.card.RecordCardState
-import com.kevlina.budgetplus.feature.record.card.RecordCardZeroCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.stringResource
@@ -120,7 +120,7 @@ internal fun OverviewList(
                     key = OverviewUiType.ZeroCase.name,
                     contentType = OverviewUiType.ZeroCase,
                     content = {
-                        RecordCardZeroCase(modifier = Modifier.padding(top = 32.dp))
+                        NotFoundZeroCase(modifier = Modifier.padding(top = 32.dp))
                     }
                 )
 
