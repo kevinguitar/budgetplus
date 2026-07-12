@@ -7,6 +7,7 @@ import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import kotlin.experimental.ExperimentalNativeApi
 
 @ContributesTo(AppScope::class)
 interface BudgetPlusIosAppModule {
@@ -17,9 +18,10 @@ interface BudgetPlusIosAppModule {
         interstitial = "ca-app-pub-5636675608309788/2319508436"
     )
 
+    @OptIn(ExperimentalNativeApi::class)
     @Provides
     @Named("is_debug")
-    fun provideIsDebug(): Boolean = true
+    fun provideIsDebug(): Boolean = Platform.isDebugBinary
 
     @Provides
     @Named("allow_update_fcm_token")
