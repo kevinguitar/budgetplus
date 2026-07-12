@@ -175,7 +175,7 @@ internal class CurrencyExchangeRepoImpl(
             try {
                 fetchRates(fallbackUrl, baseCurrency)
             } catch (e2: Exception) {
-                Logger.e(e2, "CurrencyExchangeRepo: Fallback URL also failed")
+                Logger.w(e2, "CurrencyExchangeRepo: Fallback URL also failed")
                 null
             }
         }
