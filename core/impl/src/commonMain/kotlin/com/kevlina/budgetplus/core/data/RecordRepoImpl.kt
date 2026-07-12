@@ -97,16 +97,16 @@ internal class RecordRepoImpl(
         val newPrice: Double
         val newPreferredPrice: Double?
         val preferredCurrencyCode = oldRecord.preferredCurrencyCode
-        if (preferredCurrencyCode != null) {
+        if (preferredCurrencyCode == null) {
+            newPrice = newPriceText.parseToPrice()
+            newPreferredPrice = null
+        } else {
             val preferredPrice = newPriceText.parseToPrice()
             newPreferredPrice = preferredPrice
             newPrice = currencyExchangeRepo.convertToBookCurrency(
                 price = preferredPrice,
                 fromCurrencyCode = preferredCurrencyCode,
             ) ?: fallbackBookPrice(oldRecord, preferredPrice)
-        } else {
-            newPrice = newPriceText.parseToPrice()
-            newPreferredPrice = null
         }
 
         val newRecord = oldRecord.copy(

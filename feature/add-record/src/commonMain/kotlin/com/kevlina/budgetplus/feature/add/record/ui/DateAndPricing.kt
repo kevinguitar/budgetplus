@@ -30,10 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -266,7 +268,15 @@ private fun CurrencyToggle(
         val offset = remember { Animatable(targetOffset(selectedCurrency)) }
 
         // Animate to the selection whenever it changes, including when set by the view model.
+        val hapticFeedback = LocalHapticFeedback.current
+        var isInitialCurrency by remember { mutableStateOf(true) }
         LaunchedEffect(selectedCurrency) {
+            // Always vibrate on a currency switch, regardless of the vibrateOnInput setting.
+            if (isInitialCurrency) {
+                isInitialCurrency = false
+            } else {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+            }
             offset.animateTo(targetOffset(selectedCurrency))
         }
 
