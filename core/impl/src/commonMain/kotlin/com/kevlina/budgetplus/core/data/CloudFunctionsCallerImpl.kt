@@ -1,7 +1,6 @@
 package com.kevlina.budgetplus.core.data
 
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.app
 import dev.gitlive.firebase.auth.auth
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -41,7 +40,7 @@ internal class CloudFunctionsCallerImpl(
 ) : CloudFunctionsCaller {
 
     override suspend fun call(functionName: String, region: String, data: Map<String, String>?) {
-        val projectId = requireNotNull(Firebase.app.options.projectId) {
+        val projectId = requireNotNull(firebaseProjectId()) {
             "Firebase projectId is not configured."
         }
         val idToken = Firebase.auth.currentUser?.getIdToken(false)
@@ -71,6 +70,20 @@ internal class CloudFunctionsCallerImpl(
         }
     }
 }
+
+/**
+ * Resolves the Firebase projectId from the platform's default app.
+ *
+ * This is intentionally a per-platform `expect`/`actual` rather than reading
+ * `Firebase.app.options.projectId` directly. On iOS the GitLive `FirebaseApp.<get-options>`
+ * getter eagerly maps the entire native `FIROptions` into a Kotlin `FirebaseOptions`,
+ * force-unwrapping fields (e.g. `APIKey`/`googleAppID`) that it declares non-null. When any of
+ * those is `nil` in an optimized/release build, that mapping lambda crashes natively (a SIGABRT
+ * Kotlin try/catch cannot intercept). Reading only the nullable `projectID` avoids that path.
+ *
+ * See: https://github.com/GitLiveApp/firebase-kotlin-sdk/issues/833
+ */
+internal expect fun firebaseProjectId(): String?
 
 // The original SDK-based implementation, kept for when the Swift compiler bug is resolved.
 // See the KDoc above and https://github.com/firebase/firebase-ios-sdk/issues/15974
