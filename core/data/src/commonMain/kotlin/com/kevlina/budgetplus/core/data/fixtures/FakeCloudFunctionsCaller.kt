@@ -6,12 +6,12 @@ import com.kevlina.budgetplus.core.data.CloudFunctionsCaller
 @RestrictTo(RestrictTo.Scope.TESTS)
 class FakeCloudFunctionsCaller : CloudFunctionsCaller {
 
-    var lastCall: Triple<String, String, Any?>? = null
+    var lastCall: Triple<String, String, Map<String, String>?>? = null
         private set
 
     var callError: Exception? = null
 
-    override suspend fun call(functionName: String, region: String, data: Any?) {
+    override suspend fun call(functionName: String, region: String, data: Map<String, String>?) {
         callError?.let { throw it }
         lastCall = Triple(functionName, region, data)
     }

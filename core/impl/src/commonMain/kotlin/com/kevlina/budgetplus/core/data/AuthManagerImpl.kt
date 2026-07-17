@@ -121,12 +121,12 @@ internal class AuthManagerImpl(
 
     override fun deleteUserAccount(): Job = appScope.launch {
         tracker.value.logEvent("delete_account")
+        val userId = userId ?: return@launch
         try {
-            val data = mapOf("userId" to userId)
             cloudFunctionsCaller.call(
                 functionName = "deleteUserAccount",
                 region = "asia-southeast1",
-                data = data
+                data = mapOf("userId" to userId)
             )
 
             logout()
