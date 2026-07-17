@@ -97,6 +97,26 @@ internal class SpeakToRecordImpl(
         // Install tap on the audio input node
         val inputNode = audioEngine.inputNode
         val recordingFormat = inputNode.outputFormatForBus(0u)
+
+        // Guard against invalid audio formats. When the microphone route/hardware is
+        // not ready (e.g. missing permission, mic in use, no input available), the
+        // input node can report a format with 0 channels or 0 sample rate. Calling
+        // installTapOnBus with such a format raises an unrecoverable AVFAudio
+        // exception (com.apple.coreaudio.avfaudio) that crashes the app.
+        if (recordingFormat.channelCount == 0u || recordingFormat.sampleRate == 0.0) {
+            Logger.e(
+                SpeakToRecordException("Invalid recording format"),
+                "Invalid recording format: channelCount=${recordingFormat.channelCount}, " +
+                    "sampleRate=${recordingFormat.sampleRate}"
+            )
+            recognitionRequest.endAudio()
+            audioSession.setActive(false, null)
+            return RecordActor(
+                statusFlow = flowOf(SpeakToRecordStatus.DeviceNotSupported),
+                stopRecording = {}
+            )
+        }
+
         inputNode.installTapOnBus(0u, bufferSize = 1024u, format = recordingFormat) { buffer, _ ->
             if (buffer != null) {
                 recognitionRequest.appendAudioPCMBuffer(buffer)
