@@ -203,6 +203,7 @@
     <string name="currency_picker_hint">US Dollar or USD</string>
     <string name="currency_picker_book_edit_success">%1$s's currency has been changed to %2$s</string>
     <string name="currency_picker_preferred_edit_success">The preferred currency has been changed to %1$s</string>
+    <string name="currency_picker_no_conversion_disclaimer">Changing the currency only updates the currency symbol; existing amounts will not be converted automatically</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">Invite fellows to track expenses together!</string>

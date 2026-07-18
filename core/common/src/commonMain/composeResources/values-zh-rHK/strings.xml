@@ -203,6 +203,7 @@
     <string name="currency_picker_hint">日圓或 JPY</string>
     <string name="currency_picker_book_edit_success">%1$s的幣別已設定為%2$s</string>
     <string name="currency_picker_preferred_edit_success">偏好幣別已設定為%1$s</string>
+    <string name="currency_picker_no_conversion_disclaimer">更改幣別只會改變幣值符號，原有的金額數字不會自動換算</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">點擊分享連結，邀請好友們一起記帳！</string>
