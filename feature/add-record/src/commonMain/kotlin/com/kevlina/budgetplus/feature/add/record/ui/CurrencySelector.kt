@@ -5,10 +5,8 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,8 +17,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -31,7 +30,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -70,15 +69,18 @@ internal fun CurrencySelector(
     highlightCurrencyToggle: (BubbleDest) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Derive the item height from the actual rendered text instead of hardcoding it, so it always
-    // matches the currency symbol's line height (respecting the typography scale).
+    // Derive the item height from the actual rendered symbols instead of hardcoding it, so it always
+    // matches the currency symbol's line height (respecting the typography scale). We measure the
+    // real symbols (not "0") to capture the tallest glyph.
     val textMeasurer = rememberTextMeasurer()
     val symbolStyle = TextStyle(
         fontSize = FontSize.Header.withTypographyScale(),
         fontWeight = FontWeight.SemiBold,
     )
-    val itemHeightPx = remember(textMeasurer, symbolStyle) {
-        textMeasurer.measure(text = "0", style = symbolStyle).size.height.toFloat()
+    val itemHeightPx = remember(textMeasurer, symbolStyle, bookCurrencySymbol, preferredCurrencySymbol) {
+        listOfNotNull(bookCurrencySymbol, preferredCurrencySymbol)
+            .maxOf { textMeasurer.measure(text = it, style = symbolStyle).size.height }
+            .toFloat()
     }
     val density = LocalDensity.current
     val itemHeight = with(density) { itemHeightPx.toDp() }
@@ -104,10 +106,25 @@ internal fun CurrencySelector(
 
     // Fill the field's full height so the neighboring symbol peeks all the way to the top/bottom
     // edge instead of leaving padding from the TextField's vertical centering.
-    BoxWithConstraints(
+    Box(
         modifier = modifier
             .fillMaxHeight()
-            .clipToBounds()
+            // Clip the wheel so the neighboring symbol only peeks in from the top/bottom edge,
+            // but keep horizontal room so the borderless ripple isn't cropped, and expand the
+            // vertical clip when the symbol is taller than the container (e.g. large system font
+            // scales) so the selected symbol is never cropped at the bottom.
+            .drawWithContent {
+                val extraVertical = ((itemHeightPx - size.height) / 2f).coerceAtLeast(0f)
+                val horizontalMargin = maxOf(size.height, itemHeightPx)
+                clipRect(
+                    left = -horizontalMargin,
+                    top = -extraVertical,
+                    right = size.width + horizontalMargin,
+                    bottom = size.height + extraVertical,
+                ) {
+                    this@drawWithContent.drawContent()
+                }
+            }
             .onPlaced {
                 highlightCurrencyToggle(
                     BubbleDest.ScrollToSelectCurrency(
@@ -126,14 +143,11 @@ internal fun CurrencySelector(
                 )
             },
     ) {
-        val containerPx = constraints.maxHeight.toFloat()
-
-        // The translation applied to the stacked column so the selected item lands in the center.
-        // Column order is [Preferred, Book], so the preferred symbol sits on top.
-        val preferredOffset = (containerPx - itemHeightPx) / 2f
-        val bookOffset = preferredOffset - itemHeightPx
-        fun targetOffset(currency: SelectedCurrency): Float =
-            if (currency == SelectedCurrency.Book) bookOffset else preferredOffset
+        val bookOffset = 0f
+        fun targetOffset(currency: SelectedCurrency): Float = when (currency) {
+            SelectedCurrency.Book -> bookOffset
+            SelectedCurrency.Preferred -> itemHeightPx
+        }
 
         val offset = remember { Animatable(targetOffset(selectedCurrency)) }
 
@@ -150,9 +164,9 @@ internal fun CurrencySelector(
             offset.animateTo(targetOffset(selectedCurrency))
         }
 
-        Column(
+        Box(
             modifier = Modifier
-                .graphicsLayer { translationY = offset.value }
+                .fillMaxHeight()
                 .pointerInput(selectedCurrency) {
                     var totalDrag = 0f
                     detectVerticalDragGestures(
@@ -174,16 +188,18 @@ internal fun CurrencySelector(
                     ) { _, dragAmount ->
                         totalDrag += dragAmount
                         scope.launch {
-                            offset.snapTo((offset.value + dragAmount).coerceIn(bookOffset, preferredOffset))
+                            offset.snapTo((offset.value + dragAmount).coerceIn(bookOffset, itemHeightPx))
                         }
                     }
                 },
+            contentAlignment = Alignment.Center,
         ) {
             CurrencySymbol(
                 symbol = preferredCurrencySymbol,
                 selected = selectedCurrency == SelectedCurrency.Preferred,
                 itemHeight = itemHeight,
                 onClick = onPreferredCurrencyClick,
+                modifier = Modifier.graphicsLayer { translationY = offset.value - itemHeightPx },
             )
 
             CurrencySymbol(
@@ -191,6 +207,7 @@ internal fun CurrencySelector(
                 selected = selectedCurrency == SelectedCurrency.Book,
                 itemHeight = itemHeight,
                 onClick = onBookCurrencyClick,
+                modifier = Modifier.graphicsLayer { translationY = offset.value },
             )
         }
     }
@@ -214,7 +231,7 @@ private fun CurrencySymbol(
 
     Box(
         modifier = modifier
-            .height(itemHeight)
+            .requiredHeight(itemHeight)
             .rippleClick(borderless = true, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
@@ -227,14 +244,14 @@ private fun CurrencySymbol(
     }
 }
 
-@Preview
+@PreviewFontScale
 @Composable
 private fun CurrencySelector_Preview() = AppTheme {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .background(LocalAppColors.current.light)
-            .size(48.dp, 96.dp)
+            .size(28.dp, 56.dp)
     ) {
         CurrencySelector(
             bookCurrencySymbol = "$",
