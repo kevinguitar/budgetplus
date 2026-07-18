@@ -23,6 +23,7 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.fixtures.FakeRecordRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeVibratorManager
+import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.ui.bubble.FakeBubbleRepo
 import com.kevlina.budgetplus.core.unit.test.BaseTest
@@ -333,7 +334,7 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
-    fun `reset screen should reset selected currency to book after recording`() = runTest {
+    fun `selected currency should be remembered after recording`() = runTest {
         val model = createModel(isPremium = true)
         model.onPreferredCurrencyClick()
         assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
@@ -341,9 +342,31 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         model.calculatorVm.input("1")
         model.calculatorVm.evaluate()
 
-        assertEquals(SelectedCurrency.Book, model.selectedCurrency.value)
+        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
     }
 
+
+    @Test
+    fun `selected currency should be remembered per book across recreation`() = runTest {
+        val bookRepo = FakeBookRepo(
+            book = Book(id = "bookA"),
+            currentBookId = "bookA",
+        )
+        val preference = FakePreference {
+            set(intPreferencesKey("recordCount"), 0)
+        }
+
+        val model = createModel(isPremium = true, bookRepo = bookRepo, preference = preference)
+        model.onPreferredCurrencyClick()
+        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+
+        // A freshly created view model (e.g. after reopening the app) restores the selection.
+        val recreatedModel = createModel(isPremium = true, bookRepo = bookRepo, preference = preference)
+        assertEquals(
+            SelectedCurrency.Preferred,
+            recreatedModel.selectedCurrency.first { it == SelectedCurrency.Preferred }
+        )
+    }
 
     private fun TestScope.createCalculatorVm() = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
@@ -368,11 +391,15 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         isPremium: Boolean = false,
         currencyExchangeRepo: CurrencyExchangeRepo = FakeCurrencyExchangeRepo(),
         calculatorVm: CalculatorViewModel = createCalculatorVm(),
+        bookRepo: FakeBookRepo = FakeBookRepo(canEdit = canEditBook),
+        preference: FakePreference = FakePreference {
+            set(intPreferencesKey("recordCount"), recordCount)
+        },
     ) = RecordViewModel(
         calculatorVm = calculatorVm,
         categoriesVm = categoriesVm,
         freezeBookVm = createFreezeBookVm(),
-        bookRepo = FakeBookRepo(canEdit = canEditBook),
+        bookRepo = bookRepo,
         navController = NavController(startRoot = BookDest.Record),
         recordRepo = FakeRecordRepo,
         bubbleRepo = FakeBubbleRepo(),
@@ -382,9 +409,7 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         currencyExchangeRepo = currencyExchangeRepo,
         snackbarSender = FakeSnackbarSender,
         shareHelper = FakeShareHelper,
-        preference = FakePreference {
-            set(intPreferencesKey("recordCount"), recordCount)
-        },
+        preference = preference,
         tracker = tracker,
     )
 }
