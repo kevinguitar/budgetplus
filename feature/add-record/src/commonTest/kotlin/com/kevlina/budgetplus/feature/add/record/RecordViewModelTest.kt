@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.add.record
 
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.datastore.preferences.core.intPreferencesKey
+import app.cash.turbine.test
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_currency_rate_unavailable
 import budgetplus.core.common.generated.resources.record_empty_category
@@ -222,18 +223,25 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
         model.onPreferredCurrencyClick()
 
-        model.calculatorVm.input("100")
-        assertNull(model.convertedPrice.value)
+        model.convertedPrice.test {
+            assertNull(awaitItem()) // Initial value
+            model.calculatorVm.input("100")
+            // The rate is unavailable so the converted price stays null.
+            expectNoEvents()
+        }
     }
 
     @Test
     fun `onBookCurrencyClick should select the book currency when preferred is selected`() = runTest {
         val model = createModel(isPremium = true)
-        model.onPreferredCurrencyClick()
-        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+        model.selectedCurrency.test {
+            skipItems(1) // Skip initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
 
-        model.onBookCurrencyClick()
-        assertEquals(SelectedCurrency.Book, model.selectedCurrency.value)
+            model.onBookCurrencyClick()
+            assertEquals(SelectedCurrency.Book, awaitItem())
+        }
     }
 
     @Test
@@ -251,9 +259,11 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     @Test
     fun `onPreferredCurrencyClick should select the preferred currency when premium`() = runTest {
         val model = createModel(isPremium = true)
-        model.onPreferredCurrencyClick()
-
-        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+        model.selectedCurrency.test {
+            assertEquals(SelectedCurrency.Book, awaitItem()) // Initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
+        }
     }
 
     @Test
@@ -268,9 +278,13 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     @Test
     fun `onPreferredCurrencyClick should edit the preferred currency when already selected`() = runTest {
         val model = createModel(isPremium = true)
-        model.onPreferredCurrencyClick()
-        // Now the preferred currency is selected, clicking again edits it.
-        model.onPreferredCurrencyClick()
+        model.selectedCurrency.test {
+            skipItems(1) // Skip initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
+            // Now the preferred currency is selected, clicking again edits it.
+            model.onPreferredCurrencyClick()
+        }
 
         assertEquals(
             BookDest.CurrencyPicker(purpose = BookDest.CurrencyPicker.Purpose.Preferred),
@@ -293,10 +307,14 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             bookCurrencyRate = 0.5,
         )
         val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
-        model.onPreferredCurrencyClick()
+        model.selectedCurrency.test {
+            skipItems(1) // Skip initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
 
-        model.calculatorVm.input("100")
-        model.calculatorVm.evaluate()
+            model.calculatorVm.input("100")
+            model.calculatorVm.evaluate()
+        }
 
         assertEquals(
             Record(
@@ -321,10 +339,14 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             bookCurrencyRate = null,
         )
         val model = createModel(isPremium = true, currencyExchangeRepo = currencyExchangeRepo)
-        model.onPreferredCurrencyClick()
+        model.selectedCurrency.test {
+            skipItems(1) // Skip initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
 
-        model.calculatorVm.input("100")
-        model.calculatorVm.evaluate()
+            model.calculatorVm.input("100")
+            model.calculatorVm.evaluate()
+        }
 
         assertEquals(
             Res.string.record_currency_rate_unavailable,
@@ -336,13 +358,17 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     @Test
     fun `selected currency should be remembered after recording`() = runTest {
         val model = createModel(isPremium = true)
-        model.onPreferredCurrencyClick()
-        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+        model.selectedCurrency.test {
+            skipItems(1) // Skip initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
 
-        model.calculatorVm.input("1")
-        model.calculatorVm.evaluate()
+            model.calculatorVm.input("1")
+            model.calculatorVm.evaluate()
 
-        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+            // The selection is unchanged after recording.
+            expectNoEvents()
+        }
     }
 
 
@@ -357,8 +383,11 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         }
 
         val model = createModel(isPremium = true, bookRepo = bookRepo, preference = preference)
-        model.onPreferredCurrencyClick()
-        assertEquals(SelectedCurrency.Preferred, model.selectedCurrency.value)
+        model.selectedCurrency.test {
+            skipItems(1) // Skip initial value
+            model.onPreferredCurrencyClick()
+            assertEquals(SelectedCurrency.Preferred, awaitItem())
+        }
 
         // A freshly created view model (e.g. after reopening the app) restores the selection.
         val recreatedModel = createModel(isPremium = true, bookRepo = bookRepo, preference = preference)
@@ -391,7 +420,11 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         isPremium: Boolean = false,
         currencyExchangeRepo: CurrencyExchangeRepo = FakeCurrencyExchangeRepo(),
         calculatorVm: CalculatorViewModel = createCalculatorVm(),
-        bookRepo: FakeBookRepo = FakeBookRepo(canEdit = canEditBook),
+        bookRepo: FakeBookRepo = FakeBookRepo(
+            book = Book(id = "book"),
+            currentBookId = "book",
+            canEdit = canEditBook,
+        ),
         preference: FakePreference = FakePreference {
             set(intPreferencesKey("recordCount"), recordCount)
         },

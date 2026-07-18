@@ -53,12 +53,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -108,8 +107,14 @@ class RecordViewModel(
      * Which currency the typed price is currently expressed in. Defaults to the book's currency.
      * The selection is remembered per book so it stays consistent across app launches.
      */
-    val selectedCurrency: StateFlow<SelectedCurrency>
-        field = MutableStateFlow(SelectedCurrency.Book)
+    val selectedCurrency: StateFlow<SelectedCurrency> = bookRepo.bookState
+        .mapNotNull { it?.id }
+        .distinctUntilChanged()
+        .flatMapLatest { bookId ->
+            preference.of(buildSelectedCurrencyKey(bookId), SelectedCurrency.serializer())
+        }
+        .map { it ?: SelectedCurrency.Book }
+        .stateIn(viewModelScope, SharingStarted.Lazily, SelectedCurrency.Book)
 
     private fun buildSelectedCurrencyKey(bookId: String) =
         stringPreferencesKey("selected_currency_for_$bookId")
@@ -127,7 +132,7 @@ class RecordViewModel(
         } else {
             // Fallback to the book's currency whenever the preferred currency symbol is hidden
             // (i.e. currencies match), so a stale preferred selection can't linger.
-            selectedCurrency.value = SelectedCurrency.Book
+            setSelectedCurrency(SelectedCurrency.Book)
             null
         }
     }
@@ -176,20 +181,6 @@ class RecordViewModel(
                 it.price?.let(calculatorVm::setPrice)
             }
             .launchIn(viewModelScope)
-
-        // Restore the remembered currency selection whenever the active book changes.
-        bookRepo.bookState
-            .map { it?.id }
-            .distinctUntilChanged()
-            .flatMapLatest { bookId ->
-                if (bookId == null) {
-                    emptyFlow()
-                } else {
-                    preference.of(buildSelectedCurrencyKey(bookId), SelectedCurrency.serializer())
-                }
-            }
-            .onEach { selectedCurrency.value = it ?: SelectedCurrency.Book }
-            .launchIn(viewModelScope)
     }
 
     /**
@@ -197,7 +188,6 @@ class RecordViewModel(
      * next time the book is opened.
      */
     private fun setSelectedCurrency(currency: SelectedCurrency) {
-        selectedCurrency.value = currency
         val bookId = bookRepo.currentBookId ?: return
         viewModelScope.launch {
             preference.update(

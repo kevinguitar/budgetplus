@@ -22,7 +22,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Clock
@@ -98,10 +97,6 @@ class RecordRepoImplTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
-    @Ignore("Implement it when DB abstraction is done")
-    fun `editBatch should edit all the batched records`() = runTest { }
-
-    @Test
     fun `duplicateRecord should use the current user as author, and do not carry batch info`() =
         runTest(testDispatcher) {
             createRepo().duplicateRecord(testRecord)
@@ -120,10 +115,6 @@ class RecordRepoImplTest : BaseTest(useUnconfinedDispatcher = true) {
         assertEquals(listOf("old_record_id"), recordDbClient.deletedRecordIds)
         assertEquals("record_deleted", tracker.lastEventName)
     }
-
-    @Test
-    @Ignore("Implement it when DB abstraction is done")
-    fun `deleteBatch should delete all the batched records`() = runTest { }
 
 
     private val testRecord = Record(
