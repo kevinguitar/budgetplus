@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.currency.picker
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,6 +57,8 @@ class CurrencyPickerViewModel(
     private val pinnedCurrenciesKey = stringSetPreferencesKey("pinnedCurrencies")
     private val pinnedCurrencies = preference.of(pinnedCurrenciesKey)
 
+    private val hasShownCurrencyDisclaimerKey = booleanPreferencesKey("hasShownCurrencyDisclaimerCache")
+
     private val currentCurrencyCode = when (params.purpose) {
         Purpose.Book -> bookRepo.bookState.value?.currencyCode
         Purpose.Preferred -> currencyExchangeRepo.preferredCurrencyCode
@@ -93,6 +96,14 @@ class CurrencyPickerViewModel(
             .sortedByDescending { it.isSelected }
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    suspend fun hasShownCurrencyDisclaimer(): Boolean {
+        val hasShown = preference.of(hasShownCurrencyDisclaimerKey).first() == true
+        if (!hasShown) {
+            preference.update(hasShownCurrencyDisclaimerKey, true)
+        }
+        return hasShown
+    }
 
     suspend fun onCurrencyPicked(currency: Currency) {
         when (params.purpose) {

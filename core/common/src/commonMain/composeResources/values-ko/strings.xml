@@ -203,6 +203,7 @@
     <string name="currency_picker_hint">엔 또는 JPY</string>
     <string name="currency_picker_book_edit_success">%1$s의 통화가 %2$s(으)로 변경되었습니다</string>
     <string name="currency_picker_preferred_edit_success">기본 통화가 %1$s(으)로 설정되었습니다</string>
+    <string name="currency_picker_no_conversion_disclaimer">통화를 변경해도 통화 기호만 바뀌며 기존 금액은 자동으로 환산되지 않습니다</string>
 
     <!-- Bubble -->
     <string name="bubble_invite">공유 링크를 눌러 친구들을 초대하세요!</string>
