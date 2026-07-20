@@ -20,7 +20,7 @@ firebase-bom = "34.16.0"
 # https://mvnrepository.com/artifact/com.google.firebase/firebase-crashlytics-gradle
 firebase-crashlytics = "3.0.7"
 # https://github.com/GitLiveApp/firebase-kotlin-sdk/releases
-firebase-kmp = "2.4.0"
+firebase-kmp = "2.5.0"
 # https://developer.android.com/jetpack/androidx/releases/credentials
 android-credentials = "1.6.0"
 # https://developer.android.com/jetpack/androidx/releases/lifecycle
