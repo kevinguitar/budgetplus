@@ -1,6 +1,6 @@
 [versions]
 # https://developer.android.com/reference/tools/gradle-api
-gradle-plugin = "9.3.0"
+gradle-plugin = "9.3.1"
 # https://kotlinlang.org/docs/releases.html#release-details
 kotlin = "2.4.10"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
