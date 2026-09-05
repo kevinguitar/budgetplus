@@ -196,6 +196,7 @@
 				1863F0F2EB00B17E5A9BE78C /* Sources */,
 				403AF2F1C76CD538513AA497 /* Frameworks */,
 				D26F08481507A91DBA7D9DA3 /* Resources */,
+				0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */,
 				0A3F62102F48988C008A7161 /* Embed Foundation Extensions */,
 				0AEA3C6E2F55B93B00481525 /* ShellScript */,
 			);
@@ -292,6 +293,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Configure Stage environment (Debug)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Debug builds target the staging environment. Two things happen here, both gated on\n# CONFIGURATION == Debug:\n#   1. Swap in the staging GoogleService-Info.plist (production ships as the default resource).\n#   2. Append \\\" Stage\\\" to the localized app display name (CFBundleDisplayName) so the icon\n#      label makes the staging build obvious. The string catalog cannot vary per build config\n#      and does not expand build-setting variables, so we patch the built product directly,\n#      covering the base Info.plist and every localized InfoPlist.strings.\nset -e\nif [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n  echo \"Release configuration: using production GoogleService-Info.plist and app name\"\n  exit 0\nfi\n\n# UI test builds override the bundle id to production and route Firebase to the local\n# emulators via a swapped-in test GoogleService-Info.plist, so the staging swap must not\n# run (the staging plist is also absent in the UI test CI job).\ncase \" ${SWIFT_ACTIVE_COMPILATION_CONDITIONS} \" in\n  *\" UI_TEST \"*)\n    echo \"UI_TEST build: keeping the test GoogleService-Info.plist and app name\"\n    exit 0\n    ;;\nesac\n\nRES_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nPB=\"/usr/libexec/PlistBuddy\"\nSUFFIX=\" Stage\"\n\n# 1. Staging Firebase config.\nSRC=\"${SRCROOT}/Firebase/Stage/GoogleService-Info.plist\"\necho \"Using STAGING GoogleService-Info.plist from ${SRC}\"\ncp \"${SRC}\" \"${RES_DIR}/GoogleService-Info.plist\"\n\n# 2. Base Info.plist display name (development region / fallback).\nINFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nif [ -f \"${INFO_PLIST}\" ]; then\n  CURRENT=$(${PB} -c \"Print :CFBundleDisplayName\" \"${INFO_PLIST}\" 2>/dev/null || echo \"\")\n  if [ -z \"${CURRENT}\" ]; then\n    ${PB} -c \"Add :CFBundleDisplayName string Budget+${SUFFIX}\" \"${INFO_PLIST}\"\n  else\n    case \"${CURRENT}\" in\n      *\"${SUFFIX}\") : ;; # already suffixed\n      *) ${PB} -c \"Set :CFBundleDisplayName ${CURRENT}${SUFFIX}\" \"${INFO_PLIST}\" ;;\n    esac\n  fi\nfi\n\n# 3. Every localized InfoPlist.strings display name.\nfind \"${RES_DIR}\" -name InfoPlist.strings -path '*.lproj/*' | while read -r STRINGS; do\n  NAME=$(${PB} -c \"Print :CFBundleDisplayName\" \"${STRINGS}\" 2>/dev/null || echo \"\")\n  [ -z \"${NAME}\" ] && continue\n  case \"${NAME}\" in\n    *\"${SUFFIX}\") continue ;;\n  esac\n  ${PB} -c \"Set :CFBundleDisplayName ${NAME}${SUFFIX}\" \"${STRINGS}\"\ndone\n";
+		};
 		0AEA3C6E2F55B93B00481525 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -384,7 +404,7 @@
 				);
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus.NotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).NotificationServiceExtension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -458,7 +478,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -600,6 +620,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				APP_BUNDLE_ID = com.kevlina.budgetplus.stage;
 			};
 			name = Debug;
 		};

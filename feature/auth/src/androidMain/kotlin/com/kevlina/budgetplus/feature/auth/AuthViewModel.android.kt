@@ -21,6 +21,7 @@ import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.data.local.Preference
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Named
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -33,12 +34,12 @@ actual class AuthViewModel(
     private val activityProvider: ActivityProvider,
     private val snackbarSender: SnackbarSender,
     private val context: Context,
+    @Named("google_client_id") private val googleClientId: String,
     referrerHandlerFactory: ReferrerHandler.Factory,
     preference: Preference,
 ) : ViewModel() {
 
     private val credentialManager by lazy { CredentialManager.create(context) }
-    private val googleClientId get() = context.getString(R.string.google_cloud_client_id)
 
     private val isFirstLaunchAfterInstallKey = booleanPreferencesKey("isFirstLaunchAfterInstall")
 

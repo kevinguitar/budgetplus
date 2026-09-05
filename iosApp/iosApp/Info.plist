@@ -7,9 +7,12 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<!-- Google Sign-In reversed client IDs. iOS accepts multiple; the SDK matches the one
+			     from the active GoogleService-Info.plist, so both prod and stage can coexist here. -->
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.919948371655-p843lc956elmq7ohi5ji6rlrukua2fmt</string>
+				<string>com.googleusercontent.apps.234799301831-llffmr6mfnglcm5b9oj40hlasfhdu7dp</string>
 			</array>
 		</dict>
 		<dict>

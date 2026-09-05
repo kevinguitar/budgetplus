@@ -70,9 +70,21 @@ class BudgetPlusAppConventionPlugin : Plugin<Project> {
             }
 
             buildTypes {
+                getByName("debug") {
+                    // Debug builds point at the staging Firebase project instead of production.
+                    applicationIdSuffix = ".stage"
+                    versionNameSuffix = "-stage"
+                }
                 create("uiTest") {
                     initWith(getByName("debug"))
                     matchingFallbacks += listOf("debug")
+                    // Maestro launches/clears the app by a hardcoded id (appId: com.kevlina.budgetplus in
+                    // ui-tests/*.yml, and `adb pm clear com.kevlina.budgetplus`), so the uiTest APK must keep the
+                    // production applicationId; drop the staging suffix inherited from debug. Firebase is still routed
+                    // to the local emulators via UiTestEnvironment, so the id only needs to match Maestro + the
+                    // google-services package check, not a project.
+                    applicationIdSuffix = null
+                    versionNameSuffix = null
                 }
                 getByName("release") {
                     isMinifyEnabled = true

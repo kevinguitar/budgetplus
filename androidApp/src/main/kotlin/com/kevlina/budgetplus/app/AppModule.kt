@@ -18,6 +18,12 @@ interface AppModule {
     }
 
     @Provides
+    @Named("google_client_id")
+    fun provideGoogleClientId(context: Context): String {
+        return context.getString(R.string.google_cloud_client_id)
+    }
+
+    @Provides
     fun provideAdUnitId(context: Context): AdUnitId {
         return AdUnitId(
             banner = context.getString(R.string.admob_banner_id_30sec),

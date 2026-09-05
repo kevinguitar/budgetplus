@@ -50,10 +50,13 @@ jobs:
         env:
           ENCODED_KEYSTORE: ${{ secrets.KEYSTORE_FILE }}
           ENCODED_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          ENCODED_STAGE_GOOGLE_SERVICES_JSON: ${{ secrets.STAGE_GOOGLE_SERVICES_JSON }}
           ENCODED_INSIDER_GOOGLE_SERVICES_JSON: ${{ secrets.INSIDER_GOOGLE_SERVICES_JSON }}
         run: |
           echo $ENCODED_KEYSTORE | base64 -d > ./BudgetKey
           echo $ENCODED_GOOGLE_SERVICES_JSON | base64 -d > ./androidApp/google-services.json
+          mkdir -p ./androidApp/src/debug
+          echo $ENCODED_STAGE_GOOGLE_SERVICES_JSON | base64 -d > ./androidApp/src/debug/google-services.json
           echo $ENCODED_INSIDER_GOOGLE_SERVICES_JSON | base64 -d > ./insiderApp/google-services.json
 
       - name: Echo Secrets

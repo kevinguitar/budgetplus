@@ -4,6 +4,7 @@ import FBAudienceNetwork
 import FirebaseCore
 import FirebaseFirestore
 import FirebaseMessaging
+import GoogleSignIn
 import SwiftUI
 
 // For full explanation
@@ -14,6 +15,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FirebaseApp.configure()
+
+        // Configure Google Sign-In from the active GoogleService-Info.plist rather than the
+        // static GIDClientID in Info.plist, so the correct OAuth client is used per environment
+        // (production vs. stage, which point at different Firebase projects).
+        if let clientID = FirebaseApp.app()?.options.clientID {
+            GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+        }
+
         #if UI_TEST
             UiTestEnvironment.shared.configure(emulatorHost: "127.0.0.1")
         #endif

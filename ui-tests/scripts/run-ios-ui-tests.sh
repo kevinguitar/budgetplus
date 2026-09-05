@@ -55,6 +55,7 @@ xcodebuild build \
   CODE_SIGN_IDENTITY=- \
   ARCHS=arm64 \
   ONLY_ACTIVE_ARCH=YES \
+  APP_BUNDLE_ID=com.kevlina.budgetplus \
   SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) UI_TEST'
 
 APP_PATH="build/ui-tests/Build/Products/Debug-iphonesimulator/BudgetPlus.app"

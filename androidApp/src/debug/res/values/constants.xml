@@ -4,5 +4,8 @@
     <string name="admob_banner_id_30sec" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="admob_interstitial_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 
+    <!-- Google sdk-->
+    <string name="google_cloud_client_id" translatable="false">234799301831-qddbr6aud4ir8d35tpj36p0crt721fv3.apps.googleusercontent.com</string>
+
     <bool name="is_debug">true</bool>
 </resources>
