@@ -3,12 +3,14 @@ package com.kevlina.budgetplus.core.di
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK
 import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_PATH
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(AppScope::class)
-interface CommonModule {
+@BindingContainer
+object CommonProviders {
 
     @Provides
     @Named("app_package")
