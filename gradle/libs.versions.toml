@@ -41,7 +41,7 @@ revenuecat-kmp = "3.7.0"
 # https://github.com/ktorio/ktor/releases
 ktor = "3.5.2"
 # https://github.com/touchlab/Kermit/releases
-kermit = "2.1.0"
+kermit = "2.2.0"
 
 compileAndroidSdk = "37"
 minAndroidSdk = "26"
