@@ -10,12 +10,14 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.CollectionReference
 import dev.gitlive.firebase.firestore.firestore
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
-interface FirestoreModule {
+@BindingContainer
+object FirestoreProviders {
 
     @UsersDb
     @SingleIn(AppScope::class)

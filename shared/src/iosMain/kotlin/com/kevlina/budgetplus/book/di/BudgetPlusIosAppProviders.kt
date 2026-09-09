@@ -4,6 +4,7 @@ import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.UiTestFlags
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
@@ -11,7 +12,8 @@ import dev.zacsweers.metro.SingleIn
 import kotlin.experimental.ExperimentalNativeApi
 
 @ContributesTo(AppScope::class)
-interface BudgetPlusIosAppModule {
+@BindingContainer
+object BudgetPlusIosAppProviders {
 
     @Provides
     fun provideAdUnitId(): AdUnitId = AdUnitId(

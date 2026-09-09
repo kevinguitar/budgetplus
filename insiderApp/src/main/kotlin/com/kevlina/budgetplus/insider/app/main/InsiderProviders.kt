@@ -6,13 +6,15 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.insiderApp.BuildConfig
 import com.kevlina.budgetplus.insiderApp.R
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
-interface InsiderModule {
+@BindingContainer
+object InsiderProviders {
 
     @SingleIn(AppScope::class)
     @Provides
