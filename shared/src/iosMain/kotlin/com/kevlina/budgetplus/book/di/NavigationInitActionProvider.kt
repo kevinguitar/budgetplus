@@ -6,12 +6,14 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(AppScope::class)
-interface NavigationInitActionProvider {
+@BindingContainer
+object NavigationInitActionProvider {
 
     @Provides @IntoSet
     fun navControllerInit(
