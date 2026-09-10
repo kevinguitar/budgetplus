@@ -1,12 +1,15 @@
-# A1 — Banner ad area present for free users on the Record screen
-# Tolerant of ad-load variance: the banner area shows a test ad ("Test Ad") when loaded
-# or "No ads available" when the ad unit can't fill (e.g. iOS simulator).
+# A1 — Banner ad area present for free users on the Record screen.
+# The ad SDK load state is non-deterministic on the iOS simulator: it can stay in
+# "Loading" (a Lottie loader with no matchable text) well past any reasonable timeout,
+# so asserting on "Test Ad" / "No ads available" is flaky. Instead assert on the stable
+# "Banner Ad Area" identifier the app exposes on the banner container in UI-test builds,
+# which is present regardless of whether the ad loaded, failed to fill, or is loading.
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
 - extendedWaitUntil:
     visible:
-      text: "Test Ad|No ads available"
+      text: "Banner Ad Area"
     timeout: 20000
 - assertVisible:
-    text: "Test Ad|No ads available"
+    text: "Banner Ad Area"
