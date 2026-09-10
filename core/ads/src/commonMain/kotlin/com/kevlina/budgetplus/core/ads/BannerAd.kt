@@ -16,17 +16,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ads_not_available
 import budgetplus.core.common.generated.resources.ic_search_off
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.lottie.loadLottieSpec
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
+import com.kevlina.budgetplus.core.ui.thenIf
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.ExperimentalCompottieApi
 import io.github.alexzhirkevich.compottie.dynamic.rememberLottieDynamicProperties
@@ -35,6 +39,10 @@ import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
+// Stable identifier surfaced (UI-test builds only) on the banner container so flows
+// can assert the banner area is present regardless of the ad SDK load state.
+const val BANNER_AD_TEST_TAG = "Banner Ad Area"
+
 @Composable
 fun BannerAd(bannerId: String) {
     Box(
@@ -42,6 +50,13 @@ fun BannerAd(bannerId: String) {
         modifier = Modifier
             .height(50.dp)
             .fillMaxWidth()
+            // Expose a stable identifier for UI tests so the banner *area* can be
+            // asserted deterministically, independent of the ad SDK load state
+            // (which on the iOS simulator can stay in Loading well beyond the test
+            // timeout and never surface "Test Ad" / "No ads available" text).
+            .thenIf(UiTestFlags.enabled) {
+                Modifier.semantics { contentDescription = BANNER_AD_TEST_TAG }
+            }
     ) {
         var adBannerState by remember { mutableStateOf(AdBannerState.Loading) }
         NativeBannerAd(

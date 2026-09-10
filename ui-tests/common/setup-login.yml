@@ -11,18 +11,31 @@ appId: com.kevlina.budgetplus
       text: "Continue with Google|Book Name|AC"
     timeout: 45000
 # Sign in if we're on the Auth screen.
+# The Firebase Auth emulator Google sign-in occasionally fails and bounces the app
+# back to the Auth screen (observed on iOS CI: the "Continue with Google" tap lands
+# on the auth webview then returns to Welcome without authenticating). Retry the whole
+# sign-in gesture until we leave the Auth screen (i.e. "Book Name" or "AC" appears).
 - runFlow:
     when:
       visible:
         text: "Continue with Google"
     commands:
-      - tapOn:
-          text: "Continue with Google"
-      - runFlow: dismiss-system-dialogs.yml
-      - extendedWaitUntil:
-          visible:
-            text: "Book Name"
-          timeout: 60000
+      - retry:
+          maxRetries: 3
+          commands:
+            - tapOn:
+                text: "Continue with Google"
+            - runFlow: dismiss-system-dialogs.yml
+            # After sign-in the app lands on Welcome ("Book Name") for a new account,
+            # or straight on Record ("AC") if a book already exists. If the sign-in
+            # bounced back, "Continue with Google" is still visible and the assert
+            # below fails, triggering a retry of the tap.
+            - extendedWaitUntil:
+                visible:
+                  text: "Book Name|AC"
+                timeout: 45000
+            - assertVisible:
+                text: "Book Name|AC"
 # Create the book if we're on the Welcome screen.
 - runFlow:
     when:
