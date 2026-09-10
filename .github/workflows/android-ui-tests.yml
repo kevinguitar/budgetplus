@@ -42,8 +42,6 @@ jobs:
           # across jobs avoids surprising cross-job differences; the Gradle build cache is
           # only written from main.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
-          # Keep entries isolated per job.
-          gradle-home-cache-strict-match: true
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Install Firebase CLI

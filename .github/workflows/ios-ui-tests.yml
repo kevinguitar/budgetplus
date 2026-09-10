@@ -49,8 +49,6 @@ jobs:
           # shared/build/spmKmpPlugin, so a restored entry breaks a fresh workspace whose
           # checkout wasn't re-fetched.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
-          # Keep entries isolated per job.
-          gradle-home-cache-strict-match: true
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Cache Kotlin/Native compiler and platform libs
