@@ -14,6 +14,23 @@ set -euo pipefail
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$ROOT_DIR"
 
+# Which suite(s) to run. CI shards the suites across parallel jobs so no single job
+# approaches the 120-minute workflow ceiling. Read from the environment (default
+# `all` for local runs) so it survives the `--suites` re-invocation via
+# emulators:exec (which runs its command through /bin/sh and only uses $1). Accepts:
+#   login   – ui-tests/login
+#   free    – ui-tests/after-login/free
+#   premium – ui-tests/after-login/premium
+#   all     – every suite (default; used for local runs)
+SHARD="${SHARD:-all}"
+case "$SHARD" in
+  login | free | premium | all) ;;
+  *)
+    echo "Unknown shard '$SHARD' (expected: login, free, premium, all)" >&2
+    exit 1
+    ;;
+esac
+
 # Prefer the maestro on PATH; fall back to the default install location (CI installs it there).
 MAESTRO_BIN=$(command -v maestro || echo "$HOME/.maestro/bin/maestro")
 
@@ -61,19 +78,25 @@ run_suites() {
   suites_failed=0
 
   # login runs first on freshly cleared state (its flows also clearState per-flow).
-  wait_for_device || true
-  adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
-  run_suite_dir login ui-tests/login
+  if [[ "$SHARD" == "login" || "$SHARD" == "all" ]]; then
+    wait_for_device || true
+    adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
+    run_suite_dir login ui-tests/login
+  fi
 
   # after-login/free re-provisions via setup-login on a fresh anonymous user.
-  wait_for_device || true
-  adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
-  run_suite_dir after-login-free ui-tests/after-login/free
+  if [[ "$SHARD" == "free" || "$SHARD" == "all" ]]; then
+    wait_for_device || true
+    adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
+    run_suite_dir after-login-free ui-tests/after-login/free
+  fi
 
   # after-login/premium seeds premium via the uiTestPremium deeplink.
-  wait_for_device || true
-  adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
-  run_suite_dir after-login-premium ui-tests/after-login/premium
+  if [[ "$SHARD" == "premium" || "$SHARD" == "all" ]]; then
+    wait_for_device || true
+    adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
+    run_suite_dir after-login-premium ui-tests/after-login/premium
+  fi
 
   return "$suites_failed"
 }
@@ -384,8 +407,9 @@ adb shell settings put secure stylus_handwriting_enabled 0 || true
 adb shell settings put secure stylus_handwriting_default_value 0 || true
 
 # Run the suites inside the emulator environment. emulators:exec runs its command
-# via /bin/sh, so re-invoke this script with bash (see --suites note above).
-export MAESTRO_BIN MAESTRO_OUTPUT_DIR
+# via /bin/sh, so re-invoke this script with bash (see --suites note above). Export
+# SHARD so the re-invocation runs the same suite slice as this outer invocation.
+export MAESTRO_BIN MAESTRO_OUTPUT_DIR SHARD
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
   emulators:exec --only auth,firestore "bash ui-tests/scripts/run-android-ui-tests.sh --suites"

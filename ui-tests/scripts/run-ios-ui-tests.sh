@@ -7,6 +7,21 @@ SERVICE_FILE="$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist"
 TEST_SERVICE_FILE="$ROOT_DIR/ui-tests/config/GoogleService-Info.plist"
 BACKUP_SERVICE_FILE="$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist.bak"
 SIMULATOR_NAME=${1:-iPhone 17}
+# Which suite(s) to run. CI shards the suites across parallel jobs so no single
+# job approaches the 120-minute workflow ceiling (the full sequential suite is
+# ~84 minutes of tests on top of a ~31-minute cold framework build). Accepts:
+#   login   – ui-tests/login/*.yml
+#   free    – ui-tests/after-login/free
+#   premium – ui-tests/after-login/premium
+#   all     – every suite (default; used for local runs)
+SHARD=${2:-all}
+case "$SHARD" in
+  login | free | premium | all) ;;
+  *)
+    printf 'Unknown shard %q (expected: login, free, premium, all)\n' "$SHARD" >&2
+    exit 1
+    ;;
+esac
 SIMULATOR_ID=$(xcrun simctl list devices available | awk -v name="$SIMULATOR_NAME" 'index($0, name " (") && /\(Booted\)/ { id = $(NF - 1); gsub(/[()]/, "", id); print id; exit }')
 
 if [[ -z "$SIMULATOR_ID" ]]; then
@@ -104,25 +119,31 @@ run_suites() {
 
   # login: each flow needs a truly unauthenticated start, so reset the keychain before
   # every flow (iOS persists Firebase auth in the keychain across clearState).
-  for flow in ui-tests/login/*.yml; do
-    # Honor per-flow platform gating (running a single file bypasses Maestro's own gate).
-    if grep -q '^platform: Android' "$flow"; then
-      continue
-    fi
+  if [[ "$SHARD" == "login" || "$SHARD" == "all" ]]; then
+    for flow in ui-tests/login/*.yml; do
+      # Honor per-flow platform gating (running a single file bypasses Maestro's own gate).
+      if grep -q '^platform: Android' "$flow"; then
+        continue
+      fi
+      reset_app
+      maestro_test "login/$(basename "$flow" .yml)" "$flow" || suite_result=1
+    done
+  fi
+
+  if [[ "$SHARD" == "free" || "$SHARD" == "all" ]]; then
     reset_app
-    maestro_test "login/$(basename "$flow" .yml)" "$flow" || suite_result=1
-  done
+    maestro_test after-login-free ui-tests/after-login/free || suite_result=1
+  fi
 
-  reset_app
-  maestro_test after-login-free ui-tests/after-login/free || suite_result=1
-
-  reset_app
-  maestro_test after-login-premium ui-tests/after-login/premium || suite_result=1
+  if [[ "$SHARD" == "premium" || "$SHARD" == "all" ]]; then
+    reset_app
+    maestro_test after-login-premium ui-tests/after-login/premium || suite_result=1
+  fi
 
   return "$suite_result"
 }
 
-export SIMULATOR_ID APP_PATH MAESTRO_BIN
+export SIMULATOR_ID APP_PATH MAESTRO_BIN SHARD
 export -f maestro_test reset_app run_suites
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \

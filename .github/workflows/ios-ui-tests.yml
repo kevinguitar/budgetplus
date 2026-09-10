@@ -5,9 +5,15 @@ on:
 
 jobs:
   ios-ui-tests:
-    name: iOS UI tests
+    # Shard the Maestro suites across parallel jobs. The full sequential suite is
+    # ~84 min of tests on top of a ~31 min cold Kotlin/Native framework build.
+    name: iOS UI tests (${{ matrix.shard }})
     runs-on: macos-latest
-    timeout-minutes: 120
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [login, free, premium]
     permissions:
       contents: read
       checks: write
@@ -43,8 +49,6 @@ jobs:
           # shared/build/spmKmpPlugin, so a restored entry breaks a fresh workspace whose
           # checkout wasn't re-fetched.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
-          # Keep entries isolated per job.
-          gradle-home-cache-strict-match: true
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Cache Kotlin/Native compiler and platform libs
@@ -109,9 +113,9 @@ jobs:
           mkdir -p build/maestro/ios
           set +e
           # The runner script swaps in the test Firebase config, builds the app, forces the
-          # simulator to English, and runs the login/free/premium suites inside the Firebase
+          # simulator to English, and runs the requested suite shard inside the Firebase
           # emulators. It restores the production GoogleService-Info.plist on exit.
-          ./ui-tests/scripts/run-ios-ui-tests.sh "$SIMULATOR_NAME"
+          ./ui-tests/scripts/run-ios-ui-tests.sh "$SIMULATOR_NAME" "${{ matrix.shard }}"
           result=$?
           xcrun simctl io "$SIMULATOR_ID" screenshot build/maestro/ios/final-screen.png || true
           exit $result
@@ -120,7 +124,7 @@ jobs:
         if: always()
         uses: dorny/test-reporter@v3
         with:
-          name: iOS UI test results
+          name: iOS UI test results (${{ matrix.shard }})
           path: build/maestro/ios/**/report.xml
           reporter: java-junit
           fail-on-error: false
@@ -128,13 +132,13 @@ jobs:
 
       - name: iOS UI test summary
         if: always()
-        run: bash ui-tests/scripts/junit-summary.sh "iOS" build/maestro/ios
+        run: bash ui-tests/scripts/junit-summary.sh "iOS (${{ matrix.shard }})" build/maestro/ios
 
       - name: Upload iOS UI test artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ios-ui-test-artifacts
+          name: ios-ui-test-artifacts-${{ matrix.shard }}
           path: |
             build/maestro/ios
             firebase-debug.log

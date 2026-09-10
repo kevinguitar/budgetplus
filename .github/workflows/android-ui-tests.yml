@@ -5,9 +5,13 @@ on:
 
 jobs:
   android-ui-tests:
-    name: Android UI tests
+    name: Android UI tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [login, free, premium]
     permissions:
       contents: read
       checks: write
@@ -16,6 +20,7 @@ jobs:
       MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
       MAESTRO_DISABLE_UPDATE_CHECK: true
       MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
+      SHARD: ${{ matrix.shard }}
 
     steps:
       - uses: actions/checkout@v7
@@ -37,8 +42,6 @@ jobs:
           # across jobs avoids surprising cross-job differences; the Gradle build cache is
           # only written from main.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
-          # Keep entries isolated per job.
-          gradle-home-cache-strict-match: true
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Install Firebase CLI
@@ -114,7 +117,7 @@ jobs:
         if: always()
         uses: dorny/test-reporter@v3
         with:
-          name: Android UI test results
+          name: Android UI test results (${{ matrix.shard }})
           path: build/maestro/android/**/report.xml
           reporter: java-junit
           fail-on-error: false
@@ -122,13 +125,13 @@ jobs:
 
       - name: Android UI test summary
         if: always()
-        run: bash ui-tests/scripts/junit-summary.sh "Android" build/maestro/android
+        run: bash ui-tests/scripts/junit-summary.sh "Android (${{ matrix.shard }})" build/maestro/android
 
       - name: Upload Android UI test artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-ui-test-artifacts
+          name: android-ui-test-artifacts-${{ matrix.shard }}
           path: |
             build/maestro/android
             firebase-debug.log
