@@ -4,27 +4,31 @@
 # banner ad on the Record screen.
 appId: com.kevlina.budgetplus
 ---
-- openLink: "budgetplus://uiTestPremium"
-# iOS shows an "Open in Budget+?" confirmation for custom-scheme deeplinks.
-- tapOn:
-    text: "Open"
-    optional: true
-- runFlow:
-    when:
-      visible:
-        text: "Budget+ Premium unlocked!"
+# On iOS the deeplink is delivered through a conflating StateFlow<Event> collected in a
+# LaunchedEffect; if the event is sent before/around the collector subscribing it can be
+# dropped, so a single openLink intermittently never reaches markPremium (observed: the
+# "unlocked" snackbar never appears and the banner ad stays). The deeplink is idempotent
+# (markPremium short-circuits when already premium), so retry the whole send until premium
+# actually takes effect — confirmed by the banner ad ("Test Ad"/"No ads available") being
+# gone on the Record screen.
+- retry:
+    maxRetries: 3
     commands:
-      - assertVisible:
-          text: "Budget+ Premium unlocked!"
-# Confirm premium took effect: the banner ad area is gone on the Record screen
-# (neither a test ad nor the "No ads available" placeholder shown to free users).
-- runFlow: assert-on-record.yml
-- extendedWaitUntil:
-    notVisible:
-      text: "Test Ad|No ads available"
-    timeout: 20000
-- assertNotVisible:
-    text: "Test Ad|No ads available"
+      - openLink: "budgetplus://uiTestPremium"
+      # iOS shows an "Open in Budget+?" confirmation for custom-scheme deeplinks.
+      - tapOn:
+          text: "Open"
+          optional: true
+      # Back on the Record screen, wait for premium to hide the banner ad area (neither a
+      # test ad nor the "No ads available" placeholder shown to free users). If it's still
+      # visible when the wait expires, the assert fails and the deeplink send is retried.
+      - runFlow: assert-on-record.yml
+      - extendedWaitUntil:
+          notVisible:
+            text: "Test Ad|No ads available"
+          timeout: 20000
+      - assertNotVisible:
+          text: "Test Ad|No ads available"
 # Dismiss the (persistent, UI-test) "unlocked" snackbar so it doesn't block later
 # bottom-screen interactions (e.g. the Overview Search FAB, or the lower rows of the
 # Settings list like "Color Tone Picker"). UI-test builds make the snackbar
