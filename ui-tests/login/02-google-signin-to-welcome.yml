@@ -4,25 +4,24 @@ appId: com.kevlina.budgetplus
 - launchApp:
     clearState: true
 - runFlow: ../common/ensure-logged-out.yml
-- tapOn:
-    text: "Continue with Google"
-- runFlow: ../common/dismiss-system-dialogs.yml
-# The auth emulator occasionally drops the first sign-in; if the Welcome screen hasn't
-# appeared shortly after, tap sign-in once more before the long wait below.
-- runFlow:
-    when:
-      visible:
-        text: "Continue with Google"
+# The Firebase Auth emulator occasionally drops the first sign-in and bounces the app
+# back to the Auth screen. Retry the whole sign-in gesture atomically: tap, dismiss
+# system dialogs, then wait for the Welcome screen ("Book Name"). If the sign-in
+# bounced back, the assert fails and the retry taps again. This avoids the race where
+# a separate `when: visible` guard passed while sign-in was still in flight, then the
+# retry tap fired after the app had already navigated to Welcome.
+- retry:
+    maxRetries: 3
     commands:
       - tapOn:
           text: "Continue with Google"
       - runFlow: ../common/dismiss-system-dialogs.yml
-- extendedWaitUntil:
-    visible:
-      text: "Book Name"
-    timeout: 60000
-- assertVisible:
-    text: "Book Name"
+      - extendedWaitUntil:
+          visible:
+            text: "Book Name"
+          timeout: 60000
+      - assertVisible:
+          text: "Book Name"
 - assertVisible:
     text: "My accounting book"
 - assertVisible:
