@@ -2,6 +2,9 @@ package com.kevlina.budgetplus.core.ui
 
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -64,15 +67,24 @@ object AppTheme {
      *  the children within the [containerMaxWidth].
      */
     context(scope: BoxWithConstraintsScope)
+    @Composable
     fun listContentPaddings(
         all: Dp = 0.dp,
         horizontal: Dp = all,
         vertical: Dp = all,
+        addNavigationBarPadding: Boolean = false,
     ): PaddingValues {
         val containerHorizontalPadding = (scope.maxWidth - containerMaxWidth).coerceAtLeast(0.dp) / 2
+        val navigationBarPadding = if (addNavigationBarPadding) {
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        } else {
+            0.dp
+        }
         return PaddingValues(
-            horizontal = containerHorizontalPadding + horizontal,
-            vertical = vertical
+            start = containerHorizontalPadding + horizontal,
+            end = containerHorizontalPadding + horizontal,
+            top = vertical,
+            bottom = vertical + navigationBarPadding
         )
     }
 }

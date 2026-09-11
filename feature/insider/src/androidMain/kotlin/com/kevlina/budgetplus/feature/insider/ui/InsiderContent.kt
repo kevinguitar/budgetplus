@@ -61,7 +61,11 @@ internal fun BoxWithConstraintsScope.InsiderContent() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = AppTheme.listContentPaddings(horizontal = 16.dp, vertical = 12.dp)
+        contentPadding = AppTheme.listContentPaddings(
+            horizontal = 16.dp,
+            vertical = 12.dp,
+            addNavigationBarPadding = true
+        )
     ) {
 
         val data = insiderData
