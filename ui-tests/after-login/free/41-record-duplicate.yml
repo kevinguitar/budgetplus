@@ -7,7 +7,7 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Daily"
 - tapOn:
-    point: "74%,96%"
+    text: "bottom_nav_history"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"
@@ -33,5 +33,5 @@ appId: com.kevlina.budgetplus
       text: "Record duplicated"
     timeout: 10000
 - tapOn:
-    point: "18%,96%"
+    text: "bottom_nav_add"
 - runFlow: ../../common/assert-on-record.yml

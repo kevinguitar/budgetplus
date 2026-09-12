@@ -1,5 +1,6 @@
 # O1/O2/O3/O8 — Overview navigation, type toggle, period pills, balance card
-# The History bottom-nav tab is icon-only, tapped by position (bottom-right).
+# The History bottom-nav tab is icon-only; tapped by its UI-test-only contentDescription
+# (bottom_nav_history) since positional taps intermittently miss on iOS.
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
@@ -22,7 +23,7 @@ appId: com.kevlina.budgetplus
     timeout: 10000
 # Navigate to History / Overview.
 - tapOn:
-    point: "74%,96%"
+    text: "bottom_nav_history"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"
@@ -56,5 +57,5 @@ appId: com.kevlina.budgetplus
     text: "1M"
 # Return to Record.
 - tapOn:
-    point: "18%,96%"
+    text: "bottom_nav_add"
 - runFlow: ../../common/assert-on-record.yml
