@@ -3,6 +3,8 @@ package com.kevlina.budgetplus.feature.add.record.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -21,12 +23,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -92,6 +96,26 @@ private val horizontalSpacing = 12.dp
 private val verticalSpacing = 8.dp
 private val calcButtons = CalculatorButton.entries.toList()
 
+/**
+ * Creates a [MutableInteractionSource] that fires a light key-press haptic the instant a press begins (pointer down).
+ */
+@Composable
+private fun rememberHapticInteractionSource(
+    enabled: Boolean,
+    hapticFeedback: HapticFeedback,
+): MutableInteractionSource {
+    val interactionSource = remember { MutableInteractionSource() }
+    val currentEnabled by rememberUpdatedState(enabled)
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collect { interaction ->
+            if (interaction is PressInteraction.Press && currentEnabled) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.VirtualKey)
+            }
+        }
+    }
+    return interactionSource
+}
+
 @Composable
 internal fun Calculator(
     state: CalculatorState,
@@ -104,13 +128,6 @@ internal fun Calculator(
     val isBookFrozen by state.isBookFrozen.collectAsStateWithLifecycle()
     val hapticFeedback = LocalHapticFeedback.current
     val focusRequester = remember { FocusRequester() }
-
-    fun onButtonClick() {
-        focusRequester.requestFocus()
-        if (vibrateOnInput) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-        }
-    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(verticalSpacing),
@@ -201,8 +218,12 @@ internal fun Calculator(
                                 button = btn,
                                 isAdaptive = adaptiveButton,
                                 calculatorButtonType = calculatorButtonType,
+                                interactionSource = rememberHapticInteractionSource(
+                                    enabled = vibrateOnInput,
+                                    hapticFeedback = hapticFeedback,
+                                ),
                                 onClick = {
-                                    onButtonClick()
+                                    focusRequester.requestFocus()
                                     state.onInput(btn)
                                 },
                                 onLongClick = if (btn == CalculatorButton.Dot) {
@@ -221,7 +242,7 @@ internal fun Calculator(
                 when (index) {
                     0 -> {
                         val onClearClick = {
-                            onButtonClick()
+                            focusRequester.requestFocus()
                             state.onCalculatorAction(CalculatorAction.Clear)
                         }
                         val clearText = @Composable {
@@ -245,6 +266,10 @@ internal fun Calculator(
                             CalculatorBtnContainer(
                                 isAdaptive = adaptiveButton,
                                 onClick = onClearClick,
+                                interactionSource = rememberHapticInteractionSource(
+                                    enabled = vibrateOnInput,
+                                    hapticFeedback = hapticFeedback,
+                                ),
                                 color = LocalAppColors.current.dark
                             ) {
                                 clearText()
@@ -256,7 +281,7 @@ internal fun Calculator(
                         needEvaluate = needEvaluate,
                         enabled = !isBookFrozen,
                         onClick = {
-                            onButtonClick()
+                            focusRequester.requestFocus()
                             state.onCalculatorAction(
                                 if (needEvaluate) {
                                     CalculatorAction.Evaluate
@@ -288,11 +313,13 @@ private fun ColumnScope.CalculatorBtnContainer(
     modifier: Modifier = Modifier,
     onLongClick: (() -> Unit)? = null,
     color: Color = LocalAppColors.current.primary,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable BoxScope.() -> Unit,
 ) {
     Surface(
         onClick = onClick,
         onLongClick = onLongClick,
+        interactionSource = interactionSource,
         modifier = modifier
             .weight(1F)
             .focusProperties { canFocus = false }
@@ -311,11 +338,13 @@ private fun ColumnScope.CalculatorBtn(
     calculatorButtonType: CalculatorButtonType,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)?,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     CalculatorBtnContainer(
         isAdaptive = isAdaptive,
         onClick = onClick,
-        onLongClick = onLongClick
+        onLongClick = onLongClick,
+        interactionSource = interactionSource
     ) {
         when (button) {
             CalculatorButton.Delete -> Icon(
