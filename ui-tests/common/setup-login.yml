@@ -23,9 +23,20 @@ appId: com.kevlina.budgetplus
       - retry:
           maxRetries: 3
           commands:
-            - tapOn:
-                text: "Continue with Google"
-            - runFlow: dismiss-system-dialogs.yml
+            # Only tap when we're actually still on the Auth screen. A previous attempt's
+            # sign-in can succeed slowly: the assert below times out and triggers a retry,
+            # but by the time this runs the app has already navigated to Welcome/Record, so
+            # "Continue with Google" is gone. Tapping it unconditionally then throws
+            # ElementNotFound and fails the whole flow even though sign-in worked. Guard the
+            # tap so such a retry just re-checks the assert (which now passes).
+            - runFlow:
+                when:
+                  visible:
+                    text: "Continue with Google"
+                commands:
+                  - tapOn:
+                      text: "Continue with Google"
+                  - runFlow: dismiss-system-dialogs.yml
             # After sign-in the app lands on Welcome ("Book Name") for a new account,
             # or straight on Record ("AC") if a book already exists. If the sign-in
             # bounced back, "Continue with Google" is still visible and the assert

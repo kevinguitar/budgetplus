@@ -8,11 +8,15 @@ appId: com.kevlina.budgetplus
     visible:
       text: ".*'s Settings"
     timeout: 15000
+# Scroll the "Color Tone Picker" settings row into view. Do NOT use centerElement here:
+# on iOS CI, once the row is already fully visible, Maestro keeps scrolling to re-center it
+# and can never satisfy the 100% visibility check on the row (it drifts partly under the
+# adjacent row / bottom bar), looping until the command times out even though the row is on
+# screen. Plain visibility is enough — the tapOn below scrolls further if needed.
 - scrollUntilVisible:
     element:
       text: "Color Tone Picker"
     direction: DOWN
-    centerElement: true
 - tapOn:
     text: "Color Tone Picker"
 # Wait for the picker screen to actually open. Do NOT wait on "Color Tone Picker" text — it

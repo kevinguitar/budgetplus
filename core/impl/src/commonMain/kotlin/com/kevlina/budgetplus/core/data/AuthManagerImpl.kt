@@ -84,14 +84,15 @@ internal class AuthManagerImpl(
         if (currentUser?.premium == isPremium) return
 
         val premiumUser = currentUser?.copy(premium = isPremium) ?: return
+        setUserToPreference(premiumUser)
+
+        if (isPremium) {
+            tracker.value.logEvent("buy_premium_success")
+            snackbarSender.send(Res.string.premium_unlocked)
+        }
+
         try {
             userDbClient.setUser(premiumUser)
-            setUserToPreference(premiumUser)
-
-            if (isPremium) {
-                tracker.value.logEvent("buy_premium_success")
-                snackbarSender.send(Res.string.premium_unlocked)
-            }
         } catch (e: Exception) {
             snackbarSender.sendError(e)
         }

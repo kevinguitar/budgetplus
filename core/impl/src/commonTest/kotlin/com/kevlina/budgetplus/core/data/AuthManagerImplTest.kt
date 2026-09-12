@@ -141,6 +141,9 @@ class AuthManagerImplTest {
         manager.markPremium(isPremium = true)
 
         assertEquals(testError, snackbarSender.lastSentError)
+        // The local premium state must still flip even when the remote write fails, so the UI
+        // (e.g. hiding the banner ad) reacts immediately regardless of network/DB latency.
+        assertEquals(true, manager.userState.value?.premium)
     }
 
     @Test

@@ -4,13 +4,7 @@ appId: com.kevlina.budgetplus
 - launchApp:
     clearState: true
 - runFlow: ../common/ensure-logged-out.yml
-- tapOn:
-    text: "Continue with Google"
-- runFlow: ../common/dismiss-system-dialogs.yml
-- extendedWaitUntil:
-    visible:
-      text: "Book Name"
-    timeout: 60000
+- runFlow: ../common/sign-in-to-welcome.yml
 # Blank name: tapping Go must NOT leave the Welcome screen.
 - tapOn:
     text: "Go"
