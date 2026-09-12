@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
+import budgetplus.core.common.generated.resources.ic_account_circle
 import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.members_confirm_remove
 import budgetplus.core.common.generated.resources.members_owner_label
@@ -46,6 +48,7 @@ import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.IconButton
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.Text
+import com.kevlina.budgetplus.core.ui.rememberTintedPainter
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -96,7 +99,6 @@ internal fun MembersDialog(
 
     val member = removeMember
     if (member != null) {
-
         ConfirmDialog(
             message = stringResource(
                 Res.string.members_confirm_remove,
@@ -119,19 +121,23 @@ private fun MemberCard(
     ownerId: String?,
     removeUser: () -> Unit,
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .height(56.dp)
             .padding(vertical = 4.dp)
     ) {
+        val vectorPainter = rememberVectorPainter(vectorResource(Res.drawable.ic_account_circle))
+        val accountCircle = rememberTintedPainter(vectorPainter, LocalAppColors.current.primary)
         AsyncImage(
             model = ImageRequest.Builder(LocalPlatformContext.current)
                 .data(member.photoUrl)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
+            placeholder = accountCircle,
+            error = accountCircle,
+            fallback = accountCircle,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(36.dp)
