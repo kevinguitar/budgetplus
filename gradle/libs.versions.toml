@@ -109,7 +109,7 @@ ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
-macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.4.1"
+macro-benchmark = "androidx.benchmark:benchmark-macro-junit4:1.5.0"
 metrox-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 navigation-event = "org.jetbrains.androidx.navigationevent:navigationevent-compose:1.1.0"
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
