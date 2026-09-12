@@ -1,0 +1,28 @@
+# Signs in from the Auth screen and waits for the Welcome screen ("Book Name").
+# Assumes the app is already on the Auth screen (e.g. after ensure-logged-out.yml).
+#
+# The Firebase Auth emulator Google sign-in occasionally drops the first sign-in and
+# bounces the app back to the Auth screen (observed on iOS CI). Retry the whole gesture
+# atomically: tap, dismiss system dialogs, then wait for Welcome. If sign-in bounced back,
+# the assert fails and the retry taps again. The tap is guarded by `when: visible` so a
+# retry that ran after a slow-but-successful sign-in (already on Welcome) doesn't throw
+# ElementNotFound.
+appId: com.kevlina.budgetplus
+---
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow:
+          when:
+            visible:
+              text: "Continue with Google"
+          commands:
+            - tapOn:
+                text: "Continue with Google"
+            - runFlow: dismiss-system-dialogs.yml
+      - extendedWaitUntil:
+          visible:
+            text: "Book Name"
+          timeout: 60000
+      - assertVisible:
+          text: "Book Name"
