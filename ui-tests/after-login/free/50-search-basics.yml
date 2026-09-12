@@ -7,7 +7,7 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Food"
 - tapOn:
-    point: "74%,96%"
+    text: "bottom_nav_history"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"

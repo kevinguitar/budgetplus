@@ -20,10 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_format_list_bulleted
 import budgetplus.core.common.generated.resources.ic_post_add
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -33,7 +36,11 @@ import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.thenIf
 import org.jetbrains.compose.resources.vectorResource
+
+private const val BOTTOM_NAV_ADD_DESC = "bottom_nav_add"
+private const val BOTTOM_NAV_HISTORY_DESC = "bottom_nav_history"
 
 @Composable
 internal fun BottomNav(
@@ -90,6 +97,14 @@ private fun RowScope.BottomNavItem(
             .weight(1F)
             .fillMaxHeight()
             .rippleClick { navController.selectRoot(tab.root) }
+            .thenIf(UiTestFlags.enabled) {
+                Modifier.semantics {
+                    contentDescription = when (tab) {
+                        BottomNavTab.Add -> BOTTOM_NAV_ADD_DESC
+                        BottomNavTab.History -> BOTTOM_NAV_HISTORY_DESC
+                    }
+                }
+            }
     ) {
         this@BottomNavItem.AnimatedVisibility(
             visible = isSelected,

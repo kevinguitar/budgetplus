@@ -9,7 +9,7 @@ appId: com.kevlina.budgetplus
       CATEGORY: "Food"
 # Go to Overview (History tab, bottom-right).
 - tapOn:
-    point: "74%,96%"
+    text: "bottom_nav_history"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"
@@ -33,5 +33,5 @@ appId: com.kevlina.budgetplus
     timeout: 10000
 # Back to Record.
 - tapOn:
-    point: "18%,96%"
+    text: "bottom_nav_add"
 - runFlow: ../../common/assert-on-record.yml

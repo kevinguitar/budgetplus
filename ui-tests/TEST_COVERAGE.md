@@ -243,8 +243,10 @@ snackbar) and dismisses the (persistent) unlocked snackbar so it doesn't block l
 There are still **no `Modifier.testTag`s**; JetBrains Compose Multiplatform for Android does
 not expose `testTagsAsResourceId` here, so selectors use visible text and the accessible
 `contentDescription`s above. Icon-only controls with no description (calculator operators/equals,
-mic, bottom-nav tabs, the Overview mode toggle and period pencil) are tapped by position; the
-date-range picker is instead opened via the accessible `Select Date` calendar icon.
+mic, the Overview mode toggle and period pencil) are tapped by position; the bottom-nav tabs
+carry UI-test-only `contentDescription`s (`bottom_nav_add`, `bottom_nav_history`) so they can be
+tapped by text instead, and the date-range picker is opened via the accessible `Select Date`
+calendar icon.
 
 ---
 
@@ -252,11 +254,11 @@ date-range picker is instead opened via the accessible `Select Date` calendar ic
 
 **Text/description based** (English locale forced): drive by the visible literals and the
 icon `contentDescription`s (`Invite`, `Settings`, `Select book`, `Select Date`, `Search`,
-`Export csv`, `Back`, `Save`, `Sort by price`/`Sort by date`, `color_tone_pager`).
+`Export csv`, `Back`, `Save`, `Sort by price`/`Sort by date`, `color_tone_pager`,
+`bottom_nav_add`, `bottom_nav_history`).
 
-**Positional taps** (icon-only, no description): calculator operators/equals/decimal, bottom
-nav tabs (Add = left, History = right), the Overview mode toggle, and dialog-scrim dismissals
-on iOS.
+**Positional taps** (icon-only, no description): calculator operators/equals/decimal, the
+Overview mode toggle, and dialog-scrim dismissals on iOS.
 
 **Cross-platform robustness solutions baked into the flows/subflows:**
 - **Keyboard dismissal**: `pressKey: Enter` (dialogs with an `onDone` action) or a neutral

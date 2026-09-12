@@ -5,7 +5,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
 - tapOn:
-    point: "74%,96%"
+    text: "bottom_nav_history"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"

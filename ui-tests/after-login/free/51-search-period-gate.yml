@@ -3,7 +3,7 @@ appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
 - tapOn:
-    point: "74%,96%"
+    text: "bottom_nav_history"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"
