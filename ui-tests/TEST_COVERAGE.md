@@ -20,6 +20,12 @@ The suites are split into three independent Maestro runs:
 Everything runs against the Firebase **auth + firestore emulators** using the existing
 `uiTest` build type (Android) / `UI_TEST` compilation condition (iOS).
 
+> **CI sharding note:** on iOS the `after-login/free` suite (~35 flows) overran the
+> 100-minute job timeout, so CI splits it into two balanced sub-shards — `free-a`
+> (flows numbered ≤ 43) and `free-b` (flows numbered ≥ 50) — run as separate jobs.
+> Android keeps the single `free` shard (its emulator run finishes well within the
+> timeout). Local runs still use `free`/`all`.
+
 ---
 
 ## 1. Background — How the app decides what to show

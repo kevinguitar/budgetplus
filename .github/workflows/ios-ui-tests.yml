@@ -6,14 +6,16 @@ on:
 jobs:
   ios-ui-tests:
     # Shard the Maestro suites across parallel jobs. The full sequential suite is
-    # ~84 min of tests on top of a ~31 min cold Kotlin/Native framework build.
+    # ~84 min of tests on top of a ~31 min cold Kotlin/Native framework build. The
+    # free suite (~35 flows) alone overran the 100-min job timeout, so it is split
+    # into two balanced sub-shards (free-a / free-b).
     name: iOS UI tests (${{ matrix.shard }})
     runs-on: macos-latest
     timeout-minutes: 100
     strategy:
       fail-fast: false
       matrix:
-        shard: [login, free, premium]
+        shard: [login, free-a, free-b, premium]
     permissions:
       contents: read
       checks: write
