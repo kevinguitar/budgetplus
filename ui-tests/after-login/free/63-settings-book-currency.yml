@@ -20,8 +20,11 @@ appId: com.kevlina.budgetplus
     text: "Euro"
 # The picker closes once the change is committed. The first tap on a currency tile
 # occasionally does not register on iOS (the picker stays open), so retry once if it is
-# still showing. The retry tap is optional: the picker may be mid-close when the retry
-# fires, in which case the tile is already gone and no tap is needed.
+# still showing. Wait for the close animation to settle BEFORE deciding whether to retry:
+# checking too early sees the title mid-close and fires a stale tap that lands on the
+# Settings screen underneath, re-opening the picker (the flaky failure this guards against).
+- waitForAnimationToEnd:
+    timeout: 5000
 - runFlow:
     when:
       visible:
@@ -30,6 +33,8 @@ appId: com.kevlina.budgetplus
       - tapOn:
           text: "Euro"
           optional: true
+      - waitForAnimationToEnd:
+          timeout: 5000
 - extendedWaitUntil:
     notVisible:
       text: "Book's Currency"
@@ -52,6 +57,10 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - tapOn:
     text: "US Dollar"
+# Settle the close animation before deciding whether to retry (see the Euro note above):
+# an early re-check would fire a stale tap onto the Settings screen and re-open the picker.
+- waitForAnimationToEnd:
+    timeout: 5000
 - runFlow:
     when:
       visible:
@@ -60,6 +69,8 @@ appId: com.kevlina.budgetplus
       - tapOn:
           text: "US Dollar"
           optional: true
+      - waitForAnimationToEnd:
+          timeout: 5000
 - extendedWaitUntil:
     notVisible:
       text: "Book's Currency"

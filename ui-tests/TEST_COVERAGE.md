@@ -282,6 +282,11 @@ Overview mode toggle, and dialog-scrim dismissals on iOS.
 - **Deterministic taps with retry**: taps that occasionally don't register on iOS (the
   currency tiles in `63-settings-book-currency`, the Color-Tone-Picker settings row) are
   guarded by a `when: visible`/`notVisible` retry so a single missed tap doesn't fail the flow.
+  For the currency tiles the retry is preceded by a `waitForAnimationToEnd`: the picker
+  auto-closes on a committed change, and re-checking visibility too early sees the title
+  mid-close and fires a stale tap onto the Settings screen underneath, which re-opens the
+  picker and fails the subsequent `notVisible` assertion. Settling the animation first makes
+  the retry fire only when the first tap genuinely missed.
 
 ---
 

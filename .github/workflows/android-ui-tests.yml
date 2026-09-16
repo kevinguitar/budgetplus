@@ -77,6 +77,13 @@ jobs:
 
       - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
+        # This step only warms the AVD snapshot cache (a boot-time optimization). It can
+        # fail transiently while downloading the SDK emulator package from Google's repo
+        # (observed: "Premature EOF" -> "could not connect to TCP port 5554"). That is
+        # infrastructure flakiness, not a test/app failure, and must not fail the job: the
+        # real "Run Android UI tests" step below creates the AVD itself when the snapshot
+        # is absent, so continue on error and let it take over.
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
