@@ -4,12 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 # The persistent "Premium unlocked!" snackbar overlaps the bottom-right Search FAB
 # on iOS. Tap it to dismiss (UI-test builds make the snackbar tap-to-dismiss, since
 # swipe gestures are unreliable to drive from the iOS automation driver), so the FAB

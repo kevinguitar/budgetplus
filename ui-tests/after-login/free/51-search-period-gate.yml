@@ -2,12 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 - tapOn:
     text: "Search"
 - extendedWaitUntil:

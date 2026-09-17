@@ -20,6 +20,12 @@ The suites are split into three independent Maestro runs:
 Everything runs against the Firebase **auth + firestore emulators** using the existing
 `uiTest` build type (Android) / `UI_TEST` compilation condition (iOS).
 
+> **CI sharding note:** on iOS the `after-login/free` suite (~35 flows) overran the
+> 100-minute job timeout, so CI splits it into two balanced sub-shards — `free-a`
+> (flows numbered ≤ 43) and `free-b` (flows numbered ≥ 50) — run as separate jobs.
+> Android keeps the single `free` shard (its emulator run finishes well within the
+> timeout). Local runs still use `free`/`all`.
+
 ---
 
 ## 1. Background — How the app decides what to show
@@ -55,9 +61,12 @@ ui-tests/
     seed-premium.yml            # flips the user to premium (see §6)
     assert-on-record.yml        # waits for/asserts the calculator "AC" is visible
     return-to-record.yml        # robust cross-platform "go back to Record"
+    open-settings.yml           # Record -> Settings screen (retries the flaky gear tap)
+    open-overview.yml           # Record -> Overview screen (retries the flaky bottom-nav tap)
     ensure-logged-out.yml       # iOS: reset auth+book so the app shows the Auth screen
     ensure-all-records-mode.yml # forces Overview into All-Records mode before long-press
     open-category-records.yml   # Overview -> Records screen for a category
+    open-create-book.yml        # opens book dropdown -> taps "Create a New Book" (retries the open)
     dismiss-system-dialogs.yml  # optional taps for OS permission/Apple-ID dialogs
     add-record.yml              # adds one expense record (price 100) in a category
   login/                        # SUITE 1 — unauthenticated (each flow clearState: true)
@@ -282,6 +291,11 @@ Overview mode toggle, and dialog-scrim dismissals on iOS.
 - **Deterministic taps with retry**: taps that occasionally don't register on iOS (the
   currency tiles in `63-settings-book-currency`, the Color-Tone-Picker settings row) are
   guarded by a `when: visible`/`notVisible` retry so a single missed tap doesn't fail the flow.
+  For the currency tiles the retry is preceded by a `waitForAnimationToEnd`: the picker
+  auto-closes on a committed change, and re-checking visibility too early sees the title
+  mid-close and fires a stale tap onto the Settings screen underneath, which re-opens the
+  picker and fails the subsequent `notVisible` assertion. Settling the animation first makes
+  the retry fire only when the first tap genuinely missed.
 
 ---
 

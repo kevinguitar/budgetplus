@@ -8,17 +8,21 @@ TEST_SERVICE_FILE="$ROOT_DIR/ui-tests/config/GoogleService-Info.plist"
 BACKUP_SERVICE_FILE="$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist.bak"
 SIMULATOR_NAME=${1:-iPhone 17}
 # Which suite(s) to run. CI shards the suites across parallel jobs so no single
-# job approaches the 120-minute workflow ceiling (the full sequential suite is
-# ~84 minutes of tests on top of a ~31-minute cold framework build). Accepts:
+# job approaches the 100-minute workflow ceiling (the full sequential suite is
+# ~84 minutes of tests on top of a ~31-minute cold framework build). The free
+# suite alone (~35 flows) overran the 100-minute job timeout, so it is split into
+# two balanced sub-shards by flow-number range. Accepts:
 #   login   – ui-tests/login/*.yml
-#   free    – ui-tests/after-login/free
+#   free-a  – ui-tests/after-login/free flows numbered <= 43
+#   free-b  – ui-tests/after-login/free flows numbered >= 50
+#   free    – ui-tests/after-login/free (whole suite; used for local runs)
 #   premium – ui-tests/after-login/premium
 #   all     – every suite (default; used for local runs)
 SHARD=${2:-all}
 case "$SHARD" in
-  login | free | premium | all) ;;
+  login | free | free-a | free-b | premium | all) ;;
   *)
-    printf 'Unknown shard %q (expected: login, free, premium, all)\n' "$SHARD" >&2
+    printf 'Unknown shard %q (expected: login, free, free-a, free-b, premium, all)\n' "$SHARD" >&2
     exit 1
     ;;
 esac
@@ -133,6 +137,19 @@ run_suites() {
   if [[ "$SHARD" == "free" || "$SHARD" == "all" ]]; then
     reset_app
     maestro_test after-login-free ui-tests/after-login/free || suite_result=1
+  fi
+
+  # Balanced sub-shards of the free suite (see SHARD docs): free-a runs flows
+  # numbered <= 43, free-b runs flows numbered >= 50. Passing explicit files (in
+  # sorted order) keeps Maestro's per-flow reporting while running only a subset.
+  if [[ "$SHARD" == "free-a" || "$SHARD" == "free-b" ]]; then
+    reset_app
+    for flow in $(ls ui-tests/after-login/free/*.yml | sort); do
+      num=$(basename "$flow" | cut -d- -f1)
+      if [[ "$SHARD" == "free-a" && "$num" -le 43 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 50 ]]; then
+        maestro_test "after-login-free/$(basename "$flow" .yml)" "$flow" || suite_result=1
+      fi
+    done
   fi
 
   if [[ "$SHARD" == "premium" || "$SHARD" == "all" ]]; then

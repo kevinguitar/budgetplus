@@ -4,12 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 # Open the custom date-range picker via the date-range row's calendar icon ("Select Date").
 - tapOn:
     text: "Select Date"

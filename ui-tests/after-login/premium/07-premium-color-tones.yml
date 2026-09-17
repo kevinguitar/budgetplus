@@ -4,21 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- tapOn:
-    text: "Settings"
-# The Settings row tap can be missed on a cold/slow CI simulator, leaving us on Record.
-# Re-tap if the Settings screen title hasn't appeared yet, then wait a bit longer.
-- runFlow:
-    when:
-      notVisible:
-        text: ".*'s Settings"
-    commands:
-      - tapOn:
-          text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 30000
+- runFlow: ../../common/open-settings.yml
 - scrollUntilVisible:
     element:
       text: "Color Tone Picker"

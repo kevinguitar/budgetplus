@@ -8,12 +8,7 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Food"
 # Go to Overview (History tab, bottom-right).
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 # Tap the record row to open the Edit Record dialog.
 - tapOn:
     text: "Food"

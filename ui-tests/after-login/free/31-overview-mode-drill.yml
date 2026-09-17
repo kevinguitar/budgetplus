@@ -6,12 +6,7 @@ appId: com.kevlina.budgetplus
     file: ../../common/add-record.yml
     env:
       CATEGORY: "Food"
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 # O5 — toggle to Group-by-categories (mode toggle icon, top-right).
 - tapOn:
     point: "83%,10%"

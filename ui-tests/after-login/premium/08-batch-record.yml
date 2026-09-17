@@ -4,12 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 # Premium: Batch Record opens its dedicated screen (not the Unlock Premium paywall).
 - tapOn:
     text: "Batch Record"
