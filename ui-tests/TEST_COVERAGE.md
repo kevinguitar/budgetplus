@@ -62,6 +62,7 @@ ui-tests/
     assert-on-record.yml        # waits for/asserts the calculator "AC" is visible
     return-to-record.yml        # robust cross-platform "go back to Record"
     open-settings.yml           # Record -> Settings screen (retries the flaky gear tap)
+    open-overview.yml           # Record -> Overview screen (retries the flaky bottom-nav tap)
     ensure-logged-out.yml       # iOS: reset auth+book so the app shows the Auth screen
     ensure-all-records-mode.yml # forces Overview into All-Records mode before long-press
     open-category-records.yml   # Overview -> Records screen for a category

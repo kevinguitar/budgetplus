@@ -22,12 +22,7 @@ appId: com.kevlina.budgetplus
       text: "0"
     timeout: 10000
 # Navigate to History / Overview.
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 - assertVisible:
     text: ".*'s Overview"
 # O8 — Balance card labels.

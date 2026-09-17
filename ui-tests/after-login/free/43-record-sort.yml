@@ -6,12 +6,7 @@ appId: com.kevlina.budgetplus
     file: ../../common/add-record.yml
     env:
       CATEGORY: "Rent"
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 # Switch Overview to Group-by-categories (mode toggle, top-right menu icon).
 - tapOn:
     point: "83%,10%"

@@ -7,12 +7,7 @@ appId: com.kevlina.budgetplus
     file: ../../common/add-record.yml
     env:
       CATEGORY: "Food"
-- tapOn:
-    text: "bottom_nav_history"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Overview"
-    timeout: 15000
+- runFlow: ../../common/open-overview.yml
 # Export icon (top-right, contentDescription "Export csv").
 - tapOn:
     text: "Export csv"
