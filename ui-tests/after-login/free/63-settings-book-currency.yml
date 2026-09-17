@@ -4,12 +4,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 - tapOn:
     text: "Edit Book Currency"
 - extendedWaitUntil:
@@ -43,12 +38,7 @@ appId: com.kevlina.budgetplus
     text: "Book's Currency"
 - runFlow: ../../common/return-to-record.yml
 # Restore US Dollar so later flows keep the default currency.
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 - tapOn:
     text: "Edit Book Currency"
 - extendedWaitUntil:

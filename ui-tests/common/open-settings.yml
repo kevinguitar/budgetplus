@@ -1,0 +1,25 @@
+# Opens the Settings screen from the Record screen by tapping the top-bar Settings
+# gear (contentDescription "Settings") and waiting for the "<Book>'s Settings" title.
+#
+# The gear tap occasionally registers on iOS without triggering navigation (the tap
+# is reported as completed but the app stays on Record). Retry the tap until the
+# Settings title appears. Guard the tap so a slow-but-successful navigation from a
+# previous attempt doesn't re-tap on the wrong screen.
+appId: com.kevlina.budgetplus
+---
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              text: ".*'s Settings"
+          commands:
+            - tapOn:
+                text: "Settings"
+      - extendedWaitUntil:
+          visible:
+            text: ".*'s Settings"
+          timeout: 15000
+- assertVisible:
+    text: ".*'s Settings"
