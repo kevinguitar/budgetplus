@@ -4,12 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 - tapOn:
     text: "Edit Preferred Currency"
 # Premium: the Preferred Currency picker opens (not the paywall).
@@ -28,12 +23,7 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - runFlow: ../../common/return-to-record.yml
 # Restore the preferred currency to US Dollar.
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 - tapOn:
     text: "Edit Preferred Currency"
 - extendedWaitUntil:

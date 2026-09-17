@@ -2,12 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 # Scroll the "Color Tone Picker" settings row into view. Do NOT use centerElement here:
 # on iOS CI, once the row is already fully visible, Maestro keeps scrolling to re-center it
 # and can never satisfy the 100% visibility check on the row (it drifts partly under the

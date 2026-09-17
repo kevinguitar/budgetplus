@@ -2,12 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 - tapOn:
     text: "Rename Book"
 - extendedWaitUntil:

@@ -2,21 +2,37 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "Settings"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
+- runFlow: ../../common/open-settings.yml
 - scrollUntilVisible:
     element:
       text: "Input Vibration"
     direction: DOWN
     centerElement: true
+# Toggle the switch twice (on then off) to leave the setting unchanged for later flows.
+# "Input Vibration" sits directly above the "Calculator Decimal Button" dropdown row, so a
+# tap that lands slightly low opens that dropdown ("Dot"/"00" menu) instead of toggling the
+# switch, and the popup then hides the row from the hierarchy. After each tap, dismiss any
+# stray dropdown (tap its "Dot" option, which is harmless) before tapping again.
 - tapOn:
     text: "Input Vibration"
+- runFlow:
+    when:
+      visible:
+        text: "00"
+    commands:
+      - tapOn:
+          text: "Dot"
+          optional: true
 - tapOn:
     text: "Input Vibration"
+- runFlow:
+    when:
+      visible:
+        text: "00"
+    commands:
+      - tapOn:
+          text: "Dot"
+          optional: true
 - assertVisible:
     text: "Input Vibration"
 - runFlow: ../../common/return-to-record.yml
