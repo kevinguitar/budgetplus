@@ -64,6 +64,7 @@ ui-tests/
     ensure-logged-out.yml       # iOS: reset auth+book so the app shows the Auth screen
     ensure-all-records-mode.yml # forces Overview into All-Records mode before long-press
     open-category-records.yml   # Overview -> Records screen for a category
+    open-create-book.yml        # opens book dropdown -> taps "Create a New Book" (retries the open)
     dismiss-system-dialogs.yml  # optional taps for OS permission/Apple-ID dialogs
     add-record.yml              # adds one expense record (price 100) in a category
   login/                        # SUITE 1 — unauthenticated (each flow clearState: true)

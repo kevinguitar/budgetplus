@@ -2,10 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "Select book"
-- tapOn:
-    text: "Create a New Book"
+- runFlow: ../../common/open-create-book.yml
 # Free users are gated: entering the paywall hides the calculator/record home.
 - extendedWaitUntil:
     notVisible:

@@ -4,10 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- tapOn:
-    text: "Select book"
-- tapOn:
-    text: "Create a New Book"
+- runFlow: ../../common/open-create-book.yml
 # Premium: the create-book screen opens (not the paywall).
 - extendedWaitUntil:
     visible:

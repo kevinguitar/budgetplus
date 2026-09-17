@@ -1,0 +1,15 @@
+# Opens the book dropdown and taps "Create a New Book".
+# The "Select book" tap occasionally does not register on iOS (the dropdown never
+# opens, or opens and immediately dismisses), leaving the app on the record home so
+# "Create a New Book" is never found. Retry the open until the dropdown item shows.
+appId: com.kevlina.budgetplus
+---
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn:
+          text: "Select book"
+      - assertVisible:
+          text: "Create a New Book"
+- tapOn:
+    text: "Create a New Book"

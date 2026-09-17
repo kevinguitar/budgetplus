@@ -2,10 +2,15 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- tapOn:
-    text: "Select book"
-- assertVisible:
-    text: "Create a New Book"
+# The "Select book" tap occasionally does not register on iOS (the dropdown never
+# opens, or opens and immediately dismisses). Retry the open until the item shows.
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn:
+          text: "Select book"
+      - assertVisible:
+          text: "Create a New Book"
 - assertVisible:
     text: "UI Test Book"
 # dismiss the dropdown
