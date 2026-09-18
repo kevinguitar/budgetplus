@@ -19,6 +19,9 @@ kotlin {
 
             binaryOption("bundleId", "Shared")
 
+            // Calf requires its artifact to be exported to the iOS framework binary.
+            export(libs.calf.ui)
+
             if (buildType == NativeBuildType.RELEASE) {
                 binaryOption("sourceInfoType", "noop")
             }
@@ -62,6 +65,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compottie)
+            api(libs.calf.ui)
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.config)

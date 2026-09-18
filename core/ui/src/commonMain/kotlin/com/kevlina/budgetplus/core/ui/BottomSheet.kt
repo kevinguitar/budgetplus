@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import androidx.compose.material3.ModalBottomSheet as MaterialModalBottomSheet
 
+@Suppress("DEPRECATION")
 @Composable
 fun ModalBottomSheet(
     modifier: Modifier = Modifier,
