@@ -25,6 +25,7 @@ import budgetplus.core.common.generated.resources.menu_create_book
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.DropdownDivider
 import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -76,6 +77,37 @@ fun BookSelector() {
         DropdownMenu(
             expanded = isSelectorShown,
             onDismissRequest = { isSelectorShown = false },
+            iosItems = buildList {
+                booksState.orEmpty().forEach { book ->
+                    add(
+                        DropdownItemModel(
+                            name = book.name,
+                            onClick = {
+                                viewModel.selectBook(book)
+                                isSelectorShown = false
+                            }
+                        )
+                    )
+                }
+                add(
+                    DropdownItemModel(
+                        name = stringResource(Res.string.menu_create_book),
+                        icon = if (createBookBtnState != CreateBookBtnState.Enabled) {
+                            vectorResource(Res.drawable.ic_lock)
+                        } else {
+                            null
+                        },
+                        onClick = {
+                            when (createBookBtnState) {
+                                CreateBookBtnState.Enabled -> isBookCreationDialogShown = true
+                                CreateBookBtnState.NeedPremium -> viewModel.unlockPremium()
+                                CreateBookBtnState.ReachedMax -> viewModel.showReachedMaxMessage()
+                            }
+                            isSelectorShown = false
+                        }
+                    )
+                )
+            },
             offset = DpOffset(0.dp, 8.dp),
             modifier = Modifier.heightIn(max = 300.dp)
         ) {

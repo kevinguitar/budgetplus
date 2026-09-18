@@ -19,6 +19,7 @@ kotlin {
     }
     compilerOptions {
         optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
+        optIn.add("com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi")
     }
     android.androidResources.enable = true
 }

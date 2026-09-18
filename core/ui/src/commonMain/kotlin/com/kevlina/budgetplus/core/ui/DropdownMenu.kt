@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.core.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,36 +12,48 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.ic_lock
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.ThemeColors
-import org.jetbrains.compose.resources.vectorResource
-import androidx.compose.material3.DropdownMenu as MaterialDropdownMenu
 import androidx.compose.material3.DropdownMenuItem as MaterialDropdownMenuItem
 
+/**
+ * A declarative description of a single dropdown entry.
+ *
+ * This model is shared by both platforms: on Android it drives the themed
+ * Material [DropdownMenu], and on iOS it is mapped to a native pull-down menu
+ * item (Calf `AdaptiveDropDownItem`).
+ */
+data class DropdownItemModel(
+    val name: String,
+    val icon: ImageVector? = null,
+    val enabled: Boolean = true,
+    val isDestructive: Boolean = false,
+    val onClick: () -> Unit,
+)
+
+/**
+ * Adaptive dropdown menu.
+ *
+ * On Android it renders the themed Material [DropdownMenu] using the [content]
+ * composable slot (unchanged). On iOS it renders a native pull-down menu
+ * (Calf `AdaptiveDropDown`) built from [iosItems]; the [content] slot is not
+ * used on iOS.
+ *
+ * Call sites should pass both [iosItems] (the data model) and [content] (the
+ * Material composables). Helpers like [dropdownItems] keep the two in sync.
+ */
 @Composable
-fun DropdownMenu(
+expect fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
+    iosItems: List<DropdownItemModel> = emptyList(),
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     properties: PopupProperties = PopupProperties(focusable = true),
     content: @Composable ColumnScope.() -> Unit,
-) {
-    MaterialDropdownMenu(
-        expanded = expanded,
-        onDismissRequest = onDismissRequest,
-        modifier = modifier.background(LocalAppColors.current.light),
-        offset = offset,
-        properties = properties,
-        content = content
-    )
-}
+)
 
 @Composable
 fun DropdownItem(
@@ -96,28 +107,4 @@ fun DropdownItem(
 @Composable
 fun DropdownDivider() {
     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp))
-}
-
-@Preview
-@Composable
-private fun DropdownMenu_Preview() = AppTheme(themeColors = ThemeColors.Dusk) {
-    DropdownMenu(
-        expanded = true,
-        onDismissRequest = { }
-    ) {
-        DropdownItem(
-            name = "Item 1",
-            icon = vectorResource(Res.drawable.ic_lock),
-            onClick = {}
-        )
-        DropdownDivider()
-        DropdownItem(
-            name = "Item 2",
-            onClick = {}
-        )
-        DropdownItem(
-            name = "Item 3",
-            onClick = {}
-        )
-    }
 }

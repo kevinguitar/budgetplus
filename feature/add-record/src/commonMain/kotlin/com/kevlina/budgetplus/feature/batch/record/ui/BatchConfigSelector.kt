@@ -29,6 +29,7 @@ import budgetplus.core.common.generated.resources.select_date
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
 import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -165,6 +166,15 @@ private fun TimesSelector(
             DropdownMenu(
                 expanded = isTimesMenuShown,
                 onDismissRequest = { isTimesMenuShown = false },
+                iosItems = batchTimes.map { times ->
+                    DropdownItemModel(
+                        name = times.toString(),
+                        onClick = {
+                            setTimes(times)
+                            isTimesMenuShown = false
+                        }
+                    )
+                },
                 modifier = Modifier.heightIn(max = 240.dp)
             ) {
 

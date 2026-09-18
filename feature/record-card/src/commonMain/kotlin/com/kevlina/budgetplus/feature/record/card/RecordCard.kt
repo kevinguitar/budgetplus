@@ -35,6 +35,7 @@ import com.kevlina.budgetplus.core.data.remote.isBatched
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -140,6 +141,28 @@ fun RecordCard(
             DropdownMenu(
                 expanded = isMenuShown,
                 onDismissRequest = { isMenuShown = false },
+                iosItems = buildList {
+                    add(
+                        DropdownItemModel(
+                            name = stringResource(Res.string.cta_duplicate),
+                            onClick = {
+                                isMenuShown = false
+                                state.onDuplicate()
+                            }
+                        )
+                    )
+                    if (state.canEdit) {
+                        add(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.cta_delete),
+                                onClick = {
+                                    isMenuShown = false
+                                    state.onDelete()
+                                }
+                            )
+                        )
+                    }
+                },
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 DropdownItem(

@@ -86,6 +86,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.InputDialog
@@ -269,7 +270,23 @@ internal fun SettingsContent(
 
                     DropdownMenu(
                         expanded = isCalculatorButtonDropdownShown,
-                        onDismissRequest = { isCalculatorButtonDropdownShown = false }
+                        onDismissRequest = { isCalculatorButtonDropdownShown = false },
+                        iosItems = listOf(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.settings_calculator_dot),
+                                onClick = {
+                                    vm.calculatorSettings.setButtonType(CalculatorButtonType.Dot)
+                                    isCalculatorButtonDropdownShown = false
+                                }
+                            ),
+                            DropdownItemModel(
+                                name = CalculatorButtonType.DoubleZero.text,
+                                onClick = {
+                                    vm.calculatorSettings.setButtonType(CalculatorButtonType.DoubleZero)
+                                    isCalculatorButtonDropdownShown = false
+                                }
+                            )
+                        )
                     ) {
                         DropdownItem(
                             name = stringResource(Res.string.settings_calculator_dot),
@@ -306,7 +323,25 @@ internal fun SettingsContent(
 
                     DropdownMenu(
                         expanded = isChartModeDropdownShown,
-                        onDismissRequest = { isChartModeDropdownShown = false }
+                        onDismissRequest = { isChartModeDropdownShown = false },
+                        iosItems = listOf(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.settings_bar_chart),
+                                icon = ChartMode.BarChart.icon,
+                                onClick = {
+                                    vm.chartModeSettings.setChartMode(ChartMode.BarChart)
+                                    isChartModeDropdownShown = false
+                                }
+                            ),
+                            DropdownItemModel(
+                                name = stringResource(Res.string.settings_pie_chart),
+                                icon = ChartMode.PieChart.icon,
+                                onClick = {
+                                    vm.chartModeSettings.setChartMode(ChartMode.PieChart)
+                                    isChartModeDropdownShown = false
+                                }
+                            )
+                        )
                     ) {
                         DropdownItem(
                             name = stringResource(Res.string.settings_bar_chart),

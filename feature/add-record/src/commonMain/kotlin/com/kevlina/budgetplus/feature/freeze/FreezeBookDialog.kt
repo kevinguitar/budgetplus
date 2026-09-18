@@ -39,6 +39,7 @@ import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
 import com.kevlina.budgetplus.core.ui.ButtonRow
 import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -124,6 +125,15 @@ internal fun FreezeBookDialog(
                 DropdownMenu(
                     expanded = isSelectorShown,
                     onDismissRequest = { isSelectorShown = false },
+                    iosItems = books.map { book ->
+                        DropdownItemModel(
+                            name = book.name,
+                            onClick = {
+                                selectedBook = book
+                                isSelectorShown = false
+                            }
+                        )
+                    },
                     offset = DpOffset(0.dp, 8.dp),
                     modifier = Modifier.heightIn(max = 300.dp)
                 ) {

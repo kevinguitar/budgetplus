@@ -30,6 +30,7 @@ import com.kevlina.budgetplus.core.data.BatchUnit
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -99,7 +100,16 @@ internal fun FrequencySelector(
 
             DropdownMenu(
                 expanded = isNumDropdownShown,
-                onDismissRequest = { isNumDropdownShown = false }
+                onDismissRequest = { isNumDropdownShown = false },
+                iosItems = (DURATION_MIN..DURATION_MAX).map { num ->
+                    DropdownItemModel(
+                        name = num.toString(),
+                        onClick = {
+                            setDuration(num)
+                            isNumDropdownShown = false
+                        }
+                    )
+                }
             ) {
                 for (num in DURATION_MIN..DURATION_MAX) {
                     DropdownItem(
@@ -134,7 +144,16 @@ internal fun FrequencySelector(
 
             DropdownMenu(
                 expanded = isUnitDropdownShown,
-                onDismissRequest = { isUnitDropdownShown = false }
+                onDismissRequest = { isUnitDropdownShown = false },
+                iosItems = BatchUnit.entries.map { unit ->
+                    DropdownItemModel(
+                        name = stringResource(unit.stringRes),
+                        onClick = {
+                            setUnit(unit)
+                            isUnitDropdownShown = false
+                        }
+                    )
+                }
             ) {
                 BatchUnit.entries.forEach { unit ->
                     DropdownItem(
