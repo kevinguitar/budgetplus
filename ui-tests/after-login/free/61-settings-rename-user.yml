@@ -9,8 +9,10 @@ appId: com.kevlina.budgetplus
     visible:
       text: "User Name"
     timeout: 15000
-- tapOn:
-    text: "User Name"
+# The rename dialog auto-focuses its text field (InputDialog requests focus on show), so the
+# keyboard is already up. Do NOT tap the field first: on iOS a tap on an already-focused
+# field can trigger a very slow screenshot-diff wait that blows the maestro-driver's session
+# timeout and kills the flow. Erase/type directly into the focused field instead.
 - eraseText
 - inputText: "Tester"
 - pressKey: Enter
