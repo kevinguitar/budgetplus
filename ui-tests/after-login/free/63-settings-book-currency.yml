@@ -1,6 +1,7 @@
 # ST5 — Edit book currency (change to Euro, then restore US Dollar)
 # Note: committing a currency change triggers app navigation that can land on either
-# Settings or Record, so we assert the picker closed (change accepted) and recover.
+# Settings or Record. We confirm the change committed via the "currency changed" snackbar
+# (deterministic, unlike watching the picker close), then assert the picker closed and recover.
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
@@ -13,23 +14,32 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - tapOn:
     text: "Euro"
-# The picker closes once the change is committed. The first tap on a currency tile
-# occasionally does not register on iOS (the picker stays open), so retry once if it is
-# still showing. Wait for the close animation to settle BEFORE deciding whether to retry:
-# checking too early sees the title mid-close and fires a stale tap that lands on the
-# Settings screen underneath, re-opening the picker (the flaky failure this guards against).
-- waitForAnimationToEnd:
-    timeout: 5000
+# The very first currency change per install shows a one-off "changing the currency only
+# updates the symbol" disclaimer; confirm it when present so the change commits.
 - runFlow:
     when:
       visible:
-        text: "Book's Currency"
+        text: "Changing the currency only updates.*"
     commands:
       - tapOn:
-          text: "Euro"
-          optional: true
-      - waitForAnimationToEnd:
-          timeout: 5000
+          text: "Confirm"
+# The picker commits the change and navigates away. Rather than re-tapping the tile if the
+# picker still looks open (a stale tap can land on the Settings screen underneath and
+# re-open the picker — the flaky failure this used to hit), wait for the deterministic
+# "currency changed" snackbar, which only fires once the change is committed. In UI-test
+# builds the snackbar stays on screen and is tap-to-dismiss, so we clear it before moving on.
+- extendedWaitUntil:
+    visible:
+      text: ".*currency has been changed to.*"
+    timeout: 15000
+# Dismiss the (indefinite, UI-test) snackbar so it doesn't block later steps.
+- runFlow:
+    when:
+      visible:
+        text: ".*currency has been changed to.*"
+    commands:
+      - tapOn:
+          text: ".*currency has been changed to.*"
 - extendedWaitUntil:
     notVisible:
       text: "Book's Currency"
@@ -47,20 +57,24 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - tapOn:
     text: "US Dollar"
-# Settle the close animation before deciding whether to retry (see the Euro note above):
-# an early re-check would fire a stale tap onto the Settings screen and re-open the picker.
-- waitForAnimationToEnd:
-    timeout: 5000
 - runFlow:
     when:
       visible:
-        text: "Book's Currency"
+        text: "Changing the currency only updates.*"
     commands:
       - tapOn:
-          text: "US Dollar"
-          optional: true
-      - waitForAnimationToEnd:
-          timeout: 5000
+          text: "Confirm"
+- extendedWaitUntil:
+    visible:
+      text: ".*currency has been changed to.*"
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        text: ".*currency has been changed to.*"
+    commands:
+      - tapOn:
+          text: ".*currency has been changed to.*"
 - extendedWaitUntil:
     notVisible:
       text: "Book's Currency"

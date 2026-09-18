@@ -6,8 +6,20 @@ appId: com.kevlina.budgetplus
     text: "AC"
 - tapOn:
     text: "Food"
-- tapOn:
-    text: "OK"
+# Submit with an empty price to trigger the "Please input the price" error snackbar.
+# The snackbar's entrance can be missed if asserted with a single immediate check on iOS
+# (the OK tap's own screenshot-diff wait can consume the brief visible window). Re-tap OK
+# until the error surfaces: with the price still empty each OK press re-fires the snackbar,
+# so the retry is a no-op side-effect-wise and just gives the toast another chance to be seen.
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn:
+          text: "OK"
+      - extendedWaitUntil:
+          visible:
+            text: "Please input the price"
+          timeout: 5000
 - assertVisible:
     text: "Please input the price"
 - tapOn:
