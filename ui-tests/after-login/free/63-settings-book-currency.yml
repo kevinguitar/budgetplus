@@ -14,6 +14,15 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - tapOn:
     text: "Euro"
+# The very first currency change per install shows a one-off "changing the currency only
+# updates the symbol" disclaimer; confirm it when present so the change commits.
+- runFlow:
+    when:
+      visible:
+        text: "Changing the currency only updates.*"
+    commands:
+      - tapOn:
+          text: "Confirm"
 # The picker commits the change and navigates away. Rather than re-tapping the tile if the
 # picker still looks open (a stale tap can land on the Settings screen underneath and
 # re-open the picker — the flaky failure this used to hit), wait for the deterministic
@@ -48,6 +57,13 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - tapOn:
     text: "US Dollar"
+- runFlow:
+    when:
+      visible:
+        text: "Changing the currency only updates.*"
+    commands:
+      - tapOn:
+          text: "Confirm"
 - extendedWaitUntil:
     visible:
       text: ".*currency has been changed to.*"
