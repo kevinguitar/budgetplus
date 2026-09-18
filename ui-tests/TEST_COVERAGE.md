@@ -289,13 +289,18 @@ Overview mode toggle, and dialog-scrim dismissals on iOS.
   below the fold, so the tone flows `scrollUntilVisible` the `color_tone_next` control, then
   advance the pager by tapping it (deterministic) rather than a fling `swipe`.
 - **Deterministic taps with retry**: taps that occasionally don't register on iOS (the
-  currency tiles in `63-settings-book-currency`, the Color-Tone-Picker settings row) are
-  guarded by a `when: visible`/`notVisible` retry so a single missed tap doesn't fail the flow.
-  For the currency tiles the retry is preceded by a `waitForAnimationToEnd`: the picker
-  auto-closes on a committed change, and re-checking visibility too early sees the title
-  mid-close and fires a stale tap onto the Settings screen underneath, which re-opens the
-  picker and fails the subsequent `notVisible` assertion. Settling the animation first makes
-  the retry fire only when the first tap genuinely missed.
+  Color-Tone-Picker settings row) are guarded by a `when: visible`/`notVisible` retry so a
+  single missed tap doesn't fail the flow.
+- **Currency picker commit signal**: `63-settings-book-currency` does not watch the picker
+  close to decide whether the change committed (re-checking too early and re-tapping a tile
+  could land a stale tap on the Settings screen underneath and re-open the picker). Instead it
+  waits for the deterministic `... currency has been changed to ...` snackbar — which fires
+  only once the change is committed — then dismisses it (indefinite + tap-to-dismiss in
+  UI-test builds) before asserting the picker closed.
+- **Category editor "Add" FAB**: the editor's FAB animates in (`scaleIn`) while the screen
+  transitions in, so its accessibility node settles after the `Edit Categories` title asserts
+  visible. `common/open-category-editor.yml` waits for `Add` to be matchable before returning,
+  so callers that immediately tap it don't miss it on iOS.
 
 ---
 

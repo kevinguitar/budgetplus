@@ -18,3 +18,11 @@ appId: com.kevlina.budgetplus
     text: "Edit"
 - assertVisible:
     text: "Edit Categories"
+# The editor's "Add" FAB animates in (scaleIn) as the screen transitions in. On iOS the
+# title asserts visible while the FAB's accessibility node is still settling, so callers
+# that immediately tap "Add" can miss it. Wait for the FAB to be matchable here so every
+# category flow starts from a stable editor.
+- extendedWaitUntil:
+    visible:
+      text: "Add"
+    timeout: 10000
