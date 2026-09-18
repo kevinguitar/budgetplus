@@ -1,7 +1,6 @@
 package com.kevlina.budgetplus.core.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.ripple
@@ -26,19 +25,21 @@ inline fun <T> Modifier.thenIfNotNull(value: T?, modifierProvider: (T) -> Modifi
     }
 }
 
-fun Modifier.rippleClick(
+/**
+ * A clickable modifier that provides a platform-adaptive tap feedback.
+ *
+ * On Android it shows the standard Material ripple (unchanged). On iOS it uses
+ * Calf's `adaptiveClickable`, which replaces the ripple with the native iOS
+ * scaling effect. When [onLongClick] is provided, the Android combined-click
+ * behavior is used on both platforms (the native scale effect does not support
+ * long-press).
+ */
+expect fun Modifier.rippleClick(
     color: Color = Color.Unspecified,
     borderless: Boolean = false,
     onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
-) = this.composed {
-    combinedClickable(
-        interactionSource = remember { MutableInteractionSource() },
-        indication = ripple(bounded = !borderless, color = color),
-        onClick = onClick,
-        onLongClick = onLongClick
-    )
-}
+): Modifier
 
 fun Modifier.clickableWithoutRipple(onClick: () -> Unit) = this.composed {
     clickable(
