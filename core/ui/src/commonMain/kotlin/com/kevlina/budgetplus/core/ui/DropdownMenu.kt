@@ -28,6 +28,13 @@ import androidx.compose.material3.DropdownMenuItem as MaterialDropdownMenuItem
 data class DropdownItemModel(
     val name: String,
     val icon: ImageVector? = null,
+    /**
+     * Optional iOS SF Symbol name used instead of [icon] on iOS. SF Symbols are
+     * rendered as template images in the native pull-down menu, so they are
+     * automatically tinted to match the menu's label color (unlike a rasterized
+     * [ImageVector], which keeps its own color).
+     */
+    val iosSfSymbol: String? = null,
     val enabled: Boolean = true,
     val isDestructive: Boolean = false,
     val onClick: () -> Unit,

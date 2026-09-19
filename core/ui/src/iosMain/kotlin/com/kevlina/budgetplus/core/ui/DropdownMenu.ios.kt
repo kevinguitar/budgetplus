@@ -35,7 +35,8 @@ actual fun DropdownMenu(
             iosItems = iosItems.map { item ->
                 AdaptiveDropDownItem(
                     title = item.name,
-                    iosIcon = item.icon?.let { UIKitImage.Vector(it) },
+                    iosIcon = item.iosSfSymbol?.let { UIKitImage.SystemName(it) }
+                        ?: item.icon?.let { UIKitImage.Vector(it) },
                     isDestructive = item.isDestructive,
                     isDisabled = !item.enabled,
                     onClick = item.onClick,

@@ -97,6 +97,11 @@ fun BookSelector() {
                         } else {
                             null
                         },
+                        iosSfSymbol = if (createBookBtnState != CreateBookBtnState.Enabled) {
+                            "lock.fill"
+                        } else {
+                            null
+                        },
                         onClick = {
                             when (createBookBtnState) {
                                 CreateBookBtnState.Enabled -> isBookCreationDialogShown = true
