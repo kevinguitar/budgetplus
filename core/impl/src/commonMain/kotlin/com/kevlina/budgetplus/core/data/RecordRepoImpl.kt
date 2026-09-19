@@ -196,6 +196,14 @@ internal class RecordRepoImpl(
         tracker.logEvent("record_deleted")
     }
 
+    override suspend fun deleteRecords(recordIds: List<String>): Int {
+        recordIds.forEach { id ->
+            recordDbClient.delete(id)
+        }
+        tracker.logEvent("record_multi_deleted")
+        return recordIds.size
+    }
+
     override suspend fun deleteBatch(record: Record): Int {
         // If record isn't batched for some reason, simply delete it.
         if (!record.isBatched) {

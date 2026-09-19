@@ -5,13 +5,38 @@ appId: com.kevlina.budgetplus
 ---
 - tapOn:
     text: "AC"
-# On short screens the category grid can be scrolled such that the target pill is above
-# the fold after prior records; scroll it back into view before tapping.
-- scrollUntilVisible:
-    element:
-      text: "${CATEGORY}"
-    direction: UP
-    timeout: 10000
+# On short screens the category grid can be pushed out of view behind the fixed
+# calculator: after adding a prior record the grid can be scrolled either way, so the
+# target pill may sit above OR below the fold. scrollUntilVisible swipes from screen
+# center, which lands on the fixed calculator and fails to scroll the category band.
+# Instead swipe *within* the category/info band (as open-category-editor.yml does),
+# alternating direction so the pill is revealed whichever way the grid is scrolled.
+# Each swipe is guarded by notVisible, so it's a no-op once the pill is on screen.
+- retry:
+    maxRetries: 6
+    commands:
+      # Reveal pills that are below the fold (swipe the band up).
+      - runFlow:
+          when:
+            notVisible:
+              text: "${CATEGORY}"
+          commands:
+            - swipe:
+                start: "50%,45%"
+                end: "50%,15%"
+                duration: 400
+      # Reveal pills that are above the fold (swipe the band down).
+      - runFlow:
+          when:
+            notVisible:
+              text: "${CATEGORY}"
+          commands:
+            - swipe:
+                start: "50%,15%"
+                end: "50%,45%"
+                duration: 400
+      - assertVisible:
+          text: "${CATEGORY}"
 - tapOn:
     text: "${CATEGORY}"
 - tapOn:

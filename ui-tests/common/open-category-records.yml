@@ -14,7 +14,7 @@ appId: com.kevlina.budgetplus
       # We were in All-Records mode; close the dialog and switch to Group-by-categories.
       - back
       - tapOn:
-          point: "83%,10%"
+          text: "overview_mode_toggle"
       - tapOn:
           text: "${CATEGORY}"
 - extendedWaitUntil:

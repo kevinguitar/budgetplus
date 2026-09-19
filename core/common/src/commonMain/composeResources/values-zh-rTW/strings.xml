@@ -118,6 +118,7 @@
     <string name="overview_balance">結餘</string>
     <string name="overview_details_title">%1$s：%2$s</string>
     <string name="overview_author_everyone">所有人</string>
+    <string name="overview_selected_delete_confirmation">確定要刪除所選的%1$s筆帳目嗎？</string>
 
     <!-- Export -->
     <string name="export_cta">匯出報表</string>
@@ -237,6 +238,7 @@
     <string name="cta_cancel">取消</string>
     <string name="cta_back">返回</string>
     <string name="cta_delete">刪除</string>
+    <string name="cta_select">選取</string>
     <string name="cta_complete">完成</string>
     <string name="cta_duplicate">複製</string>
     <string name="cta_pin">釘選</string>

@@ -118,6 +118,7 @@
     <string name="overview_balance">Balance</string>
     <string name="overview_details_title">%1$s: %2$s</string>
     <string name="overview_author_everyone">Everyone</string>
+    <string name="overview_selected_delete_confirmation">Are you sure you want to delete the %1$s selected records?</string>
 
     <!-- Export -->
     <string name="export_cta">Export csv</string>
@@ -237,6 +238,7 @@
     <string name="cta_cancel">Cancel</string>
     <string name="cta_back">Back</string>
     <string name="cta_delete">Delete</string>
+    <string name="cta_select">Select</string>
     <string name="cta_complete">Complete</string>
     <string name="cta_duplicate">Duplicate</string>
     <string name="cta_pin">Pin</string>

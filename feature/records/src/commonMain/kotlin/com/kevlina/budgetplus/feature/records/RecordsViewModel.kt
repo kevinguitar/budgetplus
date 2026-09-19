@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kevlina.budgetplus.core.common.Tracker
+import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -26,12 +27,15 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.batch_record_deleted
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 @AssistedInject
 class RecordsViewModel(
@@ -45,6 +49,7 @@ class RecordsViewModel(
     private val authManager: AuthManager,
     private val preference: Preference,
     private val currencyExchangeRepo: CurrencyExchangeRepo,
+    private val snackbarSender: SnackbarSender,
     recordsObserver: RecordsObserver,
 ) : ViewModel() {
 
@@ -72,6 +77,15 @@ class RecordsViewModel(
     val pageSize get() = categories.size
 
     private val pageIndex = MutableStateFlow(initialPage)
+
+    /**
+     *  The ids of the records that are currently selected in the multi-select mode.
+     *  When empty, the screen is not in selection mode.
+     */
+    val selectedIds: StateFlow<Set<String>>
+        field = MutableStateFlow<Set<String>>(emptySet())
+
+    val isSelectionMode = selectedIds.mapState { it.isNotEmpty() }
 
     val category = pageIndex.mapState {
         categories.getOrNull(it) ?: params.category
@@ -104,13 +118,37 @@ class RecordsViewModel(
     val totalPrice = combine(
         recordsList,
         pageIndex,
+        selectedIds,
         currencyExchangeRepo.displayInPreferredCurrency
-    ) { recordsList, pageIndex, _ ->
-        val total = recordsList?.getOrNull(pageIndex).orEmpty()
-            .sumOf(currencyExchangeRepo::getDisplayPrice)
+    ) { recordsList, pageIndex, selectedIds, _ ->
+        val records = recordsList?.getOrNull(pageIndex).orEmpty()
+        // When in selection mode, only sum the selected records.
+        val targetRecords = if (selectedIds.isEmpty()) {
+            records
+        } else {
+            records.filter { it.id in selectedIds }
+        }
+        val total = targetRecords.sumOf(currencyExchangeRepo::getDisplayPrice)
         currencyExchangeRepo.formatDisplayPrice(total, alwaysShowSymbol = true)
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
+
+    /**
+     *  Whether the currently selected records can all be deleted. It's false when the
+     *  selection contains any record the user has no permission to edit, so the bulk
+     *  delete action is disabled instead of silently skipping/failing those records.
+     */
+    val canDeleteSelected = combine(
+        recordsList,
+        selectedIds
+    ) { recordsList, selectedIds ->
+        if (selectedIds.isEmpty()) return@combine false
+        val selectedRecords = recordsList.orEmpty()
+            .flatten()
+            .filter { it.id in selectedIds }
+        selectedRecords.isNotEmpty() && selectedRecords.all(::canEditRecord)
+    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     fun formatRecordPrice(record: Record): String {
         return currencyExchangeRepo.formatRecordPrice(record)
@@ -134,12 +172,55 @@ class RecordsViewModel(
     fun setPageIndex(index: Int) {
         if (pageIndex.value != index) {
             pageIndex.value = index
+            // Exit the selection mode when swiping to another category page.
+            // We already disable swiping in UI, but just in case.
+            clearSelection()
             tracker.logEvent("overview_records_swiped")
         }
     }
 
     fun duplicateRecord(record: Record) {
         recordRepo.duplicateRecord(record)
+    }
+
+    /**
+     *  Enters the selection mode (if not already) and selects the given record.
+     */
+    fun startSelection(record: Record) {
+        selectedIds.value += record.id
+    }
+
+    /**
+     *  Toggles the selection state of the given record while in selection mode.
+     */
+    fun toggleSelection(record: Record) {
+        val current = selectedIds.value
+        selectedIds.value = if (record.id in current) {
+            current - record.id
+        } else {
+            current + record.id
+        }
+    }
+
+    fun clearSelection() {
+        selectedIds.value = emptySet()
+    }
+
+    fun deleteSelectedRecords() {
+        // Guard against deleting records the user has no permission to edit.
+        if (!canDeleteSelected.value) return
+        val ids = selectedIds.value.toList()
+        if (ids.isEmpty()) return
+        viewModelScope.launch {
+            try {
+                val count = recordRepo.deleteRecords(ids)
+                snackbarSender.send(getString(Res.string.batch_record_deleted, count.toString()))
+            } catch (e: Exception) {
+                snackbarSender.sendError(e)
+            } finally {
+                clearSelection()
+            }
+        }
     }
 
     @AssistedFactory
