@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.SelectableDates
@@ -59,24 +61,29 @@ fun DatePickerDialog(
 ) {
     var selectedMillis by remember { mutableStateOf<Long?>(date.utcMillis) }
 
-    PickerDialogScaffold(onDismiss = onDismiss) {
-        DatePickerCore(
-            initialSelectedDateMillis = date.utcMillis,
-            selectableDates = dateBounds(minDate, maxDate),
-            colors = datePickerColors(),
-            modifier = Modifier,
-            onSelectedDateChange = { selectedMillis = it },
-        )
-
-        PickerDialogActions(
-            onCancel = onDismiss,
-            confirmEnabled = true,
-            onConfirm = {
-                onDatePicked(selectedMillis?.utcLocaleDate ?: date)
-                onDismiss()
-            },
-        )
-    }
+    PickerDialogScaffold(
+        onDismiss = onDismiss,
+        scrollablePicker = true,
+        picker = {
+            DatePickerCore(
+                initialSelectedDateMillis = date.utcMillis,
+                selectableDates = dateBounds(minDate, maxDate),
+                colors = datePickerColors(),
+                modifier = Modifier,
+                onSelectedDateChange = { selectedMillis = it },
+            )
+        },
+        actions = {
+            PickerDialogActions(
+                onCancel = onDismiss,
+                confirmEnabled = true,
+                onConfirm = {
+                    onDatePicked(selectedMillis?.utcLocaleDate ?: date)
+                    onDismiss()
+                },
+            )
+        },
+    )
 }
 
 /**
@@ -94,33 +101,38 @@ fun DateRangePickerDialog(
     var selectedStartMillis by remember { mutableStateOf(startDate?.utcMillis) }
     var selectedEndMillis by remember { mutableStateOf(endDate?.utcMillis) }
 
-    PickerDialogScaffold(onDismiss = onDismiss) {
-        DateRangePickerCore(
-            initialSelectedStartDateMillis = startDate?.utcMillis,
-            initialSelectedEndDateMillis = endDate?.utcMillis,
-            selectableDates = dateBounds(minDate, maxDate),
-            colors = datePickerColors(),
-            modifier = Modifier.weight(1f),
-            onSelectedRangeChange = { start, end ->
-                selectedStartMillis = start
-                selectedEndMillis = end
-            },
-        )
-
-        val isRangeSelected = selectedStartMillis != null && selectedEndMillis != null
-        PickerDialogActions(
-            onCancel = onDismiss,
-            confirmEnabled = isRangeSelected,
-            onConfirm = {
-                val start = selectedStartMillis?.utcLocaleDate
-                val end = selectedEndMillis?.utcLocaleDate
-                if (start != null && end != null) {
-                    onRangePicked(start, end)
-                }
-                onDismiss()
-            },
-        )
-    }
+    PickerDialogScaffold(
+        onDismiss = onDismiss,
+        scrollablePicker = false,
+        picker = {
+            DateRangePickerCore(
+                initialSelectedStartDateMillis = startDate?.utcMillis,
+                initialSelectedEndDateMillis = endDate?.utcMillis,
+                selectableDates = dateBounds(minDate, maxDate),
+                colors = datePickerColors(),
+                modifier = Modifier,
+                onSelectedRangeChange = { start, end ->
+                    selectedStartMillis = start
+                    selectedEndMillis = end
+                },
+            )
+        },
+        actions = {
+            val isRangeSelected = selectedStartMillis != null && selectedEndMillis != null
+            PickerDialogActions(
+                onCancel = onDismiss,
+                confirmEnabled = isRangeSelected,
+                onConfirm = {
+                    val start = selectedStartMillis?.utcLocaleDate
+                    val end = selectedEndMillis?.utcLocaleDate
+                    if (start != null && end != null) {
+                        onRangePicked(start, end)
+                    }
+                    onDismiss()
+                },
+            )
+        },
+    )
 }
 
 /**
@@ -157,11 +169,21 @@ internal expect fun DateRangePickerCore(
  * A full-width surface (rather than a wrap-content dialog) is used because the
  * native iOS `UICalendarView` reports a wide intrinsic size that would otherwise
  * overflow a wrap-content dialog background.
+ *
+ * The [actions] row is always pinned at the bottom and never clipped. The
+ * [picker] area fills the remaining height:
+ * - When [scrollablePicker] is true (a fixed-height calendar such as the Material
+ *   single-date picker) it wraps its content and scrolls if it is taller than the
+ *   dialog.
+ * - Otherwise (a self-scrolling calendar such as the Material date range picker,
+ *   which needs a bounded height) it simply fills the available space.
  */
 @Composable
 private fun PickerDialogScaffold(
     onDismiss: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit,
+    scrollablePicker: Boolean,
+    picker: @Composable ColumnScope.() -> Unit,
+    actions: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -175,8 +197,21 @@ private fun PickerDialogScaffold(
                 .clip(AppTheme.dialogShape)
                 .background(LocalAppColors.current.light)
                 .padding(16.dp),
-            content = content,
-        )
+        ) {
+            Column(
+                modifier = Modifier
+                    .thenIf(scrollablePicker) {
+                        Modifier
+                            .weight(weight = 1f, fill = false)
+                            .verticalScroll(rememberScrollState())
+                    }
+                    .thenIf(!scrollablePicker) {
+                        Modifier.weight(1f)
+                    },
+                content = picker,
+            )
+            actions()
+        }
     }
 }
 
