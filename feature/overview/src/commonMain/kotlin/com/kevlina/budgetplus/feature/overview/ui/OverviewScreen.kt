@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.export_csv_confirmation
@@ -91,7 +91,11 @@ fun OverviewScreen() {
                             )
                         }
                         .thenIf(UiTestFlags.enabled) {
-                            Modifier.semantics {
+                            // Replace the whole accessibility label (the Icon's format-string
+                            // description) with the stable test tag. Using clearAndSetSemantics
+                            // avoids iOS merging both into "overview_mode_toggle, %1$s: %2$s",
+                            // which the Maestro text matcher cannot match.
+                            Modifier.clearAndSetSemantics {
                                 contentDescription = OVERVIEW_MODE_TOGGLE_DESC
                             }
                         }
