@@ -1,15 +1,14 @@
 package com.kevlina.budgetplus.core.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.SelectableDates
@@ -63,7 +62,6 @@ fun DatePickerDialog(
 
     PickerDialogScaffold(
         onDismiss = onDismiss,
-        scrollablePicker = true,
         picker = {
             DatePickerCore(
                 initialSelectedDateMillis = date.utcMillis,
@@ -103,7 +101,6 @@ fun DateRangePickerDialog(
 
     PickerDialogScaffold(
         onDismiss = onDismiss,
-        scrollablePicker = false,
         picker = {
             DateRangePickerCore(
                 initialSelectedStartDateMillis = startDate?.utcMillis,
@@ -171,18 +168,12 @@ internal expect fun DateRangePickerCore(
  * overflow a wrap-content dialog background.
  *
  * The [actions] row is always pinned at the bottom and never clipped. The
- * [picker] area fills the remaining height:
- * - When [scrollablePicker] is true (a fixed-height calendar such as the Material
- *   single-date picker) it wraps its content and scrolls if it is taller than the
- *   dialog.
- * - Otherwise (a self-scrolling calendar such as the Material date range picker,
- *   which needs a bounded height) it simply fills the available space.
+ * [picker] area fills the remaining height.
  */
 @Composable
 private fun PickerDialogScaffold(
     onDismiss: () -> Unit,
-    scrollablePicker: Boolean,
-    picker: @Composable ColumnScope.() -> Unit,
+    picker: @Composable () -> Unit,
     actions: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(
@@ -198,18 +189,9 @@ private fun PickerDialogScaffold(
                 .background(LocalAppColors.current.light)
                 .padding(16.dp),
         ) {
-            Column(
-                modifier = Modifier
-                    .thenIf(scrollablePicker) {
-                        Modifier
-                            .weight(weight = 1f, fill = false)
-                            .verticalScroll(rememberScrollState())
-                    }
-                    .thenIf(!scrollablePicker) {
-                        Modifier.weight(1f)
-                    },
-                content = picker,
-            )
+            Box(modifier = Modifier.weight(weight = 1f, fill = false)) {
+                picker()
+            }
             actions()
         }
     }
