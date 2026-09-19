@@ -15,9 +15,9 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 /**
  * Adaptive button.
  *
- * On Android it renders the app's custom themed button (a rounded [color]-filled
- * surface with a ripple) verbatim (zero UI changes). On iOS it renders Calf's
- * native Cupertino [AdaptiveButton] tinted with the same [color].
+ * On Android it renders a Material3 [androidx.compose.material3.Surface] button
+ * filled with [color]. On iOS it renders Calf's native Cupertino button tinted
+ * with the same [color].
  */
 @Composable
 expect fun Button(
