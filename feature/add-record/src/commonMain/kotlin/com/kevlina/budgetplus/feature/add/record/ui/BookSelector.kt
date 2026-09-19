@@ -80,8 +80,13 @@ fun BookSelector() {
                     add(
                         DropdownItemModel(
                             name = book.name,
-                            trailingIcon = if (bookState?.id == book.id) {
+                            leadingIcon = if (bookState?.id == book.id) {
                                 vectorResource(Res.drawable.ic_check)
+                            } else {
+                                null
+                            },
+                            iosSfSymbol = if (bookState?.id == book.id) {
+                                "checkmark"
                             } else {
                                 null
                             },
