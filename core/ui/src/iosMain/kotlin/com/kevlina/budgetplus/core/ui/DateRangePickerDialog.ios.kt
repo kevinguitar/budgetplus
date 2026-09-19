@@ -1,11 +1,11 @@
 package com.kevlina.budgetplus.core.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SelectableDates
 import androidx.compose.runtime.Composable
@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_cancel
 import budgetplus.core.common.generated.resources.cta_confirm
@@ -50,13 +52,20 @@ actual fun DateRangePickerDialog(
         }
     )
 
-    AppDialog(
-        usePlatformDefaultWidth = false,
+    // The native UICalendarView draws its own (full-width) surface, so we don't wrap
+    // it in the app's rounded dialog background — that box didn't fit the picker.
+    // Instead we present it full-width with a plain light backdrop that matches it.
+    Dialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier
-            .sizeIn(maxWidth = 480.dp)
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(LocalAppColors.current.light)
+        ) {
             AdaptiveDateRangePicker(
                 state = state,
                 colors = datePickerColors(),
