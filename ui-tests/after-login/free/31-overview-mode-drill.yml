@@ -9,7 +9,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/open-overview.yml
 # O5 — toggle to Group-by-categories (mode toggle icon, top-right).
 - tapOn:
-    point: "83%,10%"
+    text: "overview_mode_toggle"
 # O6 — drill into the category to open the Records screen.
 - tapOn:
     text: "Food"
@@ -27,7 +27,7 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 # Toggle back to All Records so the persisted mode is restored for later flows.
 - tapOn:
-    point: "83%,10%"
+    text: "overview_mode_toggle"
 - runFlow:
     file: ../../common/ensure-all-records-mode.yml
     env:

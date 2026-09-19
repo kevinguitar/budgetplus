@@ -147,6 +147,7 @@ fun RecordsScreen(vm: RecordsViewModel) {
                             showAuthor = true,
                             isSelectionMode = isSelectionMode,
                             isSelected = item.id in selectedIds,
+                            index = index,
                             onEdit = { editRecordDialog = item },
                             onDuplicate = { vm.duplicateRecord(item) },
                             onDelete = { deleteRecordDialog = item },

@@ -53,7 +53,7 @@ appId: com.kevlina.budgetplus
             text: ".*'s Overview"
           timeout: 15000
       - tapOn:
-          point: "83%,10%"
+          text: "overview_mode_toggle"
 - extendedWaitUntil:
     visible:
       text: ".*'s Overview"

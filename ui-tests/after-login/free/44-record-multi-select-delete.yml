@@ -1,0 +1,66 @@
+# E6 — Multi-select records and bulk-delete from the Records screen.
+# Adds two expense records in one category, drills into the Records screen,
+# enters selection mode via the long-press "Select" option, selects the second
+# record row, then deletes both via the top-bar delete icon and the confirmation
+# dialog (which shows the selected count).
+#
+# The two records share the category name as their title, so the rows are addressed
+# by their UI-test-only stable content descriptions "record_cell_0" / "record_cell_1"
+# (see RecordCard), and the Overview mode toggle by "overview_mode_toggle".
+appId: com.kevlina.budgetplus
+---
+- runFlow: ../../common/setup-login.yml
+- runFlow:
+    file: ../../common/add-record.yml
+    env:
+      CATEGORY: "Entertainment"
+- runFlow:
+    file: ../../common/add-record.yml
+    env:
+      CATEGORY: "Entertainment"
+- runFlow: ../../common/open-overview.yml
+# Toggle to Group-by-categories mode (mode toggle icon, top-right), then drill into
+# the category to open the Records screen (mirrors 31-overview-mode-drill, which
+# relies on the persisted overview mode defaulting to All-Records at this point).
+- tapOn:
+    text: "overview_mode_toggle"
+- tapOn:
+    text: "Entertainment"
+- extendedWaitUntil:
+    visible:
+      text: "Entertainment: .*"
+    timeout: 15000
+# Long-press the first record row to open its context menu.
+- longPressOn:
+    text: "record_cell_0"
+# Enter selection mode via the long-press context menu's "Select" option.
+- extendedWaitUntil:
+    visible:
+      text: "Select"
+    timeout: 10000
+- tapOn:
+    text: "Select"
+# In selection mode, tapping another record immediately selects it too. Tap the
+# second row so both records are selected.
+- tapOn:
+    text: "record_cell_1"
+# The top-bar title now reflects the selected records' sum ($200 = both records).
+- assertVisible:
+    text: "Entertainment: .*200.*"
+# Top-bar action is now the delete icon; tapping it prompts with the selected count.
+- tapOn:
+    text: "Delete"
+- extendedWaitUntil:
+    visible:
+      text: "Are you sure you want to delete the 2 selected records?"
+    timeout: 10000
+- tapOn:
+    text: "Confirm"
+# The bulk delete emits the batch snackbar with the deleted count.
+- extendedWaitUntil:
+    visible:
+      text: "2 records were deleted"
+    timeout: 10000
+- tapOn:
+    text: "bottom_nav_add"
+- runFlow: ../../common/assert-on-record.yml

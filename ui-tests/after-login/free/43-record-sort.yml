@@ -9,7 +9,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/open-overview.yml
 # Switch Overview to Group-by-categories (mode toggle, top-right menu icon).
 - tapOn:
-    point: "83%,10%"
+    text: "overview_mode_toggle"
 # Tap the category group to open the Records screen (title "<category>: <total>").
 - tapOn:
     text: "Rent"
@@ -39,7 +39,7 @@ appId: com.kevlina.budgetplus
       text: ".*'s Overview"
     timeout: 15000
 - tapOn:
-    point: "83%,10%"
+    text: "overview_mode_toggle"
 - runFlow:
     file: ../../common/ensure-all-records-mode.yml
     env:

@@ -24,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,7 @@ import budgetplus.core.common.generated.resources.ic_check_circle
 import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.ic_refresh
 import com.kevlina.budgetplus.core.common.RecordType
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.shortFormatted
 import com.kevlina.budgetplus.core.data.remote.Author
@@ -48,9 +51,14 @@ import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.thenIf
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+
+// UI-test-only stable target: each record cell exposes "record_cell_<index>" so tests
+// can long-press/tap a specific row reliably (record titles can be duplicated).
+private const val RECORD_CELL_DESC_PREFIX = "record_cell_"
 
 @Composable
 fun RecordCard(
@@ -63,6 +71,11 @@ fun RecordCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .thenIf(UiTestFlags.enabled && state.index != null) {
+                Modifier.semantics {
+                    contentDescription = "$RECORD_CELL_DESC_PREFIX${state.index}"
+                }
+            }
             .rippleClick(
                 color = LocalAppColors.current.dark,
                 onClick = when {
@@ -174,17 +187,17 @@ fun RecordCard(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 DropdownItem(
-                    name = stringResource(Res.string.cta_select),
-                ) {
-                    isMenuShown = false
-                    state.onSelect()
-                }
-
-                DropdownItem(
                     name = stringResource(Res.string.cta_duplicate),
                 ) {
                     isMenuShown = false
                     state.onDuplicate()
+                }
+
+                DropdownItem(
+                    name = stringResource(Res.string.cta_select),
+                ) {
+                    isMenuShown = false
+                    state.onSelect()
                 }
 
                 if (state.canEdit) {
@@ -210,6 +223,8 @@ data class RecordCardState(
     val showAuthor: Boolean,
     val isSelectionMode: Boolean = false,
     val isSelected: Boolean = false,
+    /** Position of the card in its list; used only to expose a stable UI-test target. */
+    val index: Int? = null,
     val onEdit: () -> Unit,
     val onDuplicate: () -> Unit,
     val onDelete: () -> Unit,
