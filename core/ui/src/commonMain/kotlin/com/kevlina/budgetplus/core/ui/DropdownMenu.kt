@@ -1,6 +1,8 @@
 package com.kevlina.budgetplus.core.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,9 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDown
+import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDownItem
+import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import androidx.compose.material3.DropdownMenuItem as MaterialDropdownMenuItem
 
 /**
@@ -49,10 +54,10 @@ data class DropdownItemModel(
  * used on iOS.
  *
  * Call sites should pass both [iosItems] (the data model) and [content] (the
- * Material composables). Helpers like [dropdownItems] keep the two in sync.
+ * Material composables).
  */
 @Composable
-expect fun DropdownMenu(
+fun BoxScope.DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     iosItems: List<DropdownItemModel> = emptyList(),
@@ -60,7 +65,27 @@ expect fun DropdownMenu(
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     properties: PopupProperties = PopupProperties(focusable = true),
     content: @Composable ColumnScope.() -> Unit,
-)
+) {
+    AdaptiveDropDown(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier.background(LocalAppColors.current.light),
+        offset = offset,
+        properties = properties,
+        containerColor = LocalAppColors.current.light,
+        iosItems = iosItems.map { item ->
+            AdaptiveDropDownItem(
+                title = item.name,
+                iosIcon = item.iosSfSymbol?.let { UIKitImage.SystemName(it) }
+                    ?: item.icon?.let { UIKitImage.Vector(it) },
+                isDestructive = item.isDestructive,
+                isDisabled = !item.enabled,
+                onClick = item.onClick,
+            )
+        },
+        materialContent = content,
+    )
+}
 
 @Composable
 fun DropdownItem(

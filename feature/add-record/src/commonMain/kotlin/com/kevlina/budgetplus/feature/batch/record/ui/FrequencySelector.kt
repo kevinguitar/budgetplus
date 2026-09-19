@@ -98,27 +98,29 @@ internal fun FrequencySelector(
                 tint = LocalAppColors.current.dark
             )
 
-            DropdownMenu(
-                expanded = isNumDropdownShown,
-                onDismissRequest = { isNumDropdownShown = false },
-                iosItems = (DURATION_MIN..DURATION_MAX).map { num ->
-                    DropdownItemModel(
-                        name = num.toString(),
-                        onClick = {
-                            setDuration(num)
-                            isNumDropdownShown = false
-                        }
-                    )
-                }
-            ) {
-                for (num in DURATION_MIN..DURATION_MAX) {
-                    DropdownItem(
-                        name = num.toString(),
-                        onClick = {
-                            setDuration(num)
-                            isNumDropdownShown = false
-                        }
-                    )
+            Box {
+                DropdownMenu(
+                    expanded = isNumDropdownShown,
+                    onDismissRequest = { isNumDropdownShown = false },
+                    iosItems = (DURATION_MIN..DURATION_MAX).map { num ->
+                        DropdownItemModel(
+                            name = num.toString(),
+                            onClick = {
+                                setDuration(num)
+                                isNumDropdownShown = false
+                            }
+                        )
+                    }
+                ) {
+                    for (num in DURATION_MIN..DURATION_MAX) {
+                        DropdownItem(
+                            name = num.toString(),
+                            onClick = {
+                                setDuration(num)
+                                isNumDropdownShown = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -142,27 +144,29 @@ internal fun FrequencySelector(
                 tint = LocalAppColors.current.dark
             )
 
-            DropdownMenu(
-                expanded = isUnitDropdownShown,
-                onDismissRequest = { isUnitDropdownShown = false },
-                iosItems = BatchUnit.entries.map { unit ->
-                    DropdownItemModel(
-                        name = stringResource(unit.stringRes),
-                        onClick = {
-                            setUnit(unit)
-                            isUnitDropdownShown = false
-                        }
-                    )
-                }
-            ) {
-                BatchUnit.entries.forEach { unit ->
-                    DropdownItem(
-                        name = stringResource(unit.stringRes),
-                        onClick = {
-                            setUnit(unit)
-                            isUnitDropdownShown = false
-                        }
-                    )
+            Box {
+                DropdownMenu(
+                    expanded = isUnitDropdownShown,
+                    onDismissRequest = { isUnitDropdownShown = false },
+                    iosItems = BatchUnit.entries.map { unit ->
+                        DropdownItemModel(
+                            name = stringResource(unit.stringRes),
+                            onClick = {
+                                setUnit(unit)
+                                isUnitDropdownShown = false
+                            }
+                        )
+                    }
+                ) {
+                    BatchUnit.entries.forEach { unit ->
+                        DropdownItem(
+                            name = stringResource(unit.stringRes),
+                            onClick = {
+                                setUnit(unit)
+                                isUnitDropdownShown = false
+                            }
+                        )
+                    }
                 }
             }
         }

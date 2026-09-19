@@ -12,13 +12,14 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import androidx.compose.material3.ModalBottomSheet as MaterialModalBottomSheet
 
-@Suppress("DEPRECATION")
 @Composable
 fun ModalBottomSheet(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    // Weird one, probably caused by material version mismatch with Calf
+    @Suppress("DEPRECATION")
     MaterialModalBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,

@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.batch.record.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -163,29 +164,31 @@ private fun TimesSelector(
                 tint = LocalAppColors.current.dark
             )
 
-            DropdownMenu(
-                expanded = isTimesMenuShown,
-                onDismissRequest = { isTimesMenuShown = false },
-                iosItems = batchTimes.map { times ->
-                    DropdownItemModel(
-                        name = times.toString(),
-                        onClick = {
-                            setTimes(times)
-                            isTimesMenuShown = false
-                        }
-                    )
-                },
-                modifier = Modifier.heightIn(max = 240.dp)
-            ) {
+            Box {
+                DropdownMenu(
+                    expanded = isTimesMenuShown,
+                    onDismissRequest = { isTimesMenuShown = false },
+                    iosItems = batchTimes.map { times ->
+                        DropdownItemModel(
+                            name = times.toString(),
+                            onClick = {
+                                setTimes(times)
+                                isTimesMenuShown = false
+                            }
+                        )
+                    },
+                    modifier = Modifier.heightIn(max = 240.dp)
+                ) {
 
-                batchTimes.forEach { times ->
-                    DropdownItem(
-                        name = times.toString(),
-                        onClick = {
-                            setTimes(times)
-                            isTimesMenuShown = false
-                        }
-                    )
+                    batchTimes.forEach { times ->
+                        DropdownItem(
+                            name = times.toString(),
+                            onClick = {
+                                setTimes(times)
+                                isTimesMenuShown = false
+                            }
+                        )
+                    }
                 }
             }
         }
