@@ -8,9 +8,11 @@ appId: com.kevlina.budgetplus
 # Open the custom date-range picker via the date-range row's calendar icon ("Select Date").
 - tapOn:
     text: "Select Date"
+# Assert on the dialog's stable UI-test identifier rather than the Material3/Calf
+# "Select dates" header, which is not reliably exposed as accessibility text on iOS.
 - extendedWaitUntil:
     visible:
-      text: "Select dates"
+      text: "Date Range Picker"
     timeout: 15000
 # Premium: no "above one month" upsell is shown.
 - assertNotVisible:

@@ -29,7 +29,7 @@ import com.kevlina.budgetplus.core.data.BatchFrequency
 import com.kevlina.budgetplus.core.data.BatchUnit
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -97,19 +97,20 @@ internal fun FrequencySelector(
                 tint = LocalAppColors.current.dark
             )
 
-            DropdownMenu(
-                expanded = isNumDropdownShown,
-                onDismissRequest = { isNumDropdownShown = false }
-            ) {
-                for (num in DURATION_MIN..DURATION_MAX) {
-                    DropdownItem(
-                        name = num.toString(),
-                        onClick = {
-                            setDuration(num)
-                            isNumDropdownShown = false
-                        }
-                    )
-                }
+            Box {
+                DropdownMenu(
+                    expanded = isNumDropdownShown,
+                    onDismissRequest = { isNumDropdownShown = false },
+                    items = (DURATION_MIN..DURATION_MAX).map { num ->
+                        DropdownItemModel(
+                            name = num.toString(),
+                            onClick = {
+                                setDuration(num)
+                                isNumDropdownShown = false
+                            }
+                        )
+                    }
+                )
             }
         }
 
@@ -132,19 +133,20 @@ internal fun FrequencySelector(
                 tint = LocalAppColors.current.dark
             )
 
-            DropdownMenu(
-                expanded = isUnitDropdownShown,
-                onDismissRequest = { isUnitDropdownShown = false }
-            ) {
-                BatchUnit.entries.forEach { unit ->
-                    DropdownItem(
-                        name = stringResource(unit.stringRes),
-                        onClick = {
-                            setUnit(unit)
-                            isUnitDropdownShown = false
-                        }
-                    )
-                }
+            Box {
+                DropdownMenu(
+                    expanded = isUnitDropdownShown,
+                    onDismissRequest = { isUnitDropdownShown = false },
+                    items = BatchUnit.entries.map { unit ->
+                        DropdownItemModel(
+                            name = stringResource(unit.stringRes),
+                            onClick = {
+                                setUnit(unit)
+                                isUnitDropdownShown = false
+                            }
+                        )
+                    }
+                )
             }
         }
     }

@@ -8,6 +8,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.theme)
+            implementation(libs.calf.ui)
             implementation(libs.compose.material3)
             implementation(libs.compose.material3.windowsizeclass)
 
@@ -18,6 +19,7 @@ kotlin {
     }
     compilerOptions {
         optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
+        optIn.add("com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi")
     }
     android.androidResources.enable = true
 }

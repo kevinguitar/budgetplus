@@ -39,7 +39,7 @@ import com.kevlina.budgetplus.core.common.getAvailableCurrencies
 import com.kevlina.budgetplus.core.lottie.NotFoundZeroCase
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -200,15 +200,16 @@ private fun CurrencyCard(
         DropdownMenu(
             expanded = isDropdownDisplayed,
             onDismissRequest = { isDropdownDisplayed = false },
-        ) {
-            DropdownItem(
-                name = stringResource(Res.string.cta_pin),
-                onClick = {
-                    onPinned()
-                    isDropdownDisplayed = false
-                }
-            )
-        }
+            items = listOf(
+                DropdownItemModel(
+                    name = stringResource(Res.string.cta_pin),
+                    onClick = {
+                        onPinned()
+                        isDropdownDisplayed = false
+                    }
+                )
+            ),
+        )
     }
 }
 

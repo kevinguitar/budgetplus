@@ -43,6 +43,7 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
   - [Analytics](https://firebase.google.com/docs/analytics), [Messaging](https://firebase.google.com/docs/cloud-messaging), and [Remote Config](https://firebase.google.com/docs/remote-config)
 
 ### Open-Source Libraries for KMP
+- [Calf](https://github.com/MohamedRejeb/Calf) for native iOS look and feel
 - [Coil3](https://github.com/coil-kt/coil) for image loading with KMP support
 - [Colorpicker-compose](https://github.com/skydoves/colorpicker-compose) for color picking
 - [Compottie](https://github.com/alexzhirkevich/compottie) for Lottie animations in Compose Multiplatform

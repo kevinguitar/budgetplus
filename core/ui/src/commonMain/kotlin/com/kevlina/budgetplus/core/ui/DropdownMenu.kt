@@ -1,81 +1,128 @@
 package com.kevlina.budgetplus.core.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.ic_lock
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.theme.ThemeColors
-import org.jetbrains.compose.resources.vectorResource
-import androidx.compose.material3.DropdownMenu as MaterialDropdownMenu
+import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDown
+import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDownItem
+import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import androidx.compose.material3.DropdownMenuItem as MaterialDropdownMenuItem
 
+/**
+ * Applies the dropdown background on Android only. On iOS the native pull-down
+ * menu handles its own background, and applying it here breaks the layout.
+ */
+internal expect fun Modifier.dropdownBackground(color: Color): Modifier
+
+/**
+ * A declarative description of a single dropdown entry.
+ *
+ * This model is shared by both platforms: on Android it drives the themed
+ * Material [DropdownMenu], and on iOS it is mapped to a native pull-down menu
+ * item (Calf `AdaptiveDropDownItem`).
+ *
+ * Use [DropdownItemModel.Divider] as a list entry to insert a separator between
+ * groups of items.
+ */
+data class DropdownItemModel(
+    val name: String,
+    val leadingIcon: ImageVector? = null,
+    /**
+     * Optional icon rendered after [name]. This is Android-only: the native iOS
+     * pull-down menu has a single icon slot, so only [leadingIcon]/[iosSfSymbol]
+     * are shown there.
+     */
+    val trailingIcon: ImageVector? = null,
+    /**
+     * Optional iOS SF Symbol name used instead of [leadingIcon] on iOS. SF
+     * Symbols are rendered as template images in the native pull-down menu, so
+     * they are automatically tinted to match the menu's label color (unlike a
+     * rasterized [leadingIcon], which keeps its own color).
+     */
+    val iosSfSymbol: String? = null,
+    val enabled: Boolean = true,
+    val isDestructive: Boolean = false,
+    val onClick: () -> Unit,
+) {
+    internal val isDivider: Boolean get() = this === Divider
+
+    companion object {
+        /**
+         * A sentinel entry that renders a horizontal divider when placed in the
+         * dropdown item list. On iOS the native menu draws its own separators,
+         * so this entry is ignored there.
+         */
+        val Divider: DropdownItemModel = DropdownItemModel(name = "", onClick = {})
+    }
+}
+
+/**
+ * Adaptive dropdown menu.
+ *
+ * The menu content is fully described by [items] on both platforms. On Android
+ * it renders a themed Material [DropdownMenu]; on iOS it renders a native
+ * pull-down menu (Calf `AdaptiveDropDown`).
+ */
 @Composable
-fun DropdownMenu(
+fun BoxScope.DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
+    items: List<DropdownItemModel>,
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     properties: PopupProperties = PopupProperties(focusable = true),
-    content: @Composable ColumnScope.() -> Unit,
 ) {
-    MaterialDropdownMenu(
+    AdaptiveDropDown(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.background(LocalAppColors.current.light),
+        modifier = modifier.dropdownBackground(LocalAppColors.current.light),
         offset = offset,
         properties = properties,
-        content = content
+        containerColor = LocalAppColors.current.light,
+        iosItems = items
+            .filterNot { it.isDivider }
+            .map { item ->
+                AdaptiveDropDownItem(
+                    title = item.name,
+                    iosIcon = item.iosSfSymbol?.let { UIKitImage.SystemName(it) }
+                        ?: item.leadingIcon?.let { UIKitImage.Vector(it) },
+                    isDestructive = item.isDestructive,
+                    isDisabled = !item.enabled,
+                    onClick = item.onClick,
+                )
+            },
+        materialContent = {
+            items.forEach { item ->
+                if (item.isDivider) {
+                    DropdownDivider()
+                } else {
+                    DropdownItem(item)
+                }
+            }
+        },
     )
 }
 
 @Composable
-fun DropdownItem(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    contentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable () -> Unit,
-) {
+private fun DropdownItem(item: DropdownItemModel) {
     MaterialDropdownMenuItem(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        contentPadding = contentPadding,
-        interactionSource = interactionSource,
-        text = content,
-    )
-}
-
-@Composable
-fun DropdownItem(
-    name: String,
-    icon: ImageVector? = null,
-    onClick: () -> Unit,
-) {
-    MaterialDropdownMenuItem(
-        onClick = onClick,
+        onClick = item.onClick,
+        enabled = item.enabled,
         text = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (icon != null) {
+                if (item.leadingIcon != null) {
                     Icon(
-                        imageVector = icon,
+                        imageVector = item.leadingIcon,
                         contentDescription = null,
                         tint = LocalAppColors.current.dark,
                         size = 20.dp,
@@ -84,40 +131,26 @@ fun DropdownItem(
                 }
 
                 Text(
-                    text = name,
+                    text = item.name,
                     color = LocalAppColors.current.dark,
                     fontSize = FontSize.SemiLarge
                 )
+
+                if (item.trailingIcon != null) {
+                    Icon(
+                        imageVector = item.trailingIcon,
+                        contentDescription = null,
+                        tint = LocalAppColors.current.dark,
+                        size = 20.dp,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
             }
         }
     )
 }
 
 @Composable
-fun DropdownDivider() {
+private fun DropdownDivider() {
     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp))
-}
-
-@Preview
-@Composable
-private fun DropdownMenu_Preview() = AppTheme(themeColors = ThemeColors.Dusk) {
-    DropdownMenu(
-        expanded = true,
-        onDismissRequest = { }
-    ) {
-        DropdownItem(
-            name = "Item 1",
-            icon = vectorResource(Res.drawable.ic_lock),
-            onClick = {}
-        )
-        DropdownDivider()
-        DropdownItem(
-            name = "Item 2",
-            onClick = {}
-        )
-        DropdownItem(
-            name = "Item 3",
-            onClick = {}
-        )
-    }
 }

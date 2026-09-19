@@ -45,7 +45,7 @@ import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.isBatched
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -184,31 +184,39 @@ fun RecordCard(
             DropdownMenu(
                 expanded = isMenuShown,
                 onDismissRequest = { isMenuShown = false },
-                modifier = Modifier.align(Alignment.BottomEnd)
-            ) {
-                DropdownItem(
-                    name = stringResource(Res.string.cta_select),
-                ) {
-                    isMenuShown = false
-                    state.onSelect()
-                }
-
-                DropdownItem(
-                    name = stringResource(Res.string.cta_duplicate),
-                ) {
-                    isMenuShown = false
-                    state.onDuplicate()
-                }
-
-                if (state.canEdit) {
-                    DropdownItem(
-                        name = stringResource(Res.string.cta_delete),
-                    ) {
-                        isMenuShown = false
-                        state.onDelete()
+                items = buildList {
+                    add(
+                        DropdownItemModel(
+                            name = stringResource(Res.string.cta_select),
+                            onClick = {
+                                isMenuShown = false
+                                state.onSelect()
+                            }
+                        )
+                    )
+                    add(
+                        DropdownItemModel(
+                            name = stringResource(Res.string.cta_duplicate),
+                            onClick = {
+                                isMenuShown = false
+                                state.onDuplicate()
+                            }
+                        )
+                    )
+                    if (state.canEdit) {
+                        add(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.cta_delete),
+                                onClick = {
+                                    isMenuShown = false
+                                    state.onDelete()
+                                }
+                            )
+                        )
                     }
-                }
-            }
+                },
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
         }
     }
 }

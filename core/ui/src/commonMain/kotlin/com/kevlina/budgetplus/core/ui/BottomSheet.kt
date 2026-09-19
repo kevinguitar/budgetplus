@@ -18,6 +18,8 @@ fun ModalBottomSheet(
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    // Weird one, probably caused by material version mismatch with Calf
+    @Suppress("DEPRECATION")
     MaterialModalBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,

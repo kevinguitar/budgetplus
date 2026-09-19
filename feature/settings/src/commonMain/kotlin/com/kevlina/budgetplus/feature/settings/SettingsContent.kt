@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -85,7 +86,7 @@ import com.kevlina.budgetplus.core.settings.api.icon
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.InputDialog
@@ -199,7 +200,9 @@ internal fun SettingsContent(
                     Switch(
                         checked = allowMembersEdit,
                         onCheckedChange = vm::setAllowMembersEdit,
-                        modifier = Modifier.padding(end = 10.dp)
+                        modifier = Modifier
+                            .scale(0.8F)
+                            .padding(end = 10.dp)
                     )
                 },
                 onClick = { vm.setAllowMembersEdit(!allowMembersEdit) }
@@ -246,7 +249,9 @@ internal fun SettingsContent(
                         hapticFeedback.performHapticFeedback(feedbackType)
                         vm.vibrator.toggleVibrateOnInput()
                     },
-                    modifier = Modifier.padding(end = 10.dp)
+                    modifier = Modifier
+                        .scale(0.8F)
+                        .padding(end = 10.dp)
                 )
             },
             onClick = vm.vibrator::toggleVibrateOnInput
@@ -269,24 +274,24 @@ internal fun SettingsContent(
 
                     DropdownMenu(
                         expanded = isCalculatorButtonDropdownShown,
-                        onDismissRequest = { isCalculatorButtonDropdownShown = false }
-                    ) {
-                        DropdownItem(
-                            name = stringResource(Res.string.settings_calculator_dot),
-                            onClick = {
-                                vm.calculatorSettings.setButtonType(CalculatorButtonType.Dot)
-                                isCalculatorButtonDropdownShown = false
-                            }
+                        onDismissRequest = { isCalculatorButtonDropdownShown = false },
+                        items = listOf(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.settings_calculator_dot),
+                                onClick = {
+                                    vm.calculatorSettings.setButtonType(CalculatorButtonType.Dot)
+                                    isCalculatorButtonDropdownShown = false
+                                }
+                            ),
+                            DropdownItemModel(
+                                name = CalculatorButtonType.DoubleZero.text,
+                                onClick = {
+                                    vm.calculatorSettings.setButtonType(CalculatorButtonType.DoubleZero)
+                                    isCalculatorButtonDropdownShown = false
+                                }
+                            )
                         )
-
-                        DropdownItem(
-                            name = CalculatorButtonType.DoubleZero.text,
-                            onClick = {
-                                vm.calculatorSettings.setButtonType(CalculatorButtonType.DoubleZero)
-                                isCalculatorButtonDropdownShown = false
-                            }
-                        )
-                    }
+                    )
                 }
             }
         )
@@ -306,26 +311,28 @@ internal fun SettingsContent(
 
                     DropdownMenu(
                         expanded = isChartModeDropdownShown,
-                        onDismissRequest = { isChartModeDropdownShown = false }
-                    ) {
-                        DropdownItem(
-                            name = stringResource(Res.string.settings_bar_chart),
-                            icon = ChartMode.BarChart.icon,
-                            onClick = {
-                                vm.chartModeSettings.setChartMode(ChartMode.BarChart)
-                                isChartModeDropdownShown = false
-                            }
+                        onDismissRequest = { isChartModeDropdownShown = false },
+                        items = listOf(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.settings_bar_chart),
+                                leadingIcon = ChartMode.BarChart.icon,
+                                iosSfSymbol = "chart.bar.fill",
+                                onClick = {
+                                    vm.chartModeSettings.setChartMode(ChartMode.BarChart)
+                                    isChartModeDropdownShown = false
+                                }
+                            ),
+                            DropdownItemModel(
+                                name = stringResource(Res.string.settings_pie_chart),
+                                leadingIcon = ChartMode.PieChart.icon,
+                                iosSfSymbol = "chart.pie.fill",
+                                onClick = {
+                                    vm.chartModeSettings.setChartMode(ChartMode.PieChart)
+                                    isChartModeDropdownShown = false
+                                }
+                            )
                         )
-
-                        DropdownItem(
-                            name = stringResource(Res.string.settings_pie_chart),
-                            icon = ChartMode.PieChart.icon,
-                            onClick = {
-                                vm.chartModeSettings.setChartMode(ChartMode.PieChart)
-                                isChartModeDropdownShown = false
-                            }
-                        )
-                    }
+                    )
                 }
             }
         )

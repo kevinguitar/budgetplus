@@ -30,7 +30,7 @@ import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppDialog
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.DateRangePickerDialog
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.ModalBottomSheet
 import com.kevlina.budgetplus.feature.category.pills.CategoriesGrid
@@ -82,18 +82,24 @@ internal fun SearchFilter(
 
             DropdownMenu(
                 expanded = isTypePickerShown,
-                onDismissRequest = { isTypePickerShown = false }
-            ) {
-                DropdownItem(name = stringResource(Res.string.record_expense)) {
-                    isTypePickerShown = false
-                    state.selectType(RecordType.Expense)
-                }
-
-                DropdownItem(name = stringResource(Res.string.record_income)) {
-                    isTypePickerShown = false
-                    state.selectType(RecordType.Income)
-                }
-            }
+                onDismissRequest = { isTypePickerShown = false },
+                items = listOf(
+                    DropdownItemModel(
+                        name = stringResource(Res.string.record_expense),
+                        onClick = {
+                            isTypePickerShown = false
+                            state.selectType(RecordType.Expense)
+                        }
+                    ),
+                    DropdownItemModel(
+                        name = stringResource(Res.string.record_income),
+                        onClick = {
+                            isTypePickerShown = false
+                            state.selectType(RecordType.Income)
+                        }
+                    )
+                )
+            )
         }
 
         FilterPill(
@@ -124,20 +130,30 @@ internal fun SearchFilter(
 
                 DropdownMenu(
                     expanded = isAuthorPickerShown,
-                    onDismissRequest = { isAuthorPickerShown = false }
-                ) {
-                    DropdownItem(name = stringResource(Res.string.overview_author_everyone)) {
-                        isAuthorPickerShown = false
-                        state.selectAuthor(null)
-                    }
-
-                    allAuthors.forEach { author ->
-                        DropdownItem(name = author.name.orEmpty()) {
-                            isAuthorPickerShown = false
-                            state.selectAuthor(author)
+                    onDismissRequest = { isAuthorPickerShown = false },
+                    items = buildList {
+                        add(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.overview_author_everyone),
+                                onClick = {
+                                    isAuthorPickerShown = false
+                                    state.selectAuthor(null)
+                                }
+                            )
+                        )
+                        allAuthors.forEach { author ->
+                            add(
+                                DropdownItemModel(
+                                    name = author.name.orEmpty(),
+                                    onClick = {
+                                        isAuthorPickerShown = false
+                                        state.selectAuthor(author)
+                                    }
+                                )
+                            )
                         }
                     }
-                }
+                )
             }
         }
     }

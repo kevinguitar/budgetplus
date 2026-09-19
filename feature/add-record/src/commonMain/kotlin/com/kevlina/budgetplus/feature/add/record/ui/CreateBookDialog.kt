@@ -34,7 +34,7 @@ import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppDialog
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Button
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FocusRequestDelay
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -111,27 +111,30 @@ internal fun CreateBookDialog(
 
                     DropdownMenu(
                         expanded = isCopyFromDropdownShown,
-                        onDismissRequest = { isCopyFromDropdownShown = false }
-                    ) {
-
-                        DropdownItem(
-                            name = stringResource(Res.string.book_copy_categories_default),
-                            onClick = {
-                                copyFromBook = null
-                                isCopyFromDropdownShown = false
-                            }
-                        )
-
-                        books.forEach { book ->
-                            DropdownItem(
-                                name = book.name,
-                                onClick = {
-                                    copyFromBook = book
-                                    isCopyFromDropdownShown = false
-                                }
+                        onDismissRequest = { isCopyFromDropdownShown = false },
+                        items = buildList {
+                            add(
+                                DropdownItemModel(
+                                    name = stringResource(Res.string.book_copy_categories_default),
+                                    onClick = {
+                                        copyFromBook = null
+                                        isCopyFromDropdownShown = false
+                                    }
+                                )
                             )
+                            books.forEach { book ->
+                                add(
+                                    DropdownItemModel(
+                                        name = book.name,
+                                        onClick = {
+                                            copyFromBook = book
+                                            isCopyFromDropdownShown = false
+                                        }
+                                    )
+                                )
+                            }
                         }
-                    }
+                    )
                 }
             }
 

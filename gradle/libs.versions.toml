@@ -42,6 +42,8 @@ revenuecat-kmp = "3.9.0"
 ktor = "3.6.0"
 # https://github.com/touchlab/Kermit/releases
 kermit = "2.2.0"
+# https://github.com/MohamedRejeb/Calf/releases
+calf = "0.14.0"
 
 compileAndroidSdk = "37"
 minAndroidSdk = "26"
@@ -62,6 +64,7 @@ build-android-gradle-plugin = { module = "com.android.tools.build:gradle", versi
 build-compose-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 build-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 build-metro-gradle-plugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
+calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calf" }
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }

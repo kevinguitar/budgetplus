@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.batch.record.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,7 @@ import budgetplus.core.common.generated.resources.ic_today
 import budgetplus.core.common.generated.resources.select_date
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
-import com.kevlina.budgetplus.core.ui.DropdownItem
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
@@ -162,21 +163,21 @@ private fun TimesSelector(
                 tint = LocalAppColors.current.dark
             )
 
-            DropdownMenu(
-                expanded = isTimesMenuShown,
-                onDismissRequest = { isTimesMenuShown = false },
-                modifier = Modifier.heightIn(max = 240.dp)
-            ) {
-
-                batchTimes.forEach { times ->
-                    DropdownItem(
-                        name = times.toString(),
-                        onClick = {
-                            setTimes(times)
-                            isTimesMenuShown = false
-                        }
-                    )
-                }
+            Box {
+                DropdownMenu(
+                    expanded = isTimesMenuShown,
+                    onDismissRequest = { isTimesMenuShown = false },
+                    items = batchTimes.map { times ->
+                        DropdownItemModel(
+                            name = times.toString(),
+                            onClick = {
+                                setTimes(times)
+                                isTimesMenuShown = false
+                            }
+                        )
+                    },
+                    modifier = Modifier.heightIn(max = 240.dp)
+                )
             }
         }
     }

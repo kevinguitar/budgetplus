@@ -13,10 +13,6 @@ import dev.zacsweers.metro.Provides
 object CommonProviders {
 
     @Provides
-    @Named("app_package")
-    fun provideAppPackage(): String = "com.kevlina.budgetplus"
-
-    @Provides
     @Named("share_app_url")
     fun provideGooglePlayUrl(): String = "$APP_DEEPLINK/get-app"
 

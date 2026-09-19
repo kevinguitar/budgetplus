@@ -2,7 +2,9 @@
 <project>
     <component name="JavaProjectCodeInsightSettings">
         <excluded-names>
+            <name>co.touchlab.kermit.Logger</name>
             <name>coil3.util.Logger</name>
+            <name>com.google.firebase.logger.Logger</name>
             <name>io.github.alexzhirkevich.compottie.LottieLogger</name>
             <name>io.ktor.util.logging.KtorSimpleLogger</name>
             <name>io.ktor.util.logging.Logger</name>
@@ -12,6 +14,7 @@
             <name>java.time.format.TextStyle</name>
             <name>java.util.ServiceLoader.Provider</name>
             <name>java.util.concurrent.Flow</name>
+            <name>java.util.logging.Logger</name>
             <name>javax.inject.Inject</name>
             <name>javax.inject.Named</name>
             <name>javax.inject.Provider</name>

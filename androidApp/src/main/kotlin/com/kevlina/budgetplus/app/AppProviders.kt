@@ -14,6 +14,10 @@ import dev.zacsweers.metro.Provides
 object AppProviders {
 
     @Provides
+    @Named("app_package")
+    fun provideAppPackage(context: Context): String = context.packageName
+
+    @Provides
     @Named("is_debug")
     fun provideIsDebug(context: Context): Boolean {
         return context.resources.getBoolean(R.bool.is_debug)
