@@ -21,6 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,7 @@ import androidx.compose.ui.window.DialogProperties
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_cancel
 import budgetplus.core.common.generated.resources.cta_confirm
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
@@ -41,6 +44,14 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Instant
+
+/**
+ * A stable identifier for the date-range picker dialog, exposed only when
+ * [UiTestFlags.enabled]. The Material3/Calf "Select dates" header title is not
+ * reliably surfaced as accessibility text on iOS (Calf renders a native-styled
+ * calendar), so UI tests assert on this instead of the volatile header text.
+ */
+const val DATE_RANGE_PICKER_TEST_TAG = "Date Range Picker"
 
 /**
  * Adaptive single-date picker dialog.
@@ -101,6 +112,7 @@ fun DateRangePickerDialog(
 
     PickerDialogScaffold(
         onDismiss = onDismiss,
+        testTag = DATE_RANGE_PICKER_TEST_TAG,
         picker = {
             DateRangePickerCore(
                 initialSelectedStartDateMillis = startDate?.utcMillis,
@@ -175,6 +187,7 @@ private fun PickerDialogScaffold(
     onDismiss: () -> Unit,
     picker: @Composable () -> Unit,
     actions: @Composable ColumnScope.() -> Unit,
+    testTag: String? = null,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -187,7 +200,10 @@ private fun PickerDialogScaffold(
                 .sizeIn(maxWidth = 480.dp, maxHeight = 560.dp)
                 .clip(AppTheme.dialogShape)
                 .background(LocalAppColors.current.light)
-                .padding(16.dp),
+                .padding(16.dp)
+                .thenIfNotNull(testTag.takeIf { UiTestFlags.enabled }) { tag ->
+                    Modifier.semantics { contentDescription = tag }
+                },
         ) {
             Box(modifier = Modifier.weight(weight = 1f, fill = false)) {
                 picker()
