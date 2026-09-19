@@ -187,17 +187,17 @@ fun RecordCard(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 DropdownItem(
-                    name = stringResource(Res.string.cta_duplicate),
-                ) {
-                    isMenuShown = false
-                    state.onDuplicate()
-                }
-
-                DropdownItem(
                     name = stringResource(Res.string.cta_select),
                 ) {
                     isMenuShown = false
                     state.onSelect()
+                }
+
+                DropdownItem(
+                    name = stringResource(Res.string.cta_duplicate),
+                ) {
+                    isMenuShown = false
+                    state.onDuplicate()
                 }
 
                 if (state.canEdit) {
