@@ -1,9 +1,11 @@
-@file:OptIn(com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi::class)
+@file:OptIn(com.mohamedrejeb.calf.ui.ExperimentalCalfUiApi::class, kotlinx.cinterop.ExperimentalForeignApi::class)
 
 package com.kevlina.budgetplus.book.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_format_list_bulleted
@@ -18,13 +20,33 @@ import com.mohamedrejeb.calf.ui.navigation.UIKitTabBarConfiguration
 import com.mohamedrejeb.calf.ui.navigation.UIKitUITabBarItem
 import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import org.jetbrains.compose.resources.vectorResource
+import platform.UIKit.UIColor
+import platform.UIKit.UITabBar
+import platform.UIKit.UITabBarAppearance
 
 @Composable
 internal actual fun BottomNav(
     navController: NavController<BookDest>,
     previewColors: ThemeColors?,
 ) {
+    val lightColor = previewColors?.light ?: LocalAppColors.current.light
     val darkColor = previewColors?.dark ?: LocalAppColors.current.dark
+
+    // Force a solid light background on the native UITabBar. Calf does not expose a
+    // container color, so we configure the global UITabBar appearance proxy; new tab
+    // bars (including Calf's) pick it up.
+    LaunchedEffect(lightColor) {
+        val uiLight = lightColor.toUIColor()
+        val appearance = UITabBarAppearance().apply {
+            configureWithOpaqueBackground()
+            backgroundColor = uiLight
+        }
+        UITabBar.appearance().apply {
+            standardAppearance = appearance
+            scrollEdgeAppearance = appearance
+            backgroundColor = uiLight
+        }
+    }
 
     val tabs = BottomNavTab.entries
     val currentRoot = navController.rootStack.lastOrNull()
@@ -47,7 +69,17 @@ internal actual fun BottomNav(
         },
         iosConfiguration = UIKitTabBarConfiguration(
             selectedItemColor = darkColor,
-            unselectedItemColor = darkColor.copy(alpha = 0.5f),
+            unselectedItemColor = darkColor,
+            isTranslucent = false,
         ),
     )
+}
+
+private fun Color.toUIColor(): UIColor {
+    val argb = toArgb()
+    val a = ((argb shr 24) and 0xFF) / 255.0
+    val r = ((argb shr 16) and 0xFF) / 255.0
+    val g = ((argb shr 8) and 0xFF) / 255.0
+    val b = (argb and 0xFF) / 255.0
+    return UIColor(red = r, green = g, blue = b, alpha = a)
 }
