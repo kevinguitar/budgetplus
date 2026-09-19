@@ -1,6 +1,7 @@
 package com.kevlina.budgetplus.feature.records
 
 import com.kevlina.budgetplus.core.common.RecordType
+import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -111,6 +112,7 @@ class RecordsViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             authManager = FakeAuthManager(),
             preference = FakePreference(),
             currencyExchangeRepo = currencyExchangeRepo,
+            snackbarSender = FakeSnackbarSender(),
             recordsObserver = FakeRecordsObserver(
                 records = sequenceOf(bookCurrencyRecord, preferredCurrencyRecord)
             ),

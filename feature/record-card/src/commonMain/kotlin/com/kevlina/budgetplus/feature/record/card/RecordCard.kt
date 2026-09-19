@@ -1,5 +1,10 @@
 package com.kevlina.budgetplus.feature.record.card
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
 import budgetplus.core.common.generated.resources.cta_duplicate
+import budgetplus.core.common.generated.resources.cta_select
+import budgetplus.core.common.generated.resources.ic_check_circle
+import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.ic_refresh
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.now
@@ -57,8 +65,13 @@ fun RecordCard(
             .fillMaxWidth()
             .rippleClick(
                 color = LocalAppColors.current.dark,
-                onClick = if (state.canEdit) state.onEdit else {
-                    {}
+                onClick = when {
+                    // In selection mode, tapping toggles the selection immediately.
+                    state.isSelectionMode -> state.onToggleSelect
+                    state.canEdit -> state.onEdit
+                    else -> {
+                        {}
+                    }
                 },
                 onLongClick = { isMenuShown = true }
             )
@@ -66,11 +79,28 @@ fun RecordCard(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
         ) {
+            AnimatedVisibility(
+                visible = state.isSelectionMode,
+                enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
+                exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + fadeOut(),
+            ) {
+                Icon(
+                    imageVector = vectorResource(
+                        if (state.isSelected) {
+                            Res.drawable.ic_check_circle
+                        } else {
+                            Res.drawable.ic_check_circle_outline
+                        }
+                    ),
+                    tint = LocalAppColors.current.dark,
+                    modifier = Modifier.padding(end = 16.dp),
+                )
+            }
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.weight(1F),
@@ -118,6 +148,7 @@ fun RecordCard(
                 text = state.formattedPrice,
                 fontSize = FontSize.SemiLarge,
                 fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 16.dp),
             )
         }
 
@@ -142,6 +173,13 @@ fun RecordCard(
                 onDismissRequest = { isMenuShown = false },
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
+                DropdownItem(
+                    name = stringResource(Res.string.cta_select),
+                ) {
+                    isMenuShown = false
+                    state.onSelect()
+                }
+
                 DropdownItem(
                     name = stringResource(Res.string.cta_duplicate),
                 ) {
@@ -170,9 +208,13 @@ data class RecordCardState(
     val canEdit: Boolean,
     val showCategory: Boolean,
     val showAuthor: Boolean,
+    val isSelectionMode: Boolean = false,
+    val isSelected: Boolean = false,
     val onEdit: () -> Unit,
     val onDuplicate: () -> Unit,
     val onDelete: () -> Unit,
+    val onSelect: () -> Unit = {},
+    val onToggleSelect: () -> Unit = {},
 ) {
     companion object {
         val preview = RecordCardState(

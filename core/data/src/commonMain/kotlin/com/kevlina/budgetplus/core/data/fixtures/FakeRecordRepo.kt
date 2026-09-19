@@ -48,6 +48,10 @@ object FakeRecordRepo : RecordRepo {
         error("Not yet implemented")
     }
 
+    override suspend fun deleteRecords(recordIds: List<String>): Int {
+        error("Not yet implemented")
+    }
+
     override suspend fun deleteBatch(record: Record): Int {
         error("Not yet implemented")
     }

@@ -41,6 +41,12 @@ interface RecordRepo {
     suspend fun deleteRecord(recordId: String)
 
     /**
+     *  Deletes multiple records by their ids.
+     *  @return How many records were deleted?
+     */
+    suspend fun deleteRecords(recordIds: List<String>): Int
+
+    /**
      *  @return How many records were deleted?
      */
     suspend fun deleteBatch(record: Record): Int

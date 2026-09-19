@@ -118,6 +118,7 @@
     <string name="overview_balance">残高</string>
     <string name="overview_details_title">%1$s：%2$s</string>
     <string name="overview_author_everyone">みんな</string>
+    <string name="overview_selected_delete_confirmation">選択した%1$s件の帳面を削除してもよろしいですか？</string>
 
     <!-- Export -->
     <string name="export_cta">報告書を出力する</string>
@@ -237,6 +238,7 @@
     <string name="cta_cancel">取り消す</string>
     <string name="cta_back">戻る</string>
     <string name="cta_delete">削除する</string>
+    <string name="cta_select">選択</string>
     <string name="cta_complete">完了する</string>
     <string name="cta_duplicate">コピー</string>
     <string name="cta_pin">トップに固定</string>
