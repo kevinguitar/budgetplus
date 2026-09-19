@@ -8,7 +8,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.theme)
-            api(libs.calf.ui)
+            implementation(libs.calf.ui)
             implementation(libs.compose.material3)
             implementation(libs.compose.material3.windowsizeclass)
 
