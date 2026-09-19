@@ -43,7 +43,6 @@ import budgetplus.feature.push_notifications.generated.resources.push_notif_targ
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Button
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
-import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -160,7 +159,7 @@ internal fun PushNotificationsContent(
                 DropdownMenu(
                     expanded = isSelectorShown,
                     onDismissRequest = { isSelectorShown = false },
-                    iosItems = AudienceTarget.entries.map { target ->
+                    items = AudienceTarget.entries.map { target ->
                         DropdownItemModel(
                             name = stringResource(target.toStringRes()),
                             onClick = {
@@ -170,19 +169,7 @@ internal fun PushNotificationsContent(
                         )
                     },
                     offset = DpOffset(0.dp, 8.dp),
-                ) {
-                    AudienceTarget.entries.forEach { target ->
-                        DropdownItem(onClick = {
-                            vm.audienceTarget.value = target
-                            isSelectorShown = false
-                        }) {
-                            Text(
-                                text = stringResource(target.toStringRes()),
-                                fontSize = FontSize.SemiLarge
-                            )
-                        }
-                    }
-                }
+                )
             }
         }
 

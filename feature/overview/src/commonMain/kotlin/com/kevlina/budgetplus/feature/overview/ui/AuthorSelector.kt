@@ -17,7 +17,6 @@ import budgetplus.core.common.generated.resources.ic_person_search
 import budgetplus.core.common.generated.resources.overview_author_everyone
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.Icon
@@ -55,7 +54,7 @@ internal fun AuthorSelector(
             DropdownMenu(
                 expanded = isAuthorPickerShown,
                 onDismissRequest = { isAuthorPickerShown = false },
-                iosItems = buildList {
+                items = buildList {
                     add(
                         DropdownItemModel(
                             name = stringResource(Res.string.overview_author_everyone),
@@ -77,21 +76,7 @@ internal fun AuthorSelector(
                         )
                     }
                 }
-            ) {
-                DropdownItem(
-                    name = stringResource(Res.string.overview_author_everyone),
-                ) {
-                    isAuthorPickerShown = false
-                    setAuthor(null)
-                }
-
-                authors.forEach { author ->
-                    DropdownItem(name = author.name.orEmpty()) {
-                        isAuthorPickerShown = false
-                        setAuthor(author)
-                    }
-                }
-            }
+            )
         }
 
         Icon(

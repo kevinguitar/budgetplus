@@ -86,7 +86,6 @@ import com.kevlina.budgetplus.core.settings.api.icon
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.typographyScale
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
-import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
@@ -276,7 +275,7 @@ internal fun SettingsContent(
                     DropdownMenu(
                         expanded = isCalculatorButtonDropdownShown,
                         onDismissRequest = { isCalculatorButtonDropdownShown = false },
-                        iosItems = listOf(
+                        items = listOf(
                             DropdownItemModel(
                                 name = stringResource(Res.string.settings_calculator_dot),
                                 onClick = {
@@ -292,23 +291,7 @@ internal fun SettingsContent(
                                 }
                             )
                         )
-                    ) {
-                        DropdownItem(
-                            name = stringResource(Res.string.settings_calculator_dot),
-                            onClick = {
-                                vm.calculatorSettings.setButtonType(CalculatorButtonType.Dot)
-                                isCalculatorButtonDropdownShown = false
-                            }
-                        )
-
-                        DropdownItem(
-                            name = CalculatorButtonType.DoubleZero.text,
-                            onClick = {
-                                vm.calculatorSettings.setButtonType(CalculatorButtonType.DoubleZero)
-                                isCalculatorButtonDropdownShown = false
-                            }
-                        )
-                    }
+                    )
                 }
             }
         )
@@ -329,10 +312,10 @@ internal fun SettingsContent(
                     DropdownMenu(
                         expanded = isChartModeDropdownShown,
                         onDismissRequest = { isChartModeDropdownShown = false },
-                        iosItems = listOf(
+                        items = listOf(
                             DropdownItemModel(
                                 name = stringResource(Res.string.settings_bar_chart),
-                                icon = ChartMode.BarChart.icon,
+                                leadingIcon = ChartMode.BarChart.icon,
                                 iosSfSymbol = "chart.bar.fill",
                                 onClick = {
                                     vm.chartModeSettings.setChartMode(ChartMode.BarChart)
@@ -341,7 +324,7 @@ internal fun SettingsContent(
                             ),
                             DropdownItemModel(
                                 name = stringResource(Res.string.settings_pie_chart),
-                                icon = ChartMode.PieChart.icon,
+                                leadingIcon = ChartMode.PieChart.icon,
                                 iosSfSymbol = "chart.pie.fill",
                                 onClick = {
                                     vm.chartModeSettings.setChartMode(ChartMode.PieChart)
@@ -349,25 +332,7 @@ internal fun SettingsContent(
                                 }
                             )
                         )
-                    ) {
-                        DropdownItem(
-                            name = stringResource(Res.string.settings_bar_chart),
-                            icon = ChartMode.BarChart.icon,
-                            onClick = {
-                                vm.chartModeSettings.setChartMode(ChartMode.BarChart)
-                                isChartModeDropdownShown = false
-                            }
-                        )
-
-                        DropdownItem(
-                            name = stringResource(Res.string.settings_pie_chart),
-                            icon = ChartMode.PieChart.icon,
-                            onClick = {
-                                vm.chartModeSettings.setChartMode(ChartMode.PieChart)
-                                isChartModeDropdownShown = false
-                            }
-                        )
-                    }
+                    )
                 }
             }
         )

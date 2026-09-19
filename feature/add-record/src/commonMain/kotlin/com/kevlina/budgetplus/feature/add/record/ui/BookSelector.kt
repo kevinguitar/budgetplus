@@ -23,8 +23,6 @@ import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.ic_lock
 import budgetplus.core.common.generated.resources.menu_create_book
 import com.kevlina.budgetplus.core.theme.LocalAppColors
-import com.kevlina.budgetplus.core.ui.DropdownDivider
-import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -77,11 +75,16 @@ fun BookSelector() {
         DropdownMenu(
             expanded = isSelectorShown,
             onDismissRequest = { isSelectorShown = false },
-            iosItems = buildList {
+            items = buildList {
                 booksState.orEmpty().forEach { book ->
                     add(
                         DropdownItemModel(
                             name = book.name,
+                            trailingIcon = if (bookState?.id == book.id) {
+                                vectorResource(Res.drawable.ic_check)
+                            } else {
+                                null
+                            },
                             onClick = {
                                 viewModel.selectBook(book)
                                 isSelectorShown = false
@@ -89,10 +92,11 @@ fun BookSelector() {
                         )
                     )
                 }
+                add(DropdownItemModel.Divider)
                 add(
                     DropdownItemModel(
                         name = stringResource(Res.string.menu_create_book),
-                        icon = if (createBookBtnState != CreateBookBtnState.Enabled) {
+                        leadingIcon = if (createBookBtnState != CreateBookBtnState.Enabled) {
                             vectorResource(Res.drawable.ic_lock)
                         } else {
                             null
@@ -115,54 +119,7 @@ fun BookSelector() {
             },
             offset = DpOffset(0.dp, 8.dp),
             modifier = Modifier.heightIn(max = 300.dp)
-        ) {
-
-            booksState.orEmpty().forEach { book ->
-
-                DropdownItem(onClick = {
-                    viewModel.selectBook(book)
-                    isSelectorShown = false
-                }) {
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-
-                        Text(
-                            text = book.name,
-                            color = LocalAppColors.current.dark,
-                            fontSize = FontSize.SemiLarge
-                        )
-
-                        if (bookState?.id == book.id) {
-                            Icon(
-                                imageVector = vectorResource(Res.drawable.ic_check),
-                                contentDescription = null,
-                                tint = LocalAppColors.current.dark,
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
-                    }
-                }
-            }
-
-            DropdownDivider()
-
-            DropdownItem(
-                name = stringResource(Res.string.menu_create_book),
-                icon = if (createBookBtnState != CreateBookBtnState.Enabled) {
-                    vectorResource(Res.drawable.ic_lock)
-                } else {
-                    null
-                },
-                onClick = {
-                    when (createBookBtnState) {
-                        CreateBookBtnState.Enabled -> isBookCreationDialogShown = true
-                        CreateBookBtnState.NeedPremium -> viewModel.unlockPremium()
-                        CreateBookBtnState.ReachedMax -> viewModel.showReachedMaxMessage()
-                    }
-                    isSelectorShown = false
-                }
-            )
-        }
+        )
 
     }
 

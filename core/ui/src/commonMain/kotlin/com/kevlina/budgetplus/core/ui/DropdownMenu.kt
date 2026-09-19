@@ -1,15 +1,10 @@
 package com.kevlina.budgetplus.core.ui
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,42 +30,57 @@ internal expect fun Modifier.dropdownBackground(color: Color): Modifier
  * This model is shared by both platforms: on Android it drives the themed
  * Material [DropdownMenu], and on iOS it is mapped to a native pull-down menu
  * item (Calf `AdaptiveDropDownItem`).
+ *
+ * Use [DropdownItemModel.Divider] as a list entry to insert a separator between
+ * groups of items.
  */
 data class DropdownItemModel(
     val name: String,
-    val icon: ImageVector? = null,
+    val leadingIcon: ImageVector? = null,
     /**
-     * Optional iOS SF Symbol name used instead of [icon] on iOS. SF Symbols are
-     * rendered as template images in the native pull-down menu, so they are
-     * automatically tinted to match the menu's label color (unlike a rasterized
-     * [ImageVector], which keeps its own color).
+     * Optional icon rendered after [name]. This is Android-only: the native iOS
+     * pull-down menu has a single icon slot, so only [leadingIcon]/[iosSfSymbol]
+     * are shown there.
+     */
+    val trailingIcon: ImageVector? = null,
+    /**
+     * Optional iOS SF Symbol name used instead of [leadingIcon] on iOS. SF
+     * Symbols are rendered as template images in the native pull-down menu, so
+     * they are automatically tinted to match the menu's label color (unlike a
+     * rasterized [leadingIcon], which keeps its own color).
      */
     val iosSfSymbol: String? = null,
     val enabled: Boolean = true,
     val isDestructive: Boolean = false,
     val onClick: () -> Unit,
-)
+) {
+    internal val isDivider: Boolean get() = this === Divider
+
+    companion object {
+        /**
+         * A sentinel entry that renders a horizontal divider when placed in the
+         * dropdown item list. On iOS the native menu draws its own separators,
+         * so this entry is ignored there.
+         */
+        val Divider: DropdownItemModel = DropdownItemModel(name = "", onClick = {})
+    }
+}
 
 /**
  * Adaptive dropdown menu.
  *
- * On Android it renders the themed Material [DropdownMenu] using the [content]
- * composable slot (unchanged). On iOS it renders a native pull-down menu
- * (Calf `AdaptiveDropDown`) built from [iosItems]; the [content] slot is not
- * used on iOS.
- *
- * Call sites should pass both [iosItems] (the data model) and [content] (the
- * Material composables).
+ * The menu content is fully described by [items] on both platforms. On Android
+ * it renders a themed Material [DropdownMenu]; on iOS it renders a native
+ * pull-down menu (Calf `AdaptiveDropDown`).
  */
 @Composable
 fun BoxScope.DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    iosItems: List<DropdownItemModel> = emptyList(),
+    items: List<DropdownItemModel>,
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     properties: PopupProperties = PopupProperties(focusable = true),
-    content: @Composable ColumnScope.() -> Unit,
 ) {
     AdaptiveDropDown(
         expanded = expanded,
@@ -79,52 +89,40 @@ fun BoxScope.DropdownMenu(
         offset = offset,
         properties = properties,
         containerColor = LocalAppColors.current.light,
-        iosItems = iosItems.map { item ->
-            AdaptiveDropDownItem(
-                title = item.name,
-                iosIcon = item.iosSfSymbol?.let { UIKitImage.SystemName(it) }
-                    ?: item.icon?.let { UIKitImage.Vector(it) },
-                isDestructive = item.isDestructive,
-                isDisabled = !item.enabled,
-                onClick = item.onClick,
-            )
+        iosItems = items
+            .filterNot { it.isDivider }
+            .map { item ->
+                AdaptiveDropDownItem(
+                    title = item.name,
+                    iosIcon = item.iosSfSymbol?.let { UIKitImage.SystemName(it) }
+                        ?: item.leadingIcon?.let { UIKitImage.Vector(it) },
+                    isDestructive = item.isDestructive,
+                    isDisabled = !item.enabled,
+                    onClick = item.onClick,
+                )
+            },
+        materialContent = {
+            items.forEach { item ->
+                if (item.isDivider) {
+                    DropdownDivider()
+                } else {
+                    DropdownItem(item)
+                }
+            }
         },
-        materialContent = content,
     )
 }
 
 @Composable
-fun DropdownItem(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    contentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable () -> Unit,
-) {
+private fun DropdownItem(item: DropdownItemModel) {
     MaterialDropdownMenuItem(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        contentPadding = contentPadding,
-        interactionSource = interactionSource,
-        text = content,
-    )
-}
-
-@Composable
-fun DropdownItem(
-    name: String,
-    icon: ImageVector? = null,
-    onClick: () -> Unit,
-) {
-    MaterialDropdownMenuItem(
-        onClick = onClick,
+        onClick = item.onClick,
+        enabled = item.enabled,
         text = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (icon != null) {
+                if (item.leadingIcon != null) {
                     Icon(
-                        imageVector = icon,
+                        imageVector = item.leadingIcon,
                         contentDescription = null,
                         tint = LocalAppColors.current.dark,
                         size = 20.dp,
@@ -133,16 +131,26 @@ fun DropdownItem(
                 }
 
                 Text(
-                    text = name,
+                    text = item.name,
                     color = LocalAppColors.current.dark,
                     fontSize = FontSize.SemiLarge
                 )
+
+                if (item.trailingIcon != null) {
+                    Icon(
+                        imageVector = item.trailingIcon,
+                        contentDescription = null,
+                        tint = LocalAppColors.current.dark,
+                        size = 20.dp,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
             }
         }
     )
 }
 
 @Composable
-fun DropdownDivider() {
+private fun DropdownDivider() {
     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp))
 }

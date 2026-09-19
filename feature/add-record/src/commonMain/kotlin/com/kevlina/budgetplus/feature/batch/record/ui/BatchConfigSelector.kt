@@ -29,7 +29,6 @@ import budgetplus.core.common.generated.resources.ic_today
 import budgetplus.core.common.generated.resources.select_date
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.DatePickerDialog
-import com.kevlina.budgetplus.core.ui.DropdownItem
 import com.kevlina.budgetplus.core.ui.DropdownItemModel
 import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
@@ -168,7 +167,7 @@ private fun TimesSelector(
                 DropdownMenu(
                     expanded = isTimesMenuShown,
                     onDismissRequest = { isTimesMenuShown = false },
-                    iosItems = batchTimes.map { times ->
+                    items = batchTimes.map { times ->
                         DropdownItemModel(
                             name = times.toString(),
                             onClick = {
@@ -178,18 +177,7 @@ private fun TimesSelector(
                         )
                     },
                     modifier = Modifier.heightIn(max = 240.dp)
-                ) {
-
-                    batchTimes.forEach { times ->
-                        DropdownItem(
-                            name = times.toString(),
-                            onClick = {
-                                setTimes(times)
-                                isTimesMenuShown = false
-                            }
-                        )
-                    }
-                }
+                )
             }
         }
     }
