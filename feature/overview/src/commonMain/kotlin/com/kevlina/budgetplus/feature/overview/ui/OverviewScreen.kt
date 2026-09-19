@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.export_csv_confirmation
@@ -23,12 +25,14 @@ import budgetplus.core.common.generated.resources.ic_format_list_numbered
 import budgetplus.core.common.generated.resources.overview_details_title
 import budgetplus.core.common.generated.resources.overview_title
 import com.kevlina.budgetplus.core.common.shortFormatted
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.settings.api.icon
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AdaptiveScreen
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
+import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.feature.overview.OverviewMode
 import com.kevlina.budgetplus.feature.overview.OverviewViewModel
@@ -41,6 +45,10 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+
+// UI-test-only stable target for the Overview mode toggle icon (its real
+// contentDescription is a format string, so tests tap it by this instead of a point).
+private const val OVERVIEW_MODE_TOGGLE_DESC = "overview_mode_toggle"
 
 @Composable
 fun OverviewScreen() {
@@ -73,14 +81,24 @@ fun OverviewScreen() {
                     },
                     description = stringResource(Res.string.overview_details_title),
                     onClick = vm::toggleMode,
-                    modifier = Modifier.onPlaced {
-                        vm.highlightModeButton(
-                            BubbleDest.OverviewMode(
-                                size = it.size,
-                                offset = it::positionInRoot
+                    modifier = Modifier
+                        .onPlaced {
+                            vm.highlightModeButton(
+                                BubbleDest.OverviewMode(
+                                    size = it.size,
+                                    offset = it::positionInRoot
+                                )
                             )
-                        )
-                    }
+                        }
+                        .thenIf(UiTestFlags.enabled) {
+                            // Replace the whole accessibility label (the Icon's format-string
+                            // description) with the stable test tag. Using clearAndSetSemantics
+                            // avoids iOS merging both into "overview_mode_toggle, %1$s: %2$s",
+                            // which the Maestro text matcher cannot match.
+                            Modifier.clearAndSetSemantics {
+                                contentDescription = OVERVIEW_MODE_TOGGLE_DESC
+                            }
+                        }
                 )
 
                 MenuAction(

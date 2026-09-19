@@ -118,6 +118,7 @@
     <string name="overview_balance">잔액</string>
     <string name="overview_details_title">%1$s: %2$s</string>
     <string name="overview_author_everyone">모두</string>
+    <string name="overview_selected_delete_confirmation">선택한 %1$s개의 기록을 삭제하시겠습니까?</string>
 
     <!-- Export -->
     <string name="export_cta">보고서 내보내기</string>
@@ -237,6 +238,7 @@
     <string name="cta_cancel">취소</string>
     <string name="cta_back">뒤로</string>
     <string name="cta_delete">삭제</string>
+    <string name="cta_select">선택</string>
     <string name="cta_complete">완료</string>
     <string name="cta_duplicate">복사</string>
     <string name="cta_pin">상단 고정</string>

@@ -1,6 +1,6 @@
 [versions]
 # https://developer.android.com/reference/tools/gradle-api
-gradle-plugin = "9.4.0"
+gradle-plugin = "9.4.1"
 # https://kotlinlang.org/docs/releases.html#release-details
 kotlin = "2.4.20"
 # https://github.com/Kotlin/kotlinx.coroutines/releases
@@ -166,4 +166,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle-plugin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 spm-kmp = "io.github.frankois944.spmForKmp:1.9.5"
-buildkonfig = "com.codingfeline.buildkonfig:0.22.0"
+buildkonfig = "com.codingfeline.buildkonfig:0.23.0"

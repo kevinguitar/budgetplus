@@ -21,14 +21,18 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.cta_delete
+import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.ic_event_note
 import budgetplus.core.common.generated.resources.ic_paid
 import budgetplus.core.common.generated.resources.overview_details_title
 import budgetplus.core.common.generated.resources.overview_sort_by_date
 import budgetplus.core.common.generated.resources.overview_sort_by_price
+import budgetplus.core.common.generated.resources.overview_selected_delete_confirmation
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
+import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
@@ -45,11 +49,15 @@ import org.jetbrains.compose.resources.vectorResource
 fun RecordsScreen(vm: RecordsViewModel) {
     var editRecordDialog by remember { mutableStateOf<Record?>(null) }
     var deleteRecordDialog by remember { mutableStateOf<Record?>(null) }
+    var showDeleteSelectedDialog by remember { mutableStateOf(false) }
 
     val recordsList by vm.recordsList.collectAsStateWithLifecycle()
     val sortMode by vm.sortMode.collectAsStateWithLifecycle()
     val category by vm.category.collectAsStateWithLifecycle()
     val totalPrice by vm.totalPrice.collectAsStateWithLifecycle()
+    val selectedIds by vm.selectedIds.collectAsStateWithLifecycle()
+    val isSelectionMode by vm.isSelectionMode.collectAsStateWithLifecycle()
+    val canDeleteSelected by vm.canDeleteSelected.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(initialPage = vm.initialPage) { vm.pageSize }
 
@@ -78,31 +86,41 @@ fun RecordsScreen(vm: RecordsViewModel) {
 
         TopBar(
             title = stringResource(Res.string.overview_details_title, category, totalPrice),
-            navigateUp = vm.navController::navigateUp,
+            navigateUp = if (isSelectionMode) vm::clearSelection else vm.navController::navigateUp,
             menuActions = {
-                val modifier = Modifier.onPlaced {
-                    vm.highlightSortingButton(
-                        BubbleDest.RecordsSorting(
-                            size = it.size,
-                            offset = it::positionInRoot
+                if (isSelectionMode) {
+                    MenuAction(
+                        imageVector = vectorResource(Res.drawable.ic_delete),
+                        description = stringResource(Res.string.cta_delete),
+                        // Disabled when the selection contains records the user can't edit.
+                        enabled = canDeleteSelected,
+                        onClick = { showDeleteSelectedDialog = true },
+                    )
+                } else {
+                    val modifier = Modifier.onPlaced {
+                        vm.highlightSortingButton(
+                            BubbleDest.RecordsSorting(
+                                size = it.size,
+                                offset = it::positionInRoot
+                            )
                         )
-                    )
-                }
+                    }
 
-                when (sortMode) {
-                    RecordsSortMode.Date -> MenuAction(
-                        imageVector = vectorResource(Res.drawable.ic_event_note),
-                        description = stringResource(Res.string.overview_sort_by_price),
-                        onClick = { vm.setSortMode(RecordsSortMode.Price) },
-                        modifier = modifier
-                    )
+                    when (sortMode) {
+                        RecordsSortMode.Date -> MenuAction(
+                            imageVector = vectorResource(Res.drawable.ic_event_note),
+                            description = stringResource(Res.string.overview_sort_by_price),
+                            onClick = { vm.setSortMode(RecordsSortMode.Price) },
+                            modifier = modifier
+                        )
 
-                    RecordsSortMode.Price -> MenuAction(
-                        imageVector = vectorResource(Res.drawable.ic_paid),
-                        description = stringResource(Res.string.overview_sort_by_date),
-                        onClick = { vm.setSortMode(RecordsSortMode.Date) },
-                        modifier = modifier
-                    )
+                        RecordsSortMode.Price -> MenuAction(
+                            imageVector = vectorResource(Res.drawable.ic_paid),
+                            description = stringResource(Res.string.overview_sort_by_date),
+                            onClick = { vm.setSortMode(RecordsSortMode.Date) },
+                            modifier = modifier
+                        )
+                    }
                 }
             }
         )
@@ -114,6 +132,8 @@ fun RecordsScreen(vm: RecordsViewModel) {
         ) {
             HorizontalPager(
                 state = pagerState,
+                // Prevent swiping to another category while selecting records.
+                userScrollEnabled = !isSelectionMode,
             ) { page ->
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -128,9 +148,14 @@ fun RecordsScreen(vm: RecordsViewModel) {
                             canEdit = vm.canEditRecord(item),
                             showCategory = false,
                             showAuthor = true,
+                            isSelectionMode = isSelectionMode,
+                            isSelected = item.id in selectedIds,
+                            index = index,
                             onEdit = { editRecordDialog = item },
                             onDuplicate = { vm.duplicateRecord(item) },
-                            onDelete = { deleteRecordDialog = item }
+                            onDelete = { deleteRecordDialog = item },
+                            onSelect = { vm.startSelection(item) },
+                            onToggleSelect = { vm.toggleSelection(item) }
                         ))
                     }
                 }
@@ -149,6 +174,20 @@ fun RecordsScreen(vm: RecordsViewModel) {
         DeleteRecordDialog(
             editRecord = deleteRecord,
             onDismiss = { deleteRecordDialog = null }
+        )
+    }
+
+    if (showDeleteSelectedDialog) {
+        ConfirmDialog(
+            message = stringResource(
+                Res.string.overview_selected_delete_confirmation,
+                selectedIds.size.toString()
+            ),
+            onConfirm = {
+                vm.deleteSelectedRecords()
+                showDeleteSelectedDialog = false
+            },
+            onDismiss = { showDeleteSelectedDialog = false }
         )
     }
 }

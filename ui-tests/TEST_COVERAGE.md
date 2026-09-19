@@ -158,6 +158,7 @@ filename; destructive flows (delete book, logout) run last.
 | E4 | `41-record-duplicate` | Long-press record → `Duplicate` → snackbar `Record duplicated`. |
 | E3 | `42-record-delete` | Long-press → `Delete` → `Are you sure you want to delete the record?` → `Confirm` → snackbar `Record ... is deleted`. |
 | E5 | `43-record-sort` | Records screen sort toggle `Sort by price` ↔ `Sort by date`. |
+| E6 | `44-record-multi-select-delete` | Add two `Entertainment` records → drill into Records screen → long-press `record_cell_0` → `Select` (enters selection mode) → tap `record_cell_1` to select it → title shows selected sum → top-bar delete icon → `Are you sure you want to delete the 2 selected records?` → `Confirm` → snackbar `2 records were deleted`. |
 
 ### 4.6 Search
 | ID | Flow | Key assertions |
@@ -252,10 +253,11 @@ snackbar) and dismisses the (persistent) unlocked snackbar so it doesn't block l
 There are still **no `Modifier.testTag`s**; JetBrains Compose Multiplatform for Android does
 not expose `testTagsAsResourceId` here, so selectors use visible text and the accessible
 `contentDescription`s above. Icon-only controls with no description (calculator operators/equals,
-mic, the Overview mode toggle and period pencil) are tapped by position; the bottom-nav tabs
-carry UI-test-only `contentDescription`s (`bottom_nav_add`, `bottom_nav_history`) so they can be
-tapped by text instead, and the date-range picker is opened via the accessible `Select Date`
-calendar icon.
+mic, and the period pencil) are tapped by position; the bottom-nav tabs carry UI-test-only
+`contentDescription`s (`bottom_nav_add`, `bottom_nav_history`), the **Overview mode toggle**
+carries `overview_mode_toggle`, and each **record cell** carries `record_cell_<index>` (all
+gated behind `UiTestFlags.enabled`) so they can be tapped by text instead. The date-range
+picker is opened via the accessible `Select Date` calendar icon.
 
 ---
 
@@ -264,10 +266,10 @@ calendar icon.
 **Text/description based** (English locale forced): drive by the visible literals and the
 icon `contentDescription`s (`Invite`, `Settings`, `Select book`, `Select Date`, `Search`,
 `Export csv`, `Back`, `Save`, `Sort by price`/`Sort by date`, `color_tone_pager`,
-`bottom_nav_add`, `bottom_nav_history`).
+`bottom_nav_add`, `bottom_nav_history`, `overview_mode_toggle`, `record_cell_<index>`).
 
-**Positional taps** (icon-only, no description): calculator operators/equals/decimal, the
-Overview mode toggle, and dialog-scrim dismissals on iOS.
+**Positional taps** (icon-only, no description): calculator operators/equals/decimal and
+dialog-scrim dismissals on iOS.
 
 **Cross-platform robustness solutions baked into the flows/subflows:**
 - **Keyboard dismissal**: `pressKey: Enter` (dialogs with an `onDone` action) or a neutral

@@ -1,5 +1,10 @@
 package com.kevlina.budgetplus.feature.record.card
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,14 +24,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
 import budgetplus.core.common.generated.resources.cta_duplicate
+import budgetplus.core.common.generated.resources.cta_select
+import budgetplus.core.common.generated.resources.ic_check_circle
+import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.ic_refresh
 import com.kevlina.budgetplus.core.common.RecordType
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.common.shortFormatted
 import com.kevlina.budgetplus.core.data.remote.Author
@@ -40,9 +51,14 @@ import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.thenIf
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+
+// UI-test-only stable target: each record cell exposes "record_cell_<index>" so tests
+// can long-press/tap a specific row reliably (record titles can be duplicated).
+private const val RECORD_CELL_DESC_PREFIX = "record_cell_"
 
 @Composable
 fun RecordCard(
@@ -55,10 +71,20 @@ fun RecordCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .thenIf(UiTestFlags.enabled && state.index != null) {
+                Modifier.semantics {
+                    contentDescription = "$RECORD_CELL_DESC_PREFIX${state.index}"
+                }
+            }
             .rippleClick(
                 color = LocalAppColors.current.dark,
-                onClick = if (state.canEdit) state.onEdit else {
-                    {}
+                onClick = when {
+                    // In selection mode, tapping toggles the selection immediately.
+                    state.isSelectionMode -> state.onToggleSelect
+                    state.canEdit -> state.onEdit
+                    else -> {
+                        {}
+                    }
                 },
                 onLongClick = { isMenuShown = true }
             )
@@ -66,11 +92,28 @@ fun RecordCard(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
         ) {
+            AnimatedVisibility(
+                visible = state.isSelectionMode,
+                enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
+                exit = shrinkHorizontally(shrinkTowards = Alignment.Start) + fadeOut(),
+            ) {
+                Icon(
+                    imageVector = vectorResource(
+                        if (state.isSelected) {
+                            Res.drawable.ic_check_circle
+                        } else {
+                            Res.drawable.ic_check_circle_outline
+                        }
+                    ),
+                    tint = LocalAppColors.current.dark,
+                    modifier = Modifier.padding(end = 16.dp),
+                )
+            }
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.weight(1F),
@@ -118,6 +161,7 @@ fun RecordCard(
                 text = state.formattedPrice,
                 fontSize = FontSize.SemiLarge,
                 fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 16.dp),
             )
         }
 
@@ -141,6 +185,15 @@ fun RecordCard(
                 expanded = isMenuShown,
                 onDismissRequest = { isMenuShown = false },
                 items = buildList {
+                    add(
+                        DropdownItemModel(
+                            name = stringResource(Res.string.cta_select),
+                            onClick = {
+                                isMenuShown = false
+                                state.onSelect()
+                            }
+                        )
+                    )
                     add(
                         DropdownItemModel(
                             name = stringResource(Res.string.cta_duplicate),
@@ -176,9 +229,15 @@ data class RecordCardState(
     val canEdit: Boolean,
     val showCategory: Boolean,
     val showAuthor: Boolean,
+    val isSelectionMode: Boolean = false,
+    val isSelected: Boolean = false,
+    /** Position of the card in its list; used only to expose a stable UI-test target. */
+    val index: Int? = null,
     val onEdit: () -> Unit,
     val onDuplicate: () -> Unit,
     val onDelete: () -> Unit,
+    val onSelect: () -> Unit = {},
+    val onToggleSelect: () -> Unit = {},
 ) {
     companion object {
         val preview = RecordCardState(
