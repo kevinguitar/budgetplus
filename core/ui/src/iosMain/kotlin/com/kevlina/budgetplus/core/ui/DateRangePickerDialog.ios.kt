@@ -54,8 +54,7 @@ actual fun DateRangePickerDialog(
         usePlatformDefaultWidth = false,
         onDismissRequest = onDismiss,
         modifier = Modifier
-            .sizeIn(maxWidth = 480.dp, maxHeight = 560.dp)
-            .padding(vertical = 16.dp)
+            .sizeIn(maxWidth = 480.dp)
     ) {
         Column {
             AdaptiveDateRangePicker(
@@ -63,8 +62,7 @@ actual fun DateRangePickerDialog(
                 colors = datePickerColors(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1F)
-                    .height(420.dp)
+                    .height(360.dp)
             )
 
             Row(modifier = Modifier.align(Alignment.End)) {
