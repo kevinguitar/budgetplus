@@ -20,6 +20,7 @@ actual fun Modifier.rippleClick(
         adaptiveClickable(onClick = onClick)
     } else {
         // adaptiveClickable has no long-press support; keep the combined behavior.
+        // see: https://github.com/MohamedRejeb/Calf/pull/549
         combinedClickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = ripple(bounded = !borderless, color = color),
