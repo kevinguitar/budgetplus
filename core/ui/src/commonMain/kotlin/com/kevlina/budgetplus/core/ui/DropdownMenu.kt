@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.core.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
@@ -13,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -22,6 +22,12 @@ import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDown
 import com.mohamedrejeb.calf.ui.dropdown.AdaptiveDropDownItem
 import com.mohamedrejeb.calf.ui.uikit.UIKitImage
 import androidx.compose.material3.DropdownMenuItem as MaterialDropdownMenuItem
+
+/**
+ * Applies the dropdown background on Android only. On iOS the native pull-down
+ * menu handles its own background, and applying it here breaks the layout.
+ */
+internal expect fun Modifier.dropdownBackground(color: Color): Modifier
 
 /**
  * A declarative description of a single dropdown entry.
@@ -69,7 +75,7 @@ fun BoxScope.DropdownMenu(
     AdaptiveDropDown(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.background(LocalAppColors.current.light),
+        modifier = modifier.dropdownBackground(LocalAppColors.current.light),
         offset = offset,
         properties = properties,
         containerColor = LocalAppColors.current.light,
