@@ -133,6 +133,23 @@ class RecordsViewModel(
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
+    /**
+     *  Whether the currently selected records can all be deleted. It's false when the
+     *  selection contains any record the user has no permission to edit, so the bulk
+     *  delete action is disabled instead of silently skipping/failing those records.
+     */
+    val canDeleteSelected = combine(
+        recordsList,
+        selectedIds
+    ) { recordsList, selectedIds ->
+        if (selectedIds.isEmpty()) return@combine false
+        val selectedRecords = recordsList.orEmpty()
+            .flatten()
+            .filter { it.id in selectedIds }
+        selectedRecords.isNotEmpty() && selectedRecords.all(::canEditRecord)
+    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+
     fun formatRecordPrice(record: Record): String {
         return currencyExchangeRepo.formatRecordPrice(record)
     }
@@ -190,6 +207,8 @@ class RecordsViewModel(
     }
 
     fun deleteSelectedRecords() {
+        // Guard against deleting records the user has no permission to edit.
+        if (!canDeleteSelected.value) return
         val ids = selectedIds.value.toList()
         if (ids.isEmpty()) return
         viewModelScope.launch {

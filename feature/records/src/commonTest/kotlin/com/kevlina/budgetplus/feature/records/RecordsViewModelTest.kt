@@ -12,7 +12,9 @@ import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.fixtures.FakeRecordRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeRecordsObserver
 import com.kevlina.budgetplus.core.data.fixtures.FakeUserRepo
+import com.kevlina.budgetplus.core.data.remote.Author
 import com.kevlina.budgetplus.core.data.remote.Record
+import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.ui.bubble.FakeBubbleRepo
 import com.kevlina.budgetplus.core.unit.test.BaseTest
 import kotlinx.coroutines.flow.collect
@@ -21,6 +23,8 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class RecordsViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
@@ -88,6 +92,63 @@ class RecordsViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         assertEquals("110.0", model.formatRecordPrice(preferredCurrencyRecord))
     }
 
+    @Test
+    fun `canDeleteSelected is false when nothing is selected`() = runTest {
+        val model = createModel()
+        assertFalse(model.canDeleteSelected.value)
+    }
+
+    @Test
+    fun `canDeleteSelected is true when all selected records are editable`() = runTest {
+        // canEdit=true on the book -> every record is editable regardless of author.
+        val model = createModel()
+
+        model.startSelection(bookCurrencyRecord)
+        model.toggleSelection(preferredCurrencyRecord)
+
+        assertTrue(model.canDeleteSelected.value)
+    }
+
+    @Test
+    fun `canDeleteSelected is false when a selected record cannot be edited`() = runTest {
+        // canEdit=false and the record's author differs from the current user -> not editable.
+        val othersRecord = bookCurrencyRecord.copy(
+            id = "other",
+            author = Author(id = "someone-else", name = "Someone Else")
+        )
+        val model = createModel(
+            bookRepo = FakeBookRepo(canEdit = false),
+            authManager = FakeAuthManager(user = User(id = "me", name = "Me")),
+            records = sequenceOf(othersRecord),
+        )
+
+        model.startSelection(othersRecord)
+
+        assertFalse(model.canDeleteSelected.value)
+    }
+
+    @Test
+    fun `canDeleteSelected is false when the selection mixes editable and non-editable records`() = runTest {
+        val myRecord = bookCurrencyRecord.copy(
+            id = "mine",
+            author = Author(id = "me", name = "Me")
+        )
+        val othersRecord = bookCurrencyRecord.copy(
+            id = "other",
+            author = Author(id = "someone-else", name = "Someone Else")
+        )
+        val model = createModel(
+            bookRepo = FakeBookRepo(canEdit = false),
+            authManager = FakeAuthManager(user = User(id = "me", name = "Me")),
+            records = sequenceOf(myRecord, othersRecord),
+        )
+
+        model.startSelection(myRecord)
+        model.toggleSelection(othersRecord)
+
+        assertFalse(model.canDeleteSelected.value)
+    }
+
     // displayInPreferredCurrency defaults to true in the fake.
     private fun createCurrencyExchangeRepo() = FakeCurrencyExchangeRepo(
         preferredCurrencyCode = "TWD",
@@ -96,6 +157,9 @@ class RecordsViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
     private fun TestScope.createModel(
         currencyExchangeRepo: FakeCurrencyExchangeRepo = createCurrencyExchangeRepo(),
+        bookRepo: FakeBookRepo = FakeBookRepo(),
+        authManager: FakeAuthManager = FakeAuthManager(),
+        records: Sequence<Record> = sequenceOf(bookCurrencyRecord, preferredCurrencyRecord),
     ): RecordsViewModel {
         val model = RecordsViewModel(
             params = BookDest.Records(
@@ -104,21 +168,24 @@ class RecordsViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
                 authorId = null,
             ),
             navController = NavController.preview,
-            bookRepo = FakeBookRepo(),
+            bookRepo = bookRepo,
             userRepo = FakeUserRepo(),
             recordRepo = FakeRecordRepo,
             bubbleRepo = FakeBubbleRepo(),
             tracker = FakeTracker(),
-            authManager = FakeAuthManager(),
+            authManager = authManager,
             preference = FakePreference(),
             currencyExchangeRepo = currencyExchangeRepo,
             snackbarSender = FakeSnackbarSender(),
             recordsObserver = FakeRecordsObserver(
-                records = sequenceOf(bookCurrencyRecord, preferredCurrencyRecord)
+                records = records
             ),
         )
         backgroundScope.launch(testDispatcher) {
             model.totalPrice.collect()
+        }
+        backgroundScope.launch(testDispatcher) {
+            model.canDeleteSelected.collect()
         }
         return model
     }

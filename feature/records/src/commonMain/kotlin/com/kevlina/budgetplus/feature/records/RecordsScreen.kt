@@ -57,6 +57,7 @@ fun RecordsScreen(vm: RecordsViewModel) {
     val totalPrice by vm.totalPrice.collectAsStateWithLifecycle()
     val selectedIds by vm.selectedIds.collectAsStateWithLifecycle()
     val isSelectionMode by vm.isSelectionMode.collectAsStateWithLifecycle()
+    val canDeleteSelected by vm.canDeleteSelected.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(initialPage = vm.initialPage) { vm.pageSize }
 
@@ -91,6 +92,8 @@ fun RecordsScreen(vm: RecordsViewModel) {
                     MenuAction(
                         imageVector = vectorResource(Res.drawable.ic_delete),
                         description = stringResource(Res.string.cta_delete),
+                        // Disabled when the selection contains records the user can't edit.
+                        enabled = canDeleteSelected,
                         onClick = { showDeleteSelectedDialog = true },
                     )
                 } else {
