@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -200,7 +201,9 @@ internal fun SettingsContent(
                     Switch(
                         checked = allowMembersEdit,
                         onCheckedChange = vm::setAllowMembersEdit,
-                        modifier = Modifier.padding(end = 10.dp)
+                        modifier = Modifier
+                            .scale(0.8F)
+                            .padding(end = 10.dp)
                     )
                 },
                 onClick = { vm.setAllowMembersEdit(!allowMembersEdit) }
@@ -247,7 +250,9 @@ internal fun SettingsContent(
                         hapticFeedback.performHapticFeedback(feedbackType)
                         vm.vibrator.toggleVibrateOnInput()
                     },
-                    modifier = Modifier.padding(end = 10.dp)
+                    modifier = Modifier
+                        .scale(0.8F)
+                        .padding(end = 10.dp)
                 )
             },
             onClick = vm.vibrator::toggleVibrateOnInput
@@ -328,6 +333,7 @@ internal fun SettingsContent(
                             DropdownItemModel(
                                 name = stringResource(Res.string.settings_bar_chart),
                                 icon = ChartMode.BarChart.icon,
+                                iosSfSymbol = "chart.bar.fill",
                                 onClick = {
                                     vm.chartModeSettings.setChartMode(ChartMode.BarChart)
                                     isChartModeDropdownShown = false
@@ -336,6 +342,7 @@ internal fun SettingsContent(
                             DropdownItemModel(
                                 name = stringResource(Res.string.settings_pie_chart),
                                 icon = ChartMode.PieChart.icon,
+                                iosSfSymbol = "chart.pie.fill",
                                 onClick = {
                                     vm.chartModeSettings.setChartMode(ChartMode.PieChart)
                                     isChartModeDropdownShown = false

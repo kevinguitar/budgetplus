@@ -7,13 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.tooling.preview.Preview
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import androidx.compose.material3.Switch as MaterialSwitch
-
-private const val SWITCH_SCALE = 0.7F
 
 @Composable
 actual fun Switch(
@@ -31,7 +28,7 @@ actual fun Switch(
             uncheckedTrackColor = LocalAppColors.current.light,
             uncheckedBorderColor = LocalAppColors.current.dark
         ),
-        modifier = modifier.scale(SWITCH_SCALE),
+        modifier = modifier,
     )
 }
 

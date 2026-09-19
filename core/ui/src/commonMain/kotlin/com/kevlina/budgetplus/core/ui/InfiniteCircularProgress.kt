@@ -6,17 +6,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.mohamedrejeb.calf.ui.progress.AdaptiveCircularProgressIndicator
 
-/**
- * Adaptive infinite circular progress indicator.
- *
- * On Android it renders the Material [androidx.compose.material3.CircularProgressIndicator]
- * (unchanged), while on iOS it renders Calf's `AdaptiveCircularProgressIndicator`
- * which mimics the native `UIActivityIndicatorView`.
- */
 @Composable
-expect fun InfiniteCircularProgress(
+fun InfiniteCircularProgress(
     modifier: Modifier = Modifier,
     color: Color = LocalAppColors.current.dark,
     strokeWidth: Dp = 4.dp,
-)
+) {
+    AdaptiveCircularProgressIndicator(
+        modifier = modifier,
+        color = color,
+        strokeWidth = strokeWidth,
+    )
+}

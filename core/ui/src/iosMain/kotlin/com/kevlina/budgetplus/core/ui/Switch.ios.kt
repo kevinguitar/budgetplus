@@ -4,15 +4,14 @@ package com.kevlina.budgetplus.core.ui
 
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.mohamedrejeb.calf.ui.toggle.CupertinoSwitch
 import com.mohamedrejeb.calf.ui.toggle.LiquidGlassSwitch
 import com.mohamedrejeb.calf.ui.toggle.LiquidGlassSwitchDefaults
-import androidx.compose.material3.SwitchDefaults
 import platform.UIKit.UIDevice
 
 @Composable

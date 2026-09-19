@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ internal fun CurrencyToggle(
         Switch(
             checked = state.toggleState,
             onCheckedChange = { state.onClick() },
+            modifier = Modifier.scale(0.7F)
         )
 
         Text(

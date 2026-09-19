@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SelectableDates
@@ -65,13 +64,12 @@ actual fun DateRangePickerDialog(
                 .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(LocalAppColors.current.light)
+                .padding(16.dp)
         ) {
             AdaptiveDateRangePicker(
                 state = state,
                 colors = datePickerColors(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(360.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Row(modifier = Modifier.align(Alignment.End)) {
