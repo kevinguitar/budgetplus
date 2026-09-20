@@ -185,15 +185,17 @@ fun RecordCard(
                 expanded = isMenuShown,
                 onDismissRequest = { isMenuShown = false },
                 items = buildList {
-                    add(
-                        DropdownItemModel(
-                            name = stringResource(Res.string.cta_select),
-                            onClick = {
-                                isMenuShown = false
-                                state.onSelect()
-                            }
+                    if (state.canSelect) {
+                        add(
+                            DropdownItemModel(
+                                name = stringResource(Res.string.cta_select),
+                                onClick = {
+                                    isMenuShown = false
+                                    state.onSelect()
+                                }
+                            )
                         )
-                    )
+                    }
                     add(
                         DropdownItemModel(
                             name = stringResource(Res.string.cta_duplicate),
@@ -231,6 +233,8 @@ data class RecordCardState(
     val showAuthor: Boolean,
     val isSelectionMode: Boolean = false,
     val isSelected: Boolean = false,
+    /** Whether the "select" option is available in the long-press menu (RecordsScreen only). */
+    val canSelect: Boolean = false,
     /** Position of the card in its list; used only to expose a stable UI-test target. */
     val index: Int? = null,
     val onEdit: () -> Unit,
