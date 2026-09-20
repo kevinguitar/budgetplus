@@ -101,7 +101,7 @@ fun BookSelector() {
                 add(
                     DropdownItemModel(
                         name = stringResource(Res.string.menu_create_book),
-                        leadingIcon = if (createBookBtnState != CreateBookBtnState.Enabled) {
+                        trailingIcon = if (createBookBtnState != CreateBookBtnState.Enabled) {
                             vectorResource(Res.drawable.ic_lock)
                         } else {
                             null
