@@ -33,6 +33,20 @@ interface Preference {
         value: T,
     )
 
+    /**
+     * Atomically reads the current value for [key], applies [transform] to it, and writes the
+     * result back. The read-modify-write is serialized by the underlying store, so concurrent
+     * callers never clobber each other's changes (unlike a separate read then [update]).
+     *
+     * [transform] receives the freshest decoded value (or `null` if absent) and returns the new
+     * value to persist, or `null` to remove the key. Returns the value that was persisted.
+     */
+    suspend fun <T> updateTransform(
+        key: Preferences.Key<String>,
+        serializer: KSerializer<T>,
+        transform: suspend (current: T?) -> T?,
+    ): T?
+
     suspend fun remove(key: Preferences.Key<*>)
 
     suspend fun clearAll()

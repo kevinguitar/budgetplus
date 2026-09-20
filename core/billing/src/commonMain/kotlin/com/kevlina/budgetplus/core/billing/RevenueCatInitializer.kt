@@ -18,7 +18,7 @@ import dev.zacsweers.metro.ContributesIntoSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @ContributesIntoSet(AppScope::class)
@@ -45,33 +45,30 @@ internal class RevenueCatInitializer(
 
         Purchases.logLevel = LogLevel.DEBUG
         authManager.userState
-            .mapNotNull {
-                val userId = it?.id
-                if (userId == null) {
-                    Purchases.configure(apiKey = apiKey)
-                    Purchases.sharedInstance.delegate = null
-                }
-                userId
-            }
+            .map { it?.id }
             .distinctUntilChanged()
             .onEach { userId ->
                 Purchases.configure(apiKey = apiKey) {
                     appUserId = userId
                 }
 
-                // React to customer info updates from RevenueCat
-                Purchases.sharedInstance.delegate = object : PurchasesDelegate {
-                    override fun onCustomerInfoUpdated(customerInfo: CustomerInfo) {
-                        billingController.value.onNewCustomerInfo(customerInfo)
-                    }
+                Purchases.sharedInstance.delegate = if (userId == null) {
+                    null
+                } else {
+                    // React to customer info updates from RevenueCat
+                    object : PurchasesDelegate {
+                        override fun onCustomerInfoUpdated(customerInfo: CustomerInfo) {
+                            billingController.value.onNewCustomerInfo(customerInfo)
+                        }
 
-                    override fun onPurchasePromoProduct(
-                        product: StoreProduct,
-                        startPurchase: (
-                            onError: (error: PurchasesError, userCancelled: Boolean) -> Unit,
-                            onSuccess: (storeTransaction: StoreTransaction, customerInfo: CustomerInfo) -> Unit,
-                        ) -> Unit,
-                    ) = Unit
+                        override fun onPurchasePromoProduct(
+                            product: StoreProduct,
+                            startPurchase: (
+                                onError: (error: PurchasesError, userCancelled: Boolean) -> Unit,
+                                onSuccess: (storeTransaction: StoreTransaction, customerInfo: CustomerInfo) -> Unit,
+                            ) -> Unit,
+                        ) = Unit
+                    }
                 }
             }
             .launchIn(appScope)

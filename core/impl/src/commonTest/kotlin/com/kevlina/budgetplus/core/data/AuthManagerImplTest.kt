@@ -12,7 +12,9 @@ import com.kevlina.budgetplus.core.data.fixtures.FakeLogoutNavigation
 import com.kevlina.budgetplus.core.data.fixtures.FakePreference
 import com.kevlina.budgetplus.core.data.fixtures.FakeUserDbClient
 import com.kevlina.budgetplus.core.data.remote.User
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -214,8 +216,78 @@ class AuthManagerImplTest {
         assertEquals("new_token", manager.userState.value?.fcmToken)
     }
 
-    // -- logout tests --
+    // -- race condition regression tests --
 
+    /**
+     * Regression for the premium-being-clobbered race: markPremium and updateFcmToken each did a
+     * non-atomic read-modify-write on the user preference. Because the DataStore-backed flow is
+     * eventually consistent, updateFcmToken could read a stale snapshot (premium = null) taken
+     * before markPremium's write propagated, then write it back and reset premium to null.
+     */
+    @Test
+    fun `markPremium and updateFcmToken concurrently do not clobber each other`() = runTest {
+        val preference = FakePreference()
+        val userDbClient = FakeUserDbClient()
+        val manager = createAuthManager(preference = preference, userDbClient = userDbClient)
+        preference.setUser(User(id = "user1", name = "Alice", premium = false, fcmToken = "old_token"))
+        manager.userState.first { it != null }
+
+        // Launch both mutations; they interleave on the same test dispatcher.
+        val premiumJob = launch { manager.markPremium(isPremium = true) }
+        manager.updateFcmToken("new_token")
+        premiumJob.join()
+        testScheduler.advanceUntilIdle()
+
+        // Both fields must survive, both locally and in the DB.
+        val storedUser = manager.userState.value
+        assertNotNull(storedUser)
+        assertEquals(true, storedUser.premium)
+        assertEquals("new_token", storedUser.fcmToken)
+        assertEquals(true, userDbClient.users["user1"]?.premium)
+        assertEquals("new_token", userDbClient.users["user1"]?.fcmToken)
+    }
+
+    /**
+     * Regression for the original crash scenario: an auth-state-driven updateUser is in flight
+     * (parked while fetching the remote user) when markPremium runs. The final merged write from
+     * updateUser must not reset premium back to its pre-markPremium value.
+     */
+    @Test
+    fun `markPremium during in-flight updateUser is not overridden`() = runTest {
+        val preference = FakePreference()
+        val authState = FakeAuthState()
+        val userDbClient = FakeUserDbClient()
+        // Remote user has no premium (stale), which is what used to clobber the local premium.
+        userDbClient.users["user1"] = User(id = "user1", name = "Alice", premium = false, createdOn = 1000L)
+        val gate = CompletableDeferred<Unit>()
+        userDbClient.getUserGate = gate
+
+        val manager = createAuthManager(
+            preference = preference,
+            authState = authState,
+            userDbClient = userDbClient,
+        )
+        preference.setUser(User(id = "user1", name = "Alice", premium = false))
+        manager.userState.first { it != null }
+
+        // Kick off updateUser via an auth state change; it parks inside getUser (gated).
+        authState.authStateFlow.emit(User(id = "user1", name = "Alice"))
+        testScheduler.advanceUntilIdle()
+
+        // While updateUser is parked, flip to premium.
+        manager.markPremium(isPremium = true)
+        assertEquals(true, manager.userState.value?.premium)
+
+        // Let updateUser finish its remote merge and final write.
+        gate.complete(Unit)
+        testScheduler.advanceUntilIdle()
+
+        // Premium must still be true; the stale remote/updateUser write must not have reset it.
+        assertEquals(true, manager.userState.value?.premium)
+        assertEquals(true, userDbClient.users["user1"]?.premium)
+    }
+
+    // -- logout tests --
     @Test
     fun `logout signs out and tracks event`() = runTest {
         val authState = FakeAuthState()

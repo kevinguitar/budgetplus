@@ -83,6 +83,36 @@ internal class AppPreference(
         }
     }
 
+    override suspend fun <T> updateTransform(
+        key: Preferences.Key<String>,
+        serializer: KSerializer<T>,
+        transform: suspend (current: T?) -> T?,
+    ): T? {
+        var result: T? = null
+        dataStore.edit { prefs ->
+            val current = prefs[key]?.let { savedValue ->
+                try {
+                    formatter.decodeFromString(serializer, savedValue)
+                } catch (e: Exception) {
+                    Logger.e(e, "Preference: Decode failed, key=${key.name}, savedValue=$savedValue")
+                    null
+                }
+            }
+            val newValue = transform(current)
+            result = newValue
+            if (newValue == null) {
+                prefs.remove(key)
+            } else {
+                try {
+                    prefs[key] = formatter.encodeToString(serializer, newValue)
+                } catch (e: Exception) {
+                    Logger.e(e, "Preference: Encode failed, key=${key.name}, value=$newValue")
+                }
+            }
+        }
+        return result
+    }
+
     override suspend fun remove(key: Preferences.Key<*>) {
         dataStore.edit { prefs -> prefs.remove(key) }
     }
