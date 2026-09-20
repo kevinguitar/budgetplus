@@ -203,7 +203,7 @@ Each flow runs `setup-login` then `seed-premium` (§6) so `isPremium=true`, asse
 | P1 | `01-no-banner-ad` | Banner area absent (`Test Ad`/`No ads available` both gone). |
 | P2 | `02-no-interstitial` | Add 7 records; no interstitial; flow proceeds; still no banner. |
 | P3 | `03-create-additional-book` | `Create a New Book` opens the create screen (no lock); create `Second Book` (`Copy categories from` + `Create`) → snackbar `Your book Second Book is created!`; switch back. |
-| P4 | `04-overview-custom-period` | `Select Date` opens the date-range picker (asserted via the `Date Range Picker` UI-test tag); no `Unlock premium to set the period above one month` upsell. |
+| P4 | `04-overview-custom-period` | `Select Date` opens the date-range picker (`Select dates`); no `Unlock premium to set the period above one month` upsell. |
 | P5 | `05-search-premium-periods` | `Last 6 Months` selectable without a paywall. |
 | P6 | `06-preferred-currency` | `Edit Preferred Currency` opens the picker (not the paywall); change to Euro then restore. |
 | P7 | `07-premium-color-tones` | Swipe to premium tone `Barbie and Ken` → `Save` succeeds (no paywall). |
