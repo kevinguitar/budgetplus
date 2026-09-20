@@ -28,31 +28,77 @@ jobs:
           # Don't reuse cache entries from any other Job.
           gradle-home-cache-strict-match: true
 
-      - name: Decode Keystore and Google Service file
-        env:
-          ENCODED_KEYSTORE: ${{ secrets.KEYSTORE_FILE }}
-          ENCODED_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-          ENCODED_INSIDER_GOOGLE_SERVICES_JSON: ${{ secrets.INSIDER_GOOGLE_SERVICES_JSON }}
-        run: |
-          echo $ENCODED_KEYSTORE | base64 -d > ./BudgetKey
-          echo $ENCODED_GOOGLE_SERVICES_JSON | base64 -d > ./androidApp/google-services.json
-          echo $ENCODED_INSIDER_GOOGLE_SERVICES_JSON | base64 -d > ./insiderApp/google-services.json
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Echo Secrets
+      - name: Configure signing and API keys
         env:
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           REVENUECAT_ANDROID_API_KEY: ${{ secrets.REVENUECAT_ANDROID_API_KEY }}
           REVENUECAT_IOS_API_KEY: ${{ secrets.REVENUECAT_IOS_API_KEY }}
+          ENCODED_KEYSTORE: ${{ secrets.KEYSTORE_FILE }}
         run: |
+          echo $ENCODED_KEYSTORE | base64 -d > ./BudgetKey
           echo KEYSTORE_PATH=./BudgetKey > ./local.properties
           echo KEYSTORE_ALIAS=$KEYSTORE_ALIAS >> ./local.properties
           echo KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD >> ./local.properties
           echo REVENUECAT_ANDROID_API_KEY=$REVENUECAT_ANDROID_API_KEY >> ./local.properties
           echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # ---------------------------------------------------------------------------
+      # Baseline Profile generation.
+      #
+      # The Baseline Profile is generated fresh on every publish instead of being
+      # hand-maintained in the repo. The androidx.baselineprofile plugin runs the
+      # :benchmark generator against the app's `nonMinifiedRelease` variant, which
+      # overrides is_ui_test=true so it routes Firebase to the local emulators and
+      # signs in anonymously (Google Sign-In is unavailable on CI). The resulting
+      # profile is merged into androidApp/src/main/generated/baselineProfiles and
+      # picked up by the release bundle assembled below.
+      # ---------------------------------------------------------------------------
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools
+
+      - name: Cache Firebase emulators
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators-v1.22.0
+
+      # Provide a Firebase config whose package matches com.kevlina.budgetplus so the
+      # nonMinifiedRelease app builds. It only needs to satisfy the google-services
+      # plugin; the app reroutes Firebase to the local emulators at runtime.
+      - name: Stage test Firebase config for profile generation
+        run: cp ui-tests/config/google-services.json ./androidApp/google-services.json
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Generate Baseline Profile
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          # Run on the latest available Android SDK.
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          ram-size: 4096M
+          heap-size: 1024M
+          cores: 4
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          script: bash ui-tests/scripts/generate-baseline-profile.sh
+
+      - name: Decode production Google Service files
+        env:
+          ENCODED_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          ENCODED_INSIDER_GOOGLE_SERVICES_JSON: ${{ secrets.INSIDER_GOOGLE_SERVICES_JSON }}
+        run: |
+          echo $ENCODED_GOOGLE_SERVICES_JSON | base64 -d > ./androidApp/google-services.json
+          echo $ENCODED_INSIDER_GOOGLE_SERVICES_JSON | base64 -d > ./insiderApp/google-services.json
 
       - name: Assemble release AAB
         run: ./gradlew :androidApp:bundleRelease
