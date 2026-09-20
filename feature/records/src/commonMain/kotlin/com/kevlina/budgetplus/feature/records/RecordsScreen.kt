@@ -20,15 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInRoot
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
 import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.ic_event_note
 import budgetplus.core.common.generated.resources.ic_paid
 import budgetplus.core.common.generated.resources.overview_details_title
+import budgetplus.core.common.generated.resources.overview_selected_delete_confirmation
 import budgetplus.core.common.generated.resources.overview_sort_by_date
 import budgetplus.core.common.generated.resources.overview_sort_by_price
-import budgetplus.core.common.generated.resources.overview_selected_delete_confirmation
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -76,6 +79,13 @@ fun RecordsScreen(vm: RecordsViewModel) {
                 vm.navController.navigateUp()
             }
         }.collect()
+    }
+
+    if (isSelectionMode) {
+        NavigationBackHandler(
+            state = rememberNavigationEventState(NavigationEventInfo.None),
+            onBackCompleted = vm::clearSelection
+        )
     }
 
     Column(

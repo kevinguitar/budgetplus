@@ -10,7 +10,6 @@ kotlin {
             implementation(projects.core.data)
             implementation(projects.core.ui)
 
-            implementation(libs.navigation.event)
             implementation(libs.reorderable)
         }
     }

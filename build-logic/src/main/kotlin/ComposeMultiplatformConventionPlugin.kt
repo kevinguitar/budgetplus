@@ -20,6 +20,7 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
                     implementation(project.libs.bundles.compose)
                     implementation(project.libs.coil.compose)
                     implementation(project.libs.coil.ktor)
+                    implementation(project.libs.navigation.event)
                 }
                 androidMain.dependencies {
                     implementation(project.libs.android.activity.compose)
