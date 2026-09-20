@@ -24,6 +24,7 @@ class BaselineProfileGenerator {
         baselineProfileRule.collect(
             packageName = APP_PACKAGE,
             maxIterations = 10,
+            includeInStartupProfile = true,
             profileBlock = {
                 pressHome()
                 startActivityAndWait()
