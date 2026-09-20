@@ -109,8 +109,8 @@ internal class AuthManagerImpl(
         val userWithNewToken = currentUser?.copy(fcmToken = newToken) ?: return
         appScope.launch {
             try {
-                userDbClient.setUser(userWithNewToken)
                 setUserToPreference(userWithNewToken)
+                userDbClient.setUser(userWithNewToken)
             } catch (e: Exception) {
                 Logger.w(e, "Failed to update fcm token")
             }
@@ -168,7 +168,8 @@ internal class AuthManagerImpl(
                 // Merge exclusive fields to the Firebase auth user
                 val mergedUser = userWithExclusiveFields.copy(
                     name = newName ?: remoteUser.name ?: getString(Res.string.anonymous_user),
-                    premium = remoteUser.premium,
+                    // In case that premium state get overridden by the stale server state.
+                    premium = remoteUser.premium ?: currentUser?.premium,
                     createdOn = remoteUser.createdOn,
                     fcmToken = fcmToken ?: remoteUser.fcmToken
                 )
