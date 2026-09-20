@@ -76,14 +76,33 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 The project uses [Baseline Profiles](https://developer.android.com/topic/performance/baselineprofiles/overview) to improve startup performance.
 
 ### Generating a Profile
-To run the generator:
-```bash
-./gradlew :benchmark:connectedReleaseAndroidTest -P android.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
-```
 
-The output can be found in: `benchmark/build/outputs/connected_android_test_additional_output/release/connected/[device]`.
+The profile is generated automatically on every Play Store publish (see
+[`.github/workflows/publish-android-app.yml`](.github/workflows/publish-android-app.yml)). It is produced by the
+[`androidx.baselineprofile`](https://developer.android.com/topic/performance/baselineprofiles/configure-baselineprofiles)
+plugin, which runs the `:benchmark` generator against the app's `nonMinifiedRelease`
+variant. That variant sets `is_ui_test=true`, so it routes Firebase to the local
+emulators and signs in anonymously (Google Sign-In is unavailable on CI).
 
-Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` directory of the app module.
+To regenerate the profile locally:
+
+1. Start an Android emulator and the Firebase Auth + Firestore emulators:
+   ```bash
+   firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
+     emulators:start --only auth,firestore
+   ```
+2. Forward the emulator ports so the app can reach the Firebase emulators:
+   ```bash
+   adb reverse tcp:9099 tcp:9099 && adb reverse tcp:8080 tcp:8080
+   ```
+3. Run the generator:
+   ```bash
+   ./gradlew :androidApp:generateBaselineProfile
+   ```
+
+The plugin merges the result into `androidApp/src/main/generated/baselineProfiles/baseline-prof.txt`,
+which is consumed by every release build. This path is git-ignored because it is a
+generated artifact.
 
 ### Running Macrobenchmarks
 ```bash
@@ -96,29 +115,9 @@ Copy and rename the file to `baseline-prof.txt` and place it in the `src/main` d
 If you want to build the project locally, follow these steps:
 
 1. Clone the repository.
-2. Add a `google-services.json` file under `:androidApp` folder. Here's a valid dummy file you can use:
-```json
-{
-  "project_info": {
-    "project_number": "dummy_project_number",
-    "project_id": "dummy_project_id"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "dummy_app_id",
-        "android_client_info": {
-          "package_name": "com.kevlina.budgetplus"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "dummy_api_key"
-        }
-      ]
-    }
-  ]
-}
+2. Add a `google-services.json` file under `:androidApp` folder by copying the dummy config already committed for the UI tests:
+```bash
+cp ui-tests/config/google-services.json androidApp/google-services.json
 ```
 3. Now you should be able to build both Android and iOS apps:
    - Build the Android app, run `./gradlew :androidApp:assembleDebug`

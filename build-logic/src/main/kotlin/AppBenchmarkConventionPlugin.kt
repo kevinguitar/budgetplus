@@ -61,7 +61,10 @@ class AppBenchmarkConventionPlugin : Plugin<Project> {
 
         project.extensions.configure<TestAndroidComponentsExtension> {
             beforeVariants(selector().all()) {
-                it.enable = it.buildType == "release"
+                // Enable the standard `release` benchmark variant plus the variants the
+                // androidx.baselineprofile plugin derives from it (`nonMinifiedRelease` runs the
+                // profile generator; `benchmarkRelease` runs the benchmark verification).
+                it.enable = it.buildType in setOf("release", "nonMinifiedRelease", "benchmarkRelease")
             }
         }
 

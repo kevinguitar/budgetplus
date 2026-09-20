@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Route the app to the local Firebase emulators + anonymous login during Baseline
+      Profile generation. The androidx.baselineprofile plugin generates the profile by
+      running the :benchmark module against this auto-created `nonMinifiedRelease` variant
+      (a release build with minification disabled + profileable). Overriding is_ui_test here
+      lets the generator sign in anonymously without Google Sign-In (unavailable on CI).
+
+      IMPORTANT: this override applies ONLY to the non-published `nonMinifiedRelease` variant.
+      The production `release` that ships to Play keeps `is_ui_test=false` (from src/main).
+    -->
+    <bool name="is_ui_test">true</bool>
+</resources>

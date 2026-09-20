@@ -157,6 +157,7 @@ test = [
 android-application = { id = "com.android.application", version.ref = "gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "gradle-plugin" }
 android-test = { id = "com.android.test", version.ref = "gradle-plugin" }
+androidx-baselineprofile = "androidx.baselineprofile:1.5.0"
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 google-services = "com.google.gms.google-services:4.5.0"

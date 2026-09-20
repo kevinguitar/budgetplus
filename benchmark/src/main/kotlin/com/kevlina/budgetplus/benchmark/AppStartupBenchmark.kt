@@ -54,7 +54,7 @@ class AppStartupBenchmark {
         ) {
             pressHome()
             startActivityAndWait()
-            authorize()
+            dismissOnboardingBubbles()
         }
     }
 }

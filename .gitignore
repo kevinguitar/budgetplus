@@ -22,3 +22,4 @@ DummySPMFile.swift
 GoogleService-Info.plist
 /misc/release/
 firestore-debug.log
+androidApp/src/main/generated/baselineProfiles/
