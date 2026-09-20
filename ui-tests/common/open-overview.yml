@@ -3,19 +3,32 @@
 # "<Book>'s Overview" title.
 #
 # The bottom-nav tap occasionally registers on iOS without triggering navigation (the tap
-# is reported as completed but the app stays on Record). Retry the tap until the Overview
-# title appears. Guard the tap so a slow-but-successful navigation from a previous attempt
-# doesn't re-tap on the wrong screen.
+# is reported as completed but the app stays on Record). On iOS the Overview surface also
+# occasionally fails to compose/paint on the first navigation — the title text is absent
+# from the a11y tree and the screen renders black — and re-tapping the history tab while
+# already sitting on that broken Overview does nothing. So each retry first ensures we're on
+# the Record tab (bouncing back via bottom_nav_add when the Overview title isn't visible),
+# then navigates forward again, which forces a fresh composition + re-render of the Overview.
+# Every tap is guarded with visibility conditions so a slow-but-successful navigation from a
+# previous attempt doesn't re-tap on the wrong screen.
 appId: com.kevlina.budgetplus
 ---
 - retry:
     maxRetries: 3
     commands:
+      # If we're not already on the Overview, make sure we're on the Record tab first so the
+      # next history tap is a genuine forward navigation (and recovers a broken/black Overview).
       - runFlow:
           when:
             notVisible:
               text: ".*'s Overview"
           commands:
+            - tapOn:
+                text: "bottom_nav_add"
+            - extendedWaitUntil:
+                visible:
+                  text: "bottom_nav_history"
+                timeout: 10000
             - tapOn:
                 text: "bottom_nav_history"
       - extendedWaitUntil:
