@@ -69,6 +69,24 @@ class FakePreference(
             }
         }
     }
+    override suspend fun <T> updateTransform(
+        key: Preferences.Key<String>,
+        serializer: KSerializer<T>,
+        transform: suspend (current: T?) -> T?,
+    ): T? {
+        val current = prefsFlow.value[key]?.let { Json.decodeFromString(serializer, it) }
+        val newValue = transform(current)
+        prefsFlow.update { prefs ->
+            prefs.toMutablePreferences().apply {
+                if (newValue == null) {
+                    remove(key)
+                } else {
+                    set(key, Json.encodeToString(serializer, newValue))
+                }
+            }
+        }
+        return newValue
+    }
 
     override suspend fun remove(key: Preferences.Key<*>) {
         prefsFlow.update {

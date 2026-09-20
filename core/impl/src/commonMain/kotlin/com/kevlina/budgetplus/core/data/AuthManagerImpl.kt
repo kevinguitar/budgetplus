@@ -83,9 +83,7 @@ internal class AuthManagerImpl(
     override suspend fun markPremium(isPremium: Boolean) {
         if (currentUser?.premium == isPremium) return
 
-        val premiumUser = currentUser?.copy(premium = isPremium) ?: return
-        setUserToPreference(premiumUser)
-
+        val premiumUser = updateUserPreference { it?.copy(premium = isPremium) } ?: return
         if (isPremium) {
             tracker.value.logEvent("buy_premium_success")
             snackbarSender.send(Res.string.premium_unlocked)
@@ -106,10 +104,9 @@ internal class AuthManagerImpl(
             return
         }
 
-        val userWithNewToken = currentUser?.copy(fcmToken = newToken) ?: return
         appScope.launch {
             try {
-                setUserToPreference(userWithNewToken)
+                val userWithNewToken = updateUserPreference { it?.copy(fcmToken = newToken) } ?: return@launch
                 userDbClient.setUser(userWithNewToken)
             } catch (e: Exception) {
                 Logger.w(e, "Failed to update fcm token")
@@ -140,20 +137,22 @@ internal class AuthManagerImpl(
 
     private suspend fun updateUser(user: User?, newName: String? = null) {
         if (user == null) {
-            setUserToPreference(null)
+            clearUser()
             return
         }
 
         // Associate the crash report with Budget+ user
         crashlyticsProvider.setUserId(user.id)
 
-        val userWithExclusiveFields = user.copy(
-            premium = currentUser?.premium,
-            createdOn = currentUser?.createdOn ?: Clock.System.now().toEpochMilliseconds(),
-            lastActiveOn = Clock.System.now().toEpochMilliseconds(),
-            language = appLanguageProvider.getLanguage(),
-        )
-        setUserToPreference(userWithExclusiveFields)
+        val userWithExclusiveFields = updateUserPreference { currentUser ->
+            user.copy(
+                premium = currentUser?.premium,
+                createdOn = currentUser?.createdOn ?: Clock.System.now().toEpochMilliseconds(),
+                lastActiveOn = Clock.System.now().toEpochMilliseconds(),
+                fcmToken = currentUser?.fcmToken,
+                language = appLanguageProvider.getLanguage()
+            )
+        } ?: return
 
         val fcmToken = if (allowUpdateFcmToken) {
             fcmTokenRequester.getToken()
@@ -165,16 +164,15 @@ internal class AuthManagerImpl(
             // Get the latest remote user from the server
             val remoteUser = userDbClient.getUser(user.id)
             if (remoteUser != null) {
-                // Merge exclusive fields to the Firebase auth user
-                val mergedUser = userWithExclusiveFields.copy(
-                    name = newName ?: remoteUser.name ?: getString(Res.string.anonymous_user),
-                    // In case that premium state get overridden by the stale server state.
-                    premium = remoteUser.premium ?: currentUser?.premium,
-                    createdOn = remoteUser.createdOn,
-                    fcmToken = fcmToken ?: remoteUser.fcmToken
-                )
-                setUserToPreference(mergedUser)
-
+                val mergedUser = updateUserPreference { currentUser ->
+                    userWithExclusiveFields.copy(
+                        name = newName ?: remoteUser.name ?: getString(Res.string.anonymous_user),
+                        // In case that premium state get overridden by the stale server state.
+                        premium = currentUser?.premium ?: remoteUser.premium,
+                        createdOn = remoteUser.createdOn,
+                        fcmToken = fcmToken ?: currentUser?.fcmToken ?: remoteUser.fcmToken
+                    )
+                }!!
                 userDbClient.setUser(mergedUser)
             } else {
                 Logger.i("Can't find user in the db yet, set it with the data what we have in place.")
@@ -185,12 +183,19 @@ internal class AuthManagerImpl(
         }
     }
 
-    private suspend fun setUserToPreference(user: User?) {
-        if (user == null) {
-            preference.remove(currentUserKey)
-            logoutNavigation.navigate()
-        } else {
-            preference.update(currentUserKey, User.serializer(), user)
+    /**
+     * Atomically transforms the persisted user. [transform] receives the freshest persisted value
+     * and returns the new value to store, or `null` to leave it unchanged. Returns the value that
+     * is now persisted (either the transformed value or the unchanged current value).
+     */
+    private suspend fun updateUserPreference(transform: suspend (current: User?) -> User?): User? {
+        return preference.updateTransform(currentUserKey, User.serializer()) { current ->
+            transform(current)
         }
+    }
+
+    private suspend fun clearUser() {
+        preference.remove(currentUserKey)
+        logoutNavigation.navigate()
     }
 }
