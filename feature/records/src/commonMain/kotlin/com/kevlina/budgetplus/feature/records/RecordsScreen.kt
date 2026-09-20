@@ -150,6 +150,7 @@ fun RecordsScreen(vm: RecordsViewModel) {
                             showAuthor = true,
                             isSelectionMode = isSelectionMode,
                             isSelected = item.id in selectedIds,
+                            canSelect = true,
                             index = index,
                             onEdit = { editRecordDialog = item },
                             onDuplicate = { vm.duplicateRecord(item) },
