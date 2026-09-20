@@ -14,7 +14,6 @@ kotlin {
 
             implementation(libs.colorpicker.compose)
             implementation(libs.compottie)
-            implementation(libs.navigation.event)
         }
     }
 }
