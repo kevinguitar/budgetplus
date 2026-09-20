@@ -269,6 +269,20 @@ emulator_is_dead() {
 }
 
 
+# Return 0 when the per-flow JUnit report shows the flow died from a Maestro
+# driver/instrumentation crash at init rather than a genuine assertion failure.
+# These crashes (e.g. `DeviceServerDiedException`, a dropped gRPC transport to the
+# on-device driver server) abort the flow before any command executes, so the
+# device stays healthy and the failure is purely transient — worth one retry.
+# Without an output dir there is no report to inspect; treat as "not a crash".
+flow_hit_driver_crash() {
+  local name="$1"
+  [[ -n "${MAESTRO_OUTPUT_DIR:-}" ]] || return 1
+  local report="$MAESTRO_OUTPUT_DIR/$name/report.xml"
+  [[ -f "$report" ]] || return 1
+  grep -qE 'DeviceServerDiedException|Device server died|io\.grpc\.StatusRuntimeException: UNAVAILABLE' "$report"
+}
+
 # Run every flow in a suite directory ONE AT A TIME.
 #
 # Passing a directory to `maestro test` makes recent Maestro versions run all
@@ -327,8 +341,22 @@ run_suite_dir() {
       continue
     fi
 
-    # The flow failed. If the device is still healthy this is a real failure.
+    # The flow failed. If the device is still healthy this is *usually* a real
+    # failure — except for a transient Maestro driver crash. Maestro talks to an
+    # instrumentation gRPC server it installs on the device; that server can die
+    # during flow init (e.g. `DeviceServerDiedException` on `deviceInfo`) before a
+    # single command runs. The emulator itself stays healthy, so the `get-state`
+    # check below sees `device` and would otherwise book it as a real assertion
+    # failure. It is not: no command executed (the flow "fails" in a few hundred
+    # ms with no screenshots). Detect that signature in the per-flow report and
+    # retry the flow once — a re-run reinstalls a fresh driver and recovers.
     if adb -s "$ADB_SERIAL" get-state 2>/dev/null | grep -q '^device$'; then
+      if flow_hit_driver_crash "$name"; then
+        echo "::warning::$name failed with a Maestro driver crash (device still healthy); retrying once." >&2
+        if maestro_test "$name" "$flow"; then
+          continue
+        fi
+      fi
       suites_failed=1
       continue
     fi
