@@ -80,7 +80,7 @@ fun BookSelector() {
                     add(
                         DropdownItemModel(
                             name = book.name,
-                            leadingIcon = if (bookState?.id == book.id) {
+                            trailingIcon = if (bookState?.id == book.id) {
                                 vectorResource(Res.drawable.ic_check)
                             } else {
                                 null
