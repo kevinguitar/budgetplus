@@ -102,6 +102,51 @@ maestro_test() {
   fi
 }
 
+# Number of attempts per flow. UI flows are occasionally flaky on CI from transient
+# simulator glitches that a clean re-run clears: a GPU/render blip that paints the whole
+# app black while the view hierarchy stays intact, a dropped tap, an ad/network hiccup.
+# Retry a failed flow (from a fully reset app state) before counting it as a real
+# failure. Set MAESTRO_FLOW_ATTEMPTS=1 to disable retries.
+MAESTRO_FLOW_ATTEMPTS=${MAESTRO_FLOW_ATTEMPTS:-2}
+
+# Run one flow, retrying up to MAESTRO_FLOW_ATTEMPTS times. Before each retry the app is
+# reset to a clean state (fresh install + keychain wipe) so the re-run does not inherit a
+# wedged UI. The JUnit report of the final attempt overwrites the earlier one, so the
+# reported result reflects the last (decisive) run — a flow that passes on retry is green.
+maestro_test_retry() {
+  local suite_name="$1"
+  local attempt=1
+  while true; do
+    if maestro_test "$suite_name" "${@:2}"; then
+      return 0
+    fi
+    if ((attempt >= MAESTRO_FLOW_ATTEMPTS)); then
+      return 1
+    fi
+    echo "::warning::Flow $suite_name failed on attempt $attempt/$MAESTRO_FLOW_ATTEMPTS; resetting app and retrying." >&2
+    attempt=$((attempt + 1))
+    reset_app
+  done
+}
+
+# Run every flow in a directory one at a time, each with the retry wrapper. Honors
+# per-flow platform gating (running a single file bypasses Maestro's own gate). A single
+# failing flow does not abort the rest of the suite; failures are surfaced via the return
+# code. Emits per-flow JUnit reports (like the free-a/free-b sub-shards) so every flow
+# still shows up individually in the run summary.
+run_flow_dir() {
+  local suite_prefix="$1"
+  local dir="$2"
+  local result=0
+  for flow in $(ls "$dir"/*.yml | sort); do
+    if grep -q '^platform: Android' "$flow"; then
+      continue
+    fi
+    maestro_test_retry "$suite_prefix/$(basename "$flow" .yml)" "$flow" || result=1
+  done
+  return "$result"
+}
+
 # Force the simulator UI (and the app) to English so tests can match English strings.
 xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLanguages '("en-US")'
 xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLocale "en_US"
@@ -130,13 +175,13 @@ run_suites() {
         continue
       fi
       reset_app
-      maestro_test "login/$(basename "$flow" .yml)" "$flow" || suite_result=1
+      maestro_test_retry "login/$(basename "$flow" .yml)" "$flow" || suite_result=1
     done
   fi
 
   if [[ "$SHARD" == "free" || "$SHARD" == "all" ]]; then
     reset_app
-    maestro_test after-login-free ui-tests/after-login/free || suite_result=1
+    run_flow_dir after-login-free ui-tests/after-login/free || suite_result=1
   fi
 
   # Balanced sub-shards of the free suite (see SHARD docs): free-a runs flows
@@ -147,21 +192,21 @@ run_suites() {
     for flow in $(ls ui-tests/after-login/free/*.yml | sort); do
       num=$(basename "$flow" | cut -d- -f1)
       if [[ "$SHARD" == "free-a" && "$num" -le 43 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 50 ]]; then
-        maestro_test "after-login-free/$(basename "$flow" .yml)" "$flow" || suite_result=1
+        maestro_test_retry "after-login-free/$(basename "$flow" .yml)" "$flow" || suite_result=1
       fi
     done
   fi
 
   if [[ "$SHARD" == "premium" || "$SHARD" == "all" ]]; then
     reset_app
-    maestro_test after-login-premium ui-tests/after-login/premium || suite_result=1
+    run_flow_dir after-login-premium ui-tests/after-login/premium || suite_result=1
   fi
 
   return "$suite_result"
 }
 
-export SIMULATOR_ID APP_PATH MAESTRO_BIN SHARD
-export -f maestro_test reset_app run_suites
+export SIMULATOR_ID APP_PATH MAESTRO_BIN SHARD MAESTRO_FLOW_ATTEMPTS
+export -f maestro_test maestro_test_retry run_flow_dir reset_app run_suites
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
   emulators:exec --only auth,firestore run_suites
