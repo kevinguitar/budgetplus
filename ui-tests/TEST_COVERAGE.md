@@ -323,6 +323,28 @@ English, then inside `firebase emulators:exec` runs: each `login` flow with a fu
 uninstall/keychain-reset/reinstall (skipping `platform: Android`), then `after-login/free`,
 then `after-login/premium` (each preceded by a reset). The production plist is restored on exit.
 
+### Flaky-flow retries (a failed flow gets one more attempt)
+UI flows occasionally fail from **transient** issues rather than real regressions — a
+simulator/emulator GPU render blip (e.g. the whole app paints black while the view hierarchy
+stays intact), a dropped tap, a Maestro driver/instrumentation crash at init, or a network
+hiccup. To keep these from turning a green PR red, **each runner retries a failed flow once
+before counting it as a real failure**:
+
+- **iOS** — a `maestro_test_retry` wrapper re-runs a failed flow after a full `reset_app`
+  (uninstall + keychain reset + reinstall) so the retry starts from a clean state. The number
+  of attempts is `MAESTRO_FLOW_ATTEMPTS` (default `2`; set `1` to disable). All shards
+  (`login`, `free`/`free-a`/`free-b`, `premium`) run flow-by-flow so every flow gets the retry
+  and its own JUnit report.
+- **Android** — a flow that fails while the device is still healthy is retried once (a re-run
+  reinstalls a fresh Maestro driver and clears most transient glitches). This is *in addition
+  to* the existing device-recovery logic, which already retries a flow whose device dropped
+  `offline` mid-run (after reconnecting or cold-booting a fresh emulator).
+
+Because the JUnit report of the final attempt overwrites the earlier one, a flow that passes
+on retry is correctly reported green; only a flow that fails **twice in a row** counts as a
+genuine failure. The trade-off is that a genuinely-broken flow now runs twice (~2× its time),
+which is acceptable since real breakages are rarer than transient flakes.
+
 ### CI devices & failure reporting
 - **Devices mirror the table in §0:** Android **API 34 / `google_apis` / x86_64** (API 35/36
   emulators proved unstable under swiftshader on the Ubuntu runners — the device went

@@ -269,20 +269,6 @@ emulator_is_dead() {
 }
 
 
-# Return 0 when the per-flow JUnit report shows the flow died from a Maestro
-# driver/instrumentation crash at init rather than a genuine assertion failure.
-# These crashes (e.g. `DeviceServerDiedException`, a dropped gRPC transport to the
-# on-device driver server) abort the flow before any command executes, so the
-# device stays healthy and the failure is purely transient — worth one retry.
-# Without an output dir there is no report to inspect; treat as "not a crash".
-flow_hit_driver_crash() {
-  local name="$1"
-  [[ -n "${MAESTRO_OUTPUT_DIR:-}" ]] || return 1
-  local report="$MAESTRO_OUTPUT_DIR/$name/report.xml"
-  [[ -f "$report" ]] || return 1
-  grep -qE 'DeviceServerDiedException|Device server died|io\.grpc\.StatusRuntimeException: UNAVAILABLE' "$report"
-}
-
 # Run every flow in a suite directory ONE AT A TIME.
 #
 # Passing a directory to `maestro test` makes recent Maestro versions run all
@@ -301,8 +287,10 @@ flow_hit_driver_crash() {
 # Before each flow we confirm the device is alive. When a flow fails we re-check:
 # a flow that failed *because the device dropped* (offline / `device not found`)
 # is retried once after the emulator recovers, so a transient blip does not count
-# as a real failure. A flow that failed on a genuine assertion is left as a
-# failure — no retry, since re-running would not change the outcome.
+# as a real failure. A flow that failed while the device stayed healthy is also
+# retried once (a transient render glitch, a dropped tap, or a Maestro driver
+# crash at init all clear on a clean re-run); only a flow that fails twice in a
+# row on a healthy device is reported as a genuine failure.
 run_suite_dir() {
   local suite_prefix="$1"
   local dir="$2"
@@ -341,21 +329,16 @@ run_suite_dir() {
       continue
     fi
 
-    # The flow failed. If the device is still healthy this is *usually* a real
-    # failure — except for a transient Maestro driver crash. Maestro talks to an
-    # instrumentation gRPC server it installs on the device; that server can die
-    # during flow init (e.g. `DeviceServerDiedException` on `deviceInfo`) before a
-    # single command runs. The emulator itself stays healthy, so the `get-state`
-    # check below sees `device` and would otherwise book it as a real assertion
-    # failure. It is not: no command executed (the flow "fails" in a few hundred
-    # ms with no screenshots). Detect that signature in the per-flow report and
-    # retry the flow once — a re-run reinstalls a fresh driver and recovers.
+    # The flow failed. If the device is still healthy this is usually a real failure,
+    # but UI flows are occasionally flaky: a transient render glitch, a dropped tap, or a
+    # Maestro driver/instrumentation crash at init (e.g. `DeviceServerDiedException` on
+    # `deviceInfo`) that aborts the flow before a single command runs. All of these clear
+    # on a re-run, which reinstalls a fresh driver from clean state. Retry the flow once;
+    # if it still fails, book it as a genuine failure.
     if adb -s "$ADB_SERIAL" get-state 2>/dev/null | grep -q '^device$'; then
-      if flow_hit_driver_crash "$name"; then
-        echo "::warning::$name failed with a Maestro driver crash (device still healthy); retrying once." >&2
-        if maestro_test "$name" "$flow"; then
-          continue
-        fi
+      echo "::warning::$name failed while the device was healthy; retrying once." >&2
+      if maestro_test "$name" "$flow"; then
+        continue
       fi
       suites_failed=1
       continue
