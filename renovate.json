@@ -22,5 +22,20 @@
       "matchDepNames": ["ruby"],
       "enabled": false
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Keep the spmForKmp remotePackageVersion literals in Gradle in sync with the generated Package.swift, so a single Renovate PR bumps both. depName (owner/repo) and datasource (github-tags) match the built-in swift manager, which groups the two files onto the same branch.",
+      "managerFilePatterns": [
+        "/(^|/)core/ads/build\\.gradle\\.kts$/",
+        "/(^|/)shared/build\\.gradle\\.kts$/"
+      ],
+      "matchStrings": [
+        "url = uri\\(\"https://github\\.com/(?<depName>[^\"]+?)(?:\\.git)?\"\\)[\\s\\S]*?version = \"(?<currentValue>[0-9][^\"]*)\""
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
   ]
 }
