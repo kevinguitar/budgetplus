@@ -56,7 +56,7 @@ kotlin {
                     products = {
                         add("GoogleSignIn", exportToKotlin = true)
                     },
-                    version = "9.1.0"
+                    version = "9.2.0"
                 )
             }
         }
