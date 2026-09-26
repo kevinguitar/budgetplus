@@ -7,11 +7,18 @@ jobs:
   ios-ui-tests:
     # Shard the Maestro suites across parallel jobs. The full sequential suite is
     # ~84 min of tests on top of a ~31 min cold Kotlin/Native framework build. The
-    # free suite (~35 flows) alone overran the 100-min job timeout, so it is split
-    # into two balanced sub-shards (free-a / free-b).
+    # free suite (~35 flows) alone overran the job timeout, so it is split into two
+    # balanced sub-shards (free-a / free-b).
+    #
+    # Timeout budget: each shard rebuilds the Kotlin/Native framework, which is warm
+    # (~27 min) when the Gradle/konan caches hit but cold (~43 min) on a cache miss.
+    # On a cold build the slowest shard (free-b) lands near ~92 min wall clock and
+    # was intermittently cancelled at the old 100-min cap. Adding another shard would
+    # not help — every shard re-pays the full cold build — so we give the cold-build
+    # path headroom instead. Warm runs still finish well under this and exit early.
     name: iOS UI tests (${{ matrix.shard }})
     runs-on: macos-latest
-    timeout-minutes: 100
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
