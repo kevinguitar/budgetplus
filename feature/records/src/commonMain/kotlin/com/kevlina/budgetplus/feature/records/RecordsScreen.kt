@@ -43,8 +43,8 @@ import com.kevlina.budgetplus.feature.record.card.DeleteRecordDialog
 import com.kevlina.budgetplus.feature.record.card.EditRecordDialog
 import com.kevlina.budgetplus.feature.record.card.RecordCard
 import com.kevlina.budgetplus.feature.record.card.RecordCardState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -69,16 +69,19 @@ fun RecordsScreen(vm: RecordsViewModel) {
             .collect(vm::setPageIndex)
     }
 
-    // Observe the records, when the last record get deleted, navigate back to the overview screen.
-    LaunchedEffect(key1 = vm) {
+    // Wait until the pager is idle before leaving an empty category, so navigation
+    // doesn't remove the screen during an active swipe. Navigate only once.
+    LaunchedEffect(vm, pagerState) {
         combine(
             vm.recordsList,
-            snapshotFlow { pagerState.currentPage }
-        ) { recordsList, page ->
-            if (recordsList?.getOrNull(page)?.isEmpty() == true) {
-                vm.navController.navigateUp()
+            snapshotFlow {
+                pagerState.settledPage to pagerState.isScrollInProgress
             }
-        }.collect()
+        ) { recordsList, (page, isScrolling) ->
+            !isScrolling && recordsList?.getOrNull(page)?.isEmpty() == true
+        }.first { shouldNavigateUp -> shouldNavigateUp }
+
+        vm.navController.navigateUp()
     }
 
     if (isSelectionMode) {
