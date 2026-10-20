@@ -23,18 +23,7 @@ first. Only then form a diagnosis.
 
 ## Workflow
 
-### 1. Authenticate gh
-
-This repo stores the token in `local.properties`. Follow the `github-cli`
-skill:
-
-```sh
-export GH_TOKEN=$(grep '^GH_TOKEN=' local.properties | cut -d= -f2-)
-```
-
-Keep it exported in the same shell for all `gh` calls below.
-
-### 2. Identify the failing jobs
+### 1. Identify the failing jobs
 
 From a run or job URL the user shares, confirm which jobs failed:
 
@@ -59,7 +48,7 @@ Tip: the two runner variants are named `iOS UI tests (free)` and
 `iOS UI tests (premium)` (and the Android equivalents). Match the failing flow
 to its variant folder under `ui-tests/after-login/{free,premium}/`.
 
-### 3. Download the test report artifacts
+### 2. Download the test report artifacts
 
 List artifacts for the run (a job URL contains the run id, or use
 `gh run view <JOB_ID>` to find it):
@@ -91,7 +80,7 @@ build/maestro/{ios,android}/<suite>/<timestamp>/<flow-name>/
   screen-hierarchy/step-NNN-<action>.json
 ```
 
-### 4. Inspect the evidence (required before any fix)
+### 3. Inspect the evidence (required before any fix)
 
 For the failing flow directory:
 
@@ -107,7 +96,7 @@ For the failing flow directory:
 - **Grep the `screen-hierarchy/*.json`** for the expected text/testTag to
   confirm whether the element was truly absent vs. present-but-unmatched.
 
-### 5. Diagnose, then decide flaky vs. real
+### 4. Diagnose, then decide flaky vs. real
 
 - Cross-check the PR: if it's an unrelated dependency bump (e.g. a Renovate PR)
   and the failure is in an unrelated flow, it is almost certainly flaky/env, not
@@ -117,7 +106,7 @@ For the failing flow directory:
   permission dialog covered the target; an iOS tap didn't register; an ad/SDK
   state that never surfaces matchable text.
 
-### 6. Fixing
+### 5. Fixing
 
 Prefer robustness over just bumping timeouts (a longer timeout does nothing when
 the app is on the wrong screen):
@@ -131,7 +120,7 @@ the app is on the wrong screen):
 - Match Maestro elements by `text:` — it matches accessibility
   `contentDescription`/identifiers, not just visible labels.
 
-### 7. Clean up
+### 6. Clean up
 
 Remove the downloaded artifacts when done: `rm -rf /tmp/uitest`.
 
