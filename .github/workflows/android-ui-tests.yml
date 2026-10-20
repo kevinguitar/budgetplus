@@ -11,7 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [login, free, premium]
+        # Keep each emulator short-lived: the full free suite lost runners after
+        # 43–50 minutes and showed QEMU hangs as graphics buffers accumulated.
+        shard: [login, free-a, free-b, premium]
     permissions:
       contents: read
       checks: write

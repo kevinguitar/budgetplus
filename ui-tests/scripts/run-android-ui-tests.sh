@@ -20,13 +20,15 @@ cd "$ROOT_DIR"
 # emulators:exec (which runs its command through /bin/sh and only uses $1). Accepts:
 #   login   – ui-tests/login
 #   free    – ui-tests/after-login/free
+#   free-a  – free flows numbered < 50
+#   free-b  – free flows numbered >= 50
 #   premium – ui-tests/after-login/premium
 #   all     – every suite (default; used for local runs)
 SHARD="${SHARD:-all}"
 case "$SHARD" in
-  login | free | premium | all) ;;
+  login | free | free-a | free-b | premium | all) ;;
   *)
-    echo "Unknown shard '$SHARD' (expected: login, free, premium, all)" >&2
+    echo "Unknown shard '$SHARD' (expected: login, free, free-a, free-b, premium, all)" >&2
     exit 1
     ;;
 esac
@@ -85,7 +87,7 @@ run_suites() {
   fi
 
   # after-login/free re-provisions via setup-login on a fresh anonymous user.
-  if [[ "$SHARD" == "free" || "$SHARD" == "all" ]]; then
+  if [[ "$SHARD" == "free" || "$SHARD" == "free-a" || "$SHARD" == "free-b" || "$SHARD" == "all" ]]; then
     wait_for_device || true
     adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
     run_suite_dir after-login-free ui-tests/after-login/free
@@ -302,6 +304,17 @@ run_suite_dir() {
     flows=("$dir"/*.yml)
   fi
   for flow in "${flows[@]}"; do
+    # Partition by range so newly added flows (including 44–49) are included.
+    if [[ "$SHARD" == "free-a" || "$SHARD" == "free-b" ]]; then
+      local num
+      num=$(basename "$flow")
+      num=${num%%-*}
+      num=$((10#$num))
+      if [[ "$SHARD" == "free-a" && "$num" -ge 50 ]] || [[ "$SHARD" == "free-b" && "$num" -lt 50 ]]; then
+        continue
+      fi
+    fi
+
     # Skip iOS-only flows (per-flow platform gating).
     if grep -q '^platform: iOS' "$flow"; then
       continue
