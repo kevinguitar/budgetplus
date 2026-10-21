@@ -13,6 +13,8 @@
 # The records share the category name as their title, so the rows are addressed
 # by their UI-test-only stable content descriptions "record_cell_0" / "record_cell_1"
 # (see RecordCard), and the Overview mode toggle by "overview_mode_toggle".
+# iOS appends the merged row text to its accessibility label; accept that suffix
+# while keeping the index exact (so row 1 cannot match row 10).
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
@@ -42,7 +44,7 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 # Long-press the first record row to open its context menu.
 - longPressOn:
-    text: "record_cell_0"
+    text: "record_cell_0(,.*)?"
 # Enter selection mode via the long-press context menu's "Select" option.
 - extendedWaitUntil:
     visible:
@@ -53,7 +55,7 @@ appId: com.kevlina.budgetplus
 # In selection mode, tapping another record immediately selects it too. Tap the
 # second row so both records are selected.
 - tapOn:
-    text: "record_cell_1"
+    text: "record_cell_1(,.*)?"
 # The top-bar title now reflects the selected records' sum ($200 = both records).
 - assertVisible:
     text: "Entertainment: .*200.*"
