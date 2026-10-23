@@ -68,13 +68,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-konan-v2-
 
+      # Cache inputs are evaluated again during post-job save. Freeze the keys
+      # before building so cleanup never scans generated SPM/DerivedData trees.
+      - name: Compute Xcode cache keys
+        id: xcode-cache-keys
+        run: |
+          echo "spm=${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}" >> "$GITHUB_OUTPUT"
+          echo "derived-data=${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'gradle/libs.versions.toml') }}" >> "$GITHUB_OUTPUT"
+
       - name: Cache SPM packages
         uses: actions/cache@v6
         with:
           path: |
             build/SourcePackages
             ~/Library/Caches/org.swift.swiftpm
-          key: ${{ runner.os }}-spm-v2-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-v2-${{ steps.xcode-cache-keys.outputs.spm }}
           restore-keys: |
             ${{ runner.os }}-spm-v2-
 
@@ -82,7 +90,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ./build
-          key: ${{ runner.os }}-ddata-v2-${{ hashFiles('**/Package.resolved', 'gradle/libs.versions.toml') }}
+          key: ${{ runner.os }}-ddata-v2-${{ steps.xcode-cache-keys.outputs.derived-data }}
           restore-keys: |
             ${{ runner.os }}-ddata-v2-
 
