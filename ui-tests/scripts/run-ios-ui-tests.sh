@@ -13,7 +13,7 @@ SIMULATOR_NAME=${1:-iPhone 17}
 # suite alone (~35 flows) overran the 100-minute job timeout, so it is split into
 # two balanced sub-shards by flow-number range. Accepts:
 #   login   – ui-tests/login/*.yml
-#   free-a  – ui-tests/after-login/free flows numbered <= 43
+#   free-a  – ui-tests/after-login/free flows numbered < 50
 #   free-b  – ui-tests/after-login/free flows numbered >= 50
 #   free    – ui-tests/after-login/free (whole suite; used for local runs)
 #   premium – ui-tests/after-login/premium
@@ -185,13 +185,17 @@ run_suites() {
   fi
 
   # Balanced sub-shards of the free suite (see SHARD docs): free-a runs flows
-  # numbered <= 43, free-b runs flows numbered >= 50. Passing explicit files (in
+  # numbered < 50, free-b runs flows numbered >= 50. Passing explicit files (in
   # sorted order) keeps Maestro's per-flow reporting while running only a subset.
   if [[ "$SHARD" == "free-a" || "$SHARD" == "free-b" ]]; then
     reset_app
     for flow in $(ls ui-tests/after-login/free/*.yml | sort); do
       num=$(basename "$flow" | cut -d- -f1)
-      if [[ "$SHARD" == "free-a" && "$num" -le 43 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 50 ]]; then
+      num=$((10#$num))
+      if [[ "$SHARD" == "free-a" && "$num" -lt 50 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 50 ]]; then
+        if grep -q '^platform: Android' "$flow"; then
+          continue
+        fi
         maestro_test_retry "after-login-free/$(basename "$flow" .yml)" "$flow" || suite_result=1
       fi
     done

@@ -22,11 +22,13 @@ Everything runs against the Firebase **auth + firestore emulators** using the ex
 
 > **CI sharding note:** on iOS the `after-login/free` suite (~35 flows) overran the
 > job timeout, so CI splits it into two balanced sub-shards — `free-a`
-> (flows numbered ≤ 43) and `free-b` (flows numbered ≥ 50) — run as separate jobs.
+> (flows numbered < 50) and `free-b` (flows numbered ≥ 50) — run as separate jobs.
 > Each shard rebuilds the Kotlin/Native framework, so on a cold Gradle/konan cache
 > miss the build alone is ~43 min and the slowest shard lands near the job timeout;
-> the iOS job timeout is 120 min to absorb that cold-build variance. Android keeps
-> the single `free` shard (its emulator run finishes well within the timeout).
+> the iOS job timeout is 120 min to absorb that cold-build variance. Android also
+> splits `free` into `free-a` (flows numbered < 50) and `free-b` (≥ 50) to reduce
+> per-runner load and graphics-buffer accumulation during long emulator sessions.
+> Local Android runs still accept `SHARD=free` to run the whole free suite.
 > Local runs still use `free`/`all`.
 
 ---
