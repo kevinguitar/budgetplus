@@ -64,41 +64,6 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      # Warm the AVD once (create + cold boot + snapshot) so the test run below starts
-      # from a saved snapshot instead of a cold boot. A snapshot-restored emulator is
-      # measurably more stable across a long sequential suite than a freshly cold-booted
-      # one, and shaves boot time off the timed run.
-      - name: AVD cache
-        uses: actions/cache@v6
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-34-google_apis-x86_64
-
-      - name: Create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        # This step only warms the AVD snapshot cache (a boot-time optimization). It can
-        # fail transiently while downloading the SDK emulator package from Google's repo
-        # (observed: "Premature EOF" -> "could not connect to TCP port 5554"). That is
-        # infrastructure flakiness, not a test/app failure, and must not fail the job: the
-        # real "Run Android UI tests" step below creates the AVD itself when the snapshot
-        # is absent, so continue on error and let it take over.
-        continue-on-error: true
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          target: google_apis
-          arch: x86_64
-          disable-animations: false
-          ram-size: 4096M
-          heap-size: 1024M
-          cores: 4
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-load
-          script: echo "Generated AVD snapshot for caching."
-
       - name: Run Android UI tests
         uses: reactivecircus/android-emulator-runner@v2
         env:
@@ -111,11 +76,11 @@ jobs:
           ram-size: 4096M
           heap-size: 1024M
           cores: 4
-          force-avd-creation: false
-          # Restore from the cached snapshot; write it back on exit so subsequent runs
-          # keep a warm state. Drop the redundant -memory/-cores here (they conflicted
-          # with ram-size/cores above) and let swiftshader render headless.
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          # Snapshot restores have produced invalid ColorBuffers and stuck animation
+          # waits: Maestro inputText then takes ~10s per character until its RPC times
+          # out. Cold-boot a fresh AVD, matching the runner script's recovery path.
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
           # android-emulator-runner runs each line of an inline script as its own
           # `/usr/bin/sh -c` (dash), which cannot express `set -o pipefail` or a
           # heredoc. Invoke a committed script once with bash so everything shares

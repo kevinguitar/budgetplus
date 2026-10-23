@@ -31,6 +31,13 @@ Everything runs against the Firebase **auth + firestore emulators** using the ex
 > Local Android runs still accept `SHARD=free` to run the whole free suite.
 > Local runs still use `free`/`all`.
 
+Android CI cold-boots a fresh AVD with snapshots disabled. In PR #844's `free-a`
+shard, restoring `default_boot` reported invalid graphics ColorBuffers; Android then
+repeatedly timed out waiting for animations during key injection (~10 seconds per
+character). Maestro's `inputText` RPC timed out on book creation across both attempts
+and subsequent flows, exhausting the job timeout. ADB remained responsive, so the
+existing device-health checks and driver retries could not recover that state.
+
 ---
 
 ## 1. Background — How the app decides what to show
