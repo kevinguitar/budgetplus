@@ -14,7 +14,7 @@ metro = "1.4.5"
 # https://developer.android.com/jetpack/androidx/releases/navigation3
 navigation3 = "1.2.0"
 # https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html#multiplatform-support
-navigation3-jb = "1.1.2"
+navigation3-jb = "1.2.0"
 # https://firebase.google.com/support/release-notes/android
 firebase-bom = "35.1.0"
 # https://mvnrepository.com/artifact/com.google.firebase/firebase-crashlytics-gradle
