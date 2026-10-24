@@ -2,13 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- runFlow: ../../common/open-overview.yml
-- tapOn:
-    text: "Search"
-- extendedWaitUntil:
-    visible:
-      text: "Enter keyword"
-    timeout: 15000
+- runFlow: ../../common/open-search.yml
 # Open the period selector (pill initially shows "Last Month").
 - tapOn:
     text: "Last Month"
@@ -28,5 +22,6 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - assertNotVisible:
     text: "Enter keyword"
+- runFlow: ../../common/assert-on-paywall.yml
 # Leave the paywall and return to the Record screen.
 - runFlow: ../../common/return-to-record.yml

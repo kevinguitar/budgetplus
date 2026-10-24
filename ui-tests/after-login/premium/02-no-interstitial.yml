@@ -15,4 +15,4 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/assert-on-record.yml
 # Still premium: no banner ad either.
 - assertNotVisible:
-    text: "Test Ad"
+    text: "Banner Ad Area"

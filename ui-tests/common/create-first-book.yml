@@ -1,0 +1,21 @@
+# Creates the standard fixture book from Welcome, then waits for Record.
+# Keep validation assertions in the calling test, before invoking this subflow.
+appId: com.kevlina.budgetplus
+---
+- tapOn:
+    text: "My accounting book"
+- inputText: "UI Test Book"
+# Neutral label dismisses the keyboard on both platforms.
+- tapOn:
+    text: "You can create a new accounting book"
+- tapOn:
+    text: "Go"
+- runFlow: dismiss-system-dialogs.yml
+# ATT can arrive after the first dismissal; retain the late-dialog recovery.
+- runFlow:
+    when:
+      notVisible:
+        text: "AC"
+    commands:
+      - runFlow: dismiss-system-dialogs.yml
+- runFlow: assert-on-record.yml

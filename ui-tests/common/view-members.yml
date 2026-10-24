@@ -1,0 +1,28 @@
+# From Settings, verifies the owner in Members and dismisses the dialog.
+appId: com.kevlina.budgetplus
+---
+- tapOn:
+    text: "View Members"
+- extendedWaitUntil:
+    visible:
+      text: "Members"
+    timeout: 15000
+- assertVisible:
+    text: "Owner"
+- runFlow:
+    when:
+      true: ${typeof EXPECTED_NAME !== "undefined" && EXPECTED_NAME.length > 0}
+    commands:
+      - extendedWaitUntil:
+          visible:
+            text: "${EXPECTED_NAME}"
+          timeout: 15000
+# System back does not dismiss Compose dialogs reliably on iOS.
+- tapOn:
+    point: "50%,12%"
+- extendedWaitUntil:
+    notVisible:
+      text: "Members"
+    timeout: 10000
+- assertVisible:
+    text: ".*'s Settings"

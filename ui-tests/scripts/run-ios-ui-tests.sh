@@ -3,10 +3,13 @@
 set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
-SERVICE_FILE="$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist"
-TEST_SERVICE_FILE="$ROOT_DIR/ui-tests/config/GoogleService-Info.plist"
-BACKUP_SERVICE_FILE="$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist.bak"
-SIMULATOR_NAME=${1:-iPhone 17}
+source "$ROOT_DIR/ui-tests/scripts/runner-common.sh"
+SUITES_ONLY=false
+if [[ "${1:-}" == "--suites" ]]; then
+  SUITES_ONLY=true
+  shift
+fi
+SIMULATOR_NAME=${1:-iPhone 17 Pro UI Tests}
 # Which suite(s) to run. CI shards the suites across parallel jobs so no single
 # job approaches the 100-minute workflow ceiling (the full sequential suite is
 # ~84 minutes of tests on top of a ~31-minute cold framework build). The free
@@ -18,88 +21,46 @@ SIMULATOR_NAME=${1:-iPhone 17}
 #   free    – ui-tests/after-login/free (whole suite; used for local runs)
 #   premium – ui-tests/after-login/premium
 #   all     – every suite (default; used for local runs)
-SHARD=${2:-all}
-case "$SHARD" in
-  login | free | free-a | free-b | premium | all) ;;
-  *)
-    printf 'Unknown shard %q (expected: login, free, free-a, free-b, premium, all)\n' "$SHARD" >&2
+SHARD=${SHARD:-${2:-all}}
+validate_shard "$SHARD"
+MAESTRO_OUTPUT_DIR=${MAESTRO_OUTPUT_DIR:-build/maestro/ios}
+initialize_maestro_run
+cd "$ROOT_DIR"
+if [[ "$SUITES_ONLY" == false ]]; then
+  SIMULATOR_ID=$(xcrun simctl list devices available | awk -v name="$SIMULATOR_NAME" 'index($0, name " (") && /\(Booted\)/ { id = $(NF - 1); gsub(/[()]/, "", id); print id; exit }')
+
+  if [[ -z "$SIMULATOR_ID" ]]; then
+    printf 'No booted simulator named %s found\n' "$SIMULATOR_NAME" >&2
     exit 1
-    ;;
-esac
-SIMULATOR_ID=$(xcrun simctl list devices available | awk -v name="$SIMULATOR_NAME" 'index($0, name " (") && /\(Booted\)/ { id = $(NF - 1); gsub(/[()]/, "", id); print id; exit }')
-
-if [[ -z "$SIMULATOR_ID" ]]; then
-  printf 'No booted simulator named %s found\n' "$SIMULATOR_NAME" >&2
-  exit 1
-fi
-
-restore_service_file() {
-  local result=$?
-  trap - EXIT
-  set +e
-
-  if [[ -f "$BACKUP_SERVICE_FILE" ]]; then
-    cp -p "$BACKUP_SERVICE_FILE" "$SERVICE_FILE"
-    local restore_result=$?
-    rm -f "$BACKUP_SERVICE_FILE"
-
-    if ((restore_result != 0)); then
-      printf 'Failed to restore %s from %s\n' "$SERVICE_FILE" "$BACKUP_SERVICE_FILE" >&2
-      result=$restore_result
-    fi
-  else
-    # No original config was present (e.g. CI), so just remove the swapped-in test config.
-    rm -f "$SERVICE_FILE"
   fi
 
-  exit "$result"
-}
-
-if [[ -f "$SERVICE_FILE" ]]; then
-  cp -p "$SERVICE_FILE" "$BACKUP_SERVICE_FILE"
+  use_test_service_file "$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist" \
+    "$ROOT_DIR/ui-tests/config/GoogleService-Info.plist"
+  xcodebuild build \
+    -project iosApp/iosApp.xcodeproj \
+    -scheme iosApp \
+    -configuration Debug \
+    -sdk iphonesimulator \
+    -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+    -derivedDataPath build/ui-tests \
+    -quiet \
+    CODE_SIGN_IDENTITY=- \
+    ARCHS=arm64 \
+    ONLY_ACTIVE_ARCH=YES \
+    APP_BUNDLE_ID=com.kevlina.budgetplus \
+    SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) UI_TEST'
 fi
-
-trap restore_service_file EXIT
-cp "$TEST_SERVICE_FILE" "$SERVICE_FILE"
-
-cd "$ROOT_DIR"
-xcodebuild build \
-  -project iosApp/iosApp.xcodeproj \
-  -scheme iosApp \
-  -configuration Debug \
-  -sdk iphonesimulator \
-  -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
-  -derivedDataPath build/ui-tests \
-  -quiet \
-  CODE_SIGN_IDENTITY=- \
-  ARCHS=arm64 \
-  ONLY_ACTIVE_ARCH=YES \
-  APP_BUNDLE_ID=com.kevlina.budgetplus \
-  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) UI_TEST'
 
 APP_PATH="build/ui-tests/Build/Products/Debug-iphonesimulator/BudgetPlus.app"
 
 # Prefer the maestro on PATH; fall back to the default install location (CI installs it there).
 MAESTRO_BIN=$(command -v maestro || echo "$HOME/.maestro/bin/maestro")
 
-# When MAESTRO_OUTPUT_DIR is set (e.g. in CI), emit a per-suite JUnit XML report (so
-# failures surface in the GitHub Actions run summary / PR checks via a test reporter) plus
-# the debug output/screenshots for artifacts.
+# Keep each attempt's diagnostics; publish only the final canonical report to CI.
 maestro_test() {
   local suite_name="$1"
   shift
-  if [[ -n "${MAESTRO_OUTPUT_DIR:-}" ]]; then
-    local out="$MAESTRO_OUTPUT_DIR/$suite_name"
-    mkdir -p "$out"
-    "$MAESTRO_BIN" test --udid "$SIMULATOR_ID" \
-      --test-output-dir="$out" \
-      --debug-output="$out" \
-      --format=junit \
-      --output="$out/report.xml" \
-      "$@"
-  else
-    "$MAESTRO_BIN" test --udid "$SIMULATOR_ID" "$@"
-  fi
+  run_maestro_attempt "$suite_name" "$MAESTRO_BIN" test --udid "$SIMULATOR_ID" "$@"
 }
 
 # Number of attempts per flow. UI flows are occasionally flaky on CI from transient
@@ -107,7 +68,6 @@ maestro_test() {
 # app black while the view hierarchy stays intact, a dropped tap, an ad/network hiccup.
 # Retry a failed flow (from a fully reset app state) before counting it as a real
 # failure. Set MAESTRO_FLOW_ATTEMPTS=1 to disable retries.
-MAESTRO_FLOW_ATTEMPTS=${MAESTRO_FLOW_ATTEMPTS:-2}
 
 # Run one flow, retrying up to MAESTRO_FLOW_ATTEMPTS times. Before each retry the app is
 # reset to a clean state (fresh install + keychain wipe) so the re-run does not inherit a
@@ -125,7 +85,10 @@ maestro_test_retry() {
     fi
     echo "::warning::Flow $suite_name failed on attempt $attempt/$MAESTRO_FLOW_ATTEMPTS; resetting app and retrying." >&2
     attempt=$((attempt + 1))
-    reset_app
+    if ! reset_app; then
+      record_flow_failure "$suite_name" "Could not reset/install the app before retry" || true
+      return 1
+    fi
   done
 }
 
@@ -138,26 +101,32 @@ run_flow_dir() {
   local suite_prefix="$1"
   local dir="$2"
   local result=0
-  for flow in $(ls "$dir"/*.yml | sort); do
+  local flow
+  for flow in "$dir"/*.yml; do
     if grep -q '^platform: Android' "$flow"; then
       continue
     fi
+    flow_is_selected "$flow" || continue
+    selected_flows=$((selected_flows + 1))
     maestro_test_retry "$suite_prefix/$(basename "$flow" .yml)" "$flow" || result=1
   done
   return "$result"
 }
 
-# Force the simulator UI (and the app) to English so tests can match English strings.
-xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLanguages '("en-US")'
-xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLocale "en_US"
-
 # Reinstalls the app from a fully reset state (fresh keychain wipes the persisted
 # Firebase auth session, which launchApp:clearState does not clear on iOS).
 reset_app() {
-  xcrun simctl terminate "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
-  xcrun simctl uninstall "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
-  xcrun simctl keychain "$SIMULATOR_ID" reset >/dev/null 2>&1 || true
-  xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+  run_bounded 15s xcrun simctl terminate "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
+  run_bounded 30s xcrun simctl uninstall "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
+  run_bounded 30s xcrun simctl keychain "$SIMULATOR_ID" reset || return 1
+  run_bounded 60s xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+}
+
+reset_for_suite() {
+  if ! reset_app; then
+    record_flow_failure "$1" "Could not reset/install the app before the suite" || true
+    return 1
+  fi
 }
 
 run_suites() {
@@ -165,6 +134,8 @@ run_suites() {
   # function (it runs as a firebase emulators:exec child, where a non-final maestro
   # failure would otherwise be swallowed and the suite reported as green).
   local suite_result=0
+  local flow num
+  local selected_flows=0
 
   # login: each flow needs a truly unauthenticated start, so reset the keychain before
   # every flow (iOS persists Firebase auth in the keychain across clearState).
@@ -174,13 +145,15 @@ run_suites() {
       if grep -q '^platform: Android' "$flow"; then
         continue
       fi
-      reset_app
+      flow_is_selected "$flow" || continue
+      selected_flows=$((selected_flows + 1))
+      reset_for_suite "login/$(basename "$flow" .yml)" || return 1
       maestro_test_retry "login/$(basename "$flow" .yml)" "$flow" || suite_result=1
     done
   fi
 
   if [[ "$SHARD" == "free" || "$SHARD" == "all" ]]; then
-    reset_app
+    reset_for_suite after-login-free/setup || return 1
     run_flow_dir after-login-free ui-tests/after-login/free || suite_result=1
   fi
 
@@ -188,29 +161,43 @@ run_suites() {
   # numbered < 50, free-b runs flows numbered >= 50. Passing explicit files (in
   # sorted order) keeps Maestro's per-flow reporting while running only a subset.
   if [[ "$SHARD" == "free-a" || "$SHARD" == "free-b" ]]; then
-    reset_app
-    for flow in $(ls ui-tests/after-login/free/*.yml | sort); do
+    reset_for_suite after-login-free/setup || return 1
+    for flow in ui-tests/after-login/free/*.yml; do
       num=$(basename "$flow" | cut -d- -f1)
       num=$((10#$num))
       if [[ "$SHARD" == "free-a" && "$num" -lt 50 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 50 ]]; then
         if grep -q '^platform: Android' "$flow"; then
           continue
         fi
+        flow_is_selected "$flow" || continue
+        selected_flows=$((selected_flows + 1))
         maestro_test_retry "after-login-free/$(basename "$flow" .yml)" "$flow" || suite_result=1
       fi
     done
   fi
 
   if [[ "$SHARD" == "premium" || "$SHARD" == "all" ]]; then
-    reset_app
+    reset_for_suite after-login-premium/setup || return 1
     run_flow_dir after-login-premium ui-tests/after-login/premium || suite_result=1
   fi
 
+  if ((selected_flows == 0)); then
+    record_flow_failure selection "No flows matched the requested shard/platform/filter" || true
+    return 1
+  fi
   return "$suite_result"
 }
 
-export SIMULATOR_ID APP_PATH MAESTRO_BIN SHARD MAESTRO_FLOW_ATTEMPTS
-export -f maestro_test maestro_test_retry run_flow_dir reset_app run_suites
+if [[ "$SUITES_ONLY" == true ]]; then
+  run_suites
+  exit $?
+fi
+
+# Force English before launching the app.
+xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLanguages '("en-US")'
+xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLocale "en_US"
+
+export SIMULATOR_ID SHARD MAESTRO_FLOW_ATTEMPTS MAESTRO_FLOW_FILTER
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
-  emulators:exec --only auth,firestore run_suites
+  emulators:exec --only auth,firestore "bash ui-tests/scripts/run-ios-ui-tests.sh --suites"

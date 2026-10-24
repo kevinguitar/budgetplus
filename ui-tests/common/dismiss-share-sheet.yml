@@ -1,0 +1,24 @@
+# Dismiss an already-open native share sheet, leaving its underlying app screen.
+appId: com.kevlina.budgetplus
+---
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: "ActivityListView"
+          timeout: 10000
+      # The native sheet has no Cancel button. Use its accessibility dismiss region
+      # rather than a system Back command (a no-op for this sheet on iOS).
+      - tapOn:
+          id: "PopoverDismissRegion"
+      - extendedWaitUntil:
+          notVisible:
+            id: "ActivityListView"
+          timeout: 10000
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back

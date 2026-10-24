@@ -39,6 +39,7 @@ import budgetplus.core.common.generated.resources.ic_refresh
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.now
+import com.kevlina.budgetplus.core.common.plainPriceString
 import com.kevlina.budgetplus.core.common.shortFormatted
 import com.kevlina.budgetplus.core.data.remote.Author
 import com.kevlina.budgetplus.core.data.remote.Record
@@ -71,9 +72,13 @@ fun RecordCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .thenIf(UiTestFlags.enabled && state.index != null) {
+            .thenIf(UiTestFlags.enabled) {
                 Modifier.semantics {
-                    contentDescription = "$RECORD_CELL_DESC_PREFIX${state.index}"
+                    // Describe actual saved data, including Search rows without a cell index.
+                    // Keep the existing indexed prefix for selection/long-press flows.
+                    val indexedPrefix = state.index?.let { "$RECORD_CELL_DESC_PREFIX$it, " }.orEmpty()
+                    contentDescription = indexedPrefix +
+                        "record_data_${item.type}_${item.category}_${item.price.plainPriceString}_${item.name}"
                 }
             }
             .rippleClick(

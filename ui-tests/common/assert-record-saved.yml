@@ -1,0 +1,20 @@
+# From Record, query the newly saved unique NOTE and assert the actual record data.
+# Params: NOTE, RECORD_TYPE, CATEGORY, PRICE (unformatted, e.g. 120).
+appId: com.kevlina.budgetplus
+---
+- runFlow:
+    file: open-search.yml
+    env:
+      RECORD_TYPE: "${RECORD_TYPE}"
+- tapOn:
+    text: "Enter keyword"
+- inputText: "${NOTE}"
+- pressKey: Enter
+# Matching the record's semantic data cannot be satisfied by the query field or a total.
+- extendedWaitUntil:
+    visible:
+      text: ".*record_data_${RECORD_TYPE}_${CATEGORY}_${PRICE}_${NOTE}(,.*)?"
+    timeout: 20000
+- assertVisible:
+    text: ".*record_data_${RECORD_TYPE}_${CATEGORY}_${PRICE}_${NOTE}(,.*)?"
+- runFlow: return-to-record.yml

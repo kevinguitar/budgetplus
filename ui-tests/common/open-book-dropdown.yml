@@ -1,0 +1,15 @@
+# Opens the book selector from Record; safe to retry if navigation settles late.
+appId: com.kevlina.budgetplus
+---
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              text: "Create a New Book"
+          commands:
+            - tapOn:
+                text: "Select book"
+      - assertVisible:
+          text: "Create a New Book"

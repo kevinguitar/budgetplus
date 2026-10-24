@@ -1,85 +1,76 @@
 #!/usr/bin/env bash
 
-# Writes a Markdown pass/fail table of the Maestro UI test results to the GitHub Actions
-# job summary ($GITHUB_STEP_SUMMARY) so failures are visible directly on the run/PR without
-# downloading artifacts. Reads every JUnit `report.xml` Maestro emitted under the given
-# output directory.
-#
 # Usage: junit-summary.sh <platform-label> <maestro-output-dir>
+# Python's XML parser handles multiline attributes, entities, and testsuites roots.
+set -euo pipefail
 
-set -uo pipefail
+python3 - "${1:?platform label required}" "${2:?output dir required}" \
+  "${GITHUB_STEP_SUMMARY:-/dev/stdout}" <<'PY'
+from pathlib import Path
+import json
+import sys
+import xml.etree.ElementTree as ET
 
-PLATFORM="${1:?platform label required}"
-OUTPUT_DIR="${2:?output dir required}"
-SUMMARY_FILE="${GITHUB_STEP_SUMMARY:-/dev/stdout}"
+platform, output_dir, summary_file = sys.argv[1:]
+reports = sorted(Path(output_dir).rglob("report.xml"))
+lines = [f"## {platform} UI test results", ""]
+totals = [0, 0, 0, 0]
+invalid = 0
+first_attempt_passes = 0
+retried_flows = []
+recovered_flows = []
 
-{
-  echo "## ${PLATFORM} UI test results"
-  echo ""
-} >>"$SUMMARY_FILE"
+if not reports:
+    lines += ["> :warning: No JUnit reports were produced (the suite may have failed to start).", ""]
+else:
+    lines += ["| Flow / Suite | Status | Attempts | Tests | Failures | Errors | Skipped |",
+              "|---|---|---|---|---|---|---|"]
+    for report in reports:
+        name = str(report.parent.relative_to(output_dir)).replace("|", "&#124;")
+        try:
+            result = json.loads((report.parent / "result.json").read_text())
+            attempts = int(result["attempt"])
+        except (OSError, ValueError, KeyError, TypeError):
+            attempts = None
+        try:
+            root = ET.parse(report).getroot()
+            # Only count leaf suites; parent suites can repeat aggregate totals.
+            suites = [suite for suite in root.iter("testsuite")
+                      if not suite.findall("testsuite")]
+            if not suites:
+                raise ValueError("no testsuite elements")
+            counts = [sum(int(suite.get(key, "0")) for suite in suites)
+                      for key in ("tests", "failures", "errors", "skipped")]
+        except (ET.ParseError, ValueError, OSError):
+            invalid += 1
+            lines.append(f"| {name} | :warning: invalid report | {attempts or '—'} | — | — | — | — |")
+            continue
+        totals = [a + b for a, b in zip(totals, counts)]
+        status = ":x: FAIL" if counts[1] + counts[2] else (
+            ":warning: skipped/empty" if counts[0] == counts[3] else ":white_check_mark: pass")
+        if attempts and attempts > 1:
+            retried_flows.append(name)
+            if status == ":white_check_mark: pass":
+                status = ":warning: pass after retry"
+                recovered_flows.append(name)
+        elif attempts == 1 and status == ":white_check_mark: pass":
+            first_attempt_passes += 1
+        lines.append(f"| {name} | {status} | {attempts or '—'} | " + " | ".join(map(str, counts)) + " |")
+    tests, failures, errors, skipped = totals
+    lines.append("")
+    if invalid or tests == 0 or tests == skipped:
+        lines.append(f"**Result: :warning: incomplete results** ({tests} tests, "
+                     f"{failures + errors} failing, {skipped} skipped, {invalid} invalid reports).")
+    elif failures + errors:
+        lines.append(f"**Result: :x: {failures + errors} failing** (of {tests} tests, {skipped} skipped).")
+    else:
+        lines.append(f"**Result: :white_check_mark: all {tests} tests passing** ({skipped} skipped).")
+    lines += ["", f"**Retry health:** {first_attempt_passes} first-attempt passes, "
+              f"{len(retried_flows)} retried flows, {len(recovered_flows)} recovered after retry."]
+    if recovered_flows:
+        lines.append("Passed only after retry: " + ", ".join(f"`{name}`" for name in recovered_flows) + ".")
+    lines.append("")
 
-# No reports at all usually means the build/emulator setup failed before any flow ran.
-if ! find "$OUTPUT_DIR" -name 'report.xml' -type f 2>/dev/null | grep -q .; then
-  {
-    echo "> :warning: No JUnit reports were produced (the suite may have failed to start)."
-    echo ""
-  } >>"$SUMMARY_FILE"
-  exit 0
-fi
-
-total_tests=0
-total_failures=0
-total_errors=0
-total_skipped=0
-rows=""
-
-# Parse each <testsuite ...> element's aggregate attributes. Maestro emits one testsuite
-# per invocation; robust enough to extract the counts with a small awk scan per file.
-while IFS= read -r xml; do
-  read -r t f e s name < <(awk '
-    match($0, /<testsuite[^>]*>/) {
-      block = substr($0, RSTART, RLENGTH)
-      tests = failures = errors = skipped = 0; nm = ""
-      if (match(block, /tests="[0-9]+"/))    { v = substr(block, RSTART, RLENGTH); gsub(/[^0-9]/, "", v); tests = v }
-      if (match(block, /failures="[0-9]+"/)) { v = substr(block, RSTART, RLENGTH); gsub(/[^0-9]/, "", v); failures = v }
-      if (match(block, /errors="[0-9]+"/))   { v = substr(block, RSTART, RLENGTH); gsub(/[^0-9]/, "", v); errors = v }
-      if (match(block, /skipped="[0-9]+"/))  { v = substr(block, RSTART, RLENGTH); gsub(/[^0-9]/, "", v); skipped = v }
-      if (match(block, /name="[^"]*"/))      { nm = substr(block, RSTART, RLENGTH); sub(/name="/, "", nm); sub(/"$/, "", nm) }
-      print tests, failures, errors, skipped, nm
-      exit
-    }
-  ' "$xml")
-
-  [ -z "${t:-}" ] && continue
-  # Derive a readable suite/flow name from the path relative to the output dir.
-  rel="${xml#"$OUTPUT_DIR"/}"
-  rel="${rel%/report.xml}"
-  [ -n "$name" ] && rel="$name"
-
-  total_tests=$((total_tests + t))
-  total_failures=$((total_failures + f))
-  total_errors=$((total_errors + e))
-  total_skipped=$((total_skipped + s))
-
-  bad=$((f + e))
-  if [ "$bad" -gt 0 ]; then
-    status=":x: FAIL"
-  else
-    status=":white_check_mark: pass"
-  fi
-  rows+="| ${rel} | ${status} | ${t} | ${f} | ${e} | ${s} |"$'\n'
-done < <(find "$OUTPUT_DIR" -name 'report.xml' -type f | sort)
-
-{
-  echo "| Flow / Suite | Status | Tests | Failures | Errors | Skipped |"
-  echo "|---|---|---|---|---|---|"
-  printf '%s' "$rows"
-  echo ""
-  bad_total=$((total_failures + total_errors))
-  if [ "$bad_total" -gt 0 ]; then
-    echo "**Result: :x: ${bad_total} failing** (of ${total_tests} tests, ${total_skipped} skipped)."
-  else
-    echo "**Result: :white_check_mark: all ${total_tests} tests passing** (${total_skipped} skipped)."
-  fi
-  echo ""
-} >>"$SUMMARY_FILE"
+with open(summary_file, "a") as summary:
+    summary.write("\n".join(lines) + "\n")
+PY

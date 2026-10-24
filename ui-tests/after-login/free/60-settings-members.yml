@@ -5,22 +5,5 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/open-settings.yml
 - assertVisible:
     text: ".*'s Settings"
-# ST3 — View Members.
-- tapOn:
-    text: "View Members"
-- extendedWaitUntil:
-    visible:
-      text: "Members"
-    timeout: 15000
-- assertVisible:
-    text: "Owner"
-# Dismiss the members dialog by tapping the scrim above it.
-- tapOn:
-    point: "50%,12%"
-- extendedWaitUntil:
-    visible:
-      text: ".*'s Settings"
-    timeout: 15000
-- assertVisible:
-    text: ".*'s Settings"
+- runFlow: ../../common/view-members.yml
 - runFlow: ../../common/return-to-record.yml

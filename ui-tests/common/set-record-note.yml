@@ -1,0 +1,23 @@
+# On Record, fill NOTE before entering the amount. Scroll only the info band.
+appId: com.kevlina.budgetplus
+---
+- retry:
+    maxRetries: 4
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              text: "record_note(,.*)?"
+          commands:
+            - swipe:
+                start: "50%,45%"
+                end: "50%,15%"
+                duration: 400
+      - assertVisible:
+          text: "record_note(,.*)?"
+- tapOn:
+    text: "record_note(,.*)?"
+- eraseText
+- inputText: "${NOTE}"
+- pressKey: Enter
+# The next calculator digit hides the keyboard via DateAndPricing's normal behavior.

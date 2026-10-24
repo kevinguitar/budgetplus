@@ -44,7 +44,7 @@ appId: com.kevlina.budgetplus
 - runFlow:
     when:
       visible:
-        text: "${CATEGORY}: "
+        text: "${CATEGORY}: .*"
     commands:
       - tapOn:
           text: "Back"

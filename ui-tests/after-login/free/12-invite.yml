@@ -10,4 +10,11 @@ appId: com.kevlina.budgetplus
     notVisible:
       text: "AC"
     timeout: 15000
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - assertVisible:
+          text: "Click the link to track expenses with me!.*"
+- runFlow: ../../common/dismiss-share-sheet.yml
 - runFlow: ../../common/return-to-record.yml

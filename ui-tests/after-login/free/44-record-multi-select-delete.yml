@@ -18,30 +18,18 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- runFlow:
-    file: ../../common/add-record.yml
-    env:
-      CATEGORY: "Entertainment"
-- runFlow:
-    file: ../../common/add-record.yml
-    env:
-      CATEGORY: "Entertainment"
-- runFlow:
-    file: ../../common/add-record.yml
-    env:
-      CATEGORY: "Entertainment"
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          file: ../../common/add-record.yml
+          env:
+            CATEGORY: "Entertainment"
 - runFlow: ../../common/open-overview.yml
-# Toggle to Group-by-categories mode (mode toggle icon, top-right), then drill into
-# the category to open the Records screen (mirrors 31-overview-mode-drill, which
-# relies on the persisted overview mode defaulting to All-Records at this point).
-- tapOn:
-    text: "overview_mode_toggle"
-- tapOn:
-    text: "Entertainment"
-- extendedWaitUntil:
-    visible:
-      text: "Entertainment: .*"
-    timeout: 15000
+- runFlow:
+    file: ../../common/open-category-records.yml
+    env:
+      CATEGORY: "Entertainment"
 # Long-press the first record row to open its context menu.
 - longPressOn:
     text: "record_cell_0(,.*)?"

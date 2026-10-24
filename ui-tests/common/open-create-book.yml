@@ -4,12 +4,6 @@
 # "Create a New Book" is never found. Retry the open until the dropdown item shows.
 appId: com.kevlina.budgetplus
 ---
-- retry:
-    maxRetries: 3
-    commands:
-      - tapOn:
-          text: "Select book"
-      - assertVisible:
-          text: "Create a New Book"
+- runFlow: open-book-dropdown.yml
 - tapOn:
     text: "Create a New Book"

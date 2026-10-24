@@ -28,7 +28,11 @@ internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
         is BookDest.Auth -> NavEntry(bookDest) {
             val vm = metroViewModel<AuthViewModel>()
             LaunchedEffect(bookDest) {
-                vm.checkAuthorizedAccounts(enableAutoSignIn = bookDest.enableAutoSignIn)
+                // Test auth is anonymous against the emulator. A device's saved Google
+                // account must not open a credential picker (or auto-sign in) over it.
+                if (!UiTestFlags.enabled) {
+                    vm.checkAuthorizedAccounts(enableAutoSignIn = bookDest.enableAutoSignIn)
+                }
             }
             if (!UiTestFlags.enabled) {
                 AuthBinding(

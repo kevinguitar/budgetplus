@@ -1,0 +1,56 @@
+# From Settings, toggle SETTING_ID, verify after re-entry, restore, and verify again.
+# State labels observe real settings; the normal row onClick still performs the change.
+appId: com.kevlina.budgetplus
+---
+- scrollUntilVisible:
+    element:
+      text: "${SETTING_ID}_(on|off)(,.*)?"
+    direction: DOWN
+    # iOS exposes rows underneath the fixed bottom navigation as "visible".
+    # Center the actual state-bearing row before tapping, not its clipped bounds.
+    centerElement: true
+- evalScript: ${output.initialSettingState = "off"}
+- runFlow:
+    when:
+      visible:
+        text: "${SETTING_ID}_on(,.*)?"
+    commands:
+      - evalScript: ${output.initialSettingState = "on"}
+- evalScript: '${output.changedSettingState = output.initialSettingState == "on" ? "off" : "on"}'
+- runFlow:
+    file: tap-setting-switch.yml
+    env:
+      SETTING_ID: "${SETTING_ID}"
+      SETTING_STATE: "${output.initialSettingState}"
+- extendedWaitUntil:
+    visible:
+      text: "${SETTING_ID}_${output.changedSettingState}(,.*)?"
+    timeout: 10000
+- runFlow: return-to-record.yml
+- runFlow: open-settings.yml
+- scrollUntilVisible:
+    element:
+      text: "${SETTING_ID}_${output.changedSettingState}(,.*)?"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    text: "${SETTING_ID}_${output.changedSettingState}(,.*)?"
+- runFlow:
+    file: tap-setting-switch.yml
+    env:
+      SETTING_ID: "${SETTING_ID}"
+      SETTING_STATE: "${output.changedSettingState}"
+- extendedWaitUntil:
+    visible:
+      text: "${SETTING_ID}_${output.initialSettingState}(,.*)?"
+    timeout: 10000
+- runFlow: return-to-record.yml
+- runFlow: open-settings.yml
+- scrollUntilVisible:
+    element:
+      text: "${SETTING_ID}_${output.initialSettingState}(,.*)?"
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    text: "${SETTING_ID}_${output.initialSettingState}(,.*)?"
+- runFlow: return-to-record.yml

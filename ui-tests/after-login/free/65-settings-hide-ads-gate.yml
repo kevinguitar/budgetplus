@@ -15,4 +15,5 @@ appId: com.kevlina.budgetplus
     notVisible:
       text: "Hide Ads"
     timeout: 15000
+- runFlow: ../../common/assert-on-paywall.yml
 - runFlow: ../../common/return-to-record.yml

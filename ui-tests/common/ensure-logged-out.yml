@@ -26,12 +26,7 @@ appId: com.kevlina.budgetplus
       visible:
         text: "AC"
     commands:
-      - tapOn:
-          text: "Settings"
-      - extendedWaitUntil:
-          visible:
-            text: ".*'s Settings"
-          timeout: 15000
+      - runFlow: open-settings.yml
       - scrollUntilVisible:
           element:
             text: "Delete Account"

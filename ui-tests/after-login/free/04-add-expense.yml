@@ -8,6 +8,11 @@ appId: com.kevlina.budgetplus
     text: "Expense"
 - tapOn:
     text: "Food"
+- evalScript: ${output.recordNote = "UI-expense-" + Date.now()}
+- runFlow:
+    file: ../../common/set-record-note.yml
+    env:
+      NOTE: "${output.recordNote}"
 - tapOn:
     text: "1"
 - tapOn:
@@ -15,13 +20,20 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "0"
 - assertVisible:
-    text: "120"
+    text: "record_amount_120(,.*)?"
 - tapOn:
     text: "OK"
 # After a successful record the price resets to 0.
 - extendedWaitUntil:
     visible:
-      text: "0"
+      text: "record_amount_0(,.*)?"
     timeout: 10000
 - assertVisible:
     text: "AC"
+- runFlow:
+    file: ../../common/assert-record-saved.yml
+    env:
+      NOTE: "${output.recordNote}"
+      RECORD_TYPE: "Expense"
+      CATEGORY: "Food"
+      PRICE: "120"

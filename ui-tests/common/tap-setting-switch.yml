@@ -1,0 +1,19 @@
+# Caller has centered SETTING_ID's row. SETTING_STATE is its current on/off state.
+# Native iOS switch values are exposed as On/Off; row/label taps can be no-ops
+# through UIKit interop even when their accessibility bounds are correct.
+appId: com.kevlina.budgetplus
+---
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn:
+          text: '${SETTING_STATE === "on" ? "On" : "Off"}'
+          childOf:
+            text: "${SETTING_ID}_${SETTING_STATE}(,.*)?"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "${SETTING_ID}_${SETTING_STATE}(,.*)?"

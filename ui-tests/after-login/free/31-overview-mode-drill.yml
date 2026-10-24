@@ -7,18 +7,17 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Food"
 - runFlow: ../../common/open-overview.yml
-# O5 — toggle to Group-by-categories (mode toggle icon, top-right).
+# Establish All Records before testing the mode toggle; the preference persists.
+- runFlow:
+    file: ../../common/ensure-all-records-mode.yml
+    env:
+      CATEGORY: "Food"
 - tapOn:
     text: "overview_mode_toggle"
-# O6 — drill into the category to open the Records screen.
-- tapOn:
-    text: "Food"
-- extendedWaitUntil:
-    visible:
-      text: "Food: .*"
-    timeout: 15000
-- assertVisible:
-    text: "Food: .*"
+- runFlow:
+    file: ../../common/open-category-records.yml
+    env:
+      CATEGORY: "Food"
 - tapOn:
     text: "Back"
 - extendedWaitUntil:

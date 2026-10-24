@@ -6,14 +6,7 @@ appId: com.kevlina.budgetplus
     file: ../../common/add-record.yml
     env:
       CATEGORY: "Food"
-- runFlow: ../../common/open-overview.yml
-# Open Search via the FAB.
-- tapOn:
-    text: "Search"
-- extendedWaitUntil:
-    visible:
-      text: "Enter keyword"
-    timeout: 15000
+- runFlow: ../../common/open-search.yml
 - assertVisible:
     text: "Search"
 # S3 — filter pills present.

@@ -37,3 +37,8 @@ appId: com.kevlina.budgetplus
           timeout: 15000
 - assertVisible:
     text: ".*'s Overview"
+# The record type is persisted independently of the Record tab's type.
+- tapOn:
+    # Config-level env defaults override runFlow parameters in Maestro. Compute
+    # the fallback without redeclaring the caller's RECORD_TYPE instead.
+    text: '${typeof RECORD_TYPE === "undefined" ? "Expense" : RECORD_TYPE}'

@@ -5,22 +5,10 @@ appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
 # Ensure there is at least one record to populate the overview.
-- tapOn:
-    text: "AC"
-- tapOn:
-    text: "Food"
-- tapOn:
-    text: "1"
-- tapOn:
-    text: "2"
-- tapOn:
-    text: "0"
-- tapOn:
-    text: "OK"
-- extendedWaitUntil:
-    visible:
-      text: "0"
-    timeout: 10000
+- runFlow:
+    file: ../../common/add-record.yml
+    env:
+      CATEGORY: "Food"
 # Navigate to History / Overview.
 - runFlow: ../../common/open-overview.yml
 - assertVisible:

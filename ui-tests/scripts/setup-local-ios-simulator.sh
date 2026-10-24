@@ -7,26 +7,28 @@
 # to the first available iPhone if that model isn't installed on the runner image).
 #
 # After this script prints "Simulator ready", run the suite with:
-#   ./ui-tests/scripts/run-ios-ui-tests.sh "iPhone 17 Pro"
+#   ./ui-tests/scripts/run-ios-ui-tests.sh "iPhone 17 Pro UI Tests"
 #
 # Requires Xcode + command line tools (xcrun/simctl).
 
 set -euo pipefail
 
 DEVICE_NAME="${1:-iPhone 17 Pro}"
+SIMULATOR_NAME="${2:-$DEVICE_NAME UI Tests}"
 
 if ! xcrun simctl help >/dev/null 2>&1; then
   echo "xcrun simctl not available. Install Xcode and its command line tools." >&2
   exit 1
 fi
 
-# Find an existing simulator with this exact name, else create one from the matching
-# device type + the newest installed iOS runtime.
+# Reserve a dedicated simulator: keychain resets must not affect a developer's Stage
+# session, and Stage's identical budgetplus:// scheme can steal premium deeplinks.
+# The optional second argument overrides the dedicated simulator's name.
 SIM_ID=$(xcrun simctl list devices available -j \
-  | jq -r --arg n "$DEVICE_NAME" '[.devices[][] | select(.isAvailable == true and .name == $n)][0].udid // empty')
+    | jq -r --arg n "$SIMULATOR_NAME" '[.devices[][] | select(.isAvailable == true and .name == $n)][0].udid // empty')
 
 if [[ -z "$SIM_ID" ]]; then
-  echo "No simulator named '$DEVICE_NAME'; creating one..."
+  echo "No dedicated simulator named '$SIMULATOR_NAME'; creating one..."
   DEVICE_TYPE=$(xcrun simctl list devicetypes -j \
     | jq -r --arg n "$DEVICE_NAME" '[.devicetypes[] | select(.name == $n)][0].identifier // empty')
   if [[ -z "$DEVICE_TYPE" ]]; then
@@ -36,14 +38,18 @@ if [[ -z "$SIM_ID" ]]; then
     exit 1
   fi
   RUNTIME=$(xcrun simctl list runtimes -j \
-    | jq -r '[.runtimes[] | select(.isAvailable == true and (.identifier | test("iOS")))] | sort_by(.version) | last.identifier')
-  SIM_ID=$(xcrun simctl create "$DEVICE_NAME" "$DEVICE_TYPE" "$RUNTIME")
-  echo "Created simulator '$DEVICE_NAME' ($SIM_ID)."
+    | jq -r '[.runtimes[] | select(.isAvailable == true and (.identifier | test("iOS")))] | sort_by(.version | split(".") | map(tonumber)) | last.identifier // empty')
+  if [[ -z "$RUNTIME" ]]; then
+    echo "No available iOS runtime. Install one in Xcode > Settings > Components." >&2
+    exit 1
+  fi
+  SIM_ID=$(xcrun simctl create "$SIMULATOR_NAME" "$DEVICE_TYPE" "$RUNTIME")
+  echo "Created simulator '$SIMULATOR_NAME' ($SIM_ID)."
 fi
 
 STATE=$(xcrun simctl list devices -j | jq -r --arg id "$SIM_ID" '.devices[][] | select(.udid == $id) | .state')
 if [[ "$STATE" != "Booted" ]]; then
-  echo "Booting simulator '$DEVICE_NAME'..."
+  echo "Booting simulator '$SIMULATOR_NAME'..."
   xcrun simctl boot "$SIM_ID"
   xcrun simctl bootstatus "$SIM_ID" -b
 fi
@@ -54,4 +60,4 @@ xcrun simctl spawn "$SIM_ID" defaults write -g AppleLocale "en_US" || true
 
 open -a Simulator || true
 
-echo "Simulator ready. Run: ./ui-tests/scripts/run-ios-ui-tests.sh \"$DEVICE_NAME\""
+echo "Simulator ready. Run: ./ui-tests/scripts/run-ios-ui-tests.sh \"$SIMULATOR_NAME\""

@@ -2,42 +2,8 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- runFlow: ../../common/open-settings.yml
-# Scroll the "Color Tone Picker" settings row into view. Do NOT use centerElement here:
-# on iOS CI, once the row is already fully visible, Maestro keeps scrolling to re-center it
-# and can never satisfy the 100% visibility check on the row (it drifts partly under the
-# adjacent row / bottom bar), looping until the command times out even though the row is on
-# screen. Plain visibility is enough — the tapOn below scrolls further if needed.
-- scrollUntilVisible:
-    element:
-      text: "Color Tone Picker"
-    direction: DOWN
-- tapOn:
-    text: "Color Tone Picker"
-# Wait for the picker screen to actually open. Do NOT wait on "Color Tone Picker" text — it
-# also labels the Settings row we just tapped, so it is already visible and the wait would
-# pass while still on Settings. "Color Preview" only shows on the opened picker screen. If
-# the row tap didn't navigate (emulator mis-tap), retry it.
-- runFlow:
-    when:
-      notVisible:
-        text: "Color Preview"
-    commands:
-      - tapOn:
-          text: "Color Tone Picker"
-- extendedWaitUntil:
-    visible:
-      text: "Color Preview"
-    timeout: 15000
-# The picker puts a large "Color Preview" card above the tone carousel, pushing the pager
-# (and its color_tone_next control) below the fold on some screens. Scroll the picker content
-# down until the next control is on screen before tapping it.
-- scrollUntilVisible:
-    element:
-      text: "color_tone_next"
-    direction: DOWN
-    centerElement: true
-    timeout: 15000
+- runFlow: ../../common/reset-color-tone.yml
+- runFlow: ../../common/open-color-tone-picker.yml
 # Advance to the next free tone ("Warm Tones of Dusk", the 2nd tone). We tap the
 # UI-test-only "next" control (contentDescription color_tone_next) which advances the
 # pager deterministically via animateScrollToPage, instead of a flaky fling swipe.
@@ -45,10 +11,21 @@ appId: com.kevlina.budgetplus
     text: "color_tone_next"
 - extendedWaitUntil:
     visible:
-      text: "Warm Tones of Dusk"
+      text: "color_tone_page_1(,.*)?"
     timeout: 10000
 # Save the selected tone (check icon, top-right).
 - tapOn:
     text: "Save"
+    enabled: true
+- extendedWaitUntil:
+    visible:
+      text: ".*'s Settings"
+    timeout: 15000
 # Save returns to Settings; return to the Record screen.
 - runFlow: ../../common/return-to-record.yml
+# Re-open to verify the selection was saved, then restore the fixture tone.
+- runFlow: ../../common/open-color-tone-picker.yml
+- assertVisible:
+    text: "color_tone_page_1(,.*)?"
+- runFlow: ../../common/return-to-record.yml
+- runFlow: ../../common/reset-color-tone.yml
