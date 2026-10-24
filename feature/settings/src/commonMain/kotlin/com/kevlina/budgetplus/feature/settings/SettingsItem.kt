@@ -50,10 +50,11 @@ internal fun SettingsItem(
     roundBottom: Boolean = false,
     action: (@Composable () -> Unit)? = null,
     verticalPadding: Dp = 16.dp,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
                 top = if (roundTop) 8.dp else 0.dp,

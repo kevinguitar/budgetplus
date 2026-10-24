@@ -90,6 +90,11 @@ ui-tests/
     open-category-editor.yml    # Record -> editor; waits for animated Add FAB
     dismiss-system-dialogs.yml  # optional taps for OS permission/Apple-ID dialogs
     add-record.yml              # adds one expense record (price 100) in a category
+    set-record-note.yml         # reveals and fills a unique record note
+    assert-record-saved.yml     # Search -> assert saved type/category/amount/note
+    toggle-setting-and-verify.yml # assert transition, re-enter, restore, re-enter
+    tap-setting-switch.yml      # scoped native switch on iOS; state-bearing row on Android
+    reset-color-tone.yml        # restore Milk Tea via the picker, regardless of initial tone
   login/                        # SUITE 1 — unauthenticated (each flow clearState: true)
     01-auth-screen.yml
     02-google-signin-to-welcome.yml
@@ -146,8 +151,8 @@ filename; destructive flows (delete book, logout) run last.
 | R1 | `01-record-digit-entry` | `7 8 9` → `789`; `AC` → `0`. |
 | R2 | `02-record-decimal` | `1 . 5` → `1.5` (decimal button tapped by position — icon). |
 | R3 | `03-record-arithmetic` | `2 × 3 =` → `6` (operators/equals are icons, tapped by position). |
-| R4 | `04-add-expense` | Expense → `Food` → `120` → `OK` → price resets to `0`. |
-| R5 | `05-add-income` | Income (placeholder `Where did you earn from?`) → `Salary` → `50` → `OK`. |
+| R4 | `04-add-expense` | Expense → `Food` + unique note → `120` → `OK` → amount display resets; Search must return the saved Expense/Food/120/note record. |
+| R5 | `05-add-income` | Income → `Salary` + unique note → `50` → `OK` → amount display resets; Search must return the saved Income/Salary/50/note record. |
 | R6 | `06-empty-category-guard` | Price, no category, `OK` → snackbar `Please choose a category`. |
 | R7 | `07-empty-price-guard` | Category, price `0`, `OK` → snackbar `Please input the price`. |
 
@@ -191,14 +196,14 @@ filename; destructive flows (delete book, logout) run last.
 | ID | Flow | Key assertions |
 |---|---|---|
 | ST1/ST3 | `60-settings-members` | `...'s Settings`; `View Members` → `Members` dialog, `Owner` label. |
-| ST2 | `61-settings-rename-user` | `Rename User` → `User Name` dialog → snackbar `Renamed to Tester`. |
+| ST2 | `61-settings-rename-user` | Rename to `Tester`, then verify that name in Members rather than only checking dialog closure. |
 | ST4 | `62-settings-rename-book` | `Rename Book` → snackbar `Renamed the book to ...` (renamed then restored). |
 | ST5 | `63-settings-book-currency` | `Edit Book Currency` → `Book's Currency` picker → change to Euro then restore US Dollar. |
-| ST9 | `64-settings-vibration` | Toggle `Input Vibration` switch. |
+| ST9 | `64-settings-vibration` | Verify actual state changes, leave/re-enter Settings, verify it persisted, restore original state, and verify again after re-entry. |
 | ST12 | `65-settings-hide-ads-gate` | `Hide Ads` (free-only row) → routes to paywall. |
 | ST13 | `66-settings-batch-gate` | `Batch Record` → routes free user to paywall. |
-| ST8 | `67-color-tones` | `Color Tone Picker` → swipe carousel to free tone `Warm Tones of Dusk` → `Save`. |
-| ST7 | `68-allow-members-edit` | Toggle `Allow Members to Edit` (owner-only switch). |
+| ST8 | `67-color-tones` | Establish Milk Tea, select `Warm Tones of Dusk`, save, re-open to verify, then restore Milk Tea. |
+| ST7 | `68-allow-members-edit` | Verify both actual state transitions and persistence after Settings re-entry; restore the original state. |
 | ST15 | `90-settings-delete-book` | `Delete Book` → `Are you sure...` → `Confirm` → Welcome; re-provisions a book. (Destructive; near end.) |
 | ST14 | `91-settings-logout` | `Logout` → Auth screen. (**Runs last.**) |
 
@@ -227,7 +232,7 @@ Each flow runs `setup-login` then `seed-premium` (§6) so `isPremium=true`, asse
 | P4 | `04-overview-custom-period` | `Select Date` opens the date-range picker (`Select dates`); no `Unlock premium to set the period above one month` upsell. |
 | P5 | `05-search-premium-periods` | `Last 6 Months` selectable without a paywall. |
 | P6 | `06-preferred-currency` | `Edit Preferred Currency` opens the picker (not the paywall); change to Euro then restore. |
-| P7 | `07-premium-color-tones` | Swipe to premium tone `Barbie and Ken` → `Save` succeeds (no paywall). |
+| P7 | `07-premium-color-tones` | Establish Milk Tea, advance to premium `Barbie and Ken`, save without a paywall, re-open to verify, then restore Milk Tea. |
 | P8 | `08-batch-record` | `Batch Record` opens its screen (`Number of times:`, `Batch Frequency:`, `Start Date:`) — not the paywall. |
 | P9 | `09-hide-ads-hidden` | Settings shows `Batch Record` but **not** `Hide Ads`. |
 | P10 | `10-members` | `View Members` → `Members` dialog with `Owner`. |
@@ -267,6 +272,17 @@ snackbar) and dismisses the (persistent) unlocked snackbar so it doesn't block l
   that advances the pager one page via `animateScrollToPage`. The tone flows tap this instead
   of a fling `swipe`, which was too flaky in CI (the fling intermittently failed to advance a
   page).
+- The carousel also exposes `color_tone_previous` and `color_tone_page_<index>` in
+  UI-test builds. Tone flows reset through real picker/save interactions, so retries
+  do not assume the previously selected tone or accidentally tap a disabled Save.
+- **Read-only UI-test semantics** observe actual app state: `record_amount_<value>`
+  distinguishes the amount display from calculator keys; `record_data_<type>_<category>_<price>_<name>`
+  identifies saved rows (including Search); settings rows expose
+  `settings_input_vibration_on/off` and `settings_allow_members_edit_on/off`.
+  These labels do not set preferences or bypass record creation.
+- iOS toggle actions target the real native switch's `On`/`Off` value inside the
+  state-bearing settings row. A visible row/label tap can be a no-op through UIKit
+  interop; matching the row's state alone is not proof that its center is tappable.
 - **`BudgetPlusApp` + `ui_test_network_security_config.xml`** — emulator host is `127.0.0.1`
   (with cleartext permitted), reachable from both the Android emulator (via `adb reverse`) and
   the iOS simulator.
@@ -336,6 +352,8 @@ for ports 9099/8080, disables the Gboard stylus-handwriting tutorial, then insid
 `pm clear`), then `after-login/free`, then `after-login/premium` (each preceded by `pm clear`).
 The exact original `google-services.json` is restored on exit (or the test copy is removed
 if no original existed). Both platform runners use `scripts/runner-common.sh` for this.
+Original configurations are backed up in the system temporary directory, not beside
+the app's plist: Xcode synchronized groups otherwise bundle adjacent backup files.
 The `--suites` entry point
 **propagates the real pass/fail exit code** (`exit $?`) so a failing flow fails the job — a
 previous `exit 0` here silently reported the whole suite green.
@@ -361,15 +379,27 @@ before counting it as a real failure**:
   of attempts is `MAESTRO_FLOW_ATTEMPTS` (default `2`; set `1` to disable). All shards
   (`login`, `free`/`free-a`/`free-b`, `premium`) run flow-by-flow so every flow gets the retry
   and its own JUnit report.
-- **Android** — a flow that fails while the device is still healthy is retried once (a re-run
-  reinstalls a fresh Maestro driver and clears most transient glitches). This is *in addition
-  to* the existing device-recovery logic, which already retries a flow whose device dropped
-  `offline` mid-run (after reconnecting or cold-booting a fresh emulator).
+- **Android** — the same `MAESTRO_FLOW_ATTEMPTS` setting applies. Before retrying,
+  device recovery runs when needed and app data is cleared so partial saves,
+  persisted preferences, and open dialogs cannot leak into the retry.
 
-Because the JUnit report of the final attempt overwrites the earlier one, a flow that passes
-on retry is correctly reported green; only a flow that fails **twice in a row** counts as a
-genuine failure. The trade-off is that a genuinely-broken flow now runs twice (~2× its time),
-which is acceptable since real breakages are rarer than transient flakes.
+Both platforms use `scripts/run_maestro.py` to bound every attempt to
+`MAESTRO_FLOW_TIMEOUT` (default `8m`; also accepts seconds, e.g. `480` or `30s`).
+Timeouts terminate the attempt's process group, including CLI children, on both
+macOS and Linux; no coreutils installation is needed. Device/setup/diagnostic commands
+use `scripts/run_bounded.py` for their own shorter deadlines.
+
+Only the final canonical `report.xml` is published as the flow's decisive result.
+Every attempt's raw `maestro.xml`, `console.log`, debug files/screenshots, and
+`result.json` are retained under `attempts/<run-id>/<attempt>/`; the raw reports are
+deliberately not named `report.xml` so CI does not double-count retries. A missing,
+malformed, empty, or entirely skipped Maestro report produces a failing runner JUnit
+result, even if Maestro exits zero. A placeholder failure is written before launch,
+so killing the runner cannot expose a stale passing report.
+
+The summary distinguishes **first-attempt passes** from **passes after retry**, and
+lists recovered flows. Retrying a genuine regression still increases execution time;
+retry health is visible rather than treating every recovered flow as a clean pass.
 
 ### CI devices & failure reporting
 - **Devices mirror the table in §0:** Android **API 34 / `google_apis` / x86_64** (API 35/36
@@ -386,9 +416,37 @@ which is acceptable since real breakages are rarer than transient flakes.
 - `scripts/setup-local-android-emulator.sh` — creates/boots an AVD using CI's API 34,
   `google_apis`, local `pixel_6` profile; `arm64-v8a` on Apple Silicon, `x86_64` otherwise, disables
   animations + the stylus tutorial. Then run `scripts/run-android-ui-tests.sh`.
-- `scripts/setup-local-ios-simulator.sh [device]` — creates/boots the `iPhone 17 Pro`
-  simulator (or the given device) on the newest installed iOS runtime, forces English. Then
-  run `scripts/run-ios-ui-tests.sh "iPhone 17 Pro"`.
+  Requires Android Studio's **SDK Tools → Android SDK Command-line Tools (latest)**,
+  available as `$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager`. The setup script
+  installs the API 34 image and uses port 5554 explicitly, never a connected phone.
+  Use `EMULATOR_AVD=budgetplus_ci_api34` when running tests so device recovery restarts
+  the same local AVD, rather than CI's default `test` AVD.
+- `scripts/setup-local-ios-simulator.sh [device-type] [simulator-name]` — creates/boots
+  a **dedicated** `iPhone 17 Pro UI Tests` simulator (or the given type/name), forces
+  English, and prints the matching runner command. A new simulator uses the newest
+  installed iOS runtime; an existing dedicated simulator keeps its runtime.
+  Run `scripts/run-ios-ui-tests.sh "iPhone 17 Pro UI Tests"` (also the local default).
+  Do not use a simulator containing personal/Stage sessions: each suite resets its
+  keychain, and Stage registers the same `budgetplus://` scheme and can intercept
+  premium seeding. CI still passes its clean simulator name explicitly.
+
+### Targeted local reliability smoke run
+
+Both runners support an optional Bash regex filter over flow paths. An empty selection
+fails explicitly. CI leaves the filter unset and still runs every flow. Use a distinct
+output directory for a filtered run so artifacts from previous/full runs are not mixed.
+
+```sh
+export MAESTRO_FLOW_FILTER='/(04-add-expense|05-add-income|61-settings-rename-user|64-settings-vibration|67-color-tones|68-allow-members-edit|07-premium-color-tones)\.yml$'
+export MAESTRO_FLOW_ATTEMPTS=1  # Observe first-attempt reliability without retries.
+
+EMULATOR_AVD=budgetplus_ci_api34 MAESTRO_OUTPUT_DIR=build/maestro/android-smoke \
+  ./ui-tests/scripts/run-android-ui-tests.sh
+MAESTRO_OUTPUT_DIR=build/maestro/ios-smoke \
+  ./ui-tests/scripts/run-ios-ui-tests.sh "iPhone 17 Pro UI Tests" all
+
+unset MAESTRO_FLOW_FILTER MAESTRO_FLOW_ATTEMPTS
+```
 
 ### Device-free runner regression checks
 
@@ -399,7 +457,9 @@ maestro check-syntax ui-tests/login/03-create-book.yml
 
 `test_runners.py` intercepts all Maestro/ADB/simctl calls. It checks every shard on both
 platforms, platform skips, continued execution after a failed flow, failure exit codes,
-config restoration, stale-report removal, shell syntax, and XML-summary edge cases.
+config restoration, stale-report replacement, portable timeouts, per-attempt artifact
+retention, explicit missing-report failures, flow filtering, and XML-summary edge cases.
+The login shard runs these checks on both CI operating systems before building the app.
 These checks do not establish that a UI interaction works on a real simulator/emulator.
 
 ### Writing and reviewing flows
@@ -418,6 +478,12 @@ These checks do not establish that a UI interaction works on a real simulator/em
   `back` for Compose dialogs shared with iOS; reuse the known scrim dismissal instead.
 - Keep retries bounded and side-effect-aware. `setup-login` provisions a session; it does
   not reset every preference or roll back mutations from earlier failed tests.
+- Do not redeclare optional `runFlow` parameters in the subflow's config-level `env`
+  as defaults: Maestro can overwrite the caller's value. Compute an undefined-value
+  fallback in an expression instead (see `open-overview` / `open-search`).
+- A child icon can report `enabled: true` on iOS even when its parent is disabled.
+  Infer whether a mutation is needed from actual state and verify its persisted result,
+  rather than treating an enabled child as proof that an action is available.
 
 ---
 

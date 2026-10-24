@@ -14,6 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,6 +24,7 @@ import budgetplus.core.common.generated.resources.record_note
 import budgetplus.core.common.generated.resources.record_note_placeholder_expense
 import budgetplus.core.common.generated.resources.record_note_placeholder_income
 import com.kevlina.budgetplus.core.common.RecordType
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.RecordTypeTab
@@ -73,7 +76,11 @@ internal fun RecordInfo(
                     RecordType.Income -> Res.string.record_note_placeholder_income
                 }
             ),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .thenIf(UiTestFlags.enabled) {
+                    Modifier.semantics { contentDescription = "record_note" }
+                },
             onDone = { focusManager.moveFocus(FocusDirection.Next) }
         )
 

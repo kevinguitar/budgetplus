@@ -17,15 +17,16 @@ set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$ROOT_DIR"
+source "$ROOT_DIR/ui-tests/scripts/runner-common.sh"
+ADB_SERIAL=${ANDROID_SERIAL:-emulator-5554}
 
-adb wait-for-device
-until [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do sleep 2; done
-adb shell settings put global hide_error_dialogs 1
+wait_for_android_boot adb "$ADB_SERIAL"
+run_bounded 15s adb -s "$ADB_SERIAL" shell settings put global hide_error_dialogs 1
 
 # The app routes Firebase to the emulators via 127.0.0.1; forward those ports from
 # the device to the host so the auth + firestore emulators are reachable.
-adb reverse tcp:9099 tcp:9099
-adb reverse tcp:8080 tcp:8080
+run_bounded 15s adb -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099
+run_bounded 15s adb -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080
 
 # Run the profile generation inside the Firebase emulator environment.
 # emulators:exec runs its command via /bin/sh, so re-invoke gradle directly.

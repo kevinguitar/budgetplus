@@ -19,6 +19,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
@@ -77,6 +79,7 @@ import budgetplus.core.common.generated.resources.settings_share_app
 import budgetplus.core.common.generated.resources.settings_view_members
 import budgetplus.core.common.generated.resources.username_title
 import com.kevlina.budgetplus.core.common.Logger
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -93,6 +96,7 @@ import com.kevlina.budgetplus.core.ui.InputDialog
 import com.kevlina.budgetplus.core.ui.Switch
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.containerPadding
+import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.settings.member.MembersDialog
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -196,6 +200,12 @@ internal fun SettingsContent(
                 description = stringResource(Res.string.settings_allow_members_edit_desc),
                 icon = vectorResource(Res.drawable.ic_lock_person),
                 roundBottom = true,
+                // Read the real state on the row, independent of native switch semantics.
+                modifier = Modifier.thenIf(UiTestFlags.enabled) {
+                    Modifier.semantics {
+                        contentDescription = "settings_allow_members_edit_${if (allowMembersEdit) "on" else "off"}"
+                    }
+                },
                 action = {
                     Switch(
                         checked = allowMembersEdit,
@@ -235,6 +245,11 @@ internal fun SettingsContent(
             text = stringResource(Res.string.settings_input_vibration),
             icon = vectorResource(Res.drawable.ic_vibration),
             verticalPadding = 4.dp,
+            modifier = Modifier.thenIf(UiTestFlags.enabled) {
+                Modifier.semantics {
+                    contentDescription = "settings_input_vibration_${if (vibrateOnInput) "on" else "off"}"
+                }
+            },
             action = {
                 val hapticFeedback = LocalHapticFeedback.current
 

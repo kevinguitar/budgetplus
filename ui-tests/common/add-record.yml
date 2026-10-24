@@ -57,9 +57,11 @@ appId: com.kevlina.budgetplus
     text: "0"
 - tapOn:
     text: "0"
+- assertVisible:
+    text: "record_amount_100(,.*)?"
 - tapOn:
     text: "OK"
 - extendedWaitUntil:
     visible:
-      text: "0"
+      text: "record_amount_0(,.*)?"
     timeout: 10000

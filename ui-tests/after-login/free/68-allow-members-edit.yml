@@ -3,15 +3,7 @@ appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/open-settings.yml
-- scrollUntilVisible:
-    element:
-      text: "Allow Members to Edit"
-    direction: DOWN
-    centerElement: true
-- tapOn:
-    text: "Allow Members to Edit"
-- tapOn:
-    text: "Allow Members to Edit"
-- assertVisible:
-    text: "Allow Members to Edit"
-- runFlow: ../../common/return-to-record.yml
+- runFlow:
+    file: ../../common/toggle-setting-and-verify.yml
+    env:
+      SETTING_ID: "settings_allow_members_edit"

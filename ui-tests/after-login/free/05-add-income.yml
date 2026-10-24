@@ -13,18 +13,30 @@ appId: com.kevlina.budgetplus
     text: "Salary"
 - tapOn:
     text: "Salary"
+- evalScript: ${output.recordNote = "UI-income-" + Date.now()}
+- runFlow:
+    file: ../../common/set-record-note.yml
+    env:
+      NOTE: "${output.recordNote}"
 - tapOn:
     text: "5"
 - tapOn:
     text: "0"
 - assertVisible:
-    text: "50"
+    text: "record_amount_50(,.*)?"
 - tapOn:
     text: "OK"
 - extendedWaitUntil:
     visible:
-      text: "0"
+      text: "record_amount_0(,.*)?"
     timeout: 10000
+- runFlow:
+    file: ../../common/assert-record-saved.yml
+    env:
+      NOTE: "${output.recordNote}"
+      RECORD_TYPE: "Income"
+      CATEGORY: "Salary"
+      PRICE: "50"
 # restore to Expense for subsequent flows. The info band may be scrolled down after
 # adding the record, so reveal the record-type tabs before tapping.
 - runFlow:

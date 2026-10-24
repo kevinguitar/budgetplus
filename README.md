@@ -140,21 +140,25 @@ The flows are split into three independent suites — `login/` (auth + onboardin
 
 ### Running Locally
 
-Install the [Firebase CLI](https://firebase.google.com/docs/cli) and [Maestro CLI](https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli), then start an Android emulator or iOS Simulator.
+Install the [Firebase CLI](https://firebase.google.com/docs/cli) and [Maestro CLI](https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli). Use the setup helpers below to reserve test devices. Android also needs **Android SDK Command-line Tools (latest)** installed from Android Studio's SDK Tools tab.
 
 Run the Android tests:
 
 ```bash
-./ui-tests/scripts/run-android-ui-tests.sh
+./ui-tests/scripts/setup-local-android-emulator.sh
+EMULATOR_AVD=budgetplus_ci_api34 ./ui-tests/scripts/run-android-ui-tests.sh
 ```
 
-Run the iOS tests using an installed `iPhone 17 Pro` simulator:
+Run the iOS tests using a dedicated `iPhone 17 Pro UI Tests` simulator:
 
 ```bash
-./ui-tests/scripts/run-ios-ui-tests.sh "iPhone 17 Pro"
+./ui-tests/scripts/setup-local-ios-simulator.sh "iPhone 17 Pro"
+./ui-tests/scripts/run-ios-ui-tests.sh "iPhone 17 Pro UI Tests"
 ```
 
-Pass a different simulator name as the first argument if needed (it defaults to `iPhone 17`). Both scripts temporarily install the test Firebase configuration and restore the production `google-services.json` or `GoogleService-Info.plist` from `misc/release` when they exit, including after a test failure.
+The iOS runner defaults to `iPhone 17 Pro UI Tests`; pass another dedicated simulator name if needed. Do not use a simulator with personal/Stage sessions: the runner resets its keychain, and Stage's shared URL scheme can intercept premium seeding. Both runners temporarily install the test Firebase configuration, then restore the exact original local file (or its absence), including after test failures.
+
+Reports and per-attempt diagnostics are written under `build/maestro/{android,ios}`. See the [coverage guide](ui-tests/TEST_COVERAGE.md#targeted-local-reliability-smoke-run) for filtered smoke runs, retry-health reporting, and device-free runner checks.
 
 ---
 

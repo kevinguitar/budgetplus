@@ -2,6 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
+- runFlow: ../../common/reset-color-tone.yml
 - runFlow: ../../common/open-color-tone-picker.yml
 # Advance to the next free tone ("Warm Tones of Dusk", the 2nd tone). We tap the
 # UI-test-only "next" control (contentDescription color_tone_next) which advances the
@@ -10,14 +11,21 @@ appId: com.kevlina.budgetplus
     text: "color_tone_next"
 - extendedWaitUntil:
     visible:
-      text: "Warm Tones of Dusk"
+      text: "color_tone_page_1(,.*)?"
     timeout: 10000
 # Save the selected tone (check icon, top-right).
 - tapOn:
     text: "Save"
+    enabled: true
 - extendedWaitUntil:
     visible:
       text: ".*'s Settings"
     timeout: 15000
 # Save returns to Settings; return to the Record screen.
 - runFlow: ../../common/return-to-record.yml
+# Re-open to verify the selection was saved, then restore the fixture tone.
+- runFlow: ../../common/open-color-tone-picker.yml
+- assertVisible:
+    text: "color_tone_page_1(,.*)?"
+- runFlow: ../../common/return-to-record.yml
+- runFlow: ../../common/reset-color-tone.yml

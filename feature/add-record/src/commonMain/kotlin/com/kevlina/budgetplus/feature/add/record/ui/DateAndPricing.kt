@@ -21,6 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_currency_exchange
 import budgetplus.core.common.generated.resources.record_currency_exchange
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.lottie.PremiumCrown
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -39,6 +42,7 @@ import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.add.record.CalculatorViewModel
 import com.kevlina.budgetplus.feature.add.record.RecordDateState
 import com.kevlina.budgetplus.feature.add.record.SelectedCurrency
@@ -58,12 +62,12 @@ internal fun DateAndPricing(
     val currencySymbol by state.currencySymbol.collectAsStateWithLifecycle()
     val preferredCurrencySymbol by state.preferredCurrencySymbol.collectAsStateWithLifecycle()
     val selectedCurrency by state.selectedCurrency.collectAsStateWithLifecycle()
+    val priceText = state.priceText.text
 
     var showDatePicker by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     if (state.scrollable) {
-        val priceText = state.priceText.text
         LaunchedEffect(key1 = priceText) {
             if (priceText != CalculatorViewModel.EMPTY_PRICE) {
                 keyboardController?.hide()
@@ -103,7 +107,12 @@ internal fun DateAndPricing(
                 letterSpacing = 0.5.sp,
                 readOnly = true,
                 scrollState = priceTextScrollState,
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .weight(1F)
+                    .thenIf(UiTestFlags.enabled) {
+                        // Distinguish the displayed amount from the calculator's zero key.
+                        Modifier.semantics { contentDescription = "record_amount_$priceText" }
+                    },
                 leadingContent = {
                     // When the content scrolls, the currency toggle sits at the very bottom and is
                     // only visible once scrolled all the way down. Gate the bubble highlight on that

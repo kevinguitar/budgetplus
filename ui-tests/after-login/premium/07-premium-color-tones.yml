@@ -4,6 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
+- runFlow: ../../common/reset-color-tone.yml
 - runFlow: ../../common/open-color-tone-picker.yml
 # Advance to a premium tone ("Barbie and Ken", the 4th tone). Tap the UI-test-only "next"
 # control (contentDescription color_tone_next) three times; it advances the pager one page
@@ -13,26 +14,32 @@ appId: com.kevlina.budgetplus
     text: "color_tone_next"
 - extendedWaitUntil:
     visible:
-      text: "Warm Tones of Dusk"
+      text: "color_tone_page_1(,.*)?"
     timeout: 10000
 - tapOn:
     text: "color_tone_next"
 - extendedWaitUntil:
     visible:
-      text: "Countryside"
+      text: "color_tone_page_2(,.*)?"
     timeout: 10000
 - tapOn:
     text: "color_tone_next"
 - extendedWaitUntil:
     visible:
-      text: "Barbie and Ken"
+      text: "color_tone_page_3(,.*)?"
     timeout: 10000
 # Premium: saving a premium tone succeeds (no paywall).
 - tapOn:
     text: "Save"
+    enabled: true
 # Do not let cleanup back-navigation make a failed save/paywall look successful.
 - extendedWaitUntil:
     visible:
       text: ".*'s Settings"
     timeout: 15000
 - runFlow: ../../common/return-to-record.yml
+- runFlow: ../../common/open-color-tone-picker.yml
+- assertVisible:
+    text: "color_tone_page_3(,.*)?"
+- runFlow: ../../common/return-to-record.yml
+- runFlow: ../../common/reset-color-tone.yml

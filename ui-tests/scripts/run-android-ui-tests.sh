@@ -27,6 +27,8 @@ source "$ROOT_DIR/ui-tests/scripts/runner-common.sh"
 #   all     – every suite (default; used for local runs)
 SHARD="${SHARD:-all}"
 validate_shard "$SHARD"
+MAESTRO_OUTPUT_DIR=${MAESTRO_OUTPUT_DIR:-build/maestro/android}
+initialize_maestro_run
 
 # Prefer the maestro on PATH; fall back to the default install location (CI installs it there).
 MAESTRO_BIN=$(command -v maestro || echo "$HOME/.maestro/bin/maestro")
@@ -34,70 +36,62 @@ MAESTRO_BIN=$(command -v maestro || echo "$HOME/.maestro/bin/maestro")
 # Hard ceiling for a single flow. Maestro installs/uninstalls its instrumentation
 # driver over adb around every flow; if the emulator dies mid-flow those adb calls
 # block on the transport forever (there is no internal timeout), and the whole job
-# then hangs until the 120-minute workflow limit cancels it. Bounding each flow with
-# `timeout` turns that indefinite hang into a fast, recoverable failure so the
+# then hangs until the workflow limit cancels it. Bounding each flow with the
+# portable attempt wrapper turns that hang into a recoverable failure so the
 # offline-recovery/abort logic below can actually run. The longest healthy flow
-# observed is ~2m, so 8m leaves generous headroom while still catching a wedge.
-MAESTRO_FLOW_TIMEOUT="${MAESTRO_FLOW_TIMEOUT:-8m}"
+# observed in the reliability smoke run is ~5m, so 8m leaves headroom while catching a wedge.
 
-# Resolve a `timeout` command (GNU coreutils on CI ships `timeout`; macOS/Homebrew
-# ships `gtimeout`). If neither exists, fall back to running maestro directly.
-TIMEOUT_BIN=$(command -v timeout || command -v gtimeout || true)
-
-# When MAESTRO_OUTPUT_DIR is set (e.g. in CI), emit a per-suite JUnit XML report (so
-# failures surface in the GitHub Actions run summary / PR checks via a test reporter) plus
-# the debug output/screenshots for artifacts.
+# Each attempt has separate diagnostics and a bounded runtime on macOS and Linux.
 maestro_test() {
   local suite_name="$1"
   shift
-  # Wrap maestro in `timeout` (when available) so a hung adb transport can never
-  # stall a flow past MAESTRO_FLOW_TIMEOUT. `timeout` exits 124 on timeout, which
-  # surfaces as a normal non-zero flow failure the recovery logic handles.
-  local runner=("$MAESTRO_BIN")
-  if [[ -n "$TIMEOUT_BIN" ]]; then
-    runner=("$TIMEOUT_BIN" --signal=KILL "$MAESTRO_FLOW_TIMEOUT" "$MAESTRO_BIN")
-  fi
-  if [[ -n "${MAESTRO_OUTPUT_DIR:-}" ]]; then
-    local out="$MAESTRO_OUTPUT_DIR/$suite_name"
-    mkdir -p "$out"
-    # A startup crash must not leave a previous run's passing report behind.
-    rm -f "$out/report.xml"
-    "${runner[@]}" test --device "$ADB_SERIAL" \
-      --test-output-dir="$out" \
-      --debug-output="$out" \
-      --format=junit \
-      --output="$out/report.xml" \
-      "$@"
-  else
-    "${runner[@]}" test --device "$ADB_SERIAL" "$@"
-  fi
+  run_maestro_attempt "$suite_name" "$MAESTRO_BIN" test --device "$ADB_SERIAL" "$@"
 }
 
 run_suites() {
   suites_failed=0
+  selected_flows=0
 
   # login runs first on freshly cleared state (its flows also clearState per-flow).
   if [[ "$SHARD" == "login" || "$SHARD" == "all" ]]; then
-    wait_for_device || true
-    adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
-    run_suite_dir login ui-tests/login
+    if prepare_suite login; then
+      run_suite_dir login ui-tests/login || suites_failed=1
+    else
+      suites_failed=1
+    fi
   fi
 
   # after-login/free re-provisions via setup-login on a fresh anonymous user.
   if [[ "$SHARD" == "free" || "$SHARD" == "free-a" || "$SHARD" == "free-b" || "$SHARD" == "all" ]]; then
-    wait_for_device || true
-    adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
-    run_suite_dir after-login-free ui-tests/after-login/free
+    if prepare_suite after-login-free; then
+      run_suite_dir after-login-free ui-tests/after-login/free || suites_failed=1
+    else
+      suites_failed=1
+    fi
   fi
 
   # after-login/premium seeds premium via the uiTestPremium deeplink.
   if [[ "$SHARD" == "premium" || "$SHARD" == "all" ]]; then
-    wait_for_device || true
-    adb -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus
-    run_suite_dir after-login-premium ui-tests/after-login/premium
+    if prepare_suite after-login-premium; then
+      run_suite_dir after-login-premium ui-tests/after-login/premium || suites_failed=1
+    else
+      suites_failed=1
+    fi
   fi
 
+  if ((selected_flows == 0 && suites_failed == 0)); then
+    record_flow_failure selection "No flows matched the requested shard/platform/filter" || true
+    return 1
+  fi
   return "$suites_failed"
+}
+
+prepare_suite() {
+  local suite_name="$1"
+  if ! wait_for_device || ! adb_bounded 30 -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus; then
+    record_flow_failure "$suite_name/setup" "Device unavailable or could not clear app data" || true
+    return 1
+  fi
 }
 
 # The emulator serial CI uses. android-emulator-runner always boots emulator-5554.
@@ -116,7 +110,7 @@ wait_for_device() {
   local kicked_server=0
   while ((SECONDS < deadline)); do
     local state
-    state="$(adb_bounded 15 -s "$ADB_SERIAL" get-state | tr -d '[:space:]')"
+    state="$(adb_bounded 15 -s "$ADB_SERIAL" get-state 2>/dev/null | tr -d '[:space:]')"
 
     # An `offline` device is listed but unresponsive: `adb wait-for-device` returns
     # immediately for it, so it never truly "settles". The reliable recovery is to
@@ -126,8 +120,8 @@ wait_for_device() {
     # before the transport comes back.
     if [[ "$state" == "offline" && "$kicked_server" -lt 3 ]]; then
       echo "Device $ADB_SERIAL is offline; restarting adb server to force reconnect (attempt $((kicked_server + 1)))." >&2
-      adb kill-server >/dev/null 2>&1 || true
-      adb start-server >/dev/null 2>&1 || true
+      adb_bounded 15 kill-server >/dev/null 2>&1 || true
+      adb_bounded 15 start-server >/dev/null 2>&1 || true
       kicked_server=$((kicked_server + 1))
       sleep 5
       continue
@@ -145,13 +139,13 @@ wait_for_device() {
     # blocked syscall — which is exactly how a dead emulator wedged the job for over an
     # hour until the workflow timeout. Bound it with `adb_bounded` so the loop stays
     # responsive and can actually give up and abort the suite.
-    if adb_bounded 20 -s "$ADB_SERIAL" wait-for-device &&
-      [[ "$(adb_bounded 15 -s "$ADB_SERIAL" get-state | tr -d '[:space:]')" == "device" ]] &&
+    if adb_bounded 20 -s "$ADB_SERIAL" wait-for-device 2>/dev/null &&
+      [[ "$(adb_bounded 15 -s "$ADB_SERIAL" get-state 2>/dev/null | tr -d '[:space:]')" == "device" ]] &&
       [[ "$(probe_boot_completed)" == "1" ]]; then
       # Re-establish the Firebase emulator port forwards; a device that dropped and
       # came back loses its reverse tunnels.
-      adb -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099 >/dev/null 2>&1 || true
-      adb -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080 >/dev/null 2>&1 || true
+      adb_bounded 15 -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099 >/dev/null 2>&1 || return 1
+      adb_bounded 15 -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080 >/dev/null 2>&1 || return 1
       return 0
     fi
     sleep 3
@@ -163,23 +157,17 @@ wait_for_device() {
 # wedged device that never answers the shell can't stall wait_for_device. Prints
 # the trimmed value (empty on hang/failure).
 probe_boot_completed() {
-  adb_bounded 15 -s "$ADB_SERIAL" shell getprop sys.boot_completed | tr -d '[:space:]'
+  adb_bounded 15 -s "$ADB_SERIAL" shell getprop sys.boot_completed 2>/dev/null | tr -d '[:space:]'
 }
 
 # Run an adb command under a hard timeout so no single adb call (notably the
 # forever-blocking `wait-for-device` against a dead emulator) can hang the caller.
 # Usage: adb_bounded <seconds> <adb-args...>. Returns adb's exit status; on timeout
-# `timeout` returns 124 (treated as failure). stderr/stdout are quieted for callers
-# that only care about the value/status. Falls back to a bare adb call when no
-# `timeout` binary is available (e.g. local macOS without coreutils).
+# The portable wrapper returns 124 on timeout, including on macOS without coreutils.
 adb_bounded() {
   local secs="$1"
   shift
-  if [[ -n "$TIMEOUT_BIN" ]]; then
-    "$TIMEOUT_BIN" --signal=KILL "$secs" adb "$@" 2>/dev/null
-  else
-    adb "$@" 2>/dev/null
-  fi
+  run_bounded "$secs" adb "$@"
 }
 
 # Path to the already-built uiTest APK. In --suites mode the default-mode section
@@ -196,13 +184,12 @@ EMULATOR_PORT="${EMULATOR_PORT:-5554}"
 # input-related settings. Mirrors the one-time setup in the default-mode section so
 # a relaunched emulator is indistinguishable from the original.
 provision_device() {
-  if [[ -f "$UI_TEST_APK" ]]; then
-    adb -s "$ADB_SERIAL" install -r "$UI_TEST_APK" >/dev/null 2>&1 || true
-  fi
-  adb -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099 >/dev/null 2>&1 || true
-  adb -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080 >/dev/null 2>&1 || true
-  adb -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_enabled 0 >/dev/null 2>&1 || true
-  adb -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_default_value 0 >/dev/null 2>&1 || true
+  [[ -f "$UI_TEST_APK" ]] || return 1
+  adb_bounded 60 -s "$ADB_SERIAL" install -r "$UI_TEST_APK" >/dev/null || return 1
+  adb_bounded 15 -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099 >/dev/null || return 1
+  adb_bounded 15 -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080 >/dev/null || return 1
+  adb_bounded 15 -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_enabled 0 >/dev/null || true
+  adb_bounded 15 -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_default_value 0 >/dev/null || true
 }
 
 # The gfxstream/swiftshader software renderer leaks graphics buffers over a long
@@ -236,8 +223,8 @@ relaunch_emulator() {
   pkill -9 -f "qemu-system.*-port ${EMULATOR_PORT}" >/dev/null 2>&1 || true
   pkill -9 -f "emulator.*-port ${EMULATOR_PORT}" >/dev/null 2>&1 || true
   sleep 3
-  adb kill-server >/dev/null 2>&1 || true
-  adb start-server >/dev/null 2>&1 || true
+  adb_bounded 15 kill-server >/dev/null 2>&1 || true
+  adb_bounded 15 start-server >/dev/null 2>&1 || true
 
   # Cold boot (no snapshot) to avoid restoring the already-leaked graphics state.
   # Detach fully so the emulator outlives this function.
@@ -251,7 +238,7 @@ relaunch_emulator() {
 
   # Wait for the fresh instance to finish booting, then reprovision it.
   if wait_for_device; then
-    provision_device
+    provision_device || return 1
     return 0
   fi
   echo "::error::Relaunched emulator did not come up." >&2
@@ -263,7 +250,7 @@ relaunch_emulator() {
 # back). Used to decide between "wait and reconnect" and "cold-boot a fresh one".
 emulator_is_dead() {
   local state
-  state="$(adb_bounded 15 -s "$ADB_SERIAL" get-state | tr -d '[:space:]')"
+  state="$(adb_bounded 15 -s "$ADB_SERIAL" get-state 2>/dev/null | tr -d '[:space:]')"
   [[ -z "$state" || "$state" == *"notfound"* || "$state" == *"error"* ]]
 }
 
@@ -317,6 +304,8 @@ run_suite_dir() {
     if grep -q '^platform: iOS' "$flow"; then
       continue
     fi
+    flow_is_selected "$flow" || continue
+    selected_flows=$((selected_flows + 1))
 
     local name
     name="$suite_prefix/$(basename "$flow" .yml)"
@@ -331,48 +320,34 @@ run_suite_dir() {
       fi
       if ((relaunched == 0)); then
         echo "::error::Emulator $ADB_SERIAL is unreachable before $name; aborting suite." >&2
+        record_flow_failure "$name" "Emulator unreachable before the flow could start" || true
         suites_failed=1
         return 1
       fi
     fi
 
-    if maestro_test "$name" "$flow"; then
-      continue
-    fi
-
-    # The flow failed. If the device is still healthy this is usually a real failure,
-    # but UI flows are occasionally flaky: a transient render glitch, a dropped tap, or a
-    # Maestro driver/instrumentation crash at init (e.g. `DeviceServerDiedException` on
-    # `deviceInfo`) that aborts the flow before a single command runs. All of these clear
-    # on a re-run, which reinstalls a fresh driver from clean state. Retry the flow once;
-    # if it still fails, book it as a genuine failure.
-    if adb_bounded 15 -s "$ADB_SERIAL" get-state | grep -q '^device$'; then
-      echo "::warning::$name failed while the device was healthy; retrying once." >&2
-      if maestro_test "$name" "$flow"; then
-        continue
-      fi
-      suites_failed=1
-      continue
-    fi
-
-    # Device dropped mid-flow: wait for it to come back and retry the flow once.
-    echo "::warning::$name failed with the device offline; recovering emulator and retrying." >&2
-    if ! wait_for_device; then
-      # The device never settled. If the emulator process is genuinely dead (a
-      # crashed QEMU from the graphics-buffer leak), cold-boot a fresh one and
-      # continue; a reconnect can't revive a dead process. Only give up if the
-      # relaunch also fails or we've hit the relaunch cap.
-      if emulator_is_dead && relaunch_emulator; then
-        echo "::warning::Emulator relaunched after $name; retrying the flow." >&2
-      else
-        echo "::error::Emulator $ADB_SERIAL did not recover after $name; aborting suite." >&2
+    local attempt=1
+    while ! maestro_test "$name" "$flow"; do
+      if ((attempt >= MAESTRO_FLOW_ATTEMPTS)); then
         suites_failed=1
-        return 1
+        break
       fi
-    fi
-    if ! maestro_test "$name" "$flow"; then
-      suites_failed=1
-    fi
+      echo "::warning::$name failed on attempt $attempt/$MAESTRO_FLOW_ATTEMPTS; recovering and resetting app data." >&2
+      if ! wait_for_device; then
+        if ! emulator_is_dead || ! relaunch_emulator; then
+          record_flow_failure "$name" "Emulator did not recover before retry" || true
+          suites_failed=1
+          return 1
+        fi
+      fi
+      # Match iOS retry isolation. Do not inherit partial saves, dialogs, or preferences.
+      if ! adb_bounded 30 -s "$ADB_SERIAL" shell pm clear com.kevlina.budgetplus; then
+        record_flow_failure "$name" "Could not clear app data before retry" || true
+        suites_failed=1
+        break
+      fi
+      attempt=$((attempt + 1))
+    done
   done
 }
 
@@ -388,22 +363,22 @@ use_test_service_file "$ROOT_DIR/androidApp/google-services.json" \
   "$ROOT_DIR/ui-tests/config/google-services.json"
 
 ./gradlew :androidApp:assembleUiTest
-adb -s "$ADB_SERIAL" install -r "$UI_TEST_APK"
+adb_bounded 60 -s "$ADB_SERIAL" install -r "$UI_TEST_APK"
 
 # The app routes Firebase to the emulators via 127.0.0.1; forward those ports from the
 # device/emulator to the host so the auth + firestore emulators are reachable.
-adb -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099
-adb -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080
+adb_bounded 15 -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099
+adb_bounded 15 -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080
 
 # Force English locale and disable the one-time Gboard stylus-handwriting tutorial that
 # otherwise pops over text fields during the first onboarding input.
-adb -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_enabled 0 || true
-adb -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_default_value 0 || true
+adb_bounded 15 -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_enabled 0 || true
+adb_bounded 15 -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_default_value 0 || true
 
 # Run the suites inside the emulator environment. emulators:exec runs its command
 # via /bin/sh, so re-invoke this script with bash (see --suites note above). Export
 # SHARD so the re-invocation runs the same suite slice as this outer invocation.
-export MAESTRO_BIN MAESTRO_OUTPUT_DIR SHARD
+export MAESTRO_BIN MAESTRO_OUTPUT_DIR SHARD MAESTRO_FLOW_FILTER
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
   emulators:exec --only auth,firestore "bash ui-tests/scripts/run-android-ui-tests.sh --suites"

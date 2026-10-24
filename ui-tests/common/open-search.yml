@@ -1,7 +1,10 @@
 # Opens Search from Record through the shared Overview navigation.
 appId: com.kevlina.budgetplus
 ---
-- runFlow: open-overview.yml
+- runFlow:
+    file: open-overview.yml
+    env:
+      RECORD_TYPE: '${typeof RECORD_TYPE === "undefined" ? "Expense" : RECORD_TYPE}'
 - tapOn:
     text: "Search"
 - extendedWaitUntil:

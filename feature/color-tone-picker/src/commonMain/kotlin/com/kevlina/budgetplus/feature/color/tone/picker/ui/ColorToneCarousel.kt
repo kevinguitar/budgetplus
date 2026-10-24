@@ -47,6 +47,7 @@ const val COLOR_TONE_PAGER_DESC = "color_tone_pager"
 // pager by one page. Fling-based swipes are too flaky in CI (they intermittently fail to
 // advance a page), so tests tap this instead. Only present when UiTestFlags.enabled.
 const val COLOR_TONE_NEXT_DESC = "color_tone_next"
+const val COLOR_TONE_PREVIOUS_DESC = "color_tone_previous"
 
 private const val CARD_TEXT_DARKEN_FACTOR = 0.7F
 
@@ -68,11 +69,34 @@ internal fun ColorToneCarousel(
     ) {
 
         val coroutineScope = rememberCoroutineScope()
+        val currentPage = pagerState.currentPage
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = if (UiTestFlags.enabled) {
+                Modifier.semantics { contentDescription = "color_tone_page_$currentPage" }
+            } else {
+                Modifier
+            }
         ) {
+
+            // Mirror the existing next-page control so tests can establish a starting
+            // page from any persisted tone without changing the preference directly.
+            if (UiTestFlags.enabled) {
+                Text(
+                    text = "<",
+                    fontSize = FontSize.Large,
+                    fontWeight = FontWeight.SemiBold,
+                    color = LocalAppColors.current.primary.darken(CARD_TEXT_DARKEN_FACTOR),
+                    modifier = Modifier
+                        .semantics { contentDescription = COLOR_TONE_PREVIOUS_DESC }
+                        .clickableWithoutRipple {
+                            val previous = (pagerState.currentPage - 1).coerceAtLeast(0)
+                            coroutineScope.launch { pagerState.animateScrollToPage(previous) }
+                        }
+                )
+            }
 
             if (selectedColorTone.requiresPremium) {
                 PremiumCrown(modifier = Modifier.size(24.dp))
