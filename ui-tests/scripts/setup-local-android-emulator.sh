@@ -39,7 +39,11 @@ for tool in "$SDKMANAGER" "$AVDMANAGER" "$EMULATOR" "$ADB"; do
 done
 
 echo "Ensuring system image: $SYSTEM_IMAGE"
+# `yes` gets SIGPIPE when sdkmanager exits; preserve sdkmanager's status rather
+# than turning a successful install into exit 141 under pipefail.
+set +o pipefail
 yes | "$SDKMANAGER" --install "$SYSTEM_IMAGE" >/dev/null
+set -o pipefail
 
 if ! "$AVDMANAGER" list avd -c | grep -qx "$AVD_NAME"; then
   echo "Creating AVD '$AVD_NAME' (profile $PROFILE)..."

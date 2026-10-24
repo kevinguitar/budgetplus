@@ -1,0 +1,30 @@
+# Opens the picker from Record and reveals the deterministic carousel control.
+appId: com.kevlina.budgetplus
+---
+- runFlow: open-settings.yml
+# Do not center this row: iOS can keep scrolling an already-visible row forever.
+- scrollUntilVisible:
+    element:
+      text: "Color Tone Picker"
+    direction: DOWN
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              text: "Color Preview"
+          commands:
+            - tapOn:
+                text: "Color Tone Picker"
+      # The Settings row shares the screen title; only the preview proves entry.
+      - extendedWaitUntil:
+          visible:
+            text: "Color Preview"
+          timeout: 15000
+- scrollUntilVisible:
+    element:
+      text: "color_tone_next"
+    direction: DOWN
+    centerElement: true
+    timeout: 15000

@@ -4,28 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- runFlow: ../../common/open-overview.yml
-# The persistent "Premium unlocked!" snackbar overlaps the bottom-right Search FAB
-# on iOS. Tap it to dismiss (UI-test builds make the snackbar tap-to-dismiss, since
-# swipe gestures are unreliable to drive from the iOS automation driver), so the FAB
-# is fully exposed, then tap Search.
-- runFlow:
-    when:
-      visible:
-        text: "Budget+ Premium unlocked!"
-    commands:
-      - tapOn:
-          text: "Budget+ Premium unlocked!"
-      - extendedWaitUntil:
-          notVisible:
-            text: "Budget+ Premium unlocked!"
-          timeout: 8000
-- tapOn:
-    text: "Search"
-- extendedWaitUntil:
-    visible:
-      text: "Enter keyword"
-    timeout: 15000
+- runFlow: ../../common/open-search.yml
 - tapOn:
     text: "Last Month"
 - assertVisible:
@@ -34,9 +13,15 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "Last 6 Months"
 - extendedWaitUntil:
+    notVisible:
+      text: "Last Year"
+    timeout: 15000
+- extendedWaitUntil:
     visible:
       text: "Enter keyword"
     timeout: 15000
 - assertVisible:
     text: "Enter keyword"
+- assertVisible:
+    text: "Last 6 Months"
 - runFlow: ../../common/return-to-record.yml

@@ -36,7 +36,11 @@ if [[ -z "$SIM_ID" ]]; then
     exit 1
   fi
   RUNTIME=$(xcrun simctl list runtimes -j \
-    | jq -r '[.runtimes[] | select(.isAvailable == true and (.identifier | test("iOS")))] | sort_by(.version) | last.identifier')
+    | jq -r '[.runtimes[] | select(.isAvailable == true and (.identifier | test("iOS")))] | sort_by(.version | split(".") | map(tonumber)) | last.identifier // empty')
+  if [[ -z "$RUNTIME" ]]; then
+    echo "No available iOS runtime. Install one in Xcode > Settings > Components." >&2
+    exit 1
+  fi
   SIM_ID=$(xcrun simctl create "$DEVICE_NAME" "$DEVICE_TYPE" "$RUNTIME")
   echo "Created simulator '$DEVICE_NAME' ($SIM_ID)."
 fi

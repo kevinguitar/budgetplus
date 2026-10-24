@@ -7,13 +7,7 @@ platform: Android
 - launchApp:
     clearState: true
 - runFlow: ../common/ensure-logged-out.yml
-- tapOn:
-    text: "Continue with Google"
-- runFlow: ../common/dismiss-system-dialogs.yml
-- extendedWaitUntil:
-    visible:
-      text: "Book Name"
-    timeout: 60000
+- runFlow: ../common/sign-in-to-welcome.yml
 # Welcome is reached via an async navigation reset, so the predictive-back logout handler
 # (NavigationBackHandler in WelcomeBinding) is registered a beat after the screen renders.
 # Pressing back before it is registered lets the event fall through to the platform default,

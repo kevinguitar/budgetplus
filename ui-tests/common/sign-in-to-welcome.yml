@@ -9,20 +9,7 @@
 # ElementNotFound.
 appId: com.kevlina.budgetplus
 ---
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow:
-          when:
-            visible:
-              text: "Continue with Google"
-          commands:
-            - tapOn:
-                text: "Continue with Google"
-            - runFlow: dismiss-system-dialogs.yml
-      - extendedWaitUntil:
-          visible:
-            text: "Book Name"
-          timeout: 60000
-      - assertVisible:
-          text: "Book Name"
+- runFlow: sign-in.yml
+# Login tests specifically require a new user, not merely successful authentication.
+- assertVisible:
+    text: "Book Name"

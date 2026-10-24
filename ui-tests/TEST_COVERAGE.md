@@ -1,12 +1,13 @@
 # Budget+ — Maestro UI Test Coverage
 
 A full-regression UI test suite for the Budget+ KMP/Compose app, driven by
-[Maestro](https://maestro.mobile.dev/). **Implemented and passing on both platforms:**
+[Maestro](https://maestro.mobile.dev/). **Implemented flows per platform** (counts are
+inventory, not a claim that the current checkout has passed a device run):
 
 | Platform | Login | after-login/free | after-login/premium |
 |---|---|---|---|
-| Android (API 34, google_apis) | 5/5 | 35/35 | 10/10 |
-| iOS (iPhone 17 Pro, iOS 26) | 5/5 | 35/35 | 10/10 |
+| Android (API 34, google_apis) | 5 | 36 | 10 |
+| iOS (iPhone 17 Pro, iOS 26) | 5 | 36 | 10 |
 
 All flows are enabled and run on every CI PR — there are no `disabled`/excluded flows.
 
@@ -70,6 +71,9 @@ pipelines.
 ui-tests/
   common/                       # shared subflows (runFlow)
     setup-login.yml             # idempotent: sign in + create "UI Test Book" -> Record
+    sign-in.yml                 # guarded sign-in retry -> Welcome or Record
+    sign-in-to-welcome.yml       # sign-in + require a new user's Welcome screen
+    create-first-book.yml       # Welcome -> standard fixture book -> Record
     seed-premium.yml            # flips the user to premium (see §6)
     assert-on-record.yml        # waits for/asserts the calculator "AC" is visible
     return-to-record.yml        # robust cross-platform "go back to Record"
@@ -79,6 +83,11 @@ ui-tests/
     ensure-all-records-mode.yml # forces Overview into All-Records mode before long-press
     open-category-records.yml   # Overview -> Records screen for a category
     open-create-book.yml        # opens book dropdown -> taps "Create a New Book" (retries the open)
+    open-book-dropdown.yml      # guarded dropdown open; reused by open-create-book
+    open-search.yml             # Record -> Overview -> Search
+    open-color-tone-picker.yml  # Record -> picker; reveals carousel control
+    view-members.yml            # Settings -> Members assertions -> Settings
+    open-category-editor.yml    # Record -> editor; waits for animated Add FAB
     dismiss-system-dialogs.yml  # optional taps for OS permission/Apple-ID dialogs
     add-record.yml              # adds one expense record (price 100) in a category
   login/                        # SUITE 1 — unauthenticated (each flow clearState: true)
@@ -170,7 +179,7 @@ filename; destructive flows (delete book, logout) run last.
 | E4 | `41-record-duplicate` | Long-press record → `Duplicate` → snackbar `Record duplicated`. |
 | E3 | `42-record-delete` | Long-press → `Delete` → `Are you sure you want to delete the record?` → `Confirm` → snackbar `Record ... is deleted`. |
 | E5 | `43-record-sort` | Records screen sort toggle `Sort by price` ↔ `Sort by date`. |
-| E6 | `44-record-multi-select-delete` | Add two `Entertainment` records → drill into Records screen → long-press `record_cell_0` → `Select` (enters selection mode) → tap `record_cell_1` to select it → title shows selected sum → top-bar delete icon → `Are you sure you want to delete the 2 selected records?` → `Confirm` → snackbar `2 records were deleted`. |
+| E6 | `44-record-multi-select-delete` | Add three `Entertainment` records → drill into Records screen → select two rows → confirm deleting 2 → snackbar `2 records were deleted`. A third row remains to prevent auto-navigation racing the snackbar. |
 
 ### 4.6 Search
 | ID | Flow | Key assertions |
@@ -196,7 +205,7 @@ filename; destructive flows (delete book, logout) run last.
 ### 4.8 Ads
 | ID | Flow | Key assertions |
 |---|---|---|
-| A1 | `70-banner-ad` | Banner ad area present for free users: `Test Ad` (Android test ad) **or** `No ads available` (iOS simulator). |
+| A1 | `70-banner-ad` | Stable `Banner Ad Area` container present, independent of SDK loading/fill state. |
 
 ### 4.9 Notification permission
 | ID | Flow | Key assertions |
@@ -212,7 +221,7 @@ Each flow runs `setup-login` then `seed-premium` (§6) so `isPremium=true`, asse
 
 | ID | Flow | Key assertions |
 |---|---|---|
-| P1 | `01-no-banner-ad` | Banner area absent (`Test Ad`/`No ads available` both gone). |
+| P1 | `01-no-banner-ad` | Stable `Banner Ad Area` container absent. |
 | P2 | `02-no-interstitial` | Add 7 records; no interstitial; flow proceeds; still no banner. |
 | P3 | `03-create-additional-book` | `Create a New Book` opens the create screen (no lock); create `Second Book` (`Copy categories from` + `Create`) → snackbar `Your book Second Book is created!`; switch back. |
 | P4 | `04-overview-custom-period` | `Select Date` opens the date-range picker (`Select dates`); no `Unlock premium to set the period above one month` upsell. |
@@ -325,7 +334,9 @@ Swaps in the test `google-services.json`, `assembleUiTest`, installs, sets up `a
 for ports 9099/8080, disables the Gboard stylus-handwriting tutorial, then inside a single
 `firebase emulators:exec` runs: `login` (looping files, skipping `platform: iOS`, with
 `pm clear`), then `after-login/free`, then `after-login/premium` (each preceded by `pm clear`).
-The production `google-services.json` is restored on exit. The `--suites` entry point
+The exact original `google-services.json` is restored on exit (or the test copy is removed
+if no original existed). Both platform runners use `scripts/runner-common.sh` for this.
+The `--suites` entry point
 **propagates the real pass/fail exit code** (`exit $?`) so a failing flow fails the job — a
 previous `exit 0` here silently reported the whole suite green.
 
@@ -333,7 +344,10 @@ previous `exit 0` here silently reported the whole suite green.
 Swaps in the test `GoogleService-Info.plist`, builds with `UI_TEST`, forces the simulator to
 English, then inside `firebase emulators:exec` runs: each `login` flow with a full
 uninstall/keychain-reset/reinstall (skipping `platform: Android`), then `after-login/free`,
-then `after-login/premium` (each preceded by a reset). The production plist is restored on exit.
+then `after-login/premium` (each preceded by a reset). The original plist (or its absence)
+is restored on exit. Like Android, iOS re-enters its `--suites` mode explicitly with `bash`:
+Firebase executes its command through `/bin/sh`, which cannot portably invoke exported
+Bash functions. `MAESTRO_FLOW_ATTEMPTS` must be a positive integer.
 
 ### Flaky-flow retries (a failed flow gets one more attempt)
 UI flows occasionally fail from **transient** issues rather than real regressions — a
@@ -369,12 +383,41 @@ which is acceptable since real breakages are rarer than transient flakes.
   `$GITHUB_STEP_SUMMARY`. HTML/debug output + screenshots are still uploaded as artifacts.
 
 ### Local emulator setup (reproduce CI locally)
-- `scripts/setup-local-android-emulator.sh` — creates/boots an AVD matching CI (API 37,
-  `google_apis`, `pixel_9`; `arm64-v8a` on Apple Silicon, `x86_64` otherwise), disables
+- `scripts/setup-local-android-emulator.sh` — creates/boots an AVD using CI's API 34,
+  `google_apis`, local `pixel_6` profile; `arm64-v8a` on Apple Silicon, `x86_64` otherwise, disables
   animations + the stylus tutorial. Then run `scripts/run-android-ui-tests.sh`.
 - `scripts/setup-local-ios-simulator.sh [device]` — creates/boots the `iPhone 17 Pro`
   simulator (or the given device) on the newest installed iOS runtime, forces English. Then
   run `scripts/run-ios-ui-tests.sh "iPhone 17 Pro"`.
+
+### Device-free runner regression checks
+
+```sh
+python3 -m unittest discover -s ui-tests/scripts -v
+maestro check-syntax ui-tests/login/03-create-book.yml
+```
+
+`test_runners.py` intercepts all Maestro/ADB/simctl calls. It checks every shard on both
+platforms, platform skips, continued execution after a failed flow, failure exit codes,
+config restoration, stale-report removal, shell syntax, and XML-summary edge cases.
+These checks do not establish that a UI interaction works on a real simulator/emulator.
+
+### Writing and reviewing flows
+
+- Reuse `common/` navigation instead of copying taps/retries into individual tests.
+  Shared helpers document their starting screen and finish on a verified destination.
+- Establish persisted preferences (especially Overview mode and Expense/Income) before
+  relying on them. Tests must work when run alone, in either free shard, or after a retry.
+- Keep the behavior under test in the test: calculator digit entry, validation attempts,
+  sort toggles, and paid/free assertions should not disappear into generic setup.
+- Wait for destination-specific anchors. A title also used by a Settings row, or a
+  negative assertion against text that may still be loading, is not proof of navigation.
+- Assert successful completion **before** cleanup. Back-navigation must not turn a failed
+  save into a passing test. Use stable container semantics for ad-presence assertions.
+- Prefer accessible text/descriptions; document unavoidable positional taps. Avoid system
+  `back` for Compose dialogs shared with iOS; reuse the known scrim dismissal instead.
+- Keep retries bounded and side-effect-aware. `setup-login` provisions a session; it does
+  not reset every preference or roll back mutations from earlier failed tests.
 
 ---
 

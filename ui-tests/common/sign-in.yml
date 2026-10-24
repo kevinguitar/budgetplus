@@ -1,0 +1,19 @@
+# Signs in from Auth; existing users may land directly on Record instead of Welcome.
+appId: com.kevlina.budgetplus
+---
+- retry:
+    maxRetries: 3
+    commands:
+      # A slow successful attempt may have navigated before this retry starts.
+      - runFlow:
+          when:
+            visible:
+              text: "Continue with Google"
+          commands:
+            - tapOn:
+                text: "Continue with Google"
+            - runFlow: dismiss-system-dialogs.yml
+      - extendedWaitUntil:
+          visible:
+            text: "Book Name|AC"
+          timeout: 60000

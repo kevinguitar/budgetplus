@@ -7,7 +7,7 @@ appId: com.kevlina.budgetplus
 # The banner ad area should be absent for premium users.
 - extendedWaitUntil:
     notVisible:
-      text: "Test Ad|No ads available"
+      text: "Banner Ad Area"
     timeout: 20000
 - assertNotVisible:
-    text: "Test Ad|No ads available"
+    text: "Banner Ad Area"

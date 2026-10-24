@@ -4,38 +4,7 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
-- runFlow: ../../common/open-settings.yml
-- scrollUntilVisible:
-    element:
-      text: "Color Tone Picker"
-    direction: DOWN
-    centerElement: true
-- tapOn:
-    text: "Color Tone Picker"
-# Wait for the picker screen to actually open. Do NOT wait on "Color Tone Picker" text — it
-# also labels the Settings row we just tapped, so it is already visible and the wait would
-# pass while still on Settings. Wait on the pager's UI-test "next" control instead, which
-# only exists on the picker screen. If the row tap didn't navigate (emulator mis-tap), retry.
-- runFlow:
-    when:
-      notVisible:
-        text: "Color Preview"
-    commands:
-      - tapOn:
-          text: "Color Tone Picker"
-- extendedWaitUntil:
-    visible:
-      text: "Color Preview"
-    timeout: 15000
-# The picker puts a large "Color Preview" card above the tone carousel, pushing the pager
-# (and its color_tone_next control) below the fold on some screens. Scroll the picker content
-# down until the next control is on screen before tapping it.
-- scrollUntilVisible:
-    element:
-      text: "color_tone_next"
-    direction: DOWN
-    centerElement: true
-    timeout: 15000
+- runFlow: ../../common/open-color-tone-picker.yml
 # Advance to a premium tone ("Barbie and Ken", the 4th tone). Tap the UI-test-only "next"
 # control (contentDescription color_tone_next) three times; it advances the pager one page
 # per tap via animateScrollToPage, which is deterministic (unlike a flaky fling swipe).
@@ -61,4 +30,9 @@ appId: com.kevlina.budgetplus
 # Premium: saving a premium tone succeeds (no paywall).
 - tapOn:
     text: "Save"
+# Do not let cleanup back-navigation make a failed save/paywall look successful.
+- extendedWaitUntil:
+    visible:
+      text: ".*'s Settings"
+    timeout: 15000
 - runFlow: ../../common/return-to-record.yml

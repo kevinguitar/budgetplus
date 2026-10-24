@@ -13,6 +13,7 @@ set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$ROOT_DIR"
+source "$ROOT_DIR/ui-tests/scripts/runner-common.sh"
 
 # Which suite(s) to run. CI shards the suites across parallel jobs so no single job
 # approaches the 120-minute workflow ceiling. Read from the environment (default
@@ -25,13 +26,7 @@ cd "$ROOT_DIR"
 #   premium – ui-tests/after-login/premium
 #   all     – every suite (default; used for local runs)
 SHARD="${SHARD:-all}"
-case "$SHARD" in
-  login | free | free-a | free-b | premium | all) ;;
-  *)
-    echo "Unknown shard '$SHARD' (expected: login, free, free-a, free-b, premium, all)" >&2
-    exit 1
-    ;;
-esac
+validate_shard "$SHARD"
 
 # Prefer the maestro on PATH; fall back to the default install location (CI installs it there).
 MAESTRO_BIN=$(command -v maestro || echo "$HOME/.maestro/bin/maestro")
@@ -65,14 +60,16 @@ maestro_test() {
   if [[ -n "${MAESTRO_OUTPUT_DIR:-}" ]]; then
     local out="$MAESTRO_OUTPUT_DIR/$suite_name"
     mkdir -p "$out"
-    "${runner[@]}" test \
+    # A startup crash must not leave a previous run's passing report behind.
+    rm -f "$out/report.xml"
+    "${runner[@]}" test --device "$ADB_SERIAL" \
       --test-output-dir="$out" \
       --debug-output="$out" \
       --format=junit \
       --output="$out/report.xml" \
       "$@"
   else
-    "${runner[@]}" test "$@"
+    "${runner[@]}" test --device "$ADB_SERIAL" "$@"
   fi
 }
 
@@ -119,7 +116,7 @@ wait_for_device() {
   local kicked_server=0
   while ((SECONDS < deadline)); do
     local state
-    state="$(adb -s "$ADB_SERIAL" get-state 2>/dev/null | tr -d '[:space:]')"
+    state="$(adb_bounded 15 -s "$ADB_SERIAL" get-state | tr -d '[:space:]')"
 
     # An `offline` device is listed but unresponsive: `adb wait-for-device` returns
     # immediately for it, so it never truly "settles". The reliable recovery is to
@@ -235,7 +232,7 @@ relaunch_emulator() {
 
   # Kill any lingering (wedged/zombie) emulator process and reset adb so the new
   # instance registers cleanly on the expected serial.
-  adb -s "$ADB_SERIAL" emu kill >/dev/null 2>&1 || true
+  adb_bounded 15 -s "$ADB_SERIAL" emu kill >/dev/null 2>&1 || true
   pkill -9 -f "qemu-system.*-port ${EMULATOR_PORT}" >/dev/null 2>&1 || true
   pkill -9 -f "emulator.*-port ${EMULATOR_PORT}" >/dev/null 2>&1 || true
   sleep 3
@@ -303,6 +300,7 @@ run_suite_dir() {
   else
     flows=("$dir"/*.yml)
   fi
+  local flow
   for flow in "${flows[@]}"; do
     # Partition by range so newly added flows (including 44–49) are included.
     if [[ "$SHARD" == "free-a" || "$SHARD" == "free-b" ]]; then
@@ -348,7 +346,7 @@ run_suite_dir() {
     # `deviceInfo`) that aborts the flow before a single command runs. All of these clear
     # on a re-run, which reinstalls a fresh driver from clean state. Retry the flow once;
     # if it still fails, book it as a genuine failure.
-    if adb -s "$ADB_SERIAL" get-state 2>/dev/null | grep -q '^device$'; then
+    if adb_bounded 15 -s "$ADB_SERIAL" get-state | grep -q '^device$'; then
       echo "::warning::$name failed while the device was healthy; retrying once." >&2
       if maestro_test "$name" "$flow"; then
         continue
@@ -386,49 +384,21 @@ if [[ "${1:-}" == "--suites" ]]; then
   exit $?
 fi
 
-SERVICE_FILE="$ROOT_DIR/androidApp/google-services.json"
-TEST_SERVICE_FILE="$ROOT_DIR/ui-tests/config/google-services.json"
-RELEASE_SERVICE_FILE="$ROOT_DIR/misc/release/google-services.json"
-
-restore_service_file() {
-  local result=$?
-  trap - EXIT
-  set +e
-
-  # Only restore the production config when we actually have one to restore
-  # (locally). In CI the production file is absent (gitignored), so there is
-  # nothing to put back and we leave the test config in place.
-  if [[ -f "$RELEASE_SERVICE_FILE" ]]; then
-    cp -p "$RELEASE_SERVICE_FILE" "$SERVICE_FILE"
-    local restore_result=$?
-    if ((restore_result != 0)); then
-      printf 'Failed to restore %s from %s\n' "$SERVICE_FILE" "$RELEASE_SERVICE_FILE" >&2
-      result=$restore_result
-    fi
-  fi
-
-  exit "$result"
-}
-
-# The test Firebase config must exist; the production one is optional (present
-# locally, absent in CI where google-services.json files are gitignored).
-[[ -f "$TEST_SERVICE_FILE" ]]
-
-trap restore_service_file EXIT
-cp "$TEST_SERVICE_FILE" "$SERVICE_FILE"
+use_test_service_file "$ROOT_DIR/androidApp/google-services.json" \
+  "$ROOT_DIR/ui-tests/config/google-services.json"
 
 ./gradlew :androidApp:assembleUiTest
-adb install -r androidApp/build/outputs/apk/uiTest/androidApp-uiTest.apk
+adb -s "$ADB_SERIAL" install -r "$UI_TEST_APK"
 
 # The app routes Firebase to the emulators via 127.0.0.1; forward those ports from the
 # device/emulator to the host so the auth + firestore emulators are reachable.
-adb reverse tcp:9099 tcp:9099
-adb reverse tcp:8080 tcp:8080
+adb -s "$ADB_SERIAL" reverse tcp:9099 tcp:9099
+adb -s "$ADB_SERIAL" reverse tcp:8080 tcp:8080
 
 # Force English locale and disable the one-time Gboard stylus-handwriting tutorial that
 # otherwise pops over text fields during the first onboarding input.
-adb shell settings put secure stylus_handwriting_enabled 0 || true
-adb shell settings put secure stylus_handwriting_default_value 0 || true
+adb -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_enabled 0 || true
+adb -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_default_value 0 || true
 
 # Run the suites inside the emulator environment. emulators:exec runs its command
 # via /bin/sh, so re-invoke this script with bash (see --suites note above). Export

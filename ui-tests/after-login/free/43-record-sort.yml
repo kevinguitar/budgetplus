@@ -7,16 +7,10 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Rent"
 - runFlow: ../../common/open-overview.yml
-# Switch Overview to Group-by-categories (mode toggle, top-right menu icon).
-- tapOn:
-    text: "overview_mode_toggle"
-# Tap the category group to open the Records screen (title "<category>: <total>").
-- tapOn:
-    text: "Rent"
-- extendedWaitUntil:
-    visible:
-      text: "Rent: .*"
-    timeout: 15000
+- runFlow:
+    file: ../../common/open-category-records.yml
+    env:
+      CATEGORY: "Rent"
 # Sort toggle (top-bar icon). Description depends on current sort mode.
 - runFlow:
     when:
@@ -38,8 +32,6 @@ appId: com.kevlina.budgetplus
     visible:
       text: ".*'s Overview"
     timeout: 15000
-- tapOn:
-    text: "overview_mode_toggle"
 - runFlow:
     file: ../../common/ensure-all-records-mode.yml
     env:

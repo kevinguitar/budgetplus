@@ -13,27 +13,4 @@ appId: com.kevlina.budgetplus
 - assertVisible:
     text: "You can create a new accounting book"
 # Now provide a name -> Go becomes actionable and lands on Record.
-- tapOn:
-    text: "My accounting book"
-- inputText: "UI Test Book"
-- tapOn:
-    text: "You can create a new accounting book"
-- tapOn:
-    text: "Go"
-- runFlow: ../common/dismiss-system-dialogs.yml
-# The book is created and we land on Record, but iOS' App Tracking Transparency prompt
-# ("Allow Budget+ to track...") can appear late — after the earlier dialog dismissal — and
-# cover the "AC" calculator button. Wait for AC, and if it's still hidden, dismiss the
-# late-arriving ATT/system dialog and wait again.
-- runFlow:
-    when:
-      notVisible:
-        text: "AC"
-    commands:
-      - runFlow: ../common/dismiss-system-dialogs.yml
-- extendedWaitUntil:
-    visible:
-      text: "AC"
-    timeout: 60000
-- assertVisible:
-    text: "AC"
+- runFlow: ../common/create-first-book.yml

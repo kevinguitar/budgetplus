@@ -5,13 +5,5 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/seed-premium.yml
 - runFlow: ../../common/assert-on-record.yml
 - runFlow: ../../common/open-settings.yml
-- tapOn:
-    text: "View Members"
-- extendedWaitUntil:
-    visible:
-      text: "Members"
-    timeout: 15000
-- assertVisible:
-    text: "Owner"
-- back
+- runFlow: ../../common/view-members.yml
 - runFlow: ../../common/return-to-record.yml

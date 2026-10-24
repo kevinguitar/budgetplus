@@ -2,13 +2,7 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-- runFlow: ../../common/open-overview.yml
-- tapOn:
-    text: "Search"
-- extendedWaitUntil:
-    visible:
-      text: "Enter keyword"
-    timeout: 15000
+- runFlow: ../../common/open-search.yml
 # Open the period selector (pill initially shows "Last Month").
 - tapOn:
     text: "Last Month"

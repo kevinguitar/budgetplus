@@ -9,69 +9,47 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "Cancel"
     optional: true
-- runFlow:
-    when:
-      notVisible:
-        text: "AC"
+- repeat:
+    times: 3
     commands:
       - runFlow:
           when:
-            visible:
-              text: "Back"
-          commands:
-            - tapOn:
-                text: "Back"
-      - runFlow:
-          when:
             notVisible:
-              text: "Back"
+              text: "AC"
           commands:
-            - back
+            # Overview has bottom navigation, not a top-bar Back arrow.
+            - runFlow:
+                when:
+                  visible:
+                    text: "bottom_nav_add"
+                commands:
+                  - tapOn:
+                      text: "bottom_nav_add"
+            - runFlow:
+                when:
+                  notVisible:
+                    text: "AC"
+                commands:
+                  # Remember which branch ran BEFORE navigation changes the hierarchy.
+                  # Re-checking Back after tapping it could send a second back from Record.
+                  - evalScript: ${output.usedTopBarBack = false}
+                  - runFlow:
+                      when:
+                        visible:
+                          text: "Back"
+                      commands:
+                        - evalScript: ${output.usedTopBarBack = true}
+                        - tapOn:
+                            text: "Back"
+                  - runFlow:
+                      when:
+                        true: ${!output.usedTopBarBack}
+                      commands:
+                        - back
 - runFlow:
     when:
-      notVisible:
-        text: "AC"
-    commands:
-      - runFlow:
-          when:
-            visible:
-              text: "Back"
-          commands:
-            - tapOn:
-                text: "Back"
-      - runFlow:
-          when:
-            notVisible:
-              text: "Back"
-          commands:
-            - back
-- runFlow:
-    when:
-      notVisible:
-        text: "AC"
-    commands:
-      - runFlow:
-          when:
-            visible:
-              text: "Back"
-          commands:
-            - tapOn:
-                text: "Back"
-      - runFlow:
-          when:
-            notVisible:
-              text: "Back"
-          commands:
-            - back
-- runFlow:
-    when:
-      notVisible:
-        text: "AC"
+      visible:
+        text: "Continue with Google|Book Name"
     commands:
       - runFlow: setup-login.yml
-- extendedWaitUntil:
-    visible:
-      text: "AC"
-    timeout: 15000
-- assertVisible:
-    text: "AC"
+- runFlow: assert-on-record.yml

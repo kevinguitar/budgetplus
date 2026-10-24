@@ -5,6 +5,18 @@ appId: com.kevlina.budgetplus
 ---
 - tapOn:
     text: "AC"
+# Do not inherit Income from a prior flow that failed before restoring the tab.
+- runFlow:
+    when:
+      notVisible:
+        text: "Expense"
+    commands:
+      - swipe:
+          start: "50%,25%"
+          end: "50%,45%"
+          duration: 400
+- tapOn:
+    text: "Expense"
 # On short screens the category grid can be pushed out of view behind the fixed
 # calculator: after adding a prior record the grid can be scrolled either way, so the
 # target pill may sit above OR below the fold. scrollUntilVisible swipes from screen

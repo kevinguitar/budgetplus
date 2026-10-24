@@ -9,6 +9,10 @@ appId: com.kevlina.budgetplus
       CATEGORY: "Food"
 # Go to Overview (History tab, bottom-right).
 - runFlow: ../../common/open-overview.yml
+- runFlow:
+    file: ../../common/ensure-all-records-mode.yml
+    env:
+      CATEGORY: "Food"
 # Tap the record row to open the Edit Record dialog.
 - tapOn:
     text: "Food"

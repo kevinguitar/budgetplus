@@ -2,16 +2,13 @@
 appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
-# The "Select book" tap occasionally does not register on iOS (the dropdown never
-# opens, or opens and immediately dismisses). Retry the open until the item shows.
-- retry:
-    maxRetries: 3
-    commands:
-      - tapOn:
-          text: "Select book"
-      - assertVisible:
-          text: "Create a New Book"
+- runFlow: ../../common/open-book-dropdown.yml
 - assertVisible:
     text: "UI Test Book"
-# dismiss the dropdown
-- back
+# Dismiss via the scrim on both platforms.
+- tapOn:
+    point: "50%,45%"
+- extendedWaitUntil:
+    notVisible:
+      text: "Create a New Book"
+    timeout: 10000

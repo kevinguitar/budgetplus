@@ -4,15 +4,28 @@
 # the edit dialog, so we toggle the mode first).
 appId: com.kevlina.budgetplus
 ---
+- extendedWaitUntil:
+    visible:
+      text: "${CATEGORY}"
+    timeout: 15000
 - tapOn:
     text: "${CATEGORY}"
+- extendedWaitUntil:
+    visible:
+      text: "Edit Record|${CATEGORY}: .*"
+    timeout: 15000
 - runFlow:
     when:
       visible:
         text: "Edit Record"
     commands:
       # We were in All-Records mode; close the dialog and switch to Group-by-categories.
-      - back
+      - tapOn:
+          point: "50%,8%"
+      - extendedWaitUntil:
+          notVisible:
+            text: "Edit Record"
+          timeout: 10000
       - tapOn:
           text: "overview_mode_toggle"
       - tapOn:

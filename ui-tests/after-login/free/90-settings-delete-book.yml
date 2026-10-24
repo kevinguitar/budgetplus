@@ -23,11 +23,4 @@ appId: com.kevlina.budgetplus
 - assertVisible:
     text: "Book Name"
 # Re-provision a book so later flows (and re-runs) have a clean starting point.
-- tapOn:
-    text: "My accounting book"
-- inputText: "UI Test Book"
-- tapOn:
-    text: "You can create a new accounting book"
-- tapOn:
-    text: "Go"
-- runFlow: ../../common/assert-on-record.yml
+- runFlow: ../../common/create-first-book.yml

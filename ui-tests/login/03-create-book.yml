@@ -5,19 +5,6 @@ appId: com.kevlina.budgetplus
     clearState: true
 - runFlow: ../common/ensure-logged-out.yml
 - runFlow: ../common/sign-in-to-welcome.yml
-- tapOn:
-    text: "My accounting book"
-- inputText: "UI Test Book"
-- tapOn:
-    text: "You can create a new accounting book"
-- tapOn:
-    text: "Go"
-- runFlow: ../common/dismiss-system-dialogs.yml
-- extendedWaitUntil:
-    visible:
-      text: "AC"
-    timeout: 30000
-- assertVisible:
-    text: "AC"
+- runFlow: ../common/create-first-book.yml
 - assertVisible:
     text: "UI Test Book"
