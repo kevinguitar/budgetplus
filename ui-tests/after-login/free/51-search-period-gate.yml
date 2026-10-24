@@ -22,5 +22,6 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - assertNotVisible:
     text: "Enter keyword"
+- runFlow: ../../common/assert-on-paywall.yml
 # Leave the paywall and return to the Record screen.
 - runFlow: ../../common/return-to-record.yml

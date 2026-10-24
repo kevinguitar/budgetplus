@@ -1,7 +1,7 @@
 # Returns to the Record screen from a nested screen. Prefers the top-bar "Back" arrow
-# (contentDescription "Back") which works on both Android and iOS; falls back to the
-# system back gesture for dialogs/paywalls without a top bar. If that leaves the app on
-# Auth/Welcome (rare iOS navigation races), re-provisions via setup-login.
+# (contentDescription "Back") which works on both Android and iOS, then the bottom
+# Add tab. Native sharing UI must first use dismiss-share-sheet; system Back is
+# only a last-resort fallback. Auth/Welcome recovery re-provisions via setup-login.
 appId: com.kevlina.budgetplus
 ---
 # A late iOS "Open in Budget+?" deeplink confirmation (from the premium seed deeplink) can
@@ -11,41 +11,41 @@ appId: com.kevlina.budgetplus
     optional: true
 - repeat:
     times: 3
+    while:
+      notVisible:
+        text: "AC"
     commands:
+      # Prefer real back navigation from nested screens. Their Add tab may already
+      # be selected; tapping it is a no-op that can stall Maestro's animation wait.
+      - evalScript: ${output.returnNavigationHandled = false}
       - runFlow:
           when:
-            notVisible:
-              text: "AC"
+            visible:
+              text: "Back"
           commands:
-            # Overview has bottom navigation, not a top-bar Back arrow.
+            - evalScript: ${output.returnNavigationHandled = true}
+            - tapOn:
+                text: "Back"
+      - runFlow:
+          when:
+            true: ${!output.returnNavigationHandled}
+          commands:
+            # Overview has bottom navigation but no top-bar Back arrow.
             - runFlow:
                 when:
                   visible:
                     text: "bottom_nav_add"
                 commands:
+                  - evalScript: ${output.returnNavigationHandled = true}
                   - tapOn:
                       text: "bottom_nav_add"
-            - runFlow:
-                when:
-                  notVisible:
-                    text: "AC"
-                commands:
-                  # Remember which branch ran BEFORE navigation changes the hierarchy.
-                  # Re-checking Back after tapping it could send a second back from Record.
-                  - evalScript: ${output.usedTopBarBack = false}
-                  - runFlow:
-                      when:
-                        visible:
-                          text: "Back"
-                      commands:
-                        - evalScript: ${output.usedTopBarBack = true}
-                        - tapOn:
-                            text: "Back"
-                  - runFlow:
-                      when:
-                        true: ${!output.usedTopBarBack}
-                      commands:
-                        - back
+      # Capture which action ran before navigation changes the hierarchy, so one
+      # iteration cannot send two back actions after arriving on Record.
+      - runFlow:
+          when:
+            true: ${!output.returnNavigationHandled}
+          commands:
+            - back
 - runFlow:
     when:
       visible:

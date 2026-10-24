@@ -76,6 +76,8 @@ ui-tests/
     create-first-book.yml       # Welcome -> standard fixture book -> Record
     seed-premium.yml            # flips the user to premium (see §6)
     assert-on-record.yml        # waits for/asserts the calculator "AC" is visible
+    assert-on-paywall.yml       # verifies the actual Unlock Premium route and its dismiss control
+    dismiss-share-sheet.yml     # dismisses native iOS/Android sharing UI explicitly
     return-to-record.yml        # robust cross-platform "go back to Record"
     open-settings.yml           # Record -> Settings screen (retries the flaky gear tap)
     open-overview.yml           # Record -> Overview screen (retries the flaky bottom-nav tap)
@@ -161,7 +163,7 @@ filename; destructive flows (delete book, logout) run last.
 |---|---|---|
 | B1 | `10-book-dropdown` | `Select book` → dropdown shows `UI Test Book` + `Create a New Book`. |
 | B2 | `11-book-limit-paywall` | `Create a New Book` (free limit 1) → routes to Unlock Premium. |
-| B3 | `12-invite` | `Invite` → OS share sheet (Record home leaves view). |
+| B3 | `12-invite` | `Invite` → OS share sheet; iOS verifies the invitation caption and dismisses through the native accessibility dismiss region. |
 
 ### 4.3 Categories
 | ID | Flow | Key assertions |
@@ -238,9 +240,15 @@ Each flow runs `setup-login` then `seed-premium` (§6) so `isPremium=true`, asse
 | P10 | `10-members` | `View Members` → `Members` dialog with `Owner`. |
 
 ### Paywall entry assertion
-The Unlock Premium screen renders the RevenueCat paywall, which cannot transact in the
-emulator (RevenueCat init is skipped under UI tests — see §7). Paywall **entry** is therefore
-asserted by navigation (leaving the prior screen), not by paywall content.
+RevenueCat initialization is deliberately skipped under UI tests (§7), so the Unlock
+Premium route stays on its loader rather than rendering the SDK's paywall/close control.
+Only in UI-test mode, that loader exposes an `Unlock Premium` header with a Back action
+using the same `navigateUp` callback as RevenueCat's dismiss request. Production loading
+and paywall behavior are unchanged.
+
+The four free-tier gate flows use `common/assert-on-paywall.yml` to positively assert
+that route before cleanup. This proves more than disappearance of the prior screen,
+without claiming that SDK purchase content or transactions are covered.
 
 ---
 
@@ -266,6 +274,9 @@ snackbar) and dismisses the (persistent) unlocked snackbar so it doesn't block l
 - **`RevenueCatInitializer`** — skips RevenueCat/StoreKit init under UI tests. This both
   avoids emulator purchase failures and, critically, stops the iOS "Sign in to Apple Account"
   system dialog that otherwise blocked automation.
+- **`UnlockPremiumScreen`** — the unconfigured loader has a UI-test-only header/dismiss
+  control, since iOS system Back cannot exit it and the disabled SDK never supplies its
+  own close control. Free gate tests assert this actual route before dismissing it.
 - **`ColorToneCarousel`** — stable `contentDescription = "color_tone_pager"` on the pager so
   the tone carousel can be swiped reliably. It also exposes a **UI-test-only** deterministic
   "next" control (`contentDescription = "color_tone_next"`, only when `UiTestFlags.enabled`)
@@ -314,6 +325,14 @@ dialog-scrim dismissals on iOS.
 - **Back navigation**: tap the top-bar `Back` arrow (contentDescription) via
   `return-to-record.yml`, instead of the system back gesture (iOS has none). Dialogs on iOS
   are dismissed by tapping the scrim.
+- **Navigation priority:** `return-to-record` prefers Back over the Add tab on nested
+  screens. Tapping an already-selected Add tab is a no-op and can spend tens of seconds
+  in Maestro's screenshot/animation waits. The bounded loop stops once Record is reached;
+  the bottom tab is used only when there is no Back arrow (such as Overview).
+- **Native sharing UI:** iOS's share sheet has no Cancel button. The dedicated dismiss
+  flow waits for `ActivityListView`, taps `PopoverDismissRegion`, and verifies the sheet
+  closed; Android uses its working system Back action. These identifiers belong to UIKit,
+  not Compose test tags.
 - **Snackbars**: asserted with `extendedWaitUntil` on the **full** message text (the
   persistent-snackbar + contentDescription hooks make them catchable).
 - **Overview mode persistence**: `ensure-all-records-mode.yml` probes/repairs the persisted

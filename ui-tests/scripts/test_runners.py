@@ -84,7 +84,16 @@ class RunnerTests(unittest.TestCase):
         if shard in ("all", "premium"):
             paths += sorted((ROOT / "ui-tests/after-login/premium").glob("*.yml"))
         excluded = "platform: iOS" if platform == "android" else "platform: Android"
-        return [str(p.relative_to(ROOT)) for p in paths if excluded not in p.read_text()]
+        # Only top-level configuration restricts a whole flow. A cross-platform
+        # flow can contain conditional platform commands after the YAML separator.
+        return [str(p.relative_to(ROOT)) for p in paths
+                if not any(line.startswith(excluded)
+                           for line in p.read_text().partition("\n---")[0].splitlines())]
+
+    def test_inline_platform_commands_do_not_exclude_the_invite_flow(self):
+        for platform in ("android", "ios"):
+            with self.subTest(platform=platform):
+                self.assertIn("ui-tests/after-login/free/12-invite.yml", self.expected_flows(platform, "free"))
 
     def test_shards_and_platform_gates(self):
         for platform in ("android", "ios"):

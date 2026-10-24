@@ -1,0 +1,11 @@
+# Assert actual paywall-route entry, not merely disappearance of the prior screen.
+# RevenueCat is disabled under UI tests; the loader exposes a test-only header
+# with the same dismiss action the configured RevenueCat paywall uses.
+appId: com.kevlina.budgetplus
+---
+- extendedWaitUntil:
+    visible:
+      text: "Unlock Premium"
+    timeout: 15000
+- assertVisible:
+    text: "Back"

@@ -10,5 +10,6 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 - assertNotVisible:
     text: "AC"
+- runFlow: ../../common/assert-on-paywall.yml
 # Return to the record screen for subsequent flows.
 - runFlow: ../../common/return-to-record.yml

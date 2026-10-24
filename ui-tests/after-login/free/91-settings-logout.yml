@@ -3,15 +3,13 @@ appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/open-settings.yml
-# Scroll the settings list until Logout is on screen, then tap it. Logout sits
-# just above "Delete Book" in the same list, so we mirror 90-settings-delete-book's
-# plain scrollUntilVisible. The stricter visibilityPercentage: 80 + centerElement
-# variant was flaky on iOS: Maestro intermittently under-reported the settled row's
-# visible percentage and gave up even though "Logout" was fully rendered on screen.
+# iOS can report Logout as visible underneath the fixed banner/bottom area.
+# Center it before tapping so the action reaches the actual row.
 - scrollUntilVisible:
     element:
       text: "Logout"
     direction: DOWN
+    centerElement: true
 - tapOn:
     text: "Logout"
 - extendedWaitUntil:
