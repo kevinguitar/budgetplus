@@ -56,6 +56,9 @@ Test-mode facts:
   `uiTest` flavor; iOS `#if UI_TEST`) routes Firebase to the emulators, makes the auth
   buttons call `signInAnonymouslyForUiTest()` (anonymous emulator sign-in), and disables
   the tutorial `Bubble` overlays.
+- `BookNavGraph` also skips automatic saved-account lookup in UI-test mode, so a
+  developer emulator's Google account cannot open a credential picker or auto-sign
+  in over the anonymous test flow (including after Logout).
 - App id: `com.kevlina.budgetplus`. Emulator ports: **auth 9099**, **firestore 8080**.
 - Premium is a server-side boolean `premium` field on the user's Firestore doc
   (`authManager.isPremium`), seeded via a test-only deeplink (see §6).
