@@ -5,6 +5,12 @@
   ],
   "packageRules": [
     {
+      "description": "Group Kotlin compiler dependencies and plugins that share the Kotlin version, excluding kotlinx libraries.",
+      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin[.:]/"],
+      "groupName": "kotlin",
+      "groupSlug": "kotlin"
+    },
+    {
       "description": "Firebase iOS 13 requires App Check 12, but Google Sign-In 10 requires App Check 11. Stay on Firebase 12 until Google Sign-In supports App Check 12.",
       "matchPackageNames": ["firebase/firebase-ios-sdk"],
       "allowedVersions": "<13"
