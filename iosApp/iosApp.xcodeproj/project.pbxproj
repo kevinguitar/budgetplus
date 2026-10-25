@@ -7,27 +7,81 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */ = {isa = PBXBuildFile; productRef = 0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */; };
-		0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
-		0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
-		0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3F61762F3DDC18008A7161 /* GoogleMobileAds */; };
-		0A3F621C2F4899E9008A7161 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */; };
-		0A69C82E2F36F8EC0058D721 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82D2F36F8EC0058D721 /* FirebaseAuth */; };
-		0A69C8302F36F8EC0058D721 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82F2F36F8EC0058D721 /* FirebaseCore */; };
-		0A69C8322F36F8EC0058D721 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8312F36F8EC0058D721 /* FirebaseCrashlytics */; };
-		0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8332F36F8EC0058D721 /* FirebaseFirestore */; };
-		0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8352F36F8EC0058D721 /* FirebaseMessaging */; };
-		0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */; };
-		0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9A78A52F52CD5C0090916D /* StoreKit.framework */; };
-		0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619412F37503900F3C461 /* GoogleSignIn */; };
-		0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619432F37503900F3C461 /* GoogleSignInSwift */; };
+		0A237D432F5BFD8A00706C1C = {
+			isa = PBXBuildFile;
+			productRef = 0A237D422F5BFD8A00706C1C;
+		};
+		0A350AF22F545D7E0030B642 = {
+			isa = PBXBuildFile;
+			fileRef = 0A350AF12F545D7E0030B642;
+		};
+		0A350AF32F545D7E0030B642 = {
+			isa = PBXBuildFile;
+			fileRef = 0A350AF12F545D7E0030B642;
+		};
+		0A3F61772F3DDC18008A7161 = {
+			isa = PBXBuildFile;
+			productRef = 0A3F61762F3DDC18008A7161;
+		};
+		0A3F621C2F4899E9008A7161 = {
+			isa = PBXBuildFile;
+			fileRef = 0A3F62152F4899E9008A7161;
+			settings = {
+				ATTRIBUTES = (
+					RemoveHeadersOnCopy,
+				);
+			};
+		};
+		0A69C82C2F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C82B2F36F8EC0058D721;
+		};
+		0A69C82E2F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C82D2F36F8EC0058D721;
+		};
+		0A69C8302F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C82F2F36F8EC0058D721;
+		};
+		0A69C8322F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C8312F36F8EC0058D721;
+		};
+		0A69C8342F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C8332F36F8EC0058D721;
+		};
+		0A69C8362F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C8352F36F8EC0058D721;
+		};
+		0A69C8382F36F8EC0058D721 = {
+			isa = PBXBuildFile;
+			productRef = 0A69C8372F36F8EC0058D721;
+		};
+		0A9A78A62F52CD5C0090916D = {
+			isa = PBXBuildFile;
+			fileRef = 0A9A78A52F52CD5C0090916D;
+		};
+		0AE619422F37503900F3C461 = {
+			isa = PBXBuildFile;
+			productRef = 0AE619412F37503900F3C461;
+		};
+		0AE619442F37503900F3C461 = {
+			isa = PBXBuildFile;
+			productRef = 0AE619432F37503900F3C461;
+		};
+		C0A1ADA48D49C677E9690E6E = {
+			isa = PBXBuildFile;
+			productRef = 30CDFBD334CCAFE76F5FC52D;
+		};
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0A3F621A2F4899E9008A7161 /* PBXContainerItemProxy */ = {
+		0A3F621A2F4899E9008A7161 = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D6CDB6A56C2FF02BAA741365 /* Project object */;
+			containerPortal = D6CDB6A56C2FF02BAA741365;
 			proxyType = 1;
 			remoteGlobalIDString = 0A3F62142F4899E9008A7161;
 			remoteInfo = NotificationServiceExtension;
@@ -35,13 +89,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0A3F62102F48988C008A7161 /* Embed Foundation Extensions */ = {
+		0A3F62102F48988C008A7161 = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				0A3F621C2F4899E9008A7161 /* NotificationServiceExtension.appex in Embed Foundation Extensions */,
+				0A3F621C2F4899E9008A7161,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,55 +103,78 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
-		0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0A9A78A52F52CD5C0090916D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		C6E1A353ED23D830AFC12840 /* BudgetPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A350AF12F545D7E0030B642 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.json.xcstrings;
+			path = InfoPlist.xcstrings;
+			sourceTree = "<group>";
+		};
+		0A3F62152F4899E9008A7161 = {
+			isa = PBXFileReference;
+			explicitFileType = "wrapper.app-extension";
+			includeInIndex = 0;
+			path = NotificationServiceExtension.appex;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		0A9A78A52F52CD5C0090916D = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = StoreKit.framework;
+			path = System/Library/Frameworks/StoreKit.framework;
+			sourceTree = SDKROOT;
+		};
+		C6E1A353ED23D830AFC12840 = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			includeInIndex = 0;
+			path = BudgetPlus.app;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0A3F62202F4899E9008A7161 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */ = {
+		0A3F62202F4899E9008A7161 = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
+			target = 0A3F62142F4899E9008A7161;
 		};
-		0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */ = {
+		0A68BAD12F78F5440059B0BC = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BudgetPlusPremium.storekit,
 			);
-			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
+			target = 0A3F62142F4899E9008A7161;
 		};
-		6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
+		6A30F6F7833DB0C2DCAF74E0 = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D37C6359E0199F24ECE2669B /* iosApp */;
+			target = D37C6359E0199F24ECE2669B;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0A3F62162F4899E9008A7161 /* NotificationServiceExtension */ = {
+		0A3F62162F4899E9008A7161 = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0A3F62202F4899E9008A7161 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */,
+				0A3F62202F4899E9008A7161,
 			);
 			path = NotificationServiceExtension;
 			sourceTree = "<group>";
 		};
-		71E7052F54B8BB3AD6D9BF6C /* Configuration */ = {
+		71E7052F54B8BB3AD6D9BF6C = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Configuration;
 			sourceTree = "<group>";
 		};
-		DC4748B39A09E11CF6A64645 /* iosApp */ = {
+		DC4748B39A09E11CF6A64645 = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */,
-				0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */,
+				6A30F6F7833DB0C2DCAF74E0,
+				0A68BAD12F78F5440059B0BC,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -105,48 +182,49 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0A3F62122F4899E9008A7161 /* Frameworks */ = {
+		0A3F62122F4899E9008A7161 = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		403AF2F1C76CD538513AA497 /* Frameworks */ = {
+		403AF2F1C76CD538513AA497 = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */,
-				0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */,
-				0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */,
-				0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */,
-				0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */,
-				0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */,
-				0A69C8322F36F8EC0058D721 /* FirebaseCrashlytics in Frameworks */,
-				0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */,
-				0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */,
-				0A69C8302F36F8EC0058D721 /* FirebaseCore in Frameworks */,
-				0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */,
-				0A69C82E2F36F8EC0058D721 /* FirebaseAuth in Frameworks */,
+				0AE619442F37503900F3C461,
+				0A69C8362F36F8EC0058D721,
+				0A3F61772F3DDC18008A7161,
+				0A9A78A62F52CD5C0090916D,
+				0AE619422F37503900F3C461,
+				0A69C82C2F36F8EC0058D721,
+				0A69C8322F36F8EC0058D721,
+				0A237D432F5BFD8A00706C1C,
+				0A69C8382F36F8EC0058D721,
+				0A69C8302F36F8EC0058D721,
+				0A69C8342F36F8EC0058D721,
+				0A69C82E2F36F8EC0058D721,
+				C0A1ADA48D49C677E9690E6E,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0A9A78A42F52CD5C0090916D /* Frameworks */ = {
+		0A9A78A42F52CD5C0090916D = {
 			isa = PBXGroup;
 			children = (
-				0A9A78A52F52CD5C0090916D /* StoreKit.framework */,
+				0A9A78A52F52CD5C0090916D,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2C03A3E98A73FC2B967E9F10 /* Products */ = {
+		2C03A3E98A73FC2B967E9F10 = {
 			isa = PBXGroup;
 			children = (
-				C6E1A353ED23D830AFC12840 /* BudgetPlus.app */,
-				0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */,
+				C6E1A353ED23D830AFC12840,
+				0A3F62152F4899E9008A7161,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,82 +232,83 @@
 		34847EBF5FEB5CE02C7EDB98 = {
 			isa = PBXGroup;
 			children = (
-				0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */,
-				71E7052F54B8BB3AD6D9BF6C /* Configuration */,
-				DC4748B39A09E11CF6A64645 /* iosApp */,
-				0A3F62162F4899E9008A7161 /* NotificationServiceExtension */,
-				0A9A78A42F52CD5C0090916D /* Frameworks */,
-				2C03A3E98A73FC2B967E9F10 /* Products */,
+				0A350AF12F545D7E0030B642,
+				71E7052F54B8BB3AD6D9BF6C,
+				DC4748B39A09E11CF6A64645,
+				0A3F62162F4899E9008A7161,
+				0A9A78A42F52CD5C0090916D,
+				2C03A3E98A73FC2B967E9F10,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0A3F62142F4899E9008A7161 /* NotificationServiceExtension */ = {
+		0A3F62142F4899E9008A7161 = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0A3F621D2F4899E9008A7161 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */;
+			buildConfigurationList = 0A3F621D2F4899E9008A7161;
 			buildPhases = (
-				0A3F62112F4899E9008A7161 /* Sources */,
-				0A3F62122F4899E9008A7161 /* Frameworks */,
-				0A3F62132F4899E9008A7161 /* Resources */,
+				0A3F62112F4899E9008A7161,
+				0A3F62122F4899E9008A7161,
+				0A3F62132F4899E9008A7161,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				0A3F62162F4899E9008A7161 /* NotificationServiceExtension */,
+				0A3F62162F4899E9008A7161,
 			);
 			name = NotificationServiceExtension;
 			packageProductDependencies = (
 			);
 			productName = NotificationServiceExtension;
-			productReference = 0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */;
+			productReference = 0A3F62152F4899E9008A7161;
 			productType = "com.apple.product-type.app-extension";
 		};
-		D37C6359E0199F24ECE2669B /* iosApp */ = {
+		D37C6359E0199F24ECE2669B = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D49A887E0170659F166AE9 /* Build configuration list for PBXNativeTarget "iosApp" */;
+			buildConfigurationList = 23D49A887E0170659F166AE9;
 			buildPhases = (
-				606A3F78A1DF210FF623988B /* Compile Kotlin Framework */,
-				1863F0F2EB00B17E5A9BE78C /* Sources */,
-				403AF2F1C76CD538513AA497 /* Frameworks */,
-				D26F08481507A91DBA7D9DA3 /* Resources */,
-				0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */,
-				0A3F62102F48988C008A7161 /* Embed Foundation Extensions */,
-				0AEA3C6E2F55B93B00481525 /* ShellScript */,
+				606A3F78A1DF210FF623988B,
+				1863F0F2EB00B17E5A9BE78C,
+				403AF2F1C76CD538513AA497,
+				D26F08481507A91DBA7D9DA3,
+				0AEA3C6E2F55B93B00481600,
+				0A3F62102F48988C008A7161,
+				0AEA3C6E2F55B93B00481525,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0A3F621B2F4899E9008A7161 /* PBXTargetDependency */,
+				0A3F621B2F4899E9008A7161,
 			);
 			fileSystemSynchronizedGroups = (
-				DC4748B39A09E11CF6A64645 /* iosApp */,
+				DC4748B39A09E11CF6A64645,
 			);
 			name = iosApp;
 			packageProductDependencies = (
-				0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */,
-				0A69C82D2F36F8EC0058D721 /* FirebaseAuth */,
-				0A69C82F2F36F8EC0058D721 /* FirebaseCore */,
-				0A69C8312F36F8EC0058D721 /* FirebaseCrashlytics */,
-				0A69C8332F36F8EC0058D721 /* FirebaseFirestore */,
-				0A69C8352F36F8EC0058D721 /* FirebaseMessaging */,
-				0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */,
-				0AE619412F37503900F3C461 /* GoogleSignIn */,
-				0AE619432F37503900F3C461 /* GoogleSignInSwift */,
-				0A3F61762F3DDC18008A7161 /* GoogleMobileAds */,
-				0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */,
+				0A69C82B2F36F8EC0058D721,
+				0A69C82D2F36F8EC0058D721,
+				0A69C82F2F36F8EC0058D721,
+				0A69C8312F36F8EC0058D721,
+				0A69C8332F36F8EC0058D721,
+				0A69C8352F36F8EC0058D721,
+				0A69C8372F36F8EC0058D721,
+				0AE619412F37503900F3C461,
+				0AE619432F37503900F3C461,
+				0A3F61762F3DDC18008A7161,
+				0A237D422F5BFD8A00706C1C,
+				30CDFBD334CCAFE76F5FC52D,
 			);
 			productName = iosApp;
-			productReference = C6E1A353ED23D830AFC12840 /* BudgetPlus.app */;
+			productReference = C6E1A353ED23D830AFC12840;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		D6CDB6A56C2FF02BAA741365 /* Project object */ = {
+		D6CDB6A56C2FF02BAA741365 = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
@@ -244,7 +323,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 75479A5F7F2AF221F68F5800 /* Build configuration list for PBXProject "iosApp" */;
+			buildConfigurationList = 75479A5F7F2AF221F68F5800;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -257,43 +336,44 @@
 			mainGroup = 34847EBF5FEB5CE02C7EDB98;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
-				0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
-				0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */,
+				0A69C82A2F36F8EC0058D721,
+				0AE619402F37503900F3C461,
+				0A3F61752F3DDC18008A7161,
+				0A237D412F5BFD8A00706C1C,
+				17E24980734EADB0BCD1FA17,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 2C03A3E98A73FC2B967E9F10 /* Products */;
+			productRefGroup = 2C03A3E98A73FC2B967E9F10;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D37C6359E0199F24ECE2669B /* iosApp */,
-				0A3F62142F4899E9008A7161 /* NotificationServiceExtension */,
+				D37C6359E0199F24ECE2669B,
+				0A3F62142F4899E9008A7161,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0A3F62132F4899E9008A7161 /* Resources */ = {
+		0A3F62132F4899E9008A7161 = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */,
+				0A350AF22F545D7E0030B642,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D26F08481507A91DBA7D9DA3 /* Resources */ = {
+		D26F08481507A91DBA7D9DA3 = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */,
+				0A350AF32F545D7E0030B642,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0AEA3C6E2F55B93B00481525 /* ShellScript */ = {
+		0AEA3C6E2F55B93B00481525 = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -315,7 +395,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
 		};
-		0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */ = {
+		0AEA3C6E2F55B93B00481600 = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -334,7 +414,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Debug builds target the staging environment. Two things happen here, both gated on\n# CONFIGURATION == Debug:\n#   1. Swap in the staging GoogleService-Info.plist (production ships as the default resource).\n#   2. Append \\\" Stage\\\" to the localized app display name (CFBundleDisplayName) so the icon\n#      label makes the staging build obvious. The string catalog cannot vary per build config\n#      and does not expand build-setting variables, so we patch the built product directly,\n#      covering the base Info.plist and every localized InfoPlist.strings.\nset -e\nif [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n  echo \"Release configuration: using production GoogleService-Info.plist and app name\"\n  exit 0\nfi\n\n# UI test builds override the bundle id to production and route Firebase to the local\n# emulators via a swapped-in test GoogleService-Info.plist, so the staging swap must not\n# run (the staging plist is also absent in the UI test CI job).\ncase \" ${SWIFT_ACTIVE_COMPILATION_CONDITIONS} \" in\n  *\" UI_TEST \"*)\n    echo \"UI_TEST build: keeping the test GoogleService-Info.plist and app name\"\n    exit 0\n    ;;\nesac\n\nRES_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nPB=\"/usr/libexec/PlistBuddy\"\nSUFFIX=\" Stage\"\n\n# 1. Staging Firebase config.\nSRC=\"${SRCROOT}/Firebase/Stage/GoogleService-Info.plist\"\necho \"Using STAGING GoogleService-Info.plist from ${SRC}\"\ncp \"${SRC}\" \"${RES_DIR}/GoogleService-Info.plist\"\n\n# 2. Base Info.plist display name (development region / fallback).\nINFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nif [ -f \"${INFO_PLIST}\" ]; then\n  CURRENT=$(${PB} -c \"Print :CFBundleDisplayName\" \"${INFO_PLIST}\" 2>/dev/null || echo \"\")\n  if [ -z \"${CURRENT}\" ]; then\n    ${PB} -c \"Add :CFBundleDisplayName string Budget+${SUFFIX}\" \"${INFO_PLIST}\"\n  else\n    case \"${CURRENT}\" in\n      *\"${SUFFIX}\") : ;; # already suffixed\n      *) ${PB} -c \"Set :CFBundleDisplayName ${CURRENT}${SUFFIX}\" \"${INFO_PLIST}\" ;;\n    esac\n  fi\nfi\n\n# 3. Every localized InfoPlist.strings display name.\nfind \"${RES_DIR}\" -name InfoPlist.strings -path '*.lproj/*' | while read -r STRINGS; do\n  NAME=$(${PB} -c \"Print :CFBundleDisplayName\" \"${STRINGS}\" 2>/dev/null || echo \"\")\n  [ -z \"${NAME}\" ] && continue\n  case \"${NAME}\" in\n    *\"${SUFFIX}\") continue ;;\n  esac\n  ${PB} -c \"Set :CFBundleDisplayName ${NAME}${SUFFIX}\" \"${STRINGS}\"\ndone\n";
 		};
-		606A3F78A1DF210FF623988B /* Compile Kotlin Framework */ = {
+		606A3F78A1DF210FF623988B = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -356,14 +436,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0A3F62112F4899E9008A7161 /* Sources */ = {
+		0A3F62112F4899E9008A7161 = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1863F0F2EB00B17E5A9BE78C /* Sources */ = {
+		1863F0F2EB00B17E5A9BE78C = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -373,17 +453,17 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0A3F621B2F4899E9008A7161 /* PBXTargetDependency */ = {
+		0A3F621B2F4899E9008A7161 = {
 			isa = PBXTargetDependency;
-			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
-			targetProxy = 0A3F621A2F4899E9008A7161 /* PBXContainerItemProxy */;
+			target = 0A3F62142F4899E9008A7161;
+			targetProxy = 0A3F621A2F4899E9008A7161;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0A3F621E2F4899E9008A7161 /* Debug */ = {
+		0A3F621E2F4899E9008A7161 = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -416,9 +496,9 @@
 			};
 			name = Debug;
 		};
-		0A3F621F2F4899E9008A7161 /* Release */ = {
+		0A3F621F2F4899E9008A7161 = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -451,9 +531,9 @@
 			};
 			name = Release;
 		};
-		2E3368DD4BFBB26C538D705C /* Debug */ = {
+		2E3368DD4BFBB26C538D705C = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -486,9 +566,9 @@
 			};
 			name = Debug;
 		};
-		A8EF943FD51C7CB19E191046 /* Release */ = {
+		A8EF943FD51C7CB19E191046 = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -554,9 +634,9 @@
 			};
 			name = Release;
 		};
-		BD47760EB3627F76F5C3FB40 /* Debug */ = {
+		BD47760EB3627F76F5C3FB40 = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -624,9 +704,9 @@
 			};
 			name = Debug;
 		};
-		DAA45D3C9F697B68CDFD40E1 /* Release */ = {
+		DAA45D3C9F697B68CDFD40E1 = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -664,37 +744,44 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0A3F621D2F4899E9008A7161 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */ = {
+		0A3F621D2F4899E9008A7161 = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0A3F621E2F4899E9008A7161 /* Debug */,
-				0A3F621F2F4899E9008A7161 /* Release */,
+				0A3F621E2F4899E9008A7161,
+				0A3F621F2F4899E9008A7161,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D49A887E0170659F166AE9 /* Build configuration list for PBXNativeTarget "iosApp" */ = {
+		23D49A887E0170659F166AE9 = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2E3368DD4BFBB26C538D705C /* Debug */,
-				DAA45D3C9F697B68CDFD40E1 /* Release */,
+				2E3368DD4BFBB26C538D705C,
+				DAA45D3C9F697B68CDFD40E1,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		75479A5F7F2AF221F68F5800 /* Build configuration list for PBXProject "iosApp" */ = {
+		75479A5F7F2AF221F68F5800 = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BD47760EB3627F76F5C3FB40 /* Debug */,
-				A8EF943FD51C7CB19E191046 /* Release */,
+				BD47760EB3627F76F5C3FB40,
+				A8EF943FD51C7CB19E191046,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		17E24980734EADB0BCD1FA17 = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = KotlinMultiplatformLinkedPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
-		0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */ = {
+		0A237D412F5BFD8A00706C1C = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/googleads-mobile-ios-mediation-meta.git";
 			requirement = {
@@ -702,7 +789,7 @@
 				version = 6.22.0;
 			};
 		};
-		0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+		0A3F61752F3DDC18008A7161 = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
 			requirement = {
@@ -710,7 +797,7 @@
 				minimumVersion = 13.11.0;
 			};
 		};
-		0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		0A69C82A2F36F8EC0058D721 = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -718,7 +805,7 @@
 				minimumVersion = 12.19.3;
 			};
 		};
-		0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+		0AE619402F37503900F3C461 = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
 			requirement = {
@@ -729,62 +816,66 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */ = {
+		0A237D422F5BFD8A00706C1C = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */;
+			package = 0A237D412F5BFD8A00706C1C;
 			productName = MetaAdapterTarget;
 		};
-		0A3F61762F3DDC18008A7161 /* GoogleMobileAds */ = {
+		0A3F61762F3DDC18008A7161 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			package = 0A3F61752F3DDC18008A7161;
 			productName = GoogleMobileAds;
 		};
-		0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */ = {
+		0A69C82B2F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseAnalytics;
 		};
-		0A69C82D2F36F8EC0058D721 /* FirebaseAuth */ = {
+		0A69C82D2F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseAuth;
 		};
-		0A69C82F2F36F8EC0058D721 /* FirebaseCore */ = {
+		0A69C82F2F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseCore;
 		};
-		0A69C8312F36F8EC0058D721 /* FirebaseCrashlytics */ = {
+		0A69C8312F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseCrashlytics;
 		};
-		0A69C8332F36F8EC0058D721 /* FirebaseFirestore */ = {
+		0A69C8332F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseFirestore;
 		};
-		0A69C8352F36F8EC0058D721 /* FirebaseMessaging */ = {
+		0A69C8352F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseMessaging;
 		};
-		0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */ = {
+		0A69C8372F36F8EC0058D721 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			package = 0A69C82A2F36F8EC0058D721;
 			productName = FirebaseRemoteConfig;
 		};
-		0AE619412F37503900F3C461 /* GoogleSignIn */ = {
+		0AE619412F37503900F3C461 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			package = 0AE619402F37503900F3C461;
 			productName = GoogleSignIn;
 		};
-		0AE619432F37503900F3C461 /* GoogleSignInSwift */ = {
+		0AE619432F37503900F3C461 = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			package = 0AE619402F37503900F3C461;
 			productName = GoogleSignInSwift;
+		};
+		30CDFBD334CCAFE76F5FC52D = {
+			isa = XCSwiftPackageProductDependency;
+			productName = KotlinMultiplatformLinkedPackage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = D6CDB6A56C2FF02BAA741365 /* Project object */;
+	rootObject = D6CDB6A56C2FF02BAA741365;
 }

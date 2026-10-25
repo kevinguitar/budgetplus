@@ -1,7 +1,5 @@
 package com.kevlina.budgetplus.ads
 
-import GoogleMobileAds.GADAdapterStatus
-import GoogleMobileAds.GADMobileAds
 import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.Logger
@@ -13,6 +11,8 @@ import dev.zacsweers.metro.binding
 import platform.AppTrackingTransparency.ATTrackingManager
 import platform.AppTrackingTransparency.ATTrackingManagerAuthorizationStatusAuthorized
 import platform.AppTrackingTransparency.ATTrackingManagerAuthorizationStatusNotDetermined
+import swiftPMImport.budgetplus.core.core.ads.GADAdapterStatus
+import swiftPMImport.budgetplus.core.core.ads.GADMobileAds
 
 @ContributesIntoSet(AppScope::class, binding = binding<AppStartAction>())
 @ContributesBinding(AppScope::class, binding = binding<AdmobInitializer>())

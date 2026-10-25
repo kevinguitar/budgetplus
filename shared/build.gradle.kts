@@ -1,11 +1,10 @@
-import io.github.frankois944.spmForKmp.swiftPackageConfig
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 
 plugins {
     alias(budgetplus.plugins.kotlin.multiplatform)
     alias(budgetplus.plugins.compose.multiplatform)
     alias(budgetplus.plugins.metro)
-    alias(libs.plugins.spm.kmp)
 }
 
 kotlin {
@@ -26,40 +25,33 @@ kotlin {
                 binaryOption("sourceInfoType", "noop")
             }
         }
+    }
 
-        target.swiftPackageConfig(cinteropName = "nativeBridge") {
-            dependency {
-                minIos = "16.6"
-                linkerOpts = listOf("-ObjC")
-                exportedPackageSettings { includeProduct = listOf("FirebaseFirestore") }
-                remotePackageVersion(
-                    url = uri("https://github.com/firebase/firebase-ios-sdk.git"),
-                    products = {
-                        // Export to Kotlin for use in shared Kotlin code and use it in your swift code
-                        // the export doesn't work when gitlive is implemented, my guess is a bug with cinterop
-                        // because gitlive already use cinterop
-                        listOf(
-                            "FirebaseAnalytics",
-                            "FirebaseAuth",
-                            "FirebaseCore",
-                            "FirebaseCrashlytics",
-                            "FirebaseFirestore",
-                            "FirebaseFunctions",
-                            "FirebaseMessaging",
-                            "FirebaseRemoteConfig",
-                        ).forEach { add(it, exportToKotlin = false) }
-                    },
-                    version = "12.19.3",
-                )
-                remotePackageVersion(
-                    url = uri("https://github.com/google/GoogleSignIn-iOS.git"),
-                    products = {
-                        add("GoogleSignIn", exportToKotlin = true)
-                    },
-                    version = "10.1.0"
-                )
-            }
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    swiftPMDependencies {
+        iosMinimumDeploymentTarget.set("16.6")
+        // GitLive already provides Firebase cinterops. Only import our own native APIs.
+        discoverClangModulesImplicitly.set(false)
+        swiftPackage(
+            url = url("https://github.com/firebase/firebase-ios-sdk.git"),
+            version = exact("12.19.3"),
+            products = listOf(
+                "FirebaseAnalytics",
+                "FirebaseAuth",
+                "FirebaseCore",
+                "FirebaseCrashlytics",
+                "FirebaseFirestore",
+                "FirebaseFunctions",
+                "FirebaseMessaging",
+                "FirebaseRemoteConfig",
+            ).map { product(it) },
+            importedClangModules = emptyList(),
+        )
+        swiftPackage(
+            url = url("https://github.com/google/GoogleSignIn-iOS.git"),
+            version = exact("10.1.0"),
+            products = listOf(product("GoogleSignIn")),
+        )
     }
 
     sourceSets {

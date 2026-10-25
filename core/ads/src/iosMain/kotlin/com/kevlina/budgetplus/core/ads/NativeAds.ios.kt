@@ -1,12 +1,5 @@
 package com.kevlina.budgetplus.core.ads
 
-import GoogleMobileAds.GADAdSizeBanner
-import GoogleMobileAds.GADBannerView
-import GoogleMobileAds.GADBannerViewDelegateProtocol
-import GoogleMobileAds.GADFullScreenContentDelegateProtocol
-import GoogleMobileAds.GADFullScreenPresentingAdProtocol
-import GoogleMobileAds.GADInterstitialAd
-import GoogleMobileAds.GADRequest
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -22,6 +15,13 @@ import kotlinx.coroutines.flow.collect
 import platform.UIKit.UIApplication
 import platform.UIKit.UIColor
 import platform.darwin.NSObject
+import swiftPMImport.budgetplus.core.core.ads.GADAdSizeBanner
+import swiftPMImport.budgetplus.core.core.ads.GADBannerView
+import swiftPMImport.budgetplus.core.core.ads.GADBannerViewDelegateProtocol
+import swiftPMImport.budgetplus.core.core.ads.GADFullScreenContentDelegateProtocol
+import swiftPMImport.budgetplus.core.core.ads.GADFullScreenPresentingAdProtocol
+import swiftPMImport.budgetplus.core.core.ads.GADInterstitialAd
+import swiftPMImport.budgetplus.core.core.ads.GADRequest
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable

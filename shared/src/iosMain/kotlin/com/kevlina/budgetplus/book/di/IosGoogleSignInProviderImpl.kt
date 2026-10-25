@@ -1,6 +1,5 @@
 package com.kevlina.budgetplus.book.di
 
-import GoogleSignIn.GIDSignIn
 import com.kevlina.budgetplus.feature.auth.IosGoogleSignInProvider
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -8,6 +7,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UIKit.UIApplication
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import swiftPMImport.budgetplus.shared.GIDSignIn
 
 @ContributesBinding(AppScope::class)
 internal class IosGoogleSignInProviderImpl : IosGoogleSignInProvider {

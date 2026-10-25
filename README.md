@@ -124,6 +124,44 @@ cp ui-tests/config/google-services.json androidApp/google-services.json
    - Build the iOS app, run `./gradlew :shared:linkDebugFrameworkIosSimulatorArm64`
 4. If you want to have the app running with real functionalities, you'll need to create a new project on Firebase and wire your API keys in the project.
 
+### iOS Swift package dependencies
+
+Native SDK dependencies are declared with Kotlin's [SwiftPM import](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html)
+in `shared/build.gradle.kts` (Firebase and Google Sign-In) and `core/ads/build.gradle.kts`
+(Google Mobile Ads). This Alpha integration requires Kotlin 2.5.0-Beta1. It does not
+change the static `Shared` framework or its Objective-C-based API to Swift.
+
+Firebase is linked through SwiftPM but its Kotlin bindings remain owned by GitLive.
+Implicit Clang-module discovery is disabled to avoid generating duplicate Firebase
+bindings. Google Sign-In and Google Mobile Ads use the generated `swiftPMImport`
+namespaces.
+
+After changing native dependencies, regenerate the Xcode linkage package:
+
+```bash
+XCODEPROJ_PATH="$PWD/iosApp/iosApp.xcodeproj" ./gradlew :shared:integrateLinkagePackage
+./gradlew :shared:fetchSyntheticImportProjectPackages
+```
+
+Commit all files in `iosApp/KotlinMultiplatformLinkedPackage` (including empty source
+stubs), `.swiftpm-locks/default/swiftImport/Package.resolved`, and Xcode's
+`Package.resolved`. Everything else under `.swiftpm-locks` is regenerated and
+git-ignored. In Xcode, use **File → Packages → Resolve Package Versions** before
+rebuilding. Meta mediation remains an Xcode dependency;
+preserve the `-ObjC` linker flag (which retains its dynamically discovered adapter)
+and the Crashlytics upload phase. Do not also force-load the Meta artifact: that
+would link it twice.
+
+Publishing checks the stripped Release archive's Objective-C class metadata for
+`GADMediationAdapterFacebook` before exporting the IPA. To run this check locally:
+
+```bash
+python3 iosApp/scripts/verify_meta_adapter.py build/iosApp.xcarchive
+```
+
+This detects a missing/dead-stripped adapter, not ad delivery. Verify real-device
+Meta bidding and test-ad delivery with Ad Inspector before shipping ad SDK changes.
+
 ---
 
 ## UI Tests

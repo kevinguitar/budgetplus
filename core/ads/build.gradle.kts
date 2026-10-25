@@ -1,30 +1,21 @@
-import io.github.frankois944.spmForKmp.swiftPackageConfig
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(budgetplus.plugins.kotlin.multiplatform)
     alias(budgetplus.plugins.compose.multiplatform)
     alias(budgetplus.plugins.metro)
-    alias(libs.plugins.spm.kmp)
 }
 
 kotlin {
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach { target ->
-        target.swiftPackageConfig(cinteropName = "nativeBridge") {
-            dependency {
-                minIos = "16.6"
-                linkerOpts = listOf("-ObjC")
-                remotePackageVersion(
-                    url = uri("https://github.com/googleads/swift-package-manager-google-mobile-ads.git"),
-                    products = {
-                        add("GoogleMobileAds", exportToKotlin = true)
-                    },
-                    version = "13.11.0"
-                )
-            }
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    swiftPMDependencies {
+        iosMinimumDeploymentTarget.set("16.6")
+        discoverClangModulesImplicitly.set(false)
+        swiftPackage(
+            url = url("https://github.com/googleads/swift-package-manager-google-mobile-ads.git"),
+            version = exact("13.11.0"),
+            products = listOf(product("GoogleMobileAds")),
+        )
     }
 
     sourceSets {
