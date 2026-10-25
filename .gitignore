@@ -16,9 +16,16 @@ xcuserdata
 bin
 .vscode
 iosApp/.xcode.env
-shared/exportedNativeExample/.build
+# Legacy generated Swift bridge stubs in existing local checkouts.
 StartYourBridgeHere.swift
 DummySPMFile.swift
+# Keep only SwiftPM import's lock files; regenerate manifests, stubs, and checkouts.
+/.swiftpm-locks/**
+!/.swiftpm-locks/*/
+!/.swiftpm-locks/*/swiftImport/
+!/.swiftpm-locks/*/swiftImport/Package.resolved
+**/.build/
+**/.swiftpm/
 GoogleService-Info.plist
 /misc/release/
 firestore-debug.log

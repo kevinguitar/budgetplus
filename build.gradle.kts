@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.metro) apply false
-    alias(libs.plugins.spm.kmp) apply false
     alias(libs.plugins.buildkonfig) apply false
 }
 

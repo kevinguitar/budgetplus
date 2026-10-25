@@ -8,12 +8,7 @@ MARKETING_VERSION=1.6.2
 
 FRAMEWORK_SEARCH_PATHS = $(inherited) $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
 
-// The Meta AdMob mediation adapter (GADMediationAdapterFacebook) ships as a prebuilt binary
-// inside MetaAdapter.xcframework and is only ever instantiated dynamically by the Google
-// Mobile Ads SDK (via NSClassFromString). Nothing references it statically, so the linker
-// drops its objects and AdMob reports "No such adapter in the application" at runtime.
-META_ADAPTER_SLICE = ios-arm64_x86_64-simulator
-META_ADAPTER_SLICE[sdk=iphoneos*] = ios-arm64
-META_ADAPTER_FRAMEWORK = $(BUILD_DIR)/../../SourcePackages/artifacts/googleads-mobile-ios-mediation-meta/MetaAdapter/MetaAdapter.xcframework/$(META_ADAPTER_SLICE)/MetaAdapter.framework/MetaAdapter
-
-OTHER_LDFLAGS = $(inherited) -framework shared -force_load "$(META_ADAPTER_FRAMEWORK)"
+// Retain Objective-C categories and dynamically discovered classes, including the Meta
+// AdMob adapter. Do not also force-load its artifact path: SwiftPM links the framework
+// from Build/Products, and loading both copies produces duplicate Objective-C symbols.
+OTHER_LDFLAGS = $(inherited) -ObjC -framework shared

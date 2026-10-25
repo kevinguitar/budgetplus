@@ -52,15 +52,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
-          # CI only runs on pull_request (there is no push-to-main trigger), so the
-          # Gradle cache must be written from PR runs; otherwise every run recompiles the
-          # Kotlin/Native framework cold (~15 min). Cache entries are keyed by content, so
-          # PRs sharing the same Gradle inputs converge on the same immutable entry.
-          # Read-only off main. Writing the Gradle build cache from PR runs is unsafe for
-          # the iOS build: Kotlin/Native cinterop tasks (e.g. :shared:cinteropGoogleSignIn)
-          # cache outputs that embed absolute paths to the SPM checkout under
-          # shared/build/spmKmpPlugin, so a restored entry breaks a fresh workspace whose
-          # checkout wasn't re-fetched.
+          # Keep caches read-only off main. SwiftPM import's Alpha integration does
+          # not support Gradle build caching yet; see GRADLE_OPTS below.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
@@ -77,8 +70,8 @@ jobs:
       - name: Compute Xcode cache keys
         id: xcode-cache-keys
         run: |
-          echo "spm=${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}" >> "$GITHUB_OUTPUT"
-          echo "derived-data=${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'gradle/libs.versions.toml') }}" >> "$GITHUB_OUTPUT"
+          echo "spm=${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', '.swiftpm-locks/default/swiftImport/Package.resolved') }}" >> "$GITHUB_OUTPUT"
+          echo "derived-data=${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', '.swiftpm-locks/default/swiftImport/Package.resolved', 'gradle/libs.versions.toml', 'shared/build.gradle.kts', 'core/ads/build.gradle.kts') }}" >> "$GITHUB_OUTPUT"
 
       - name: Cache SPM packages
         uses: actions/cache@v6
@@ -86,17 +79,17 @@ jobs:
           path: |
             build/SourcePackages
             ~/Library/Caches/org.swift.swiftpm
-          key: ${{ runner.os }}-spm-v2-${{ steps.xcode-cache-keys.outputs.spm }}
+          key: ${{ runner.os }}-spm-v3-${{ steps.xcode-cache-keys.outputs.spm }}
           restore-keys: |
-            ${{ runner.os }}-spm-v2-
+            ${{ runner.os }}-spm-v3-
 
       - name: Cache Xcode DerivedData
         uses: actions/cache@v6
         with:
           path: ./build
-          key: ${{ runner.os }}-ddata-v2-${{ steps.xcode-cache-keys.outputs.derived-data }}
+          key: ${{ runner.os }}-ddata-v3-${{ steps.xcode-cache-keys.outputs.derived-data }}
           restore-keys: |
-            ${{ runner.os }}-ddata-v2-
+            ${{ runner.os }}-ddata-v3-
 
       - name: Install Firebase CLI
         run: npm install --global firebase-tools
@@ -113,10 +106,7 @@ jobs:
       - name: Run iOS UI tests
         env:
           MAESTRO_OUTPUT_DIR: build/maestro/ios
-          # Disable the Gradle build cache for the iOS build. Kotlin/Native cinterop tasks
-          # (e.g. :shared:cinteropGoogleSignIn) cache outputs that embed absolute paths to
-          # the SPM checkout under shared/build/spmKmpPlugin, so a restored entry breaks a
-          # fresh workspace ('umbrella header GoogleSignIn.h not found').
+          # SwiftPM import does not support Gradle build caching yet (KT-84827).
           GRADLE_OPTS: -Dorg.gradle.caching=false
         run: |
           # Boot the iPhone 17 Pro simulator (matching the documented test device). Fall

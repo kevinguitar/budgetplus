@@ -31,14 +31,14 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Keep spmForKmp versions, generated Package.swift dependencies, and Xcode package requirements in sync. depName (owner/repo) and datasource (github-tags) match the built-in swift manager, which groups the files onto the same branch.",
+      "description": "Keep Kotlin SwiftPM import versions, generated Package.swift dependencies, and Xcode package requirements in sync. depName (owner/repo) and datasource (github-tags) match the built-in swift manager, which groups the files onto the same branch.",
       "managerFilePatterns": [
         "/(^|/)core/ads/build\\.gradle\\.kts$/",
         "/(^|/)shared/build\\.gradle\\.kts$/",
         "/(^|/)iosApp/iosApp\\.xcodeproj/project\\.pbxproj$/"
       ],
       "matchStrings": [
-        "url = uri\\(\"https://github\\.com/(?<depName>[^\"]+?)(?:\\.git)?\"\\)[\\s\\S]*?version = \"(?<currentValue>[0-9][^\"]*)\"",
+        "url = url\\(\"https://github\\.com/(?<depName>[^\"]+?)(?:\\.git)?\"\\),\\s*version = exact\\(\"(?<currentValue>[0-9][^\"]*)\"\\)",
         "repositoryURL = \"https://github\\.com/(?<depName>[^\"]+?)(?:\\.git)?\";\\s*requirement = \\{\\s*kind = (?:upToNextMajorVersion|exactVersion);\\s*(?:minimumVersion|version) = (?<currentValue>[0-9][^;]*);"
       ],
       "datasourceTemplate": "github-tags",

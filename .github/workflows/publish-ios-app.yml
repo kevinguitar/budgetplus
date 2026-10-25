@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-upload:
     runs-on: macos-latest
+    env:
+      # SwiftPM import does not support Gradle build caching yet (KT-84827).
+      GRADLE_OPTS: -Dorg.gradle.caching=false
     # Export the version and build number so the Linux runner knows what to look for
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -109,7 +112,7 @@ jobs:
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-v3-${{ hashFiles('iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', '.swiftpm-locks/default/swiftImport/Package.resolved') }}
 
       - name: Set version in Config.xcconfig and Extension
         run: |
@@ -133,21 +136,9 @@ jobs:
           printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$API_KEY_PATH"
           echo "API_KEY_PATH=$API_KEY_PATH" >> $GITHUB_ENV
 
-      # The MetaAdapter Google mediation dependency ships its framework as a
-      # remote .binaryTarget (an xcframework). During `xcodebuild archive`, the
-      # linker references it via a relative path
-      #   ArchiveIntermediates/<scheme>/BuildProductsPath/../../SourcePackages/...
-      # which resolves to ArchiveIntermediates/SourcePackages (NO scheme folder)
-      # -- a location Xcode never actually populates. The resolved artifact only
-      # lives at <DerivedData>/SourcePackages. This is an Xcode bug and it fails
-      # with:
-      #   "Build input file cannot be found ... MetaAdapter.framework/MetaAdapter"
-      #
-      # Fix: resolve packages into a fixed DerivedData (this downloads the binary
-      # artifact to <DerivedData>/SourcePackages), then create the symlink
-      #   ArchiveIntermediates/SourcePackages -> <DerivedData>/SourcePackages
-      # so the path the linker computes resolves to the real artifact. Verified
-      # to make `xcodebuild archive` succeed.
+      # Resolve packages into the same DerivedData used by the archive step.
+      # -ObjC retains the Meta adapter through SwiftPM's linked framework, so no
+      # artifact force-load path or ArchiveIntermediates symlink is needed.
       - name: Resolve Swift Package dependencies
         run: |
           DERIVED_DATA="$(pwd)/build/DerivedData"
@@ -163,15 +154,6 @@ jobs:
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
           set -euo pipefail
-
-          # Work around the Xcode bug described above: the archive linker looks
-          # for the MetaAdapter xcframework at ArchiveIntermediates/SourcePackages
-          # (which Xcode never populates), so point it at the real, populated
-          # <DerivedData>/SourcePackages via a symlink.
-          ARCHIVE_INT="$DERIVED_DATA/Build/Intermediates.noindex/ArchiveIntermediates"
-          mkdir -p "$ARCHIVE_INT"
-          rm -rf "$ARCHIVE_INT/SourcePackages"
-          ln -s "$DERIVED_DATA/SourcePackages" "$ARCHIVE_INT/SourcePackages"
 
           xcodebuild archive \
             -project iosApp/iosApp.xcodeproj \
