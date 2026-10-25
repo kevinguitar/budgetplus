@@ -172,6 +172,9 @@ jobs:
             -skipPackagePluginValidation \
             -quiet
 
+      - name: Verify Meta mediation adapter in Release archive
+        run: python3 iosApp/scripts/verify_meta_adapter.py build/iosApp.xcarchive
+
       - name: Export Local IPA
         run: |
           cat > ./build/ExportOptions.plist << EOF

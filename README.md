@@ -152,6 +152,16 @@ preserve the `-ObjC` linker flag (which retains its dynamically discovered adapt
 and the Crashlytics upload phase. Do not also force-load the Meta artifact: that
 would link it twice.
 
+Publishing checks the stripped Release archive's Objective-C class metadata for
+`GADMediationAdapterFacebook` before exporting the IPA. To run this check locally:
+
+```bash
+python3 iosApp/scripts/verify_meta_adapter.py build/iosApp.xcarchive
+```
+
+This detects a missing/dead-stripped adapter, not ad delivery. Verify real-device
+Meta bidding and test-ad delivery with Ad Inspector before shipping ad SDK changes.
+
 ---
 
 ## UI Tests
