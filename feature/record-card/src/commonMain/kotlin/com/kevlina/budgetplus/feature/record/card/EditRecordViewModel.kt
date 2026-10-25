@@ -9,6 +9,7 @@ import budgetplus.core.common.generated.resources.record_deleted
 import budgetplus.core.common.generated.resources.record_edited
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
+import com.kevlina.budgetplus.core.common.parseToPrice
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.remote.Record
@@ -42,6 +43,14 @@ internal class EditRecordViewModel(
         newPriceText: String,
         editBatch: Boolean,
     ) {
+        if (newDate.toEpochDays() == record.date &&
+            newCategory == record.category &&
+            newName == record.name &&
+            newPriceText.parseToPrice() == (record.preferredPrice ?: record.price)
+        ) {
+            return
+        }
+
         viewModelScope.launch {
             try {
                 if (editBatch) {
