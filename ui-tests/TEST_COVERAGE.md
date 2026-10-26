@@ -39,6 +39,13 @@ character). Maestro's `inputText` RPC timed out on book creation across both att
 and subsequent flows, exhausting the job timeout. ADB remained responsive, so the
 existing device-health checks and driver retries could not recover that state.
 
+PR #867's iOS premium color-tone flow saved and reopened the premium tone in both
+attempts, but hit the eight-minute attempt limit during cleanup. Cleanup now resets
+the tone directly in the reopened picker instead of returning to Record and opening
+the picker again. The shared `reset-color-tone-in-picker.yml` subflow preserves the
+Milk Tea save and Settings assertions; `reset-color-tone.yml` wraps it for callers
+starting on Record. The attempt/job timeouts and save/reopen coverage are unchanged.
+
 ---
 
 ## 1. Background — How the app decides what to show

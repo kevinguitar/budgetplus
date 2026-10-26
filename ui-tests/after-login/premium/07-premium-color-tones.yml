@@ -41,5 +41,8 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/open-color-tone-picker.yml
 - assertVisible:
     text: "color_tone_page_3(,.*)?"
+# Restore directly from the reopened picker. Returning to Record and reopening
+# Settings/the picker added ~1 minute of navigation to each iOS attempt, pushing
+# this otherwise-passing flow over the runner's eight-minute attempt limit.
+- runFlow: ../../common/reset-color-tone-in-picker.yml
 - runFlow: ../../common/return-to-record.yml
-- runFlow: ../../common/reset-color-tone.yml
