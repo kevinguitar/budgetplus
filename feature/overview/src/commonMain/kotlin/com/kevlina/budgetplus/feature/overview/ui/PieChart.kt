@@ -151,7 +151,7 @@ internal fun PieChart(
 
 
         // Draw the circle background
-        recordGroupSums.onEachIndexed { index, (category, sum) ->
+        recordGroupSums.entries.forEachIndexed { index, (category, sum) ->
             val ratio = sum / totalPrice
             val angle = (animateAngle * ratio).toFloat()
             val isPressed = pressPosition?.isWithIn(startAngle, angle) ?: false
@@ -184,7 +184,7 @@ internal fun PieChart(
         }
 
         // Draw the labels
-        recordGroupSums.onEachIndexed { index, (category, sum) ->
+        recordGroupSums.entries.forEachIndexed { index, (category, sum) ->
             val ratio = sum / totalPrice
             val angle = (animateAngle * ratio).toFloat()
 
