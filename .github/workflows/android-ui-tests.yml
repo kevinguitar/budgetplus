@@ -7,13 +7,22 @@ jobs:
   android-ui-tests:
     name: Android UI tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
       matrix:
         # Keep each emulator short-lived: the full free suite lost runners after
         # 43–50 minutes and showed QEMU hangs as graphics buffers accumulated.
-        shard: [login, free-a, free-b, premium]
+        # Observed wall times: 6 / 30 / 24 / 22 min; allow setup/retry variance.
+        include:
+          - shard: login
+            timeout: 15
+          - shard: free-a
+            timeout: 45
+          - shard: free-b
+            timeout: 40
+          - shard: premium
+            timeout: 35
     permissions:
       contents: read
       checks: write
@@ -27,28 +36,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Validate UI test runners
-        if: matrix.shard == 'login'
-        run: python3 -m unittest discover -s ui-tests/scripts -v
+      - name: Download Android UI test app
+        uses: actions/download-artifact@v8
+        with:
+          name: android-ui-test-app
+          path: build/ui-test-app
 
       - name: Configure JDK
         uses: actions/setup-java@v6
         with:
           java-version-file: .github/workflows/.java-version
           distribution: zulu
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          # CI only runs on pull_request (there is no push-to-main trigger), so the
-          # Gradle cache must be written from PR runs; otherwise every run recompiles
-          # cold. Cache entries are keyed by content, so PRs sharing the same Gradle
-          # inputs converge on the same immutable entry.
-          # Read-only off main, mirroring the iOS jobs. Keeping the cache policy uniform
-          # across jobs avoids surprising cross-job differences; the Gradle build cache is
-          # only written from main.
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
-          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Install Firebase CLI
         run: npm install --global firebase-tools
@@ -72,6 +70,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           MAESTRO_OUTPUT_DIR: build/maestro/android
+          UI_TEST_APK: ${{ github.workspace }}/build/ui-test-app/androidApp-uiTest.apk
         with:
           api-level: 34
           target: google_apis

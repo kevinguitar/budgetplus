@@ -5,6 +5,7 @@ set -euo pipefail
 # This script has two modes:
 #   * default:  swap in the test Firebase config, build + install the uiTest APK,
 #               then run the Maestro suites inside the Firebase emulators.
+#               If UI_TEST_APK is set, install that prebuilt APK without building.
 #   * --suites: run only the Maestro suites (login/free/premium). This mode is
 #               re-invoked by `firebase emulators:exec` below. It exists because
 #               emulators:exec runs its command via /bin/sh (dash on CI), which
@@ -15,8 +16,8 @@ ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$ROOT_DIR"
 source "$ROOT_DIR/ui-tests/scripts/runner-common.sh"
 
-# Which suite(s) to run. CI shards the suites across parallel jobs so no single job
-# approaches the 120-minute workflow ceiling. Read from the environment (default
+# Which suite(s) to run. CI shards the suites across parallel install/test-only jobs.
+# Read from the environment (default
 # `all` for local runs) so it survives the `--suites` re-invocation via
 # emulators:exec (which runs its command through /bin/sh and only uses $1). Accepts:
 #   login   – ui-tests/login
@@ -170,10 +171,10 @@ adb_bounded() {
   run_bounded "$secs" adb "$@"
 }
 
-# Path to the already-built uiTest APK. In --suites mode the default-mode section
-# below has already assembled + installed it once; a relaunched emulator boots
-# empty, so we reinstall from this same artifact.
-UI_TEST_APK="androidApp/build/outputs/apk/uiTest/androidApp-uiTest.apk"
+# Preserve the caller's explicit prebuilt path across Firebase's child process and
+# emulator recovery. An explicit missing artifact must fail, never silently rebuild.
+PREBUILT_APK=${UI_TEST_APK:-}
+UI_TEST_APK=${UI_TEST_APK:-androidApp/build/outputs/apk/uiTest/androidApp-uiTest.apk}
 
 # The AVD android-emulator-runner creates is always named `test` on port 5554.
 EMULATOR_AVD="${EMULATOR_AVD:-test}"
@@ -359,10 +360,14 @@ if [[ "${1:-}" == "--suites" ]]; then
   exit $?
 fi
 
-use_test_service_file "$ROOT_DIR/androidApp/google-services.json" \
-  "$ROOT_DIR/ui-tests/config/google-services.json"
-
-./gradlew :androidApp:assembleUiTest
+if [[ -z "$PREBUILT_APK" ]]; then
+  use_test_service_file "$ROOT_DIR/androidApp/google-services.json" \
+    "$ROOT_DIR/ui-tests/config/google-services.json"
+  ./gradlew :androidApp:assembleUiTest
+elif [[ ! -f "$UI_TEST_APK" ]]; then
+  printf 'Prebuilt Android APK not found: %s\n' "$UI_TEST_APK" >&2
+  exit 1
+fi
 adb_bounded 60 -s "$ADB_SERIAL" install -r "$UI_TEST_APK"
 
 # The app routes Firebase to the emulators via 127.0.0.1; forward those ports from the
@@ -378,7 +383,7 @@ adb_bounded 15 -s "$ADB_SERIAL" shell settings put secure stylus_handwriting_def
 # Run the suites inside the emulator environment. emulators:exec runs its command
 # via /bin/sh, so re-invoke this script with bash (see --suites note above). Export
 # SHARD so the re-invocation runs the same suite slice as this outer invocation.
-export MAESTRO_BIN MAESTRO_OUTPUT_DIR SHARD MAESTRO_FLOW_FILTER
+export MAESTRO_BIN MAESTRO_OUTPUT_DIR SHARD MAESTRO_FLOW_FILTER UI_TEST_APK
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
   emulators:exec --only auth,firestore "bash ui-tests/scripts/run-android-ui-tests.sh --suites"

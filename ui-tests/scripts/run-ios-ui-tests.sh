@@ -10,11 +10,10 @@ if [[ "${1:-}" == "--suites" ]]; then
   shift
 fi
 SIMULATOR_NAME=${1:-iPhone 17 Pro UI Tests}
-# Which suite(s) to run. CI shards the suites across parallel jobs so no single
-# job approaches the 100-minute workflow ceiling (the full sequential suite is
-# ~84 minutes of tests on top of a ~31-minute cold framework build). The free
-# suite alone (~35 flows) overran the 100-minute job timeout, so it is split into
-# two balanced sub-shards by flow-number range. Accepts:
+# Which suite(s) to run. CI builds once, then shards the suites across parallel
+# jobs using UI_TEST_APP_PATH to install the prebuilt app. The free suite alone
+# (~35 flows) overran the original 100-minute job timeout, so it is split into
+# two sub-shards by flow-number range. Accepts:
 #   login   – ui-tests/login/*.yml
 #   free-a  – ui-tests/after-login/free flows numbered < 50
 #   free-b  – ui-tests/after-login/free flows numbered >= 50
@@ -34,24 +33,15 @@ if [[ "$SUITES_ONLY" == false ]]; then
     exit 1
   fi
 
-  use_test_service_file "$ROOT_DIR/iosApp/iosApp/GoogleService-Info.plist" \
-    "$ROOT_DIR/ui-tests/config/GoogleService-Info.plist"
-  xcodebuild build \
-    -project iosApp/iosApp.xcodeproj \
-    -scheme iosApp \
-    -configuration Debug \
-    -sdk iphonesimulator \
-    -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
-    -derivedDataPath build/ui-tests \
-    -quiet \
-    CODE_SIGN_IDENTITY=- \
-    ARCHS=arm64 \
-    ONLY_ACTIVE_ARCH=YES \
-    APP_BUNDLE_ID=com.kevlina.budgetplus \
-    SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) UI_TEST'
+  if [[ -z "${UI_TEST_APP_PATH:-}" ]]; then
+    bash "$ROOT_DIR/ui-tests/scripts/build-ios-ui-test-app.sh"
+  elif [[ ! -d "$UI_TEST_APP_PATH" || ! -f "$UI_TEST_APP_PATH/Info.plist" ]]; then
+    printf 'Prebuilt iOS app not found: %s\n' "$UI_TEST_APP_PATH" >&2
+    exit 1
+  fi
 fi
 
-APP_PATH="build/ui-tests/Build/Products/Debug-iphonesimulator/BudgetPlus.app"
+APP_PATH=${UI_TEST_APP_PATH:-build/ui-tests/Build/Products/Debug-iphonesimulator/BudgetPlus.app}
 
 # Prefer the maestro on PATH; fall back to the default install location (CI installs it there).
 MAESTRO_BIN=$(command -v maestro || echo "$HOME/.maestro/bin/maestro")
@@ -116,10 +106,25 @@ run_flow_dir() {
 # Reinstalls the app from a fully reset state (fresh keychain wipes the persisted
 # Firebase auth session, which launchApp:clearState does not clear on iOS).
 reset_app() {
-  run_bounded 15s xcrun simctl terminate "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
-  run_bounded 30s xcrun simctl uninstall "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
-  run_bounded 30s xcrun simctl keychain "$SIMULATOR_ID" reset || return 1
-  run_bounded 60s xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+  # A freshly booted simulator can briefly stall keychain services. Retry the
+  # complete reset once, without relaxing command deadlines or reusing auth state.
+  local attempt
+  for attempt in 1 2; do
+    echo "Resetting iOS app (attempt $attempt/2)"
+    run_bounded 15s xcrun simctl terminate "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
+    run_bounded 30s xcrun simctl uninstall "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
+    echo "Resetting simulator keychain"
+    if ! run_bounded 30s xcrun simctl keychain "$SIMULATOR_ID" reset; then
+      echo "::warning::Simulator keychain reset failed (attempt $attempt/2)." >&2
+      continue
+    fi
+    echo "Installing iOS test app"
+    if run_bounded 60s xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"; then
+      return 0
+    fi
+    echo "::warning::Simulator app install failed (attempt $attempt/2)." >&2
+  done
+  return 1
 }
 
 reset_for_suite() {
@@ -197,7 +202,7 @@ fi
 xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLanguages '("en-US")'
 xcrun simctl spawn "$SIMULATOR_ID" defaults write -g AppleLocale "en_US"
 
-export SIMULATOR_ID SHARD MAESTRO_FLOW_ATTEMPTS MAESTRO_FLOW_FILTER
+export SIMULATOR_ID SHARD MAESTRO_FLOW_ATTEMPTS MAESTRO_FLOW_FILTER UI_TEST_APP_PATH
 
 firebase --config ui-tests/config/firebase.json --project budgetplus-ui-tests \
   emulators:exec --only auth,firestore "bash ui-tests/scripts/run-ios-ui-tests.sh --suites"

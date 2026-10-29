@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    timeout-minutes: 90
 
     steps:
       - uses: actions/checkout@v7
@@ -14,6 +15,9 @@ jobs:
 
       - name: Test Release archive verification
         run: python3 -m unittest discover -s iosApp/scripts -v
+
+      - name: Validate UI test runners
+        run: python3 -m unittest discover -s ui-tests/scripts -v
 
       - name: Setup Latest Stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -33,19 +37,6 @@ jobs:
           # not support Gradle build caching yet; see GRADLE_OPTS below.
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-      - name: Setup Secrets
-        env:
-          REVENUECAT_ANDROID_API_KEY: ${{ secrets.REVENUECAT_ANDROID_API_KEY }}
-          REVENUECAT_IOS_API_KEY: ${{ secrets.REVENUECAT_IOS_API_KEY }}
-          GOOGLE_SERVICES_PLIST: ${{ secrets.IOS_GOOGLE_SERVICES_PLIST }}
-          STAGE_GOOGLE_SERVICES_PLIST: ${{ secrets.IOS_STAGE_GOOGLE_SERVICES_PLIST }}
-        run: |
-          echo REVENUECAT_ANDROID_API_KEY=$REVENUECAT_ANDROID_API_KEY > ./local.properties
-          echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
-          echo $GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/iosApp/GoogleService-Info.plist
-          mkdir -p ./iosApp/Firebase/Stage
-          echo $STAGE_GOOGLE_SERVICES_PLIST | base64 -d > ./iosApp/Firebase/Stage/GoogleService-Info.plist
 
       - name: Set JAVA_HOME for Xcode build phase
         run: echo "export JAVA_HOME=$JAVA_HOME" > ./iosApp/.xcode.env
@@ -84,24 +75,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ddata-v3-
 
-      - name: Build iOS App (simulator)
+      - name: Build iOS UI test app (simulator)
         env:
           # SwiftPM import does not support Gradle build caching yet (KT-84827).
           GRADLE_OPTS: -Dorg.gradle.caching=false
-        run: |
-          xcodebuild build \
-            -project iosApp/iosApp.xcodeproj \
-            -scheme iosApp \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath ./build \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            ARCHS=arm64 \
-            ONLY_ACTIVE_ARCH=YES \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            DEBUG_INFORMATION_FORMAT=dwarf \
-            -skipPackagePluginValidation \
-            -quiet
+        run: bash ui-tests/scripts/build-ios-ui-test-app.sh
+
+      - name: Package iOS UI test app
+        # Tar preserves executable permissions and framework symlinks, unlike a raw
+        # .app upload. Only the emulator-backed simulator app leaves this job.
+        run: tar -czf build/ios-ui-test-app.tar.gz -C build/ui-tests/Build/Products/Debug-iphonesimulator BudgetPlus.app
+
+      - name: Upload iOS UI test app
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ui-test-app
+          path: build/ios-ui-test-app.tar.gz
+          if-no-files-found: error
+          retention-days: 1

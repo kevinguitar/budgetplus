@@ -3,10 +3,12 @@
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import xml.etree.ElementTree as ET
 
 
@@ -15,7 +17,7 @@ SCRIPTS = ROOT / "ui-tests/scripts"
 
 # Every external device call is intercepted; these tests must never touch a device.
 MOCK = """#!/usr/bin/env python3
-import json, os
+import json, os, subprocess
 from pathlib import Path
 import sys
 command = Path(sys.argv[0]).name
@@ -41,6 +43,20 @@ elif command == 'maestro':
     sys.exit(int(failing))
 elif command == 'xcrun' and 'install' in args:
     sys.exit(int(os.environ.get('MOCK_INSTALL_STATUS', '0')))
+elif command == 'xcrun' and 'keychain' in args:
+    if os.environ.get('MOCK_KEYCHAIN_FAIL_ONCE'):
+        calls = [json.loads(line) for line in Path(os.environ['MOCK_LOG']).read_text().splitlines()]
+        if sum(call[0] == 'xcrun' and 'keychain' in call for call in calls) == 1:
+            sys.exit(124)
+    sys.exit(int(os.environ.get('MOCK_KEYCHAIN_STATUS', '0')))
+elif command == 'xcrun' and 'list' in args:
+    print('    iPhone 17 Pro UI Tests (mock-simulator) (Booted)')
+elif command == 'firebase':
+    sys.exit(subprocess.call(['bash', '-c', args[-1]]))
+elif command == 'xcodebuild':
+    if os.environ.get('MOCK_BUILD_CONFIG'):
+        Path(os.environ['MOCK_BUILD_CONFIG']).write_text(Path('iosApp/iosApp/GoogleService-Info.plist').read_text())
+    sys.exit(int(os.environ.get('MOCK_BUILD_STATUS', '99')))
 """
 
 
@@ -50,7 +66,7 @@ class RunnerTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.directory = Path(self.temp.name)
         self.log = self.directory / "commands.jsonl"
-        for name in ("adb", "maestro", "xcrun"):
+        for name in ("adb", "maestro", "xcrun", "firebase", "xcodebuild"):
             tool = self.directory / name
             tool.write_text(MOCK)
             tool.chmod(0o755)
@@ -60,7 +76,9 @@ class RunnerTests(unittest.TestCase):
                         MAESTRO_OUTPUT_DIR=str(self.directory / "reports"))
         # Avoid inheriting real CI/local runner configuration.
         for key in ("MOCK_FAIL_FLOW", "MOCK_INSTALL_STATUS", "MOCK_FAIL_ONCE_FLOW",
-                    "MOCK_NO_REPORT", "UI_TEST_RUN_ID", "MAESTRO_FLOW_FILTER", "MOCK_CLEAR_STATUS"):
+                    "MOCK_NO_REPORT", "UI_TEST_RUN_ID", "MAESTRO_FLOW_FILTER", "MOCK_CLEAR_STATUS",
+                    "UI_TEST_APK", "UI_TEST_APP_PATH", "MOCK_BUILD_STATUS", "MOCK_BUILD_CONFIG",
+                    "MOCK_KEYCHAIN_FAIL_ONCE", "MOCK_KEYCHAIN_STATUS"):
             self.env.pop(key, None)
 
     def run_suite(self, platform, shard, **env):
@@ -123,9 +141,111 @@ class RunnerTests(unittest.TestCase):
                 self.assertEqual(commands, [])
 
     def test_ios_failed_install_aborts_before_maestro(self):
-        result, _, flows = self.run_suite("ios", "premium", MOCK_INSTALL_STATUS="1")
+        result, commands, flows = self.run_suite("ios", "premium", MOCK_INSTALL_STATUS="1")
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(flows, [])
+        self.assertEqual(sum(call[0] == "xcrun" and "install" in call for call in commands), 2)
+
+    def test_ios_keychain_timeout_retries_reset_before_running_flows(self):
+        result, commands, flows = self.run_suite(
+            "ios", "free-a", MOCK_KEYCHAIN_FAIL_ONCE="1", MAESTRO_FLOW_FILTER="/01-record-digit-entry\\.yml$")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(flows, ["ui-tests/after-login/free/01-record-digit-entry.yml"])
+        self.assertEqual(sum(call[0] == "xcrun" and "keychain" in call for call in commands), 2)
+        self.assertEqual(sum(call[0] == "xcrun" and "install" in call for call in commands), 1)
+        self.assertIn("keychain reset failed (attempt 1/2)", result.stderr)
+        # Recovery must reset auth before the only install and before Maestro starts.
+        steps = [call[2] for call in commands if call[0] == "xcrun"]
+        self.assertEqual(steps, ["terminate", "uninstall", "keychain"] * 2 + ["install"])
+
+    def test_ios_persistent_keychain_timeout_aborts_after_two_attempts(self):
+        result, commands, flows = self.run_suite("ios", "free-a", MOCK_KEYCHAIN_STATUS="124")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(flows, [])
+        self.assertEqual(sum(call[0] == "xcrun" and "keychain" in call for call in commands), 2)
+        self.assertFalse(any("install" in call for call in commands))
+        report = self.directory / "reports/after-login-free/setup/report.xml"
+        self.assertEqual(ET.parse(report).getroot().get("errors"), "1")
+
+    def test_prebuilt_apps_skip_build_and_survive_firebase_reentry_and_retry(self):
+        flow = "ui-tests/after-login/premium/10-members.yml"
+        for platform, variable in (("android", "UI_TEST_APK"), ("ios", "UI_TEST_APP_PATH")):
+            with self.subTest(platform=platform):
+                self.log.unlink(missing_ok=True)
+                artifact = self.directory / f"{platform} prebuilt app"
+                if platform == "ios":
+                    artifact.mkdir()
+                    (artifact / "Info.plist").write_text("mock plist")
+                else:
+                    artifact.write_text("mock APK")
+                result = subprocess.run(
+                    ["bash", str(SCRIPTS / f"run-{platform}-ui-tests.sh")], cwd=ROOT,
+                    env=dict(self.env, **{variable: str(artifact)}, SHARD="premium",
+                             MAESTRO_FLOW_FILTER="/10-members\\.yml$", MOCK_FAIL_ONCE_FLOW=flow,
+                             MAESTRO_FLOW_ATTEMPTS="2"),
+                    capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                commands = [json.loads(line) for line in self.log.read_text().splitlines()]
+                self.assertFalse(any(call[0] == "xcodebuild" for call in commands))
+                self.assertEqual(sum(call[0] == "firebase" for call in commands), 1)
+                installs = [call for call in commands if "install" in call]
+                self.assertTrue(installs)
+                self.assertTrue(all(call[-1] == str(artifact) for call in installs))
+                # iOS resets/reinstalls for retry; Android clears the already-installed app.
+                self.assertEqual(len(installs), 2 if platform == "ios" else 1)
+                self.assertEqual(sum(call[0] == "maestro" for call in commands), 2)
+
+    def test_missing_prebuilt_app_fails_without_building_or_running_tests(self):
+        for platform, variable in (("android", "UI_TEST_APK"), ("ios", "UI_TEST_APP_PATH")):
+            with self.subTest(platform=platform):
+                self.log.unlink(missing_ok=True)
+                result = subprocess.run(
+                    ["bash", str(SCRIPTS / f"run-{platform}-ui-tests.sh")], cwd=ROOT,
+                    env=dict(self.env, **{variable: str(self.directory / "missing")}),
+                    capture_output=True, text=True, timeout=10)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Prebuilt", result.stderr)
+                commands = [json.loads(line) for line in self.log.read_text().splitlines()] if self.log.exists() else []
+                self.assertFalse(any(call[0] in ("xcodebuild", "maestro", "firebase") for call in commands))
+                self.assertFalse(any("install" in call for call in commands))
+
+    def test_ios_build_uses_test_config_without_a_device_and_restores_original(self):
+        # A miniature checkout prevents this build-helper test touching local configs.
+        checkout = self.directory / "checkout"
+        scripts = checkout / "ui-tests/scripts"
+        scripts.mkdir(parents=True)
+        for name in ("build-ios-ui-test-app.sh", "runner-common.sh"):
+            shutil.copyfile(SCRIPTS / name, scripts / name)
+        fixture = checkout / "ui-tests/config/GoogleService-Info.plist"
+        fixture.parent.mkdir()
+        fixture.write_text("test Firebase config")
+        service = checkout / "iosApp/iosApp/GoogleService-Info.plist"
+        service.parent.mkdir(parents=True)
+        observed = self.directory / "observed-config"
+        for original in (None, "original config"):
+            for status in (0, 7):
+                with self.subTest(original=original, status=status):
+                    self.log.unlink(missing_ok=True)
+                    if original is not None:
+                        service.write_text(original)
+                    result = subprocess.run(
+                        ["bash", str(scripts / "build-ios-ui-test-app.sh")],
+                        env=dict(self.env, MOCK_BUILD_STATUS=str(status), MOCK_BUILD_CONFIG=str(observed)),
+                        capture_output=True, text=True, timeout=10)
+                    self.assertEqual(result.returncode, status, result.stderr)
+                    self.assertEqual(observed.read_text(), fixture.read_text())
+                    if original is None:
+                        self.assertFalse(service.exists())
+                    else:
+                        self.assertEqual(service.read_text(), original)
+                    commands = [json.loads(line) for line in self.log.read_text().splitlines()]
+                    self.assertEqual(len(commands), 1)
+                    build = commands[0]
+                    self.assertEqual(build[0], "xcodebuild")
+                    self.assertIn("generic/platform=iOS Simulator", build)
+                    self.assertIn("APP_BUNDLE_ID=com.kevlina.budgetplus", build)
+                    self.assertIn("SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) UI_TEST", build)
+                    service.unlink(missing_ok=True)
 
     def test_android_setup_failure_is_reported_without_claiming_an_empty_selection(self):
         result, _, flows = self.run_suite("android", "premium", MOCK_CLEAR_STATUS="1")
@@ -282,6 +402,20 @@ class SummaryTests(unittest.TestCase):
 
 
 class AttemptTests(unittest.TestCase):
+    def test_failed_cli_cleans_up_children_even_after_console_closes(self):
+        import run_maestro
+
+        with tempfile.TemporaryDirectory(prefix="ui-test-child-cleanup-") as temp:
+            process = mock.Mock(stdout=iter([]))
+            process.wait.return_value = 1
+            argv = ["run_maestro.py", "--output-dir", temp, "--suite", "suite/flow", "--", "maestro"]
+            with mock.patch.object(sys, "argv", argv), \
+                    mock.patch.object(run_maestro.subprocess, "Popen", return_value=process), \
+                    mock.patch.object(run_maestro, "terminate") as terminate, \
+                    mock.patch.object(sys, "stdout"), mock.patch.object(sys, "stderr"):
+                self.assertEqual(run_maestro.main(), 1)
+                terminate.assert_called_once_with(process)
+
     def attempt(self, code, timeout="5s"):
         temp = tempfile.TemporaryDirectory(prefix="ui-test-attempt-")
         self.addCleanup(temp.cleanup)
