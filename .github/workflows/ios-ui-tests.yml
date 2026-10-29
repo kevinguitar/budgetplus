@@ -9,11 +9,21 @@ jobs:
     # its own budget upstream, leaving this deadline entirely for setup/tests.
     name: iOS UI tests (${{ matrix.shard }})
     runs-on: macos-latest
-    timeout-minutes: 100
+    timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
       matrix:
-        shard: [login, free-a, free-b, premium]
+        # Login took 16 min, free-b 70 min, premium 49 min including failed driver
+        # starts. Keep free-a conservative until its first complete prebuilt run.
+        include:
+          - shard: login
+            timeout: 30
+          - shard: free-a
+            timeout: 90
+          - shard: free-b
+            timeout: 90
+          - shard: premium
+            timeout: 65
     permissions:
       contents: read
       checks: write
@@ -21,6 +31,9 @@ jobs:
       MAESTRO_CLI_NO_ANALYTICS: true
       MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
       MAESTRO_DISABLE_UPDATE_CHECK: true
+      # Cold XCTest bootstrap exceeded the default two minutes. This is still
+      # inside the independent eight-minute deadline for the entire attempt.
+      MAESTRO_DRIVER_STARTUP_TIMEOUT: 240000
 
     steps:
       - uses: actions/checkout@v7

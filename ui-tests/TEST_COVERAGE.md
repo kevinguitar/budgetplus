@@ -90,16 +90,16 @@ Each flow runs login setup and premium seeding before its assertions.
 Android and iOS build in parallel. Each platform builds its test app once, then its
 UI shards download and install the same binary without compiling.
 
-| Shard | Selection |
-|---|---|
-| `login` | Platform-applicable login flows |
-| `free-a` | Free flows numbered below 50 |
-| `free-b` | Free flows numbered 50 and above |
-| `premium` | All premium flows |
+| Shard | Selection | Android timeout | iOS timeout |
+|---|---|---:|---:|
+| `login` | Platform-applicable login flows | 15 min | 30 min |
+| `free-a` | Free flows numbered below 50 | 45 min | 90 min |
+| `free-b` | Free flows numbered 50 and above | 40 min | 90 min |
+| `premium` | All premium flows | 35 min | 65 min |
 
 - Each shard has an isolated device and Firebase emulators; flows run sequentially.
   Android cold-boots with snapshots disabled. Runners enforce platform exclusions.
-- Build jobs have a 90-minute limit; UI jobs have 100 minutes. `final-status`
+- Build jobs have a 90-minute limit. UI limits include setup/retry headroom. `final-status`
   requires both builds and both UI workflows to pass.
 - Only emulator-backed test apps are uploaded, with one-day retention; production
   and staging apps are excluded. The iOS `.app` is tarred to preserve permissions
@@ -173,6 +173,7 @@ prebuilt apps, and reporting—not actual UI behavior.
   have separate bounded deadlines.
 - Retries clear Android app data or uninstall/reset keychain/reinstall on iOS.
   iOS login flows also reset before each flow because auth survives `clearState`.
+  iOS reset/install gets one bounded retry if simulator services are not ready.
 - Reports live under `build/maestro/{android,ios}/`. The final `report.xml` is
   authoritative; `attempts/<run-id>/<attempt>/` preserves raw reports, console logs,
   screenshots, hierarchies, and result metadata. Missing/invalid reports fail closed.

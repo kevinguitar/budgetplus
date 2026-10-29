@@ -7,13 +7,22 @@ jobs:
   android-ui-tests:
     name: Android UI tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
       matrix:
         # Keep each emulator short-lived: the full free suite lost runners after
         # 43–50 minutes and showed QEMU hangs as graphics buffers accumulated.
-        shard: [login, free-a, free-b, premium]
+        # Observed wall times: 6 / 30 / 24 / 22 min; allow setup/retry variance.
+        include:
+          - shard: login
+            timeout: 15
+          - shard: free-a
+            timeout: 45
+          - shard: free-b
+            timeout: 40
+          - shard: premium
+            timeout: 35
     permissions:
       contents: read
       checks: write

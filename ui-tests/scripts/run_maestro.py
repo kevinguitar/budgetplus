@@ -136,6 +136,10 @@ def main():
                                               args=(process, attempt_dir / "console.log"), daemon=True)
             console_thread.start()
             exit_code = process.wait(timeout=args.timeout)
+            if exit_code != 0:
+                # Failed iOS driver startup can exit the CLI while xcodebuild/XCTest
+                # keeps running. Stop those children before retrying on the same device.
+                terminate(process)
         except subprocess.TimeoutExpired:
             terminate(process)
             exit_code = 124

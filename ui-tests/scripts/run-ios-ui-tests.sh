@@ -106,10 +106,25 @@ run_flow_dir() {
 # Reinstalls the app from a fully reset state (fresh keychain wipes the persisted
 # Firebase auth session, which launchApp:clearState does not clear on iOS).
 reset_app() {
-  run_bounded 15s xcrun simctl terminate "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
-  run_bounded 30s xcrun simctl uninstall "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
-  run_bounded 30s xcrun simctl keychain "$SIMULATOR_ID" reset || return 1
-  run_bounded 60s xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+  # A freshly booted simulator can briefly stall keychain services. Retry the
+  # complete reset once, without relaxing command deadlines or reusing auth state.
+  local attempt
+  for attempt in 1 2; do
+    echo "Resetting iOS app (attempt $attempt/2)"
+    run_bounded 15s xcrun simctl terminate "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
+    run_bounded 30s xcrun simctl uninstall "$SIMULATOR_ID" com.kevlina.budgetplus >/dev/null 2>&1 || true
+    echo "Resetting simulator keychain"
+    if ! run_bounded 30s xcrun simctl keychain "$SIMULATOR_ID" reset; then
+      echo "::warning::Simulator keychain reset failed (attempt $attempt/2)." >&2
+      continue
+    fi
+    echo "Installing iOS test app"
+    if run_bounded 60s xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"; then
+      return 0
+    fi
+    echo "::warning::Simulator app install failed (attempt $attempt/2)." >&2
+  done
+  return 1
 }
 
 reset_for_suite() {
