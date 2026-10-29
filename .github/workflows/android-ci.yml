@@ -6,11 +6,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
 
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 1
+
+      - name: Validate UI test runners
+        run: python3 -m unittest discover -s ui-tests/scripts -v
 
       - name: Configure JDK
         uses: actions/setup-java@v6
@@ -71,4 +75,18 @@ jobs:
           echo REVENUECAT_IOS_API_KEY=$REVENUECAT_IOS_API_KEY >> ./local.properties
 
       - name: Build with Gradle
-        run: ./gradlew test testAndroid lint :androidApp:assemble :insiderApp:assemble --continue --parallel
+        run: |
+          # A variant-specific fixture takes precedence over the production root config
+          # and the debug/stage config. Assemble the UI-test APK in this same build.
+          mkdir -p androidApp/src/uiTest
+          cp ui-tests/config/google-services.json androidApp/src/uiTest/google-services.json
+          ./gradlew test testAndroid lint :androidApp:assemble :insiderApp:assemble --continue --parallel
+
+      - name: Upload Android UI test app
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-ui-test-app
+          # Never upload release/stage apps or the rest of the build directory.
+          path: androidApp/build/outputs/apk/uiTest/androidApp-uiTest.apk
+          if-no-files-found: error
+          retention-days: 1

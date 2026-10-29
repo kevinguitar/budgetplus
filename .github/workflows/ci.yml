@@ -21,13 +21,13 @@ jobs:
 
   android-ui-tests:
     name: Android UI tests
+    needs: android-ci
     uses: ./.github/workflows/android-ui-tests.yml
-    secrets: inherit
 
   ios-ui-tests:
     name: iOS UI tests
+    needs: ios-ci
     uses: ./.github/workflows/ios-ui-tests.yml
-    secrets: inherit
 
   final-status:
     name: final-status
