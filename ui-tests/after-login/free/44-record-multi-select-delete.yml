@@ -61,6 +61,13 @@ appId: com.kevlina.budgetplus
     visible:
       text: "2 records were deleted"
     timeout: 10000
+# Warm flows reuse this app; do not leave the persistent snackbar over Search.
+- tapOn:
+    text: "2 records were deleted"
+- extendedWaitUntil:
+    notVisible:
+      text: "2 records were deleted"
+    timeout: 8000
 - tapOn:
     text: "bottom_nav_add"
 - runFlow: ../../common/assert-on-record.yml

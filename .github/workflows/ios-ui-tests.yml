@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Free shards are balanced at flow 43; retain the existing budgets until
+        # Free shards are balanced at flow 42; retain the existing budgets until
         # optimized helper timings have been verified on GitHub's macOS runners.
         include:
           - shard: login

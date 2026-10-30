@@ -31,6 +31,28 @@ appId: com.kevlina.budgetplus
                 timeout: 10000
             - tapOn:
                 text: "bottom_nav_history"
+            # Warm iOS flows retain each tab's navigation stack. History can
+            # restore a category's Records screen (or Search), not Overview.
+            # Probe the destination first so the normal path does not spend an
+            # optional-element timeout looking for a Back button that is absent.
+            - evalScript: ${output.overviewVisible = false}
+            - runFlow:
+                when:
+                  visible:
+                    text: ".*'s Overview"
+                commands:
+                  - evalScript: ${output.overviewVisible = true}
+            - runFlow:
+                when:
+                  true: ${!output.overviewVisible}
+                commands:
+                  - runFlow:
+                      when:
+                        visible:
+                          text: "Back"
+                      commands:
+                        - tapOn:
+                            text: "Back"
       - extendedWaitUntil:
           visible:
             text: ".*'s Overview"

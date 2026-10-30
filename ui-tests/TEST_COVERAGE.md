@@ -93,7 +93,7 @@ UI shards download and install the same binary without compiling.
 | Shard | Selection | Android timeout | iOS timeout |
 |---|---|---:|---:|
 | `login` | Platform-applicable login flows | 15 min | 30 min |
-| `free-a` | Free flows below 50 (Android) / 43 (iOS) | 45 min | 90 min |
+| `free-a` | Free flows below 50 (Android) / 42 (iOS) | 45 min | 90 min |
 | `free-b` | Remaining free flows | 40 min | 90 min |
 | `premium` | All premium flows | 35 min | 65 min |
 
