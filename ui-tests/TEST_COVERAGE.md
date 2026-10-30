@@ -93,12 +93,15 @@ UI shards download and install the same binary without compiling.
 | Shard | Selection | Android timeout | iOS timeout |
 |---|---|---:|---:|
 | `login` | Platform-applicable login flows | 15 min | 30 min |
-| `free-a` | Free flows numbered below 50 | 45 min | 90 min |
-| `free-b` | Free flows numbered 50 and above | 40 min | 90 min |
+| `free-a` | Free flows below 50 (Android) / 43 (iOS) | 45 min | 90 min |
+| `free-b` | Remaining free flows | 40 min | 90 min |
 | `premium` | All premium flows | 35 min | 65 min |
 
 - Each shard has an isolated device and Firebase emulators; flows run sequentially.
   Android cold-boots with snapshots disabled. Runners enforce platform exclusions.
+- iOS reuses the foreground Record/premium state and checks system dialogs together;
+  cold-launch/auth coverage stays in the login suite. Per-flow reporting,
+  reset-on-retry, and attempt deadlines remain unchanged.
 - Build jobs have a 90-minute limit. UI limits include setup/retry headroom. `final-status`
   requires both builds and both UI workflows to pass.
 - Only emulator-backed test apps are uploaded, with one-day retention; production
@@ -218,5 +221,7 @@ Prefer existing setup, navigation, record, picker, and cleanup subflows over cop
   helpers to reveal/advance the carousel and restore Milk Tea through real saves.
 - Guard flaky taps with bounded retries and verify the destination. An enabled child
   icon does not prove its parent is actionable.
+- Prefer positive visibility probes before optional recovery: negative conditions
+  can wait for already-visible UI to disappear before deciding to skip a command.
 - Do not set optional subflow parameter defaults in config-level `env`; Maestro can
   overwrite caller values. Use an undefined-value fallback expression instead.

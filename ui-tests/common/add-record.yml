@@ -6,10 +6,16 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "AC"
 # Do not inherit Income from a prior flow that failed before restoring the tab.
+- evalScript: ${output.expenseTabVisible = false}
 - runFlow:
     when:
-      notVisible:
+      visible:
         text: "Expense"
+    commands:
+      - evalScript: ${output.expenseTabVisible = true}
+- runFlow:
+    when:
+      true: ${!output.expenseTabVisible}
     commands:
       - swipe:
           start: "50%,25%"
@@ -23,25 +29,40 @@ appId: com.kevlina.budgetplus
 # center, which lands on the fixed calculator and fails to scroll the category band.
 # Instead swipe *within* the category/info band (as open-category-editor.yml does),
 # alternating direction so the pill is revealed whichever way the grid is scrolled.
-# Each swipe is guarded by notVisible, so it's a no-op once the pill is on screen.
+# Each swipe is guarded by the visibility probe, so it is skipped once the pill is on screen.
 - retry:
     maxRetries: 6
     commands:
+      # Positive probes skip recovery immediately when the pill is present;
+      # negative visibility guards otherwise spend the lookup timeout waiting
+      # for an already-visible pill to disappear on every record.
+      - evalScript: ${output.recordCategoryVisible = false}
+      - runFlow:
+          when:
+            visible:
+              text: "${CATEGORY}"
+          commands:
+            - evalScript: ${output.recordCategoryVisible = true}
       # Reveal pills that are below the fold (swipe the band up).
       - runFlow:
           when:
-            notVisible:
-              text: "${CATEGORY}"
+            true: ${!output.recordCategoryVisible}
           commands:
             - swipe:
                 start: "50%,45%"
                 end: "50%,15%"
                 duration: 400
       # Reveal pills that are above the fold (swipe the band down).
+      - evalScript: ${output.recordCategoryVisible = false}
       - runFlow:
           when:
-            notVisible:
+            visible:
               text: "${CATEGORY}"
+          commands:
+            - evalScript: ${output.recordCategoryVisible = true}
+      - runFlow:
+          when:
+            true: ${!output.recordCategoryVisible}
           commands:
             - swipe:
                 start: "50%,15%"
