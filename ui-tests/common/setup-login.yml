@@ -4,7 +4,30 @@
 # or on the Welcome screen (signed in but no book).
 appId: com.kevlina.budgetplus
 ---
-- launchApp
+# Reuse the foreground Record screen on iOS. Relaunching between every flow
+# needlessly restarts Compose/ads and re-arms Maestro's optional-element waits.
+# Login flows still explicitly cold-launch/reset; recovery still launches here.
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - evalScript: ${output.setupOnRecord = false}
+      - runFlow:
+          when:
+            visible:
+              text: "AC"
+          commands:
+            - evalScript: ${output.setupOnRecord = true}
+      - runFlow:
+          when:
+            true: ${!output.setupOnRecord}
+          commands:
+            - launchApp
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - launchApp
 - runFlow: dismiss-system-dialogs.yml
 - extendedWaitUntil:
     visible:

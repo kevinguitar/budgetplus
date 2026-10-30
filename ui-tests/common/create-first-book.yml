@@ -5,6 +5,23 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "My accounting book"
 - inputText: "UI Test Book"
+# A fresh iOS keyboard can show QuickPath onboarding while entering the name.
+# Dismiss it before hiding the keyboard/tapping Go, which the overlay intercepts.
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - runFlow:
+          when:
+            visible:
+              text: "Speed up your typing by sliding your finger across the letters to compose a word."
+          commands:
+            - tapOn:
+                text: "Continue"
+            - extendedWaitUntil:
+                notVisible:
+                  text: "Speed up your typing by sliding your finger across the letters to compose a word."
+                timeout: 8000
 # Neutral label dismisses the keyboard on both platforms.
 - tapOn:
     text: "You can create a new accounting book"

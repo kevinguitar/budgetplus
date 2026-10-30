@@ -11,24 +11,43 @@ appId: com.kevlina.budgetplus
 # (markPremium short-circuits when already premium), so retry the whole send until premium
 # actually takes effect — confirmed by the stable "Banner Ad Area" container being
 # gone on the Record screen.
-- retry:
-    maxRetries: 3
+# iOS flows share the authenticated user. Once premium is confirmed on Record,
+# avoid another native deeplink/confirmation round-trip; a fresh user still seeds.
+# Use the stable container, never ad fill/content, as the state signal.
+- evalScript: ${output.shouldSeedPremium = true}
+- runFlow:
+    when:
+      platform: iOS
     commands:
-      - openLink: "budgetplus://uiTestPremium"
-      # iOS shows an "Open in Budget+?" confirmation for custom-scheme deeplinks.
-      - tapOn:
-          text: "Open"
-          optional: true
-      # Back on Record, wait for premium to hide the banner container. Ad content
-      # alone can be absent while a free user's ad is loading. If the container is still
-      # visible when the wait expires, the assert fails and the deeplink send is retried.
       - runFlow: assert-on-record.yml
-      - extendedWaitUntil:
-          notVisible:
-            text: "Banner Ad Area"
-          timeout: 20000
-      - assertNotVisible:
-          text: "Banner Ad Area"
+      - runFlow:
+          when:
+            notVisible:
+              text: "Banner Ad Area"
+          commands:
+            - evalScript: ${output.shouldSeedPremium = false}
+- runFlow:
+    when:
+      true: ${output.shouldSeedPremium}
+    commands:
+      - retry:
+          maxRetries: 3
+          commands:
+            - openLink: "budgetplus://uiTestPremium"
+            # iOS may show an "Open in Budget+?" confirmation.
+            - tapOn:
+                text: "Open"
+                optional: true
+            - runFlow: assert-on-record.yml
+            - extendedWaitUntil:
+                notVisible:
+                  text: "Banner Ad Area"
+                timeout: 20000
+            - assertNotVisible:
+                text: "Banner Ad Area"
+- runFlow: assert-on-record.yml
+- assertNotVisible:
+    text: "Banner Ad Area"
 # Dismiss the (persistent, UI-test) "unlocked" snackbar so it doesn't block later
 # bottom-screen interactions (e.g. the Overview Search FAB, or the lower rows of the
 # Settings list like "Color Tone Picker"). UI-test builds make the snackbar

@@ -9,11 +9,19 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "Cancel"
     optional: true
+# Positive probes finish as soon as Record is visible. A `notVisible: AC`
+# loop condition instead waits for AC to disappear before deciding to skip.
+- evalScript: ${output.returnOnRecord = false}
+- runFlow:
+    when:
+      visible:
+        text: "AC"
+    commands:
+      - evalScript: ${output.returnOnRecord = true}
 - repeat:
     times: 3
     while:
-      notVisible:
-        text: "AC"
+      true: ${!output.returnOnRecord}
     commands:
       # Prefer real back navigation from nested screens. Their Add tab may already
       # be selected; tapping it is a no-op that can stall Maestro's animation wait.
@@ -46,10 +54,20 @@ appId: com.kevlina.budgetplus
             true: ${!output.returnNavigationHandled}
           commands:
             - back
+      - runFlow:
+          when:
+            visible:
+              text: "AC"
+          commands:
+            - evalScript: ${output.returnOnRecord = true}
 - runFlow:
     when:
-      visible:
-        text: "Continue with Google|Book Name"
+      true: ${!output.returnOnRecord}
     commands:
-      - runFlow: setup-login.yml
+      - runFlow:
+          when:
+            visible:
+              text: "Continue with Google|Book Name"
+          commands:
+            - runFlow: setup-login.yml
 - runFlow: assert-on-record.yml

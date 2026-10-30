@@ -1,19 +1,50 @@
-# Dismisses transient OS dialogs that can appear on launch or mid-flow (notification
-# permission, iOS "Sign in to Apple Account"/Apple Account verification, App Tracking
-# Transparency, etc.). All taps are optional so this is a no-op when the dialogs aren't
-# present and on platforms where they don't appear.
+# Dismiss transient OS dialogs. On iOS, look for any supported button at once:
+# separate optional taps wait for absent buttons and capture warning screenshots.
 appId: com.kevlina.budgetplus
 ---
-- tapOn:
-    text: "Cancel"
-    optional: true
-- tapOn:
-    text: "Not Now"
-    optional: true
-# iOS App Tracking Transparency prompt — decline tracking to dismiss it deterministically.
-- tapOn:
-    text: "Ask App Not to Track"
-    optional: true
-- tapOn:
-    text: "Allow"
-    optional: true
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      # Handle consecutive prompts, including ATT arriving after notifications.
+      - repeat:
+          times: 4
+          while:
+            visible:
+              text: "Cancel|Not Now|Ask App Not to Track|Allow"
+          commands:
+            # ATT offers both "Ask App Not to Track" and "Allow". Preserve the
+            # decline preference rather than relying on accessibility-tree order.
+            - evalScript: ${output.systemDialogHandled = false}
+            - runFlow:
+                when:
+                  visible:
+                    text: "Ask App Not to Track"
+                commands:
+                  - tapOn:
+                      text: "Ask App Not to Track"
+                      optional: true
+                  - evalScript: ${output.systemDialogHandled = true}
+            - runFlow:
+                when:
+                  true: ${!output.systemDialogHandled}
+                commands:
+                  - tapOn:
+                      text: "Cancel|Not Now|Allow"
+                      optional: true
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn:
+          text: "Cancel"
+          optional: true
+      - tapOn:
+          text: "Not Now"
+          optional: true
+      - tapOn:
+          text: "Ask App Not to Track"
+          optional: true
+      - tapOn:
+          text: "Allow"
+          optional: true

@@ -27,6 +27,13 @@ appId: com.kevlina.budgetplus
     visible:
       text: "Your book Second Book is created!"
     timeout: 20000
+# Assert the confirmation, then dismiss it before a later warm flow uses Search.
+- tapOn:
+    text: "Your book Second Book is created!"
+- extendedWaitUntil:
+    notVisible:
+      text: "Your book Second Book is created!"
+    timeout: 8000
 - runFlow: ../../common/assert-on-record.yml
 # Switch back to the original book.
 - tapOn:

@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Login took 16 min, free-b 70 min, premium 49 min including failed driver
-        # starts. Keep free-a conservative until its first complete prebuilt run.
+        # Free shards are balanced at flow 42; retain the existing budgets until
+        # optimized helper timings have been verified on GitHub's macOS runners.
         include:
           - shard: login
             timeout: 30

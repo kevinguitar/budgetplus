@@ -15,8 +15,8 @@ SIMULATOR_NAME=${1:-iPhone 17 Pro UI Tests}
 # (~35 flows) overran the original 100-minute job timeout, so it is split into
 # two sub-shards by flow-number range. Accepts:
 #   login   – ui-tests/login/*.yml
-#   free-a  – ui-tests/after-login/free flows numbered < 50
-#   free-b  – ui-tests/after-login/free flows numbered >= 50
+#   free-a  – ui-tests/after-login/free flows numbered < 42
+#   free-b  – ui-tests/after-login/free flows numbered >= 42
 #   free    – ui-tests/after-login/free (whole suite; used for local runs)
 #   premium – ui-tests/after-login/premium
 #   all     – every suite (default; used for local runs)
@@ -162,15 +162,15 @@ run_suites() {
     run_flow_dir after-login-free ui-tests/after-login/free || suite_result=1
   fi
 
-  # Balanced sub-shards of the free suite (see SHARD docs): free-a runs flows
-  # numbered < 50, free-b runs flows numbered >= 50. Passing explicit files (in
-  # sorted order) keeps Maestro's per-flow reporting while running only a subset.
+  # Split at 42 to balance measured in-flow work (~23 min per shard), rather
+  # than overfitting variable XCTest startup time. Android keeps its <50 split.
+  # Explicit files retain per-flow reporting without adding macOS jobs.
   if [[ "$SHARD" == "free-a" || "$SHARD" == "free-b" ]]; then
     reset_for_suite after-login-free/setup || return 1
     for flow in ui-tests/after-login/free/*.yml; do
       num=$(basename "$flow" | cut -d- -f1)
       num=$((10#$num))
-      if [[ "$SHARD" == "free-a" && "$num" -lt 50 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 50 ]]; then
+      if [[ "$SHARD" == "free-a" && "$num" -lt 42 ]] || [[ "$SHARD" == "free-b" && "$num" -ge 42 ]]; then
         if grep -q '^platform: Android' "$flow"; then
           continue
         fi

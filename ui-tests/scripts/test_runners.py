@@ -92,13 +92,14 @@ class RunnerTests(unittest.TestCase):
         return result, commands, flows
 
     def expected_flows(self, platform, shard):
+        free_boundary = 42 if platform == "ios" else 50
         paths = []
         if shard in ("all", "login"):
             paths += sorted((ROOT / "ui-tests/login").glob("*.yml"))
         if shard in ("all", "free", "free-a", "free-b"):
             paths += [p for p in sorted((ROOT / "ui-tests/after-login/free").glob("*.yml"))
                       if shard not in ("free-a", "free-b")
-                      or (int(p.name.split("-")[0]) < 50) == (shard == "free-a")]
+                      or (int(p.name.split("-")[0]) < free_boundary) == (shard == "free-a")]
         if shard in ("all", "premium"):
             paths += sorted((ROOT / "ui-tests/after-login/premium").glob("*.yml"))
         excluded = "platform: iOS" if platform == "android" else "platform: Android"
@@ -113,6 +114,16 @@ class RunnerTests(unittest.TestCase):
             with self.subTest(platform=platform):
                 self.assertIn("ui-tests/after-login/free/12-invite.yml", self.expected_flows(platform, "free"))
 
+    def test_free_shards_cover_every_flow_once_with_platform_specific_balancing(self):
+        for platform in ("android", "ios"):
+            a = self.expected_flows(platform, "free-a")
+            b = self.expected_flows(platform, "free-b")
+            self.assertEqual(set(a) & set(b), set())
+            self.assertEqual(sorted(a + b), self.expected_flows(platform, "free"))
+            for name in ("42-record-delete", "43-record-sort", "44-record-multi-select-delete"):
+                path = f"ui-tests/after-login/free/{name}.yml"
+                self.assertIn(path, b if platform == "ios" else a)
+
     def test_shards_and_platform_gates(self):
         for platform in ("android", "ios"):
             for shard in ("all", "login", "free", "free-a", "free-b", "premium"):
@@ -121,6 +132,21 @@ class RunnerTests(unittest.TestCase):
                     result, _, flows = self.run_suite(platform, shard)
                     self.assertEqual(result.returncode, 0, result.stderr)
                     self.assertEqual(flows, self.expected_flows(platform, shard))
+
+    def test_ios_warm_handoff_sequences_share_one_initial_reset(self):
+        cases = (
+            ("free-b", "free", ["42-record-delete", "43-record-sort", "44-record-multi-select-delete", "50-search-basics"]),
+            ("premium", "premium", ["03-create-additional-book", "05-search-premium-periods"]),
+        )
+        for shard, directory, names in cases:
+            with self.subTest(shard=shard):
+                self.log.unlink(missing_ok=True)
+                result, commands, flows = self.run_suite(
+                    "ios", shard, MAESTRO_FLOW_FILTER="/(" + "|".join(names) + ")\\.yml$")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(flows, [f"ui-tests/after-login/{directory}/{name}.yml" for name in names])
+                for operation in ("keychain", "install"):
+                    self.assertEqual(sum(call[0] == "xcrun" and operation in call for call in commands), 1)
 
     def test_failure_propagates_and_later_flows_still_run(self):
         failing = "ui-tests/after-login/premium/01-no-banner-ad.yml"
