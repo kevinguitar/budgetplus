@@ -48,7 +48,9 @@ import budgetplus.core.common.generated.resources.ic_show_chart
 import budgetplus.core.common.generated.resources.ic_star
 import budgetplus.core.common.generated.resources.ic_supervised_user_circle
 import budgetplus.core.common.generated.resources.ic_vibration
+import budgetplus.core.common.generated.resources.ic_widgets
 import budgetplus.core.common.generated.resources.premium_hide_ads
+import budgetplus.core.common.generated.resources.record_widget_title
 import budgetplus.core.common.generated.resources.settings_allow_members_edit
 import budgetplus.core.common.generated.resources.settings_allow_members_edit_desc
 import budgetplus.core.common.generated.resources.settings_bar_chart
@@ -239,6 +241,15 @@ internal fun SettingsContent(
             icon = vectorResource(Res.drawable.ic_color_lens),
             roundTop = !canSelectLanguage,
             onClick = { navController.navigate(BookDest.Colors()) }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.record_widget_title),
+            icon = vectorResource(Res.drawable.ic_widgets),
+            onClick = {
+                vm.trackRecordWidgetClicked()
+                navController.navigate(BookDest.RecordWidget)
+            }
         )
 
         SettingsItem(

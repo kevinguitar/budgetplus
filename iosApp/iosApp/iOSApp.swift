@@ -6,6 +6,7 @@ import FirebaseFirestore
 import FirebaseMessaging
 import GoogleSignIn
 import SwiftUI
+import WidgetKit
 
 // For full explanation
 // https://firebase.google.com/docs/ios/learn-more?hl=en#swiftui
@@ -49,6 +50,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         #if !DEBUG
         CrashlyticsInitializer.initialize()
         #endif
+
+        // WidgetKit is Swift only, let Kotlin reload the record widgets when their data changes.
+        RecordWidgetBridge.shared.setTimelineReloader {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
 
         BudgetPlusIosAppGraphHolder.shared.graph.appStartActions.forEach { action in
             (action as? CommonAppStartAction)?.onAppStart()
@@ -111,6 +117,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -118,6 +125,23 @@ struct iOSApp: App {
                 .onOpenURL { url in
                     BudgetPlusIosAppGraphHolder.shared.onNewDeeplink(deeplink: url.absoluteString)
                 }
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active {
+                reportRecordWidgetCount()
+            }
+        }
+    }
+
+    /// iOS doesn't notify the app when a widget is added, so report the number of record widgets
+    /// whenever the app becomes active to detect the newly added ones.
+    private func reportRecordWidgetCount() {
+        WidgetCenter.shared.getCurrentConfigurations { result in
+            guard case .success(let widgets) = result else { return }
+            let count = widgets.filter { $0.kind == "RecordWidget" }.count
+            DispatchQueue.main.async {
+                RecordWidgetBridge.shared.onWidgetCountChanged(count: Int32(count))
+            }
         }
     }
 }

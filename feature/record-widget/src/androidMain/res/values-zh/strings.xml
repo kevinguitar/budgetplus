@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="record_widget_label">记账小组件</string>
+    <string name="record_widget_description">点一下就能记下常用的账目</string>
+    <string name="record_widget_setup">点击以设置</string>
+    <string name="record_widget_income">收入</string>
+</resources>

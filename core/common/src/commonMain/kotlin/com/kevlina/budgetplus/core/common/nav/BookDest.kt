@@ -22,6 +22,8 @@ sealed interface BookDest : NavKey {
 
     data object BatchRecord : BookDest
 
+    data object RecordWidget : BookDest
+
     data class Colors(val hex: String? = null) : BookDest
 
     data class CurrencyPicker(val purpose: Purpose) : BookDest {

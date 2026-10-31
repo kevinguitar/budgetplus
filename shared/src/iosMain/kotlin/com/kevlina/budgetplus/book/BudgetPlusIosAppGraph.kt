@@ -5,6 +5,7 @@ import com.kevlina.budgetplus.core.common.AppStartAction
 import com.kevlina.budgetplus.core.common.sendEvent
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.theme.ThemeManager
+import com.kevlina.budgetplus.feature.record.widget.IosRecordWidgetAddDetector
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.createGraph
@@ -18,6 +19,7 @@ interface BudgetPlusIosAppGraph : ViewModelGraph {
     val authManager: AuthManager
     val themeManager: ThemeManager
     val deeplinkFlow: DeeplinkFlow
+    val recordWidgetAddDetector: IosRecordWidgetAddDetector
 }
 
 object BudgetPlusIosAppGraphHolder {

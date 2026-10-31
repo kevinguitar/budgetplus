@@ -1,0 +1,33 @@
+# ST16 — Record Widget lists the frequently recorded items
+appId: com.kevlina.budgetplus
+---
+- runFlow: ../../common/setup-login.yml
+- runFlow: ../../common/assert-on-record.yml
+# Make sure there is at least one record in the last 30 days.
+- runFlow:
+    file: ../../common/add-record.yml
+    env:
+      CATEGORY: "Food"
+- runFlow: ../../common/open-settings.yml
+- scrollUntilVisible:
+    element:
+      text: "Record Widget"
+    direction: DOWN
+    timeout: 10000
+# Record Widget is available to every user and opens its dedicated screen.
+- tapOn:
+    text: "Record Widget"
+- extendedWaitUntil:
+    visible:
+      text: "Adds to: .*"
+    timeout: 15000
+# The record without a note is listed by its category.
+- extendedWaitUntil:
+    visible:
+      text: "record_widget_item_Expense_Food_Food"
+    timeout: 15000
+- tapOn:
+    text: "record_widget_item_Expense_Food_Food"
+- assertVisible:
+    text: "record_widget_done"
+- runFlow: ../../common/return-to-record.yml

@@ -13,6 +13,7 @@ const val APP_DEEPLINK_CUSTOM = "$APP_DEEPLINK_SCHEME://"
 val APP_DEEPLINK_PREFIXES = listOf(APP_DEEPLINK, APP_DEEPLINK_CUSTOM)
 
 const val NAV_RECORD_PATH = "record"
+const val NAV_RECORD_WIDGET_PATH = "recordWidget"
 const val NAV_JOIN_PATH = "join"
 const val NAV_SETTINGS_PATH = "settings"
 const val NAV_COLORS_PATH = "colors"

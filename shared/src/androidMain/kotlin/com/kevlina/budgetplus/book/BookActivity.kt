@@ -50,7 +50,7 @@ class BookActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         resolveGraphExtensionFactory<BookActivityGraph.Factory>()
-            .create(this)
+            .createBookActivityGraph(this)
             .inject(this)
 
         // When the user open the settings from app preference.

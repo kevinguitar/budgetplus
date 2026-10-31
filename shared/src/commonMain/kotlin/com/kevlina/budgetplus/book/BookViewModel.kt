@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.book_join_success
+import budgetplus.core.common.generated.resources.record_widget_book_unavailable
+import budgetplus.core.common.generated.resources.record_widget_switched_book
 import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
+import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK_PREFIXES
@@ -17,6 +20,7 @@ import com.kevlina.budgetplus.core.common.nav.NAV_COLORS_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_JOIN_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_OVERVIEW_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_PATH
+import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_WIDGET_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_SETTINGS_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_UI_TEST_PREMIUM_PATH
 import com.kevlina.budgetplus.core.common.nav.NAV_UNLOCK_PREMIUM_PATH
@@ -24,19 +28,26 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.JoinBookException
+import com.kevlina.budgetplus.core.data.RecordPrefill
+import com.kevlina.budgetplus.core.data.RecordPrefillHolder
 import com.kevlina.budgetplus.core.theme.ThemeManager
+import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDeeplink
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.compose.resources.getString
+import kotlin.time.Duration.Companion.seconds
 
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -50,6 +61,8 @@ internal class BookViewModel(
     val admobInitializer: AdmobInitializer,
     private val bookRepo: BookRepo,
     private val authManager: AuthManager,
+    private val recordPrefillHolder: RecordPrefillHolder,
+    private val tracker: Tracker,
 ) : ViewModel() {
 
     private val hideBottomNavDestinations =
@@ -125,7 +138,17 @@ internal class BookViewModel(
                 return DeeplinkType.JoinRequest
             }
 
-            NAV_RECORD_PATH -> navController.navigate(BookDest.Record)
+            NAV_RECORD_PATH -> {
+                val prefill = RecordWidgetDeeplink.parse(queries)
+                if (prefill == null) {
+                    navController.navigate(BookDest.Record)
+                } else {
+                    handleRecordWidgetTap(prefill)
+                }
+            }
+
+            NAV_RECORD_WIDGET_PATH -> navController.navigate(BookDest.RecordWidget)
+
             NAV_OVERVIEW_PATH -> navController.navigate(BookDest.Overview)
             NAV_UNLOCK_PREMIUM_PATH -> navController.navigate(BookDest.UnlockPremium)
 
@@ -142,6 +165,43 @@ internal class BookViewModel(
             else -> Logger.d("Deeplink: Unknown segment $firstSegment. Url=$url")
         }
         return DeeplinkType.Normal
+    }
+
+    /**
+     * The user tapped an item on the record widget. Switch to the widget's book if needed, and
+     * show the record screen with the item prefilled.
+     */
+    private fun handleRecordWidgetTap(prefill: RecordPrefill) {
+        tracker.logEvent("record_widget_item_tapped")
+        viewModelScope.launch {
+            // The app could be cold started from the widget, wait for the user to be restored.
+            // When the user isn't signed in, the auth screen is displayed instead.
+            withTimeoutOrNull(DATA_LOADING_TIMEOUT) {
+                authManager.userState.filterNotNull().first()
+            } ?: return@launch
+
+            val books = withTimeoutOrNull(DATA_LOADING_TIMEOUT) {
+                bookRepo.booksState.filterNotNull().first()
+            }
+            val book = books?.firstOrNull { it.id == prefill.bookId }
+            if (book == null) {
+                snackbarSender.send(Res.string.record_widget_book_unavailable)
+                navController.selectRootAndPopToRoot(BookDest.Record)
+                return@launch
+            }
+
+            val isBookSwitched = bookRepo.currentBookId != book.id
+            if (isBookSwitched) {
+                bookRepo.selectBook(book)
+            }
+
+            recordPrefillHolder.set(prefill)
+            navController.selectRootAndPopToRoot(BookDest.Record)
+
+            if (isBookSwitched) {
+                snackbarSender.send(Res.string.record_widget_switched_book, formatArgs = listOf(book.name))
+            }
+        }
     }
 
     fun handleJoinRequest() {
@@ -164,6 +224,8 @@ internal class BookViewModel(
         }
     }
 }
+
+private val DATA_LOADING_TIMEOUT = 5.seconds
 
 enum class DeeplinkType {
     Normal,

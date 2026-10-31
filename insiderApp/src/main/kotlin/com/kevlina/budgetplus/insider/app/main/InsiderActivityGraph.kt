@@ -12,6 +12,6 @@ interface InsiderActivityGraph {
     @ContributesTo(AppScope::class)
     @GraphExtension.Factory
     fun interface Factory {
-        fun create(): InsiderActivityGraph
+        fun createInsiderActivityGraph(): InsiderActivityGraph
     }
 }

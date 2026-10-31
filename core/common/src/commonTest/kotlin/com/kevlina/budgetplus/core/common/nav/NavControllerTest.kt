@@ -243,6 +243,30 @@ class NavControllerTest {
         assertEquals(listOf(startRoot), navController.backStack.toList())
     }
 
+    @Test
+    fun `selectRootAndPopToRoot  Pops the current root's stack`() {
+        val navController = createNavController(TestKey.RootA)
+        navController.navigate(TestKey.Screen1)
+        navController.navigate(TestKey.Screen2)
+
+        navController.selectRootAndPopToRoot(TestKey.RootA)
+
+        assertEquals(listOf<TestKey>(TestKey.RootA), navController.backStack.toList())
+    }
+
+    @Test
+    fun `selectRootAndPopToRoot  Switches to another root and pops its stack`() {
+        val navController = createNavController(TestKey.RootA)
+        navController.selectRoot(TestKey.RootB)
+        navController.navigate(TestKey.Screen1)
+        navController.selectRoot(TestKey.RootA)
+        navController.navigate(TestKey.Screen2)
+
+        navController.selectRootAndPopToRoot(TestKey.RootB)
+
+        assertEquals(listOf(TestKey.RootA, TestKey.Screen2, TestKey.RootB), navController.backStack.toList())
+    }
+
     /**
      * Asserts that the [list] contains exactly the given [elements] regardless of order.
      */

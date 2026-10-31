@@ -1,0 +1,18 @@
+# ST17 — Tapping a widget item whose book is gone shows an error and lands on Record
+appId: com.kevlina.budgetplus
+---
+- runFlow: ../../common/setup-login.yml
+- runFlow: ../../common/assert-on-record.yml
+- openLink: "budgetplus://record?source=widget&bookId=missing_book&type=Expense&category=Food&name=Dinner"
+# iOS may show an "Open in Budget+?" confirmation.
+- tapOn:
+    text: "Open"
+    optional: true
+- extendedWaitUntil:
+    visible:
+      text: "The book of this widget is no longer available"
+    timeout: 15000
+- runFlow: ../../common/assert-on-record.yml
+# UI-test snackbars are persistent and tap-to-dismiss, don't leave it for later flows.
+- tapOn:
+    text: "The book of this widget is no longer available"
