@@ -12,6 +12,6 @@ interface FcmServiceGraph {
     @ContributesTo(AppScope::class)
     @GraphExtension.Factory
     fun interface Factory {
-        fun create(): FcmServiceGraph
+        fun createFcmServiceGraph(): FcmServiceGraph
     }
 }

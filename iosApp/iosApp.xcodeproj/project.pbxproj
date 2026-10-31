@@ -76,6 +76,15 @@
 			isa = PBXBuildFile;
 			productRef = 30CDFBD334CCAFE76F5FC52D;
 		};
+		0B5E000C2FA0C0DE00A1B2C3 = {
+			isa = PBXBuildFile;
+			fileRef = 0B5E00002FA0C0DE00A1B2C3;
+			settings = {
+				ATTRIBUTES = (
+					RemoveHeadersOnCopy,
+				);
+			};
+		};
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +94,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 0A3F62142F4899E9008A7161;
 			remoteInfo = NotificationServiceExtension;
+		};
+		0B5E000A2FA0C0DE00A1B2C3 = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6CDB6A56C2FF02BAA741365;
+			proxyType = 1;
+			remoteGlobalIDString = 0B5E00062FA0C0DE00A1B2C3;
+			remoteInfo = RecordWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -96,6 +112,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				0A3F621C2F4899E9008A7161,
+				0B5E000C2FA0C0DE00A1B2C3,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,6 +147,13 @@
 			path = BudgetPlus.app;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		0B5E00002FA0C0DE00A1B2C3 = {
+			isa = PBXFileReference;
+			explicitFileType = "wrapper.app-extension";
+			includeInIndex = 0;
+			path = RecordWidgetExtension.appex;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -154,6 +178,14 @@
 			);
 			target = D37C6359E0199F24ECE2669B;
 		};
+		0B5E00022FA0C0DE00A1B2C3 = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				RecordWidgetExtension.entitlements,
+			);
+			target = 0B5E00062FA0C0DE00A1B2C3;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -177,6 +209,14 @@
 				0A68BAD12F78F5440059B0BC,
 			);
 			path = iosApp;
+			sourceTree = "<group>";
+		};
+		0B5E00012FA0C0DE00A1B2C3 = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0B5E00022FA0C0DE00A1B2C3,
+			);
+			path = RecordWidgetExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -209,6 +249,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0B5E00042FA0C0DE00A1B2C3 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -225,6 +272,7 @@
 			children = (
 				C6E1A353ED23D830AFC12840,
 				0A3F62152F4899E9008A7161,
+				0B5E00002FA0C0DE00A1B2C3,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -236,6 +284,7 @@
 				71E7052F54B8BB3AD6D9BF6C,
 				DC4748B39A09E11CF6A64645,
 				0A3F62162F4899E9008A7161,
+				0B5E00012FA0C0DE00A1B2C3,
 				0A9A78A42F52CD5C0090916D,
 				2C03A3E98A73FC2B967E9F10,
 			);
@@ -266,6 +315,28 @@
 			productReference = 0A3F62152F4899E9008A7161;
 			productType = "com.apple.product-type.app-extension";
 		};
+		0B5E00062FA0C0DE00A1B2C3 = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0B5E00072FA0C0DE00A1B2C3;
+			buildPhases = (
+				0B5E00032FA0C0DE00A1B2C3,
+				0B5E00042FA0C0DE00A1B2C3,
+				0B5E00052FA0C0DE00A1B2C3,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0B5E00012FA0C0DE00A1B2C3,
+			);
+			name = RecordWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = RecordWidgetExtension;
+			productReference = 0B5E00002FA0C0DE00A1B2C3;
+			productType = "com.apple.product-type.app-extension";
+		};
 		D37C6359E0199F24ECE2669B = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 23D49A887E0170659F166AE9;
@@ -282,6 +353,7 @@
 			);
 			dependencies = (
 				0A3F621B2F4899E9008A7161,
+				0B5E000B2FA0C0DE00A1B2C3,
 			);
 			fileSystemSynchronizedGroups = (
 				DC4748B39A09E11CF6A64645,
@@ -315,6 +387,9 @@
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
+					0B5E00062FA0C0DE00A1B2C3 = {
+						CreatedOnToolsVersion = 27.1;
+					};
 					0A3F62142F4899E9008A7161 = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -349,6 +424,7 @@
 			targets = (
 				D37C6359E0199F24ECE2669B,
 				0A3F62142F4899E9008A7161,
+				0B5E00062FA0C0DE00A1B2C3,
 			);
 		};
 /* End PBXProject section */
@@ -367,6 +443,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A350AF32F545D7E0030B642,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B5E00052FA0C0DE00A1B2C3 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +533,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0B5E00032FA0C0DE00A1B2C3 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -457,6 +547,11 @@
 			isa = PBXTargetDependency;
 			target = 0A3F62142F4899E9008A7161;
 			targetProxy = 0A3F621A2F4899E9008A7161;
+		};
+		0B5E000B2FA0C0DE00A1B2C3 = {
+			isa = PBXTargetDependency;
+			target = 0B5E00062FA0C0DE00A1B2C3;
+			targetProxy = 0B5E000A2FA0C0DE00A1B2C3;
 		};
 /* End PBXTargetDependency section */
 
@@ -572,6 +667,7 @@
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_GROUP_ID = group.com.kevlina.budgetplus;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -641,6 +737,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APP_BUNDLE_ID = com.kevlina.budgetplus.stage;
+				APP_GROUP_ID = "group.$(APP_BUNDLE_ID)";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -741,6 +838,78 @@
 			};
 			name = Release;
 		};
+		0B5E00082FA0C0DE00A1B2C3 = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecordWidgetExtension/RecordWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DEVELOPMENT_TEAM = MU6R4JU7G8;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecordWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Budget+";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).RecordWidgetExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0B5E00092FA0C0DE00A1B2C3 = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecordWidgetExtension/RecordWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DEVELOPMENT_TEAM = MU6R4JU7G8;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecordWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Budget+";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus.RecordWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -767,6 +936,15 @@
 			buildConfigurations = (
 				BD47760EB3627F76F5C3FB40,
 				A8EF943FD51C7CB19E191046,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0B5E00072FA0C0DE00A1B2C3 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B5E00082FA0C0DE00A1B2C3,
+				0B5E00092FA0C0DE00A1B2C3,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

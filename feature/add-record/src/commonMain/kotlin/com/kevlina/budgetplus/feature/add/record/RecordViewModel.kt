@@ -38,8 +38,11 @@ import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.CurrencyDisplay
 import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
+import com.kevlina.budgetplus.core.data.RecordPrefill
+import com.kevlina.budgetplus.core.data.RecordPrefillHolder
 import com.kevlina.budgetplus.core.data.RecordRepo
 import com.kevlina.budgetplus.core.data.local.Preference
+import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.toAuthor
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
@@ -56,11 +59,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -87,6 +93,7 @@ internal class RecordViewModel(
     private val shareHelper: ShareHelper,
     private val preference: Preference,
     private val tracker: Tracker,
+    private val recordPrefillHolder: RecordPrefillHolder,
 ) : ViewModel() {
 
     val type: StateFlow<RecordType>
@@ -182,6 +189,11 @@ internal class RecordViewModel(
     private val recordCountKey = intPreferencesKey("recordCount")
     private val recordCount = preference.of(recordCountKey)
 
+    /**
+     * Whether the screen is prefilled from the record widget, until the record is created.
+     */
+    private var isPrefilledFromWidget = false
+
     init {
         calculatorVm.recordFlow
             .consumeEach { record() }
@@ -193,6 +205,43 @@ internal class RecordViewModel(
                 it.price?.let(calculatorVm::setPrice)
             }
             .launchIn(viewModelScope)
+
+        // Apply the prefill only after its book becomes the current book, since the deeplink
+        // handler may switch the book right before handing off the prefill.
+        recordPrefillHolder.prefill
+            .filterNotNull()
+            .flatMapLatest { prefill ->
+                bookRepo.bookState
+                    .filterNotNull()
+                    .filter { it.id == prefill.bookId }
+                    .map { book -> prefill to book }
+            }
+            .onEach { [prefill, book] ->
+                // The holder could be consumed by another instance of this view model.
+                if (recordPrefillHolder.consume() != null) {
+                    applyPrefill(prefill, book)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun applyPrefill(prefill: RecordPrefill, book: Book) {
+        val categories = when (prefill.type) {
+            RecordType.Expense -> book.expenseCategories
+            RecordType.Income -> book.incomeCategories
+        }
+
+        setType(prefill.type)
+        // The category might be renamed or removed after the widget was added.
+        categoriesVm.setCategory(prefill.category.takeIf { it in categories })
+        if (prefill.name != prefill.category) {
+            note.setTextAndPlaceCursorAtEnd(prefill.name)
+        } else {
+            note.clearText()
+        }
+        calculatorVm.clearPrice()
+        recordDate.value = RecordDateState.Now
+        isPrefilledFromWidget = true
     }
 
     /**
@@ -355,6 +404,9 @@ internal class RecordViewModel(
 
         recordRepo.createRecord(record)
         recordEvent.sendEvent(Unit)
+        if (isPrefilledFromWidget) {
+            tracker.logEvent("record_widget_record_created")
+        }
         resetScreen()
 
         viewModelScope.launch {
@@ -364,6 +416,7 @@ internal class RecordViewModel(
     }
 
     private fun resetScreen() {
+        isPrefilledFromWidget = false
         categoriesVm.setCategory(null)
         note.clearText()
         calculatorVm.clearPrice()

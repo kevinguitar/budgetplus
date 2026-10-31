@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="record_widget_label">記帳小工具</string>
+    <string name="record_widget_description">點一下就能記下常用的帳目</string>
+    <string name="record_widget_setup">點擊以設定</string>
+    <string name="record_widget_income">收入</string>
+</resources>

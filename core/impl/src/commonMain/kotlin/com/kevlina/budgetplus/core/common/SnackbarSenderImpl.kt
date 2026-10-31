@@ -33,6 +33,18 @@ internal class SnackbarSenderImpl(
     )
 
     override suspend fun send(
+        message: StringResource,
+        formatArgs: List<Any>,
+        duration: SnackbarDuration,
+    ) = send(
+        message = getString(
+            message,
+            *formatArgs.map { if (it is StringResource) getString(it) else it }.toTypedArray()
+        ),
+        duration = duration,
+    )
+
+    override suspend fun send(
         message: String,
         actionLabel: StringResource?,
         duration: SnackbarDuration,

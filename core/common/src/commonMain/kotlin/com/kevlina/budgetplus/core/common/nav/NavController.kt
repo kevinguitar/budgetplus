@@ -57,6 +57,16 @@ class NavController<T : NavKey>(
         updateBackStack()
     }
 
+    /**
+     * Select the root and pop its back stack to the root itself, so the root screen is
+     * visible no matter which screen was on top of it.
+     */
+    fun selectRootAndPopToRoot(rootKey: T) {
+        selectRoot(rootKey)
+        rootBackStacks[currentRoot] = mutableStateListOf(currentRoot)
+        updateBackStack()
+    }
+
     fun navigate(key: T) {
         rootBackStacks[currentRoot]?.add(key)
         updateBackStack()

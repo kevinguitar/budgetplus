@@ -44,6 +44,8 @@ ktor = "3.6.1"
 kermit = "2.2.0"
 # https://github.com/MohamedRejeb/Calf/releases
 calf = "0.14.0"
+# https://developer.android.com/jetpack/androidx/releases/glance
+glance = "1.2.0"
 
 compileAndroidSdk = "37"
 minAndroidSdk = "26"
@@ -96,6 +98,9 @@ firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = 
 firebase-functions = { module = "dev.gitlive:firebase-functions", version.ref = "firebase-kmp" }
 firebase-messaging = { module = "dev.gitlive:firebase-messaging", version.ref = "firebase-kmp" }
 firebase-config = { module = "dev.gitlive:firebase-config", version.ref = "firebase-kmp" }
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+glance-appwidget-preview = { module = "androidx.glance:glance-appwidget-preview", version.ref = "glance" }
+glance-preview = { module = "androidx.glance:glance-preview", version.ref = "glance" }
 google-ads = "com.google.android.gms:play-services-ads:25.5.0"
 google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.22.0.1"
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.2.1"

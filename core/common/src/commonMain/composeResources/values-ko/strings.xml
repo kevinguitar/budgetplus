@@ -54,6 +54,22 @@
     <string name="batch_record_edited">%1$s개의 기록이 수정되었습니다</string>
     <string name="batch_record_deleted">%1$s개의 기록이 삭제되었습니다</string>
 
+    <!-- Record Widget -->
+    <string name="record_widget_title">기록 위젯</string>
+    <string name="record_widget_book">기록 대상: %1$s</string>
+    <string name="record_widget_hint">최근 30일 동안 자주 기록한 항목 중 최대 %1$s개를 선택하세요. 금액은 매번 입력합니다.</string>
+    <string name="record_widget_empty">최근 30일 동안의 기록이 없습니다. 먼저 몇 건을 기록해 보세요!</string>
+    <string name="record_widget_limit">최대 %1$s개까지 선택할 수 있습니다</string>
+    <plurals name="record_widget_times">
+        <item quantity="other">%1$d회</item>
+    </plurals>
+    <string name="record_widget_pin_unsupported">사용 중인 런처는 앱에서 위젯 추가를 지원하지 않습니다. 홈 화면을 길게 눌러 %1$s 위젯을 추가하세요.</string>
+    <string name="record_widget_preset_saved">저장되었습니다! 홈 화면을 길게 누르고 +를 탭해 %1$s 기록 위젯을 추가한 다음, "위젯 편집"에서 이 프리셋을 선택하세요.</string>
+    <string name="record_widget_switched_book">%1$s(으)로 전환했습니다</string>
+    <string name="record_widget_book_unavailable">이 위젯의 가계부를 더 이상 사용할 수 없습니다</string>
+    <string name="record_widget_setup">탭하여 설정</string>
+    <string name="record_widget_sign_in">먼저 %1$s에 로그인하세요</string>
+
     <!-- Book -->
     <string name="book_selection">가계부 선택</string>
     <string name="book_create_success">「%1$s」이(가) 성공적으로 생성되었습니다</string>
