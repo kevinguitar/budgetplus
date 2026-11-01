@@ -33,7 +33,7 @@ class RecordWidgetReceiver : GlanceAppWidgetReceiver() {
         super.onRestored(context, oldWidgetIds, newWidgetIds)
         launchAsync(context) {
             // Read them all first, an old id could be reused as the new id of another widget.
-            val restoredConfigs = oldWidgetIds.zip(newWidgetIds).mapNotNull { (oldId, newId) ->
+            val restoredConfigs = oldWidgetIds.zip(newWidgetIds).mapNotNull { [oldId, newId] ->
                 configStore.get(oldId.toString())?.copy(id = newId.toString())
             }
             oldWidgetIds.forEach { configStore.delete(it.toString()) }

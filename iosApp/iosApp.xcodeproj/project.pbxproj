@@ -7,97 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A237D432F5BFD8A00706C1C = {
-			isa = PBXBuildFile;
-			productRef = 0A237D422F5BFD8A00706C1C;
-		};
-		0A350AF22F545D7E0030B642 = {
-			isa = PBXBuildFile;
-			fileRef = 0A350AF12F545D7E0030B642;
-		};
-		0A350AF32F545D7E0030B642 = {
-			isa = PBXBuildFile;
-			fileRef = 0A350AF12F545D7E0030B642;
-		};
-		0A3F61772F3DDC18008A7161 = {
-			isa = PBXBuildFile;
-			productRef = 0A3F61762F3DDC18008A7161;
-		};
-		0A3F621C2F4899E9008A7161 = {
-			isa = PBXBuildFile;
-			fileRef = 0A3F62152F4899E9008A7161;
-			settings = {
-				ATTRIBUTES = (
-					RemoveHeadersOnCopy,
-				);
-			};
-		};
-		0A69C82C2F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C82B2F36F8EC0058D721;
-		};
-		0A69C82E2F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C82D2F36F8EC0058D721;
-		};
-		0A69C8302F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C82F2F36F8EC0058D721;
-		};
-		0A69C8322F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C8312F36F8EC0058D721;
-		};
-		0A69C8342F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C8332F36F8EC0058D721;
-		};
-		0A69C8362F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C8352F36F8EC0058D721;
-		};
-		0A69C8382F36F8EC0058D721 = {
-			isa = PBXBuildFile;
-			productRef = 0A69C8372F36F8EC0058D721;
-		};
-		0A9A78A62F52CD5C0090916D = {
-			isa = PBXBuildFile;
-			fileRef = 0A9A78A52F52CD5C0090916D;
-		};
-		0AE619422F37503900F3C461 = {
-			isa = PBXBuildFile;
-			productRef = 0AE619412F37503900F3C461;
-		};
-		0AE619442F37503900F3C461 = {
-			isa = PBXBuildFile;
-			productRef = 0AE619432F37503900F3C461;
-		};
-		C0A1ADA48D49C677E9690E6E = {
-			isa = PBXBuildFile;
-			productRef = 30CDFBD334CCAFE76F5FC52D;
-		};
-		0B5E000C2FA0C0DE00A1B2C3 = {
-			isa = PBXBuildFile;
-			fileRef = 0B5E00002FA0C0DE00A1B2C3;
-			settings = {
-				ATTRIBUTES = (
-					RemoveHeadersOnCopy,
-				);
-			};
-		};
+		0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */ = {isa = PBXBuildFile; productRef = 0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */; };
+		0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
+		0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */; };
+		0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 0A3F61762F3DDC18008A7161 /* GoogleMobileAds */; };
+		0A3F621C2F4899E9008A7161 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */; };
+		0A69C82E2F36F8EC0058D721 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82D2F36F8EC0058D721 /* FirebaseAuth */; };
+		0A69C8302F36F8EC0058D721 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C82F2F36F8EC0058D721 /* FirebaseCore */; };
+		0A69C8322F36F8EC0058D721 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8312F36F8EC0058D721 /* FirebaseCrashlytics */; };
+		0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8332F36F8EC0058D721 /* FirebaseFirestore */; };
+		0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8352F36F8EC0058D721 /* FirebaseMessaging */; };
+		0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */; };
+		0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A9A78A52F52CD5C0090916D /* StoreKit.framework */; };
+		0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619412F37503900F3C461 /* GoogleSignIn */; };
+		0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0AE619432F37503900F3C461 /* GoogleSignInSwift */; };
+		0B5E000C2FA0C0DE00A1B2C3 /* RecordWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0B5E00002FA0C0DE00A1B2C3 /* RecordWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C0A1ADA48D49C677E9690E6E /* KotlinMultiplatformLinkedPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 30CDFBD334CCAFE76F5FC52D /* KotlinMultiplatformLinkedPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0A3F621A2F4899E9008A7161 = {
+		0A3F621A2F4899E9008A7161 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D6CDB6A56C2FF02BAA741365;
+			containerPortal = D6CDB6A56C2FF02BAA741365 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 0A3F62142F4899E9008A7161;
 			remoteInfo = NotificationServiceExtension;
 		};
-		0B5E000A2FA0C0DE00A1B2C3 = {
+		0B5E000A2FA0C0DE00A1B2C3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D6CDB6A56C2FF02BAA741365;
+			containerPortal = D6CDB6A56C2FF02BAA741365 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 0B5E00062FA0C0DE00A1B2C3;
 			remoteInfo = RecordWidgetExtension;
@@ -105,14 +44,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0A3F62102F48988C008A7161 = {
+		0A3F62102F48988C008A7161 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				0A3F621C2F4899E9008A7161,
-				0B5E000C2FA0C0DE00A1B2C3,
+				0A3F621C2F4899E9008A7161 /* NotificationServiceExtension.appex in Embed Foundation Extensions */,
+				0B5E000C2FA0C0DE00A1B2C3 /* RecordWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,159 +59,129 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0A350AF12F545D7E0030B642 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.json.xcstrings;
-			path = InfoPlist.xcstrings;
-			sourceTree = "<group>";
-		};
-		0A3F62152F4899E9008A7161 = {
-			isa = PBXFileReference;
-			explicitFileType = "wrapper.app-extension";
-			includeInIndex = 0;
-			path = NotificationServiceExtension.appex;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0A9A78A52F52CD5C0090916D = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = StoreKit.framework;
-			path = System/Library/Frameworks/StoreKit.framework;
-			sourceTree = SDKROOT;
-		};
-		C6E1A353ED23D830AFC12840 = {
-			isa = PBXFileReference;
-			explicitFileType = wrapper.application;
-			includeInIndex = 0;
-			path = BudgetPlus.app;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0B5E00002FA0C0DE00A1B2C3 = {
-			isa = PBXFileReference;
-			explicitFileType = "wrapper.app-extension";
-			includeInIndex = 0;
-			path = RecordWidgetExtension.appex;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
+		0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A9A78A52F52CD5C0090916D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		0B5E00002FA0C0DE00A1B2C3 /* RecordWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecordWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6E1A353ED23D830AFC12840 /* BudgetPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0A3F62202F4899E9008A7161 = {
+		0A3F62202F4899E9008A7161 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 0A3F62142F4899E9008A7161;
+			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
 		};
-		0A68BAD12F78F5440059B0BC = {
+		0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BudgetPlusPremium.storekit,
 			);
-			target = 0A3F62142F4899E9008A7161;
+			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
 		};
-		6A30F6F7833DB0C2DCAF74E0 = {
+		0B5E00022FA0C0DE00A1B2C3 /* Exceptions for "RecordWidgetExtension" folder in "RecordWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D37C6359E0199F24ECE2669B;
+			target = 0B5E00062FA0C0DE00A1B2C3 /* RecordWidgetExtension */;
 		};
-		0B5E00022FA0C0DE00A1B2C3 = {
+		6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				RecordWidgetExtension.entitlements,
 			);
-			target = 0B5E00062FA0C0DE00A1B2C3;
+			target = D37C6359E0199F24ECE2669B /* iosApp */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0A3F62162F4899E9008A7161 = {
+		0A3F62162F4899E9008A7161 /* NotificationServiceExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0A3F62202F4899E9008A7161,
+				0A3F62202F4899E9008A7161 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */,
 			);
 			path = NotificationServiceExtension;
 			sourceTree = "<group>";
 		};
-		71E7052F54B8BB3AD6D9BF6C = {
+		0B5E00012FA0C0DE00A1B2C3 /* RecordWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0B5E00022FA0C0DE00A1B2C3 /* Exceptions for "RecordWidgetExtension" folder in "RecordWidgetExtension" target */,
+			);
+			path = RecordWidgetExtension;
+			sourceTree = "<group>";
+		};
+		71E7052F54B8BB3AD6D9BF6C /* Configuration */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Configuration;
 			sourceTree = "<group>";
 		};
-		DC4748B39A09E11CF6A64645 = {
+		DC4748B39A09E11CF6A64645 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6A30F6F7833DB0C2DCAF74E0,
-				0A68BAD12F78F5440059B0BC,
+				6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */,
+				0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */,
 			);
 			path = iosApp;
-			sourceTree = "<group>";
-		};
-		0B5E00012FA0C0DE00A1B2C3 = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				0B5E00022FA0C0DE00A1B2C3,
-			);
-			path = RecordWidgetExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0A3F62122F4899E9008A7161 = {
+		0A3F62122F4899E9008A7161 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		403AF2F1C76CD538513AA497 = {
+		0B5E00042FA0C0DE00A1B2C3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AE619442F37503900F3C461,
-				0A69C8362F36F8EC0058D721,
-				0A3F61772F3DDC18008A7161,
-				0A9A78A62F52CD5C0090916D,
-				0AE619422F37503900F3C461,
-				0A69C82C2F36F8EC0058D721,
-				0A69C8322F36F8EC0058D721,
-				0A237D432F5BFD8A00706C1C,
-				0A69C8382F36F8EC0058D721,
-				0A69C8302F36F8EC0058D721,
-				0A69C8342F36F8EC0058D721,
-				0A69C82E2F36F8EC0058D721,
-				C0A1ADA48D49C677E9690E6E,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0B5E00042FA0C0DE00A1B2C3 = {
+		403AF2F1C76CD538513AA497 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AE619442F37503900F3C461 /* GoogleSignInSwift in Frameworks */,
+				0A69C8362F36F8EC0058D721 /* FirebaseMessaging in Frameworks */,
+				0A3F61772F3DDC18008A7161 /* GoogleMobileAds in Frameworks */,
+				0A9A78A62F52CD5C0090916D /* StoreKit.framework in Frameworks */,
+				0AE619422F37503900F3C461 /* GoogleSignIn in Frameworks */,
+				0A69C82C2F36F8EC0058D721 /* FirebaseAnalytics in Frameworks */,
+				0A69C8322F36F8EC0058D721 /* FirebaseCrashlytics in Frameworks */,
+				0A237D432F5BFD8A00706C1C /* MetaAdapterTarget in Frameworks */,
+				0A69C8382F36F8EC0058D721 /* FirebaseRemoteConfig in Frameworks */,
+				0A69C8302F36F8EC0058D721 /* FirebaseCore in Frameworks */,
+				0A69C8342F36F8EC0058D721 /* FirebaseFirestore in Frameworks */,
+				0A69C82E2F36F8EC0058D721 /* FirebaseAuth in Frameworks */,
+				C0A1ADA48D49C677E9690E6E /* KotlinMultiplatformLinkedPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0A9A78A42F52CD5C0090916D = {
+		0A9A78A42F52CD5C0090916D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0A9A78A52F52CD5C0090916D,
+				0A9A78A52F52CD5C0090916D /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2C03A3E98A73FC2B967E9F10 = {
+		2C03A3E98A73FC2B967E9F10 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C6E1A353ED23D830AFC12840,
-				0A3F62152F4899E9008A7161,
-				0B5E00002FA0C0DE00A1B2C3,
+				C6E1A353ED23D830AFC12840 /* BudgetPlus.app */,
+				0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */,
+				0B5E00002FA0C0DE00A1B2C3 /* RecordWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -280,125 +189,125 @@
 		34847EBF5FEB5CE02C7EDB98 = {
 			isa = PBXGroup;
 			children = (
-				0A350AF12F545D7E0030B642,
-				71E7052F54B8BB3AD6D9BF6C,
-				DC4748B39A09E11CF6A64645,
-				0A3F62162F4899E9008A7161,
-				0B5E00012FA0C0DE00A1B2C3,
-				0A9A78A42F52CD5C0090916D,
-				2C03A3E98A73FC2B967E9F10,
+				0A350AF12F545D7E0030B642 /* InfoPlist.xcstrings */,
+				71E7052F54B8BB3AD6D9BF6C /* Configuration */,
+				DC4748B39A09E11CF6A64645 /* iosApp */,
+				0A3F62162F4899E9008A7161 /* NotificationServiceExtension */,
+				0B5E00012FA0C0DE00A1B2C3 /* RecordWidgetExtension */,
+				0A9A78A42F52CD5C0090916D /* Frameworks */,
+				2C03A3E98A73FC2B967E9F10 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0A3F62142F4899E9008A7161 = {
+		0A3F62142F4899E9008A7161 /* NotificationServiceExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0A3F621D2F4899E9008A7161;
+			buildConfigurationList = 0A3F621D2F4899E9008A7161 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */;
 			buildPhases = (
-				0A3F62112F4899E9008A7161,
-				0A3F62122F4899E9008A7161,
-				0A3F62132F4899E9008A7161,
+				0A3F62112F4899E9008A7161 /* Sources */,
+				0A3F62122F4899E9008A7161 /* Frameworks */,
+				0A3F62132F4899E9008A7161 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				0A3F62162F4899E9008A7161,
+				0A3F62162F4899E9008A7161 /* NotificationServiceExtension */,
 			);
 			name = NotificationServiceExtension;
 			packageProductDependencies = (
 			);
 			productName = NotificationServiceExtension;
-			productReference = 0A3F62152F4899E9008A7161;
+			productReference = 0A3F62152F4899E9008A7161 /* NotificationServiceExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		0B5E00062FA0C0DE00A1B2C3 = {
+		0B5E00062FA0C0DE00A1B2C3 /* RecordWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B5E00072FA0C0DE00A1B2C3;
+			buildConfigurationList = 0B5E00072FA0C0DE00A1B2C3 /* Build configuration list for PBXNativeTarget "RecordWidgetExtension" */;
 			buildPhases = (
-				0B5E00032FA0C0DE00A1B2C3,
-				0B5E00042FA0C0DE00A1B2C3,
-				0B5E00052FA0C0DE00A1B2C3,
+				0B5E00032FA0C0DE00A1B2C3 /* Sources */,
+				0B5E00042FA0C0DE00A1B2C3 /* Frameworks */,
+				0B5E00052FA0C0DE00A1B2C3 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				0B5E00012FA0C0DE00A1B2C3,
+				0B5E00012FA0C0DE00A1B2C3 /* RecordWidgetExtension */,
 			);
 			name = RecordWidgetExtension;
 			packageProductDependencies = (
 			);
 			productName = RecordWidgetExtension;
-			productReference = 0B5E00002FA0C0DE00A1B2C3;
+			productReference = 0B5E00002FA0C0DE00A1B2C3 /* RecordWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		D37C6359E0199F24ECE2669B = {
+		D37C6359E0199F24ECE2669B /* iosApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D49A887E0170659F166AE9;
+			buildConfigurationList = 23D49A887E0170659F166AE9 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
-				606A3F78A1DF210FF623988B,
-				1863F0F2EB00B17E5A9BE78C,
-				403AF2F1C76CD538513AA497,
-				D26F08481507A91DBA7D9DA3,
-				0AEA3C6E2F55B93B00481600,
-				0A3F62102F48988C008A7161,
-				0AEA3C6E2F55B93B00481525,
+				606A3F78A1DF210FF623988B /* Compile Kotlin Framework */,
+				1863F0F2EB00B17E5A9BE78C /* Sources */,
+				403AF2F1C76CD538513AA497 /* Frameworks */,
+				D26F08481507A91DBA7D9DA3 /* Resources */,
+				0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */,
+				0A3F62102F48988C008A7161 /* Embed Foundation Extensions */,
+				0AEA3C6E2F55B93B00481525 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0A3F621B2F4899E9008A7161,
-				0B5E000B2FA0C0DE00A1B2C3,
+				0A3F621B2F4899E9008A7161 /* PBXTargetDependency */,
+				0B5E000B2FA0C0DE00A1B2C3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				DC4748B39A09E11CF6A64645,
+				DC4748B39A09E11CF6A64645 /* iosApp */,
 			);
 			name = iosApp;
 			packageProductDependencies = (
-				0A69C82B2F36F8EC0058D721,
-				0A69C82D2F36F8EC0058D721,
-				0A69C82F2F36F8EC0058D721,
-				0A69C8312F36F8EC0058D721,
-				0A69C8332F36F8EC0058D721,
-				0A69C8352F36F8EC0058D721,
-				0A69C8372F36F8EC0058D721,
-				0AE619412F37503900F3C461,
-				0AE619432F37503900F3C461,
-				0A3F61762F3DDC18008A7161,
-				0A237D422F5BFD8A00706C1C,
-				30CDFBD334CCAFE76F5FC52D,
+				0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */,
+				0A69C82D2F36F8EC0058D721 /* FirebaseAuth */,
+				0A69C82F2F36F8EC0058D721 /* FirebaseCore */,
+				0A69C8312F36F8EC0058D721 /* FirebaseCrashlytics */,
+				0A69C8332F36F8EC0058D721 /* FirebaseFirestore */,
+				0A69C8352F36F8EC0058D721 /* FirebaseMessaging */,
+				0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */,
+				0AE619412F37503900F3C461 /* GoogleSignIn */,
+				0AE619432F37503900F3C461 /* GoogleSignInSwift */,
+				0A3F61762F3DDC18008A7161 /* GoogleMobileAds */,
+				0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */,
+				30CDFBD334CCAFE76F5FC52D /* KotlinMultiplatformLinkedPackage */,
 			);
 			productName = iosApp;
-			productReference = C6E1A353ED23D830AFC12840;
+			productReference = C6E1A353ED23D830AFC12840 /* BudgetPlus.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		D6CDB6A56C2FF02BAA741365 = {
+		D6CDB6A56C2FF02BAA741365 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
-					0B5E00062FA0C0DE00A1B2C3 = {
-						CreatedOnToolsVersion = 27.1;
-					};
 					0A3F62142F4899E9008A7161 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					0B5E00062FA0C0DE00A1B2C3 = {
+						CreatedOnToolsVersion = 27.1;
 					};
 					D37C6359E0199F24ECE2669B = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
-			buildConfigurationList = 75479A5F7F2AF221F68F5800;
+			buildConfigurationList = 75479A5F7F2AF221F68F5800 /* Build configuration list for PBXProject "iosApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -411,52 +320,52 @@
 			mainGroup = 34847EBF5FEB5CE02C7EDB98;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				0A69C82A2F36F8EC0058D721,
-				0AE619402F37503900F3C461,
-				0A3F61752F3DDC18008A7161,
-				0A237D412F5BFD8A00706C1C,
-				17E24980734EADB0BCD1FA17,
+				0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */,
+				17E24980734EADB0BCD1FA17 /* XCLocalSwiftPackageReference "KotlinMultiplatformLinkedPackage" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 2C03A3E98A73FC2B967E9F10;
+			productRefGroup = 2C03A3E98A73FC2B967E9F10 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D37C6359E0199F24ECE2669B,
-				0A3F62142F4899E9008A7161,
-				0B5E00062FA0C0DE00A1B2C3,
+				D37C6359E0199F24ECE2669B /* iosApp */,
+				0A3F62142F4899E9008A7161 /* NotificationServiceExtension */,
+				0B5E00062FA0C0DE00A1B2C3 /* RecordWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0A3F62132F4899E9008A7161 = {
+		0A3F62132F4899E9008A7161 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A350AF22F545D7E0030B642,
+				0A350AF22F545D7E0030B642 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D26F08481507A91DBA7D9DA3 = {
+		0B5E00052FA0C0DE00A1B2C3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A350AF32F545D7E0030B642,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0B5E00052FA0C0DE00A1B2C3 = {
+		D26F08481507A91DBA7D9DA3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A350AF32F545D7E0030B642 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0AEA3C6E2F55B93B00481525 = {
+		0AEA3C6E2F55B93B00481525 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -478,7 +387,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
 		};
-		0AEA3C6E2F55B93B00481600 = {
+		0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -497,7 +406,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Debug builds target the staging environment. Two things happen here, both gated on\n# CONFIGURATION == Debug:\n#   1. Swap in the staging GoogleService-Info.plist (production ships as the default resource).\n#   2. Append \\\" Stage\\\" to the localized app display name (CFBundleDisplayName) so the icon\n#      label makes the staging build obvious. The string catalog cannot vary per build config\n#      and does not expand build-setting variables, so we patch the built product directly,\n#      covering the base Info.plist and every localized InfoPlist.strings.\nset -e\nif [ \"${CONFIGURATION}\" != \"Debug\" ]; then\n  echo \"Release configuration: using production GoogleService-Info.plist and app name\"\n  exit 0\nfi\n\n# UI test builds override the bundle id to production and route Firebase to the local\n# emulators via a swapped-in test GoogleService-Info.plist, so the staging swap must not\n# run (the staging plist is also absent in the UI test CI job).\ncase \" ${SWIFT_ACTIVE_COMPILATION_CONDITIONS} \" in\n  *\" UI_TEST \"*)\n    echo \"UI_TEST build: keeping the test GoogleService-Info.plist and app name\"\n    exit 0\n    ;;\nesac\n\nRES_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nPB=\"/usr/libexec/PlistBuddy\"\nSUFFIX=\" Stage\"\n\n# 1. Staging Firebase config.\nSRC=\"${SRCROOT}/Firebase/Stage/GoogleService-Info.plist\"\necho \"Using STAGING GoogleService-Info.plist from ${SRC}\"\ncp \"${SRC}\" \"${RES_DIR}/GoogleService-Info.plist\"\n\n# 2. Base Info.plist display name (development region / fallback).\nINFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nif [ -f \"${INFO_PLIST}\" ]; then\n  CURRENT=$(${PB} -c \"Print :CFBundleDisplayName\" \"${INFO_PLIST}\" 2>/dev/null || echo \"\")\n  if [ -z \"${CURRENT}\" ]; then\n    ${PB} -c \"Add :CFBundleDisplayName string Budget+${SUFFIX}\" \"${INFO_PLIST}\"\n  else\n    case \"${CURRENT}\" in\n      *\"${SUFFIX}\") : ;; # already suffixed\n      *) ${PB} -c \"Set :CFBundleDisplayName ${CURRENT}${SUFFIX}\" \"${INFO_PLIST}\" ;;\n    esac\n  fi\nfi\n\n# 3. Every localized InfoPlist.strings display name.\nfind \"${RES_DIR}\" -name InfoPlist.strings -path '*.lproj/*' | while read -r STRINGS; do\n  NAME=$(${PB} -c \"Print :CFBundleDisplayName\" \"${STRINGS}\" 2>/dev/null || echo \"\")\n  [ -z \"${NAME}\" ] && continue\n  case \"${NAME}\" in\n    *\"${SUFFIX}\") continue ;;\n  esac\n  ${PB} -c \"Set :CFBundleDisplayName ${NAME}${SUFFIX}\" \"${STRINGS}\"\ndone\n";
 		};
-		606A3F78A1DF210FF623988B = {
+		606A3F78A1DF210FF623988B /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -519,21 +428,21 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0A3F62112F4899E9008A7161 = {
+		0A3F62112F4899E9008A7161 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1863F0F2EB00B17E5A9BE78C = {
+		0B5E00032FA0C0DE00A1B2C3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0B5E00032FA0C0DE00A1B2C3 = {
+		1863F0F2EB00B17E5A9BE78C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -543,22 +452,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0A3F621B2F4899E9008A7161 = {
+		0A3F621B2F4899E9008A7161 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0A3F62142F4899E9008A7161;
-			targetProxy = 0A3F621A2F4899E9008A7161;
+			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
+			targetProxy = 0A3F621A2F4899E9008A7161 /* PBXContainerItemProxy */;
 		};
-		0B5E000B2FA0C0DE00A1B2C3 = {
+		0B5E000B2FA0C0DE00A1B2C3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 0B5E00062FA0C0DE00A1B2C3;
-			targetProxy = 0B5E000A2FA0C0DE00A1B2C3;
+			target = 0B5E00062FA0C0DE00A1B2C3 /* RecordWidgetExtension */;
+			targetProxy = 0B5E000A2FA0C0DE00A1B2C3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0A3F621E2F4899E9008A7161 = {
+		0A3F621E2F4899E9008A7161 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -591,9 +500,9 @@
 			};
 			name = Debug;
 		};
-		0A3F621F2F4899E9008A7161 = {
+		0A3F621F2F4899E9008A7161 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -626,9 +535,81 @@
 			};
 			name = Release;
 		};
-		2E3368DD4BFBB26C538D705C = {
+		0B5E00082FA0C0DE00A1B2C3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecordWidgetExtension/RecordWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DEVELOPMENT_TEAM = MU6R4JU7G8;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecordWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Budget+";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).RecordWidgetExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0B5E00092FA0C0DE00A1B2C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecordWidgetExtension/RecordWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				DEVELOPMENT_TEAM = MU6R4JU7G8;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecordWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Budget+";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus.RecordWidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2E3368DD4BFBB26C538D705C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -661,9 +642,9 @@
 			};
 			name = Debug;
 		};
-		A8EF943FD51C7CB19E191046 = {
+		A8EF943FD51C7CB19E191046 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -730,9 +711,9 @@
 			};
 			name = Release;
 		};
-		BD47760EB3627F76F5C3FB40 = {
+		BD47760EB3627F76F5C3FB40 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -801,9 +782,9 @@
 			};
 			name = Debug;
 		};
-		DAA45D3C9F697B68CDFD40E1 = {
+		DAA45D3C9F697B68CDFD40E1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
+			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C /* Configuration */;
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -838,113 +819,41 @@
 			};
 			name = Release;
 		};
-		0B5E00082FA0C0DE00A1B2C3 = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
-			baseConfigurationReferenceRelativePath = Config.xcconfig;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = RecordWidgetExtension/RecordWidgetExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = MU6R4JU7G8;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RecordWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Budget+";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).RecordWidgetExtension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		0B5E00092FA0C0DE00A1B2C3 = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 71E7052F54B8BB3AD6D9BF6C;
-			baseConfigurationReferenceRelativePath = Config.xcconfig;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = RecordWidgetExtension/RecordWidgetExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = MU6R4JU7G8;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RecordWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Budget+";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kevlina.budgetplus.RecordWidgetExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0A3F621D2F4899E9008A7161 = {
+		0A3F621D2F4899E9008A7161 /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0A3F621E2F4899E9008A7161,
-				0A3F621F2F4899E9008A7161,
+				0A3F621E2F4899E9008A7161 /* Debug */,
+				0A3F621F2F4899E9008A7161 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D49A887E0170659F166AE9 = {
+		0B5E00072FA0C0DE00A1B2C3 /* Build configuration list for PBXNativeTarget "RecordWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2E3368DD4BFBB26C538D705C,
-				DAA45D3C9F697B68CDFD40E1,
+				0B5E00082FA0C0DE00A1B2C3 /* Debug */,
+				0B5E00092FA0C0DE00A1B2C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		75479A5F7F2AF221F68F5800 = {
+		23D49A887E0170659F166AE9 /* Build configuration list for PBXNativeTarget "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BD47760EB3627F76F5C3FB40,
-				A8EF943FD51C7CB19E191046,
+				2E3368DD4BFBB26C538D705C /* Debug */,
+				DAA45D3C9F697B68CDFD40E1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B5E00072FA0C0DE00A1B2C3 = {
+		75479A5F7F2AF221F68F5800 /* Build configuration list for PBXProject "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0B5E00082FA0C0DE00A1B2C3,
-				0B5E00092FA0C0DE00A1B2C3,
+				BD47760EB3627F76F5C3FB40 /* Debug */,
+				A8EF943FD51C7CB19E191046 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -952,14 +861,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		17E24980734EADB0BCD1FA17 = {
+		17E24980734EADB0BCD1FA17 /* XCLocalSwiftPackageReference "KotlinMultiplatformLinkedPackage" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = KotlinMultiplatformLinkedPackage;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		0A237D412F5BFD8A00706C1C = {
+		0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/googleads-mobile-ios-mediation-meta.git";
 			requirement = {
@@ -967,7 +876,7 @@
 				version = 6.22.100;
 			};
 		};
-		0A3F61752F3DDC18008A7161 = {
+		0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
 			requirement = {
@@ -975,7 +884,7 @@
 				minimumVersion = 13.11.0;
 			};
 		};
-		0A69C82A2F36F8EC0058D721 = {
+		0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -983,7 +892,7 @@
 				minimumVersion = 12.19.3;
 			};
 		};
-		0AE619402F37503900F3C461 = {
+		0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
 			requirement = {
@@ -994,66 +903,66 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0A237D422F5BFD8A00706C1C = {
+		0A237D422F5BFD8A00706C1C /* MetaAdapterTarget */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A237D412F5BFD8A00706C1C;
+			package = 0A237D412F5BFD8A00706C1C /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */;
 			productName = MetaAdapterTarget;
 		};
-		0A3F61762F3DDC18008A7161 = {
+		0A3F61762F3DDC18008A7161 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A3F61752F3DDC18008A7161;
+			package = 0A3F61752F3DDC18008A7161 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
 		};
-		0A69C82B2F36F8EC0058D721 = {
+		0A69C82B2F36F8EC0058D721 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
 		};
-		0A69C82D2F36F8EC0058D721 = {
+		0A69C82D2F36F8EC0058D721 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
 		};
-		0A69C82F2F36F8EC0058D721 = {
+		0A69C82F2F36F8EC0058D721 /* FirebaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
-		0A69C8312F36F8EC0058D721 = {
+		0A69C8312F36F8EC0058D721 /* FirebaseCrashlytics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
 		};
-		0A69C8332F36F8EC0058D721 = {
+		0A69C8332F36F8EC0058D721 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
-		0A69C8352F36F8EC0058D721 = {
+		0A69C8352F36F8EC0058D721 /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
 		};
-		0A69C8372F36F8EC0058D721 = {
+		0A69C8372F36F8EC0058D721 /* FirebaseRemoteConfig */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0A69C82A2F36F8EC0058D721;
+			package = 0A69C82A2F36F8EC0058D721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
 		};
-		0AE619412F37503900F3C461 = {
+		0AE619412F37503900F3C461 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0AE619402F37503900F3C461;
+			package = 0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
 		};
-		0AE619432F37503900F3C461 = {
+		0AE619432F37503900F3C461 /* GoogleSignInSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0AE619402F37503900F3C461;
+			package = 0AE619402F37503900F3C461 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
 		};
-		30CDFBD334CCAFE76F5FC52D = {
+		30CDFBD334CCAFE76F5FC52D /* KotlinMultiplatformLinkedPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = KotlinMultiplatformLinkedPackage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = D6CDB6A56C2FF02BAA741365;
+	rootObject = D6CDB6A56C2FF02BAA741365 /* Project object */;
 }
