@@ -9,7 +9,19 @@ initialize_maestro_run() {
     echo "MAESTRO_FLOW_ATTEMPTS must be a positive integer" >&2
     return 1
   fi
+  silence_maestro_unsafe_warnings
   export UI_TEST_RUN_ID MAESTRO_FLOW_ATTEMPTS MAESTRO_FLOW_TIMEOUT MAESTRO_OUTPUT_DIR
+}
+
+# JDK 24+ prints "WARNING: sun.misc.Unsafe::..." for Maestro's bundled libraries
+# (protobuf, truffle) on every flow. Allow it explicitly to keep the logs readable;
+# older JDKs reject the flag, so only pass it when the JVM accepts it.
+silence_maestro_unsafe_warnings() {
+  local flag="--sun-misc-unsafe-memory-access=allow"
+  [[ " ${MAESTRO_OPTS:-} " == *" $flag "* ]] && return 0
+  if command -v java >/dev/null && java "$flag" -version >/dev/null 2>&1; then
+    export MAESTRO_OPTS="${MAESTRO_OPTS:+$MAESTRO_OPTS }$flag"
+  fi
 }
 
 run_maestro_attempt() {
