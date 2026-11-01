@@ -183,7 +183,18 @@ internal class BookViewModel(
             val books = withTimeoutOrNull(DATA_LOADING_TIMEOUT) {
                 bookRepo.booksState.filterNotNull().first()
             }
-            val book = books?.firstOrNull { it.id == prefill.bookId }
+            if (books == null) {
+                // The books aren't loaded in time, e.g. a slow network on a cold start. It doesn't
+                // mean the book is gone, so only prefill when the widget's book is already current.
+                Logger.w("Record widget: books aren't loaded in time")
+                if (bookRepo.currentBookId == prefill.bookId) {
+                    recordPrefillHolder.set(prefill)
+                }
+                navController.selectRootAndPopToRoot(BookDest.Record)
+                return@launch
+            }
+
+            val book = books.firstOrNull { it.id == prefill.bookId }
             if (book == null) {
                 snackbarSender.send(Res.string.record_widget_book_unavailable)
                 navController.selectRootAndPopToRoot(BookDest.Record)

@@ -1,17 +1,17 @@
 package com.kevlina.budgetplus.book
 
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.record_widget_book_unavailable
+import budgetplus.core.common.generated.resources.record_widget_switched_book
 import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
+import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
 import com.kevlina.budgetplus.core.common.fixtures.FakeTracker
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
-import budgetplus.core.common.generated.resources.Res
-import budgetplus.core.common.generated.resources.record_widget_book_unavailable
-import budgetplus.core.common.generated.resources.record_widget_switched_book
-import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.RecordPrefill
 import com.kevlina.budgetplus.core.data.RecordPrefillHolder
@@ -25,11 +25,12 @@ import com.kevlina.budgetplus.core.ui.bubble.FakeBubbleRepo
 import com.kevlina.budgetplus.core.unit.test.BaseTest
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDeeplink
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetItem
-import kotlinx.coroutines.test.TestScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.test.TestScope
 
 class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
@@ -311,6 +312,41 @@ class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         assertEquals(bookA, bookRepo.bookState.value)
         assertNull(prefillHolder.prefill.value)
         assertEquals(BookDest.Record, nav.backStack.last())
+    }
+
+    @Test
+    fun `widget link doesn't report the book as unavailable when the books aren't loaded in time`() {
+        val nav = createNavController()
+        val bookRepo = FakeBookRepo(book = bookA, books = null)
+        val snackbarSender = FakeSnackbarSender()
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            navController = nav,
+            bookRepo = bookRepo,
+            snackbarSender = snackbarSender,
+            recordPrefillHolder = prefillHolder,
+        )
+
+        model.handleDeeplink(RecordWidgetDeeplink.build(bookB.id, dinner))
+        testDispatcher.scheduler.advanceTimeBy(10.seconds)
+
+        assertNull(snackbarSender.lastSentMessageRes)
+        assertNull(prefillHolder.prefill.value)
+        assertEquals(BookDest.Record, nav.backStack.last())
+    }
+
+    @Test
+    fun `widget link prefills the current book even when the books aren't loaded in time`() {
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = bookA, books = null, currentBookId = bookA.id),
+            recordPrefillHolder = prefillHolder,
+        )
+
+        model.handleDeeplink(RecordWidgetDeeplink.build(bookA.id, dinner))
+        testDispatcher.scheduler.advanceTimeBy(10.seconds)
+
+        assertEquals(bookA.id, prefillHolder.prefill.value?.bookId)
     }
 
     @Test

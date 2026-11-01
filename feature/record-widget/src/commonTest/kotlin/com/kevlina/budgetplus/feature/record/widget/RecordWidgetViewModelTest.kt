@@ -123,6 +123,20 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
+    fun `reconfiguring an existing widget should not log the added event`() = runTest {
+        val model = createModel()
+        model.toggleItem(dinner)
+        model.saveConfigForWidget(widgetId = "42")
+        tracker.lastEvent = null
+
+        model.toggleItem(lunch)
+        model.saveConfigForWidget(widgetId = "42")
+
+        assertEquals(listOf(dinner, lunch), configStore.configs.value.single().items)
+        assertNull(tracker.lastEvent)
+    }
+
+    @Test
     fun `add widget from settings navigates up after the pin is requested`() = runTest {
         val nav = NavController<BookDest>(startRoot = BookDest.Settings()).apply {
             navigate(BookDest.RecordWidget)

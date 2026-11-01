@@ -82,6 +82,7 @@ import budgetplus.core.common.generated.resources.settings_view_members
 import budgetplus.core.common.generated.resources.username_title
 import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.UiTestFlags
+import com.kevlina.budgetplus.core.common.isRecordWidgetSupported
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -243,14 +244,16 @@ internal fun SettingsContent(
             onClick = { navController.navigate(BookDest.Colors()) }
         )
 
-        SettingsItem(
-            text = stringResource(Res.string.record_widget_title),
-            icon = vectorResource(Res.drawable.ic_widgets),
-            onClick = {
-                vm.trackRecordWidgetClicked()
-                navController.navigate(BookDest.RecordWidget)
-            }
-        )
+        if (isRecordWidgetSupported) {
+            SettingsItem(
+                text = stringResource(Res.string.record_widget_title),
+                icon = vectorResource(Res.drawable.ic_widgets),
+                onClick = {
+                    vm.trackRecordWidgetClicked()
+                    navController.navigate(BookDest.RecordWidget)
+                }
+            )
+        }
 
         SettingsItem(
             text = stringResource(Res.string.settings_input_vibration),

@@ -129,13 +129,16 @@ internal class RecordWidgetViewModel(
     }
 
     /**
-     * Save the config of a widget which was added from the OS widget picker.
+     * Save the config of a widget which was added from the OS widget picker, or reconfigured.
      */
     suspend fun saveConfigForWidget(widgetId: String): RecordWidgetConfig? {
         val config = buildConfig(id = widgetId) ?: return null
+        val isNewWidget = configStore.get(widgetId) == null
         configStore.save(config)
         widgetPlatform.refreshWidgets()
-        tracker.trackRecordWidgetAdded(source = RecordWidgetAddedSource.Os, itemCount = config.items.size)
+        if (isNewWidget) {
+            tracker.trackRecordWidgetAdded(source = RecordWidgetAddedSource.Os, itemCount = config.items.size)
+        }
         return config
     }
 

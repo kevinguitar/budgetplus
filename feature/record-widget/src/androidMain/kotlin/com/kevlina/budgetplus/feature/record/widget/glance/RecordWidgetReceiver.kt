@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.feature.record.widget.glance
 import android.content.Context
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.updateAll
 import com.kevlina.budgetplus.core.common.AppCoroutineScope
 import com.kevlina.budgetplus.core.common.di.resolveGraphExtensionFactory
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetConfigStore
@@ -20,6 +21,28 @@ class RecordWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         super.onDeleted(context, appWidgetIds)
+        launchAsync(context) {
+            appWidgetIds.forEach { configStore.delete(it.toString()) }
+        }
+    }
+
+    /**
+     * The widgets get new ids when they're restored from a backup, move the configs to the new ids.
+     */
+    override fun onRestored(context: Context, oldWidgetIds: IntArray, newWidgetIds: IntArray) {
+        super.onRestored(context, oldWidgetIds, newWidgetIds)
+        launchAsync(context) {
+            // Read them all first, an old id could be reused as the new id of another widget.
+            val restoredConfigs = oldWidgetIds.zip(newWidgetIds).mapNotNull { (oldId, newId) ->
+                configStore.get(oldId.toString())?.copy(id = newId.toString())
+            }
+            oldWidgetIds.forEach { configStore.delete(it.toString()) }
+            restoredConfigs.forEach { configStore.save(it) }
+            glanceAppWidget.updateAll(context)
+        }
+    }
+
+    private fun launchAsync(context: Context, block: suspend () -> Unit) {
         context.resolveGraphExtensionFactory<RecordWidgetGraph.Factory>()
             .createRecordWidgetGraph()
             .inject(this)
@@ -27,7 +50,7 @@ class RecordWidgetReceiver : GlanceAppWidgetReceiver() {
         val pendingResult = goAsync()
         appScope.launch {
             try {
-                appWidgetIds.forEach { configStore.delete(it.toString()) }
+                block()
             } finally {
                 pendingResult.finish()
             }

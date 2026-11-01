@@ -21,8 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -226,6 +230,11 @@ private fun FrequentItemRow(
                 }
             }
             .rippleClick(color = LocalAppColors.current.dark, onClick = onClick)
+            // The check icon is decorative, expose the selection to the screen readers.
+            .semantics {
+                role = Role.Checkbox
+                toggleableState = ToggleableState(isSelected)
+            }
             .padding(horizontal = 16.dp)
     ) {
         Row(
