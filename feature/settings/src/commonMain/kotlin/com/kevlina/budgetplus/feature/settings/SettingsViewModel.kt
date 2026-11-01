@@ -63,6 +63,10 @@ internal class SettingsViewModel(
         tracker.logEvent("settings_batch_record_click")
     }
 
+    fun trackRecordWidgetClicked() {
+        tracker.logEvent("settings_record_widget_click")
+    }
+
     fun renameUser(newName: String) {
         viewModelScope.launch {
             try {

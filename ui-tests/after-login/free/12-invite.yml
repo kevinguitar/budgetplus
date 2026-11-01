@@ -14,7 +14,11 @@ appId: com.kevlina.budgetplus
     when:
       platform: iOS
     commands:
-      - assertVisible:
-          text: "Click the link to track expenses with me!.*"
+      # The share text is "<message>\n<link>", and `.` doesn't match the newline. The sheet's
+      # content can also render a few seconds after the sheet itself.
+      - extendedWaitUntil:
+          visible:
+            text: 'Click the link to track expenses with me![\s\S]*'
+          timeout: 15000
 - runFlow: ../../common/dismiss-share-sheet.yml
 - runFlow: ../../common/return-to-record.yml

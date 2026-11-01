@@ -5,8 +5,8 @@ Auth and Firestore emulators. All applicable flows run on every CI PR.
 
 | Platform | Login | Free | Premium | CI device |
 |---|---:|---:|---:|---|
-| Android | 5 | 36 | 10 | API 34, `google_apis`, x86_64 |
-| iOS | 5 | 36 | 10 | iPhone 17 Pro simulator; first available iPhone as fallback |
+| Android | 5 | 38 | 10 | API 34, `google_apis`, x86_64 |
+| iOS | 5 | 38 | 10 | iPhone 17 Pro simulator; first available iPhone as fallback |
 
 Counts describe implemented coverage, not the result of a particular run.
 
@@ -56,6 +56,7 @@ Flow names below correspond to `.yml` files in each suite directory.
 | Preferences | `64-settings-vibration`, `68-allow-members-edit` | Toggle both ways, verify persistence after re-entry, restore original state. |
 | Premium gates | `65-settings-hide-ads-gate`, `66-settings-batch-gate` | Free users reach the paywall route. |
 | Color tones | `67-color-tones` | Save Warm Tones of Dusk, reopen to verify, restore Milk Tea. |
+| Record widget | `69-record-widget`, `71-record-widget-unavailable-book` | The Record Widget screen lists a recorded category and lets it be selected; a widget link to a missing book shows an error and stays on Record. |
 | Ads | `70-banner-ad` | Stable `Banner Ad Area` exists regardless of SDK fill/loading. |
 | Destructive actions | `90-settings-delete-book`, `91-settings-logout` | Delete book returns to onboarding and reprovisions; logout returns to Auth last. |
 
@@ -199,7 +200,8 @@ Prefer existing setup, navigation, record, picker, and cleanup subflows over cop
   runs use English. Prefer these over positional taps or Compose test tags.
 - Useful test semantics include `bottom_nav_add`, `bottom_nav_history`,
   `overview_mode_toggle`, `record_cell_<index>`, `record_amount_<value>`,
-  `record_data_<type>_<category>_<price>_<name>`, and state-bearing settings rows.
+  `record_data_<type>_<category>_<price>_<name>`, `record_widget_item_<type>_<category>_<name>`,
+  `record_widget_done`, and state-bearing settings rows.
 - `UiTestFlags` gates test affordances: persistent, tap-to-dismiss accessible
   snackbars; deterministic color-tone controls; and the paywall loader's Back control.
   State labels observe real data rather than bypassing mutations.

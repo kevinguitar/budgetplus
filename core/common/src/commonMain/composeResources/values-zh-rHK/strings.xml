@@ -54,6 +54,22 @@
     <string name="batch_record_edited">已編輯%1$s筆帳目</string>
     <string name="batch_record_deleted">已刪除%1$s筆帳目</string>
 
+    <!-- Record Widget -->
+    <string name="record_widget_title">記帳小工具</string>
+    <string name="record_widget_book">記到：%1$s</string>
+    <string name="record_widget_hint">從過去 30 天常記的項目中選擇最多 %1$s 個，每次記帳時再填入金額。</string>
+    <string name="record_widget_empty">過去 30 天還沒有任何紀錄，先記幾筆帳吧！</string>
+    <string name="record_widget_limit">最多只能選擇 %1$s 個項目</string>
+    <plurals name="record_widget_times">
+        <item quantity="other">%1$d 次</item>
+    </plurals>
+    <string name="record_widget_pin_unsupported">你的桌面不支援從 App 新增小工具，請長按桌面手動新增%1$s小工具。</string>
+    <string name="record_widget_preset_saved">已儲存！長按主畫面，點選 + 並新增%1$s的記帳小工具，再點選「編輯小工具」選擇這組設定。</string>
+    <string name="record_widget_switched_book">已切換至 %1$s</string>
+    <string name="record_widget_book_unavailable">這個小工具的帳本已無法使用</string>
+    <string name="record_widget_setup">點擊以設定</string>
+    <string name="record_widget_sign_in">請先登入%1$s</string>
+
     <!-- Book -->
     <string name="book_selection">選擇帳本</string>
     <string name="book_create_success">「%1$s」已新增成功</string>

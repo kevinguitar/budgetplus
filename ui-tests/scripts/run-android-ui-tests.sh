@@ -52,6 +52,8 @@ maestro_test() {
 run_suites() {
   suites_failed=0
   selected_flows=0
+  start_logcat_capture
+  trap stop_logcat_capture EXIT
 
   # login runs first on freshly cleared state (its flows also clearState per-flow).
   if [[ "$SHARD" == "login" || "$SHARD" == "all" ]]; then
@@ -230,16 +232,21 @@ relaunch_emulator() {
   # Cold boot (no snapshot) to avoid restoring the already-leaked graphics state.
   # Detach fully so the emulator outlives this function.
   echo "Launching: $emulator_bin -avd $EMULATOR_AVD -port $EMULATOR_PORT" >&2
-  nohup "$emulator_bin" \
+  mkdir -p "$DIAGNOSTICS_DIR"
+  # The wrapper appends the exit status to the log, so a silent death still shows
+  # whether QEMU exited, aborted or was killed (128 + signal number).
+  nohup bash -c '"$@"; echo "Emulator exited with status $?"' emulator-wrapper \
+    "$emulator_bin" \
     -avd "$EMULATOR_AVD" \
     -port "$EMULATOR_PORT" \
-    -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot \
-    >/dev/null 2>&1 &
+    -no-window -gpu "${EMULATOR_GPU:-swiftshader_indirect}" -noaudio -no-boot-anim -no-snapshot \
+    >"$DIAGNOSTICS_DIR/emulator-relaunch-$EMULATOR_RELAUNCHES.log" 2>&1 &
   disown || true
 
   # Wait for the fresh instance to finish booting, then reprovision it.
   if wait_for_device; then
     provision_device || return 1
+    start_logcat_capture
     return 0
   fi
   echo "::error::Relaunched emulator did not come up." >&2
@@ -253,6 +260,95 @@ emulator_is_dead() {
   local state
   state="$(adb_bounded 15 -s "$ADB_SERIAL" get-state 2>/dev/null | tr -d '[:space:]')"
   [[ -z "$state" || "$state" == *"notfound"* || "$state" == *"error"* ]]
+}
+
+# Diagnostics for a lost emulator. The job log only says `device not found`, so keep
+# what explains it: the device logcat up to the loss, the relaunched emulators' output,
+# and the host memory/kernel log (e.g. the OOM killer taking QEMU down).
+DIAGNOSTICS_DIR="$MAESTRO_OUTPUT_DIR/diagnostics"
+EMULATOR_INSTANCE=0
+LOGCAT_PID=""
+
+# Stream the device logcat to a file per emulator instance. The stream ends by itself
+# when the emulator dies, so the tail of each file is what happened right before.
+start_logcat_capture() {
+  mkdir -p "$DIAGNOSTICS_DIR"
+  stop_logcat_capture
+  EMULATOR_INSTANCE=$((EMULATOR_INSTANCE + 1))
+  adb -s "$ADB_SERIAL" logcat -v threadtime \
+    >"$DIAGNOSTICS_DIR/logcat-emulator-$EMULATOR_INSTANCE.txt" 2>/dev/null </dev/null &
+  LOGCAT_PID=$!
+}
+
+stop_logcat_capture() {
+  if [[ -n "$LOGCAT_PID" ]]; then
+    kill "$LOGCAT_PID" >/dev/null 2>&1 || true
+    LOGCAT_PID=""
+  fi
+}
+
+# One CSV row per flow to spot a leak: host memory, QEMU RSS and the app's PSS.
+record_memory_sample() {
+  local name="$1"
+  local file="$DIAGNOSTICS_DIR/memory.csv"
+  mkdir -p "$DIAGNOSTICS_DIR"
+  [[ -f "$file" ]] || echo "time,flow,emulator,host_mem_available_mb,qemu_rss_mb,app_pss_kb" >"$file"
+  local host_available="" qemu_rss="" app_pss=""
+  if [[ -r /proc/meminfo ]]; then
+    host_available=$(awk '/^MemAvailable:/ { print int($2 / 1024) }' /proc/meminfo)
+  fi
+  if [[ "$(uname -s)" == "Linux" ]]; then
+    qemu_rss=$(ps -C qemu-system-x86_64 -o rss= 2>/dev/null | awk '{ sum += $1 } END { if (NR) print int(sum / 1024) }') || true
+  fi
+  app_pss=$(adb_bounded 10 -s "$ADB_SERIAL" shell dumpsys meminfo com.kevlina.budgetplus 2>/dev/null |
+    awk '/TOTAL PSS:/ { print $3; exit } /^ *TOTAL / { print $2; exit }') || true
+  echo "$(date -u +%H:%M:%S),$name,$EMULATOR_INSTANCE,$host_available,$qemu_rss,$app_pss" >>"$file"
+}
+
+# Snapshot the host right after the device is lost.
+capture_host_diagnostics() {
+  local name="$1"
+  local file="$DIAGNOSTICS_DIR/device-lost-$(date -u +%H%M%S)-${name//\//_}.txt"
+  mkdir -p "$DIAGNOSTICS_DIR"
+  {
+    echo "Device lost during $name at $(date -u +%FT%TZ), emulator instance $EMULATOR_INSTANCE"
+    echo "adb state: $(adb_bounded 15 -s "$ADB_SERIAL" get-state 2>&1 || true)"
+    echo
+    echo "== Emulator processes"
+    pgrep -af "qemu-system|emulator" 2>&1 || echo "none"
+    if command -v free >/dev/null; then
+      echo
+      echo "== Memory"
+      free -m
+    fi
+    if [[ "$(uname -s)" == "Linux" ]]; then
+      echo
+      echo "== Top processes by RSS"
+      ps -eo pid,rss,etime,args --sort=-rss 2>/dev/null | head -15 | cut -c1-200
+      echo
+      echo "== Kernel log (tail)"
+      (sudo -n dmesg -T 2>/dev/null || dmesg -T 2>/dev/null || echo "dmesg unavailable") | tail -80
+    fi
+    echo
+    echo "== Emulator crash reports"
+    find "${TMPDIR:-/tmp}/android-$(id -un)" "$HOME/.android" -maxdepth 3 -iname '*crash*' 2>/dev/null || true
+  } >"$file" 2>&1 || true
+  copy_emulator_crash_reports
+  echo "Saved device-loss diagnostics to $file" >&2
+}
+
+# The emulator's crash handler writes minidumps under its temp dir; keep them with
+# the diagnostics so a QEMU crash can be told apart from an external kill.
+copy_emulator_crash_reports() {
+  local dir
+  while IFS= read -r dir; do
+    mkdir -p "$DIAGNOSTICS_DIR/emulator-crash-reports"
+    cp -R "$dir" "$DIAGNOSTICS_DIR/emulator-crash-reports/" 2>/dev/null || true
+  done < <(find "${TMPDIR:-/tmp}/android-$(id -un)" "$HOME/.android" -maxdepth 2 -type d -iname 'emu-crash*' 2>/dev/null)
+}
+
+device_is_responsive() {
+  [[ "$(adb_bounded 15 -s "$ADB_SERIAL" get-state 2>/dev/null | tr -d '[:space:]')" == "device" ]]
 }
 
 
@@ -312,6 +408,7 @@ run_suite_dir() {
     name="$suite_prefix/$(basename "$flow" .yml)"
 
     if ! wait_for_device; then
+      capture_host_diagnostics "$name"
       # Device unreachable before the flow even starts. Try a cold-boot relaunch if
       # the emulator process is dead; only abort if that fails too. Avoid a subshell
       # so relaunch_emulator's counter persists across flows.
@@ -327,8 +424,10 @@ run_suite_dir() {
       fi
     fi
 
+    record_memory_sample "$name"
     local attempt=1
     while ! maestro_test "$name" "$flow"; do
+      device_is_responsive || capture_host_diagnostics "$name"
       if ((attempt >= MAESTRO_FLOW_ATTEMPTS)); then
         suites_failed=1
         break

@@ -54,6 +54,23 @@
     <string name="batch_record_edited">%1$s records were edited</string>
     <string name="batch_record_deleted">%1$s records were deleted</string>
 
+    <!-- Record Widget -->
+    <string name="record_widget_title">Record Widget</string>
+    <string name="record_widget_book">Adds to: %1$s</string>
+    <string name="record_widget_hint">Pick up to %1$s items you recorded often in the last 30 days, you will fill in the price each time.</string>
+    <string name="record_widget_empty">No records in the last 30 days yet. Record a few expenses first!</string>
+    <string name="record_widget_limit">You can select up to %1$s items</string>
+    <plurals name="record_widget_times">
+        <item quantity="one">%1$d time</item>
+        <item quantity="other">%1$d times</item>
+    </plurals>
+    <string name="record_widget_pin_unsupported">Your launcher doesn't support adding widgets from the app. Long press your home screen to add the %1$s widget.</string>
+    <string name="record_widget_preset_saved">Saved! Long press your home screen, tap + and add the %1$s Record Widget. Then tap Edit Widget to choose this preset.</string>
+    <string name="record_widget_switched_book">Switched to %1$s</string>
+    <string name="record_widget_book_unavailable">The book of this widget is no longer available</string>
+    <string name="record_widget_setup">Tap to set up</string>
+    <string name="record_widget_sign_in">Sign in to %1$s first</string>
+
     <!-- Book -->
     <string name="book_selection">Select book</string>
     <string name="book_create_success">Your book %1$s is created!</string>

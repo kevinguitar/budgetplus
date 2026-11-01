@@ -85,6 +85,7 @@ kotlin {
             api(projects.feature.editCategory)
             api(projects.feature.overview)
             api(projects.feature.recordCard)
+            api(projects.feature.recordWidget)
             api(projects.feature.records)
             api(projects.feature.search)
             api(projects.feature.settings)

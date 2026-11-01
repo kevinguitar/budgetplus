@@ -18,7 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -52,10 +55,14 @@ internal fun BookBinding(
 
     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(vm) {
-        vm.snackbarSender.snackbarEvent
-            .consumeEach { snackbarData = it }
-            .launchIn(this)
+    // Only consume while started, other activities could show the snackbars, e.g. widget config.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(vm, lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            vm.snackbarSender.snackbarEvent
+                .consumeEach { snackbarData = it }
+                .launchIn(this)
+        }
     }
 
     val platformContext = LocalPlatformContext.current

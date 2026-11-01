@@ -11,6 +11,7 @@ import org.jetbrains.compose.resources.StringResource
 class FakeSnackbarSender : SnackbarSender {
 
     var lastSentMessageRes: StringResource? = null
+    var lastSentFormatArgs: List<Any>? = null
     var lastSentMessage: String? = null
     var lastSentError: Throwable? = null
 
@@ -23,6 +24,15 @@ class FakeSnackbarSender : SnackbarSender {
         action: () -> Unit,
     ) {
         lastSentMessageRes = message
+    }
+
+    override suspend fun send(
+        message: StringResource,
+        formatArgs: List<Any>,
+        duration: SnackbarDuration,
+    ) {
+        lastSentMessageRes = message
+        lastSentFormatArgs = formatArgs
     }
 
     override suspend fun send(

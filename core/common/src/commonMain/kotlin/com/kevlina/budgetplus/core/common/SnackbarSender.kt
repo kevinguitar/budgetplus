@@ -16,6 +16,16 @@ interface SnackbarSender {
         action: () -> Unit = {},
     )
 
+    /**
+     * Send the formatted string resource, e.g. `Switched to %1$s`. A [StringResource] in
+     * [formatArgs] is resolved before formatting, e.g. the app name.
+     */
+    suspend fun send(
+        message: StringResource,
+        formatArgs: List<Any>,
+        duration: SnackbarDuration = SnackbarDuration.Short,
+    )
+
     suspend fun send(
         message: String,
         actionLabel: StringResource? = null,

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="record_widget_label">기록 위젯</string>
+    <string name="record_widget_description">자주 쓰는 항목을 탭 한 번으로 기록</string>
+    <string name="record_widget_setup">탭하여 설정</string>
+    <string name="record_widget_income">수입</string>
+</resources>

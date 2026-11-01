@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="record_widget_label">Record Widget</string>
+    <string name="record_widget_description">Record your frequent expenses with a tap</string>
+    <string name="record_widget_setup">Tap to set up</string>
+    <string name="record_widget_income">Income</string>
+</resources>

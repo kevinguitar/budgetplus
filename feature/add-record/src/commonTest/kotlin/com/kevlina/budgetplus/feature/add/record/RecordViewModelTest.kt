@@ -18,6 +18,8 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
 import com.kevlina.budgetplus.core.data.CurrencyExchangeRepo
+import com.kevlina.budgetplus.core.data.RecordPrefill
+import com.kevlina.budgetplus.core.data.RecordPrefillHolder
 import com.kevlina.budgetplus.core.data.fixtures.FakeAuthManager
 import com.kevlina.budgetplus.core.data.fixtures.FakeBookRepo
 import com.kevlina.budgetplus.core.data.fixtures.FakeCurrencyExchangeRepo
@@ -398,6 +400,96 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         )
     }
 
+    @Test
+    fun `prefill from widget should fill in type and category and note`() = runTest {
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = widgetBook, currentBookId = widgetBook.id),
+            recordPrefillHolder = prefillHolder,
+        )
+
+        prefillHolder.set(
+            RecordPrefill(bookId = widgetBook.id, type = RecordType.Income, category = "Salary", name = "Bonus")
+        )
+
+        assertEquals(RecordType.Income, model.type.value)
+        assertEquals("Salary", categoriesVm.category.value)
+        assertEquals("Bonus", model.note.text.toString())
+        assertNull(prefillHolder.prefill.value)
+    }
+
+    @Test
+    fun `prefill should leave the note empty when name equals category`() = runTest {
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = widgetBook, currentBookId = widgetBook.id),
+            recordPrefillHolder = prefillHolder,
+        )
+        model.note.setTextAndPlaceCursorAtEnd("Previous note")
+
+        prefillHolder.set(
+            RecordPrefill(bookId = widgetBook.id, type = RecordType.Expense, category = "Food", name = "Food")
+        )
+
+        assertEquals("Food", categoriesVm.category.value)
+        assertTrue(model.note.text.isEmpty())
+    }
+
+    @Test
+    fun `prefill should skip the category which no longer exists in the book`() = runTest {
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = widgetBook, currentBookId = widgetBook.id),
+            recordPrefillHolder = prefillHolder,
+        )
+
+        prefillHolder.set(
+            RecordPrefill(bookId = widgetBook.id, type = RecordType.Expense, category = "Removed", name = "Dinner")
+        )
+
+        assertNull(categoriesVm.category.value)
+        assertEquals("Dinner", model.note.text.toString())
+    }
+
+    @Test
+    fun `prefill should wait until its book becomes the current book`() = runTest {
+        val prefillHolder = RecordPrefillHolder()
+        val bookRepo = FakeBookRepo(book = Book(id = "other"), currentBookId = "other")
+        val model = createModel(bookRepo = bookRepo, recordPrefillHolder = prefillHolder)
+
+        prefillHolder.set(
+            RecordPrefill(bookId = widgetBook.id, type = RecordType.Expense, category = "Food", name = "Dinner")
+        )
+        assertTrue(model.note.text.isEmpty())
+
+        bookRepo.bookState.value = widgetBook
+        assertEquals("Dinner", model.note.text.toString())
+    }
+
+    @Test
+    fun `record created from the widget prefill should log the widget event`() = runTest {
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = widgetBook, currentBookId = widgetBook.id),
+            recordPrefillHolder = prefillHolder,
+        )
+        prefillHolder.set(
+            RecordPrefill(bookId = widgetBook.id, type = RecordType.Expense, category = "Food", name = "Dinner")
+        )
+
+        model.calculatorVm.input("12")
+        model.calculatorVm.evaluate()
+
+        assertEquals("record_widget_record_created", tracker.lastEventName)
+        assertEquals("Dinner", FakeRecordRepo.lastCreatedRecord?.name)
+    }
+
+    private val widgetBook = Book(
+        id = "widget_book",
+        expenseCategories = setOf("Food"),
+        incomeCategories = setOf("Salary"),
+    )
+
     private fun TestScope.createCalculatorVm() = CalculatorViewModel(
         vibrator = FakeVibratorManager(),
         calculatorSettings = CalculatorSettings(
@@ -435,6 +527,7 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         preference: FakePreference = FakePreference {
             set(intPreferencesKey("recordCount"), recordCount)
         },
+        recordPrefillHolder: RecordPrefillHolder = RecordPrefillHolder(),
     ) = RecordViewModel(
         calculatorVm = calculatorVm,
         categoriesVm = categoriesVm,
@@ -452,6 +545,7 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         shareHelper = FakeShareHelper,
         preference = preference,
         tracker = tracker,
+        recordPrefillHolder = recordPrefillHolder,
     )
 }
 

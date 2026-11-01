@@ -17,6 +17,6 @@ interface BookActivityGraph {
     @ContributesTo(AppScope::class)
     @GraphExtension.Factory
     fun interface Factory {
-        fun create(@Provides activity: BookActivity): BookActivityGraph
+        fun createBookActivityGraph(@Provides activity: BookActivity): BookActivityGraph
     }
 }

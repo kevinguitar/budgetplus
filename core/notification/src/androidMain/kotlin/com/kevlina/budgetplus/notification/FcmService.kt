@@ -36,7 +36,7 @@ class FcmService : FirebaseMessagingService() {
 
     override fun onCreate() {
         resolveGraphExtensionFactory<FcmServiceGraph.Factory>()
-            .create()
+            .createFcmServiceGraph()
             .inject(this)
         super.onCreate()
     }

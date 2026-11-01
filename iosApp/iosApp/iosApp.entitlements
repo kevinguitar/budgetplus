@@ -12,5 +12,9 @@
 	<array>
 		<string>applinks:budgetplus.cchi.tw</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>$(APP_GROUP_ID)</string>
+	</array>
 </dict>
 </plist>

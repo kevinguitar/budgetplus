@@ -24,7 +24,7 @@ class InsiderActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         resolveGraphExtensionFactory<InsiderActivityGraph.Factory>()
-            .create()
+            .createInsiderActivityGraph()
             .inject(this)
 
         enableEdgeToEdge()

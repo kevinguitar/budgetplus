@@ -32,6 +32,10 @@ jobs:
       MAESTRO_DISABLE_UPDATE_CHECK: true
       MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
       SHARD: ${{ matrix.shard }}
+      # Render in the guest instead of the host's gfxstream renderer
+      # (swiftshader_indirect), which is suspected of crashing QEMU silently on
+      # screen transitions. Also read by the runner script when it relaunches the emulator.
+      EMULATOR_GPU: guest
 
     steps:
       - uses: actions/checkout@v7
@@ -83,7 +87,7 @@ jobs:
           # waits: Maestro inputText then takes ~10s per character until its RPC times
           # out. Cold-boot a fresh AVD, matching the runner script's recovery path.
           force-avd-creation: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          emulator-options: -no-window -gpu ${{ env.EMULATOR_GPU }} -noaudio -no-boot-anim -no-snapshot
           # android-emulator-runner runs each line of an inline script as its own
           # `/usr/bin/sh -c` (dash), which cannot express `set -o pipefail` or a
           # heredoc. Invoke a committed script once with bash so everything shares

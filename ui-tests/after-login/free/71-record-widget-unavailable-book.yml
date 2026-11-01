@@ -1,0 +1,32 @@
+# ST17 — Tapping a widget item whose book is gone shows an error and lands on Record
+appId: com.kevlina.budgetplus
+---
+- runFlow: ../../common/setup-login.yml
+- runFlow: ../../common/assert-on-record.yml
+# On iOS the "Open in Budget+?" confirmation can show up late, after an immediate optional
+# tap already ran, leaving the link undelivered. Wait for it explicitly, and retry the whole
+# send (the link is idempotent) like seed-premium.yml does.
+- retry:
+    maxRetries: 2
+    commands:
+      - openLink: "budgetplus://record?source=widget&bookId=missing_book&type=Expense&category=Food&name=Dinner"
+      - runFlow:
+          when:
+            platform: iOS
+          commands:
+            - extendedWaitUntil:
+                visible:
+                  text: "Open"
+                timeout: 10000
+                optional: true
+            - tapOn:
+                text: "Open"
+                optional: true
+      - extendedWaitUntil:
+          visible:
+            text: "The book of this widget is no longer available"
+          timeout: 15000
+- runFlow: ../../common/assert-on-record.yml
+# UI-test snackbars are persistent and tap-to-dismiss, don't leave it for later flows.
+- tapOn:
+    text: "The book of this widget is no longer available"

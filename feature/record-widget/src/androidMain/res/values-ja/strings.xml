@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="record_widget_label">記帳ウィジェット</string>
+    <string name="record_widget_description">よく使う項目をワンタップで記帳</string>
+    <string name="record_widget_setup">タップして設定</string>
+    <string name="record_widget_income">収入</string>
+</resources>

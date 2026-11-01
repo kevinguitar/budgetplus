@@ -54,6 +54,22 @@
     <string name="batch_record_edited">%1$s件の帳面を編集しました</string>
     <string name="batch_record_deleted">%1$s件の帳面を削除しました</string>
 
+    <!-- Record Widget -->
+    <string name="record_widget_title">記帳ウィジェット</string>
+    <string name="record_widget_book">記帳先：%1$s</string>
+    <string name="record_widget_hint">過去30日間によく記帳した項目から最大%1$s個を選んでください。金額は毎回入力します。</string>
+    <string name="record_widget_empty">過去30日間の記録がまだありません。まずは何件か記帳してみましょう！</string>
+    <string name="record_widget_limit">選択できるのは最大%1$s個までです</string>
+    <plurals name="record_widget_times">
+        <item quantity="other">%1$d回</item>
+    </plurals>
+    <string name="record_widget_pin_unsupported">お使いのホームアプリはアプリからのウィジェット追加に対応していません。ホーム画面を長押しして%1$sのウィジェットを追加してください。</string>
+    <string name="record_widget_preset_saved">保存しました！ホーム画面を長押しして＋をタップし、%1$sの記帳ウィジェットを追加してください。その後「ウィジェットを編集」でこのプリセットを選択します。</string>
+    <string name="record_widget_switched_book">%1$sに切り替えました</string>
+    <string name="record_widget_book_unavailable">このウィジェットの帳簿は利用できなくなりました</string>
+    <string name="record_widget_setup">タップして設定</string>
+    <string name="record_widget_sign_in">まず%1$sにサインインしてください</string>
+
     <!-- Book -->
     <string name="book_selection">帳簿を選択する</string>
     <string name="book_create_success">「%1$s」が追加されました</string>
