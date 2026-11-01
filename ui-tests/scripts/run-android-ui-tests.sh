@@ -233,10 +233,13 @@ relaunch_emulator() {
   # Detach fully so the emulator outlives this function.
   echo "Launching: $emulator_bin -avd $EMULATOR_AVD -port $EMULATOR_PORT" >&2
   mkdir -p "$DIAGNOSTICS_DIR"
-  nohup "$emulator_bin" \
+  # The wrapper appends the exit status to the log, so a silent death still shows
+  # whether QEMU exited, aborted or was killed (128 + signal number).
+  nohup bash -c '"$@"; echo "Emulator exited with status $?"' emulator-wrapper \
+    "$emulator_bin" \
     -avd "$EMULATOR_AVD" \
     -port "$EMULATOR_PORT" \
-    -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot \
+    -no-window -gpu "${EMULATOR_GPU:-swiftshader_indirect}" -noaudio -no-boot-anim -no-snapshot \
     >"$DIAGNOSTICS_DIR/emulator-relaunch-$EMULATOR_RELAUNCHES.log" 2>&1 &
   disown || true
 
@@ -326,8 +329,22 @@ capture_host_diagnostics() {
       echo "== Kernel log (tail)"
       (sudo -n dmesg -T 2>/dev/null || dmesg -T 2>/dev/null || echo "dmesg unavailable") | tail -80
     fi
+    echo
+    echo "== Emulator crash reports"
+    find "${TMPDIR:-/tmp}/android-$(id -un)" "$HOME/.android" -maxdepth 3 -iname '*crash*' 2>/dev/null || true
   } >"$file" 2>&1 || true
+  copy_emulator_crash_reports
   echo "Saved device-loss diagnostics to $file" >&2
+}
+
+# The emulator's crash handler writes minidumps under its temp dir; keep them with
+# the diagnostics so a QEMU crash can be told apart from an external kill.
+copy_emulator_crash_reports() {
+  local dir
+  while IFS= read -r dir; do
+    mkdir -p "$DIAGNOSTICS_DIR/emulator-crash-reports"
+    cp -R "$dir" "$DIAGNOSTICS_DIR/emulator-crash-reports/" 2>/dev/null || true
+  done < <(find "${TMPDIR:-/tmp}/android-$(id -un)" "$HOME/.android" -maxdepth 2 -type d -iname 'emu-crash*' 2>/dev/null)
 }
 
 device_is_responsive() {
