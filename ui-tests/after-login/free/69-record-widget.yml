@@ -21,13 +21,14 @@ appId: com.kevlina.budgetplus
     visible:
       text: "Adds to: .*"
     timeout: 15000
-# The record without a note is listed by its category.
+# The record without a note is listed by its category. iOS appends the merged row text
+# (e.g. ", Food, 2 times, Food") to the accessibility label; accept that suffix.
 - extendedWaitUntil:
     visible:
-      text: "record_widget_item_Expense_Food_Food"
+      text: "record_widget_item_Expense_Food_Food(,.*)?"
     timeout: 15000
 - tapOn:
-    text: "record_widget_item_Expense_Food_Food"
+    text: "record_widget_item_Expense_Food_Food(,.*)?"
 - assertVisible:
-    text: "record_widget_done"
+    text: "record_widget_done(,.*)?"
 - runFlow: ../../common/return-to-record.yml
