@@ -13,7 +13,7 @@ kotlin {
         discoverClangModulesImplicitly.set(false)
         swiftPackage(
             url = url("https://github.com/googleads/swift-package-manager-google-mobile-ads.git"),
-            version = exact("13.11.0"),
+            version = exact("13.12.0"),
             products = listOf(product("GoogleMobileAds")),
         )
     }
