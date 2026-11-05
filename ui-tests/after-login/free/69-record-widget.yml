@@ -9,11 +9,14 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Food"
 - runFlow: ../../common/open-settings.yml
+# Use the default scroll timeout: on slow iOS runners one hierarchy check plus one swipe
+# took ~10s, so a 10s timeout expired right after the row scrolled into view.
+# Center it so the tap doesn't land under the fixed banner ad / bottom nav.
 - scrollUntilVisible:
     element:
       text: "Record Widget"
     direction: DOWN
-    timeout: 10000
+    centerElement: true
 # Record Widget is available to every user and opens its dedicated screen.
 - tapOn:
     text: "Record Widget"

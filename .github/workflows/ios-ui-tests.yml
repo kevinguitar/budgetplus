@@ -13,11 +13,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Free shards are balanced at flow 42; retain the existing budgets until
+        # Free shards are balanced at flow 50; retain the existing budgets until
         # optimized helper timings have been verified on GitHub's macOS runners.
+        # Login normally takes 22-27 min, but a slow simulator boot plus a
+        # Firebase emulator cache miss pushed a fully passing run past 30 min.
         include:
           - shard: login
-            timeout: 30
+            timeout: 40
           - shard: free-a
             timeout: 90
           - shard: free-b
@@ -110,14 +112,19 @@ jobs:
         if: always()
         run: bash ui-tests/scripts/junit-summary.sh "iOS (${{ matrix.shard }})" build/maestro/ios
 
+      # On cancellation the Firebase CLI may delete firebase-debug.log mid-upload, which
+      # fails the whole zip (ENOENT) and loses every screenshot. Snapshot the logs first.
+      - name: Collect Firebase emulator logs
+        if: always()
+        run: |
+          mkdir -p build/maestro/ios/firebase-logs
+          cp firebase-debug.log firestore-debug.log build/maestro/ios/firebase-logs/ 2>/dev/null || true
+
       - name: Upload iOS UI test artifacts
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: ios-ui-test-artifacts-${{ matrix.shard }}
-          path: |
-            build/maestro/ios
-            firebase-debug.log
-            firestore-debug.log
+          path: build/maestro/ios
           if-no-files-found: warn
           retention-days: 7
