@@ -92,7 +92,7 @@ class RunnerTests(unittest.TestCase):
         return result, commands, flows
 
     def expected_flows(self, platform, shard):
-        free_boundary = 42 if platform == "ios" else 50
+        free_boundary = 50
         paths = []
         if shard in ("all", "login"):
             paths += sorted((ROOT / "ui-tests/login").glob("*.yml"))
@@ -114,15 +114,15 @@ class RunnerTests(unittest.TestCase):
             with self.subTest(platform=platform):
                 self.assertIn("ui-tests/after-login/free/12-invite.yml", self.expected_flows(platform, "free"))
 
-    def test_free_shards_cover_every_flow_once_with_platform_specific_balancing(self):
+    def test_free_shards_cover_every_flow_once_split_at_50(self):
         for platform in ("android", "ios"):
             a = self.expected_flows(platform, "free-a")
             b = self.expected_flows(platform, "free-b")
             self.assertEqual(set(a) & set(b), set())
             self.assertEqual(sorted(a + b), self.expected_flows(platform, "free"))
             for name in ("42-record-delete", "43-record-sort", "44-record-multi-select-delete"):
-                path = f"ui-tests/after-login/free/{name}.yml"
-                self.assertIn(path, b if platform == "ios" else a)
+                self.assertIn(f"ui-tests/after-login/free/{name}.yml", a)
+            self.assertIn("ui-tests/after-login/free/50-search-basics.yml", b)
 
     def test_shards_and_platform_gates(self):
         for platform in ("android", "ios"):
@@ -135,7 +135,7 @@ class RunnerTests(unittest.TestCase):
 
     def test_ios_warm_handoff_sequences_share_one_initial_reset(self):
         cases = (
-            ("free-b", "free", ["42-record-delete", "43-record-sort", "44-record-multi-select-delete", "50-search-basics"]),
+            ("free-a", "free", ["41-record-duplicate", "42-record-delete", "43-record-sort", "44-record-multi-select-delete"]),
             ("premium", "premium", ["03-create-additional-book", "05-search-premium-periods"]),
         )
         for shard, directory, names in cases:
