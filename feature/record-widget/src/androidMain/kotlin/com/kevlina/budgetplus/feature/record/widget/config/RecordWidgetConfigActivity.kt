@@ -112,6 +112,7 @@ class RecordWidgetConfigActivity : ComponentActivity() {
                             RecordWidgetContent(
                                 vm = vm,
                                 navigateUp = ::finish,
+                                applyNavBarPadding = true,
                                 onDone = {
                                     lifecycleScope.launch {
                                         if (vm.saveConfigForWidget(widgetId = appWidgetId.toString()) != null) {

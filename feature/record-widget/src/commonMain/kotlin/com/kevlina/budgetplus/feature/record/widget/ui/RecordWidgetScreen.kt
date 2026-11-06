@@ -4,11 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -107,12 +112,16 @@ fun RecordWidgetScreen() {
 
 /**
  * The content is shared by the settings entry and the Android widget configuration activity.
+ *
+ * @param applyNavBarPadding Keep the content above the navigation bar. Only needed when the
+ *  screen is rendered directly by an edge to edge activity, i.e. the widget configuration activity.
  */
 @Composable
 internal fun RecordWidgetContent(
     vm: RecordWidgetViewModel,
     navigateUp: () -> Unit,
     onDone: () -> Unit,
+    applyNavBarPadding: Boolean = false,
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val selectedItems by vm.selectedItems.collectAsStateWithLifecycle()
@@ -126,6 +135,7 @@ internal fun RecordWidgetContent(
         navigateUp = navigateUp,
         onItemClick = vm::toggleItem,
         onDone = onDone,
+        applyNavBarPadding = applyNavBarPadding,
     )
 }
 
@@ -138,6 +148,7 @@ private fun RecordWidgetContent(
     navigateUp: () -> Unit,
     onItemClick: (RecordWidgetItem) -> Unit,
     onDone: () -> Unit,
+    applyNavBarPadding: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -184,15 +195,27 @@ private fun RecordWidgetContent(
                 .weight(1F)
         ) {
             when (uiState) {
-                RecordWidgetUiState.Loading -> InfiniteCircularProgress()
+                RecordWidgetUiState.Loading -> InfiniteCircularProgress(
+                    modifier = Modifier.thenIf(applyNavBarPadding) { Modifier.navigationBarsPadding() }
+                )
                 is RecordWidgetUiState.Loaded -> if (uiState.items.isEmpty()) {
                     Text(
                         text = stringResource(Res.string.record_widget_empty),
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 32.dp),
+                        modifier = Modifier
+                            .thenIf(applyNavBarPadding) { Modifier.navigationBarsPadding() }
+                            .padding(horizontal = 32.dp),
                     )
                 } else {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        // Scroll behind the navigation bar, but the last item can scroll above it.
+                        contentPadding = if (applyNavBarPadding) {
+                            WindowInsets.navigationBars.asPaddingValues()
+                        } else {
+                            PaddingValues()
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
                         itemsIndexed(
                             items = uiState.items,
                             key = { _, frequentItem ->
