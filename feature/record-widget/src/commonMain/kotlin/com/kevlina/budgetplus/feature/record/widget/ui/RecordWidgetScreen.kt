@@ -84,6 +84,7 @@ fun RecordWidgetScreen() {
     var showPresetSavedDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = vm) {
+        vm.start(widgetId = null)
         vm.showPresetSavedEvent
             .consumeEach { showPresetSavedDialog = true }
             .collect()
@@ -123,12 +124,13 @@ internal fun RecordWidgetContent(
     onDone: () -> Unit,
     applyNavBarPadding: Boolean = false,
 ) {
+    val book by vm.book.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val selectedItems by vm.selectedItems.collectAsStateWithLifecycle()
     val isDoneEnabled by vm.isDoneEnabled.collectAsStateWithLifecycle()
 
     RecordWidgetContent(
-        bookName = vm.book?.name.orEmpty(),
+        bookName = book?.name.orEmpty(),
         uiState = uiState,
         selectedItems = selectedItems,
         isDoneEnabled = isDoneEnabled,

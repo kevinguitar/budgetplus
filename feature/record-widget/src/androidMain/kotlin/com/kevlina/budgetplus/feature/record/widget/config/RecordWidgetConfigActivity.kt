@@ -92,6 +92,10 @@ class RecordWidgetConfigActivity : ComponentActivity() {
                 val themeColors by themeManager.themeColors.collectAsStateWithLifecycle()
                 AppTheme(themeColors) {
                     val vm = metroViewModel<RecordWidgetViewModel>()
+                    val book by vm.book.collectAsStateWithLifecycle()
+
+                    // Preselect the items when an existing widget is reconfigured.
+                    LaunchedEffect(vm) { vm.start(widgetId = appWidgetId.toString()) }
 
                     // This activity is outside of the book activity, show the snackbars on its own.
                     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
@@ -102,7 +106,7 @@ class RecordWidgetConfigActivity : ComponentActivity() {
                     }
 
                     Scaffold(snackbarHost = { SnackbarHost(snackbarData) }) {
-                        if (!vm.isSignedIn || vm.book == null) {
+                        if (!vm.isSignedIn || book == null) {
                             MessageContent(
                                 message = stringResource(Res.string.record_widget_sign_in, stringResource(Res.string.app_name)),
                                 cta = stringResource(Res.string.cta_go),

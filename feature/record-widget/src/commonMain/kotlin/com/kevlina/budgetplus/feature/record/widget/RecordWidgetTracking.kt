@@ -13,6 +13,19 @@ enum class RecordWidgetAddedSource(val value: String) {
     Ios("ios"),
 }
 
+/**
+ * Android: an existing widget is reconfigured from the launcher.
+ */
+fun Tracker.trackRecordWidgetEdited(itemCount: Int, isBookChanged: Boolean) {
+    logEvent(
+        event = "record_widget_edited",
+        params = mapOf(
+            "item_count" to itemCount,
+            "book_changed" to isBookChanged,
+        )
+    )
+}
+
 fun Tracker.trackRecordWidgetAdded(source: RecordWidgetAddedSource, itemCount: Int? = null) {
     logEvent(
         event = "record_widget_added",

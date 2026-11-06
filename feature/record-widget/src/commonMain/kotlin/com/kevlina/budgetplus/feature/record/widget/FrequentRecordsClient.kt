@@ -46,8 +46,23 @@ data class FrequentItem(
 /**
  * Group the records by type, category and name, regardless of the price. The most frequently
  * recorded items come first, ties are broken by the most recently recorded one.
+ *
+ * @param pinnedItems Listed first in the given order with their counts, 0 if they're not recorded
+ *  in the period. They don't count toward the [limit].
  */
-internal fun List<Record>.toFrequentItems(limit: Int = FREQUENT_RECORDS_LIMIT): List<FrequentItem> {
+internal fun List<Record>.toFrequentItems(
+    limit: Int = FREQUENT_RECORDS_LIMIT,
+    pinnedItems: List<RecordWidgetItem> = emptyList(),
+): List<FrequentItem> {
+    val frequentItems = groupFrequentItems()
+    if (pinnedItems.isEmpty()) return frequentItems.take(limit)
+
+    val counts = frequentItems.associate { it.item to it.count }
+    return pinnedItems.distinct().map { FrequentItem(item = it, count = counts[it] ?: 0) } +
+        frequentItems.filterNot { it.item in pinnedItems }.take(limit)
+}
+
+private fun List<Record>.groupFrequentItems(): List<FrequentItem> {
     return groupBy { record ->
         RecordWidgetItem(
             type = record.type,
@@ -60,6 +75,5 @@ internal fun List<Record>.toFrequentItems(limit: Int = FREQUENT_RECORDS_LIMIT): 
             compareByDescending<Map.Entry<RecordWidgetItem, List<Record>>> { it.value.size }
                 .thenByDescending { entry -> entry.value.maxOf { it.createdOn } }
         )
-        .take(limit)
         .map { FrequentItem(item = it.key, count = it.value.size) }
 }
