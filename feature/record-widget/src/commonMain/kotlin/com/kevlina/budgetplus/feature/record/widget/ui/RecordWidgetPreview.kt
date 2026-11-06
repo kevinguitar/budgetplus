@@ -32,6 +32,7 @@ import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDimens
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetItem
+import com.kevlina.budgetplus.feature.record.widget.RecordWidgetSamples
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -230,11 +231,10 @@ private fun PreviewText(
     )
 }
 
+// The long name moves the pills to the 2nd row.
 private val previewItems = listOf(
-    RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Morning Coffee"),
     RecordWidgetItem(type = RecordType.Expense, category = "Rent", name = "36 Cassia Crescent Apartment Rent"),
-    RecordWidgetItem(type = RecordType.Income, category = "Salary", name = "Salary"),
-)
+) + RecordWidgetSamples.items
 
 @Preview
 @Composable

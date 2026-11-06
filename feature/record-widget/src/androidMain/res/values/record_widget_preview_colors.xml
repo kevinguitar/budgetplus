@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The MilkTea theme, the default theme of the app, for the static widget picker preview. -->
+<resources>
+    <color name="record_widget_preview_light">#FFF3E0</color>
+    <color name="record_widget_preview_light_bg">#F2E2CD</color>
+    <color name="record_widget_preview_primary">#C1A185</color>
+    <color name="record_widget_preview_dark">#7E8072</color>
+</resources>

@@ -547,4 +547,6 @@ internal class FakeRecordWidgetPlatform : RecordWidgetPlatform {
     override suspend fun refreshWidgets() {
         refreshCount++
     }
+
+    override suspend fun updatePreview() = Unit
 }

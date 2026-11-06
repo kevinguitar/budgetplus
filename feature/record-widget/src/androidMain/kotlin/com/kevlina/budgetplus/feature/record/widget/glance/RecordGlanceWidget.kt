@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -24,6 +23,7 @@ import androidx.glance.action.Action
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.PreviewSizeMode
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
@@ -59,6 +59,7 @@ import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDeeplink
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDimens
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetGraph
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetItem
+import com.kevlina.budgetplus.feature.record.widget.RecordWidgetSamples
 import com.kevlina.budgetplus.feature.record.widget.config.RecordWidgetConfigActivity
 import com.kevlina.budgetplus.feature.record.widget.isRecordWidgetDynamicColorSupported
 import dev.zacsweers.metro.Inject
@@ -75,10 +76,11 @@ class RecordGlanceWidget : GlanceAppWidget() {
     // The exact size is needed to decide whether the name and the pills fit in the same row.
     override val sizeMode: SizeMode = SizeMode.Exact
 
+    // The default 3x2 size, the provider's min size is too small to show the sample items.
+    override val previewSizeMode: PreviewSizeMode = SizeMode.Responsive(setOf(DpSize(250.dp, 180.dp)))
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        context.resolveGraphExtensionFactory<RecordWidgetGraph.Factory>()
-            .createRecordWidgetGraph()
-            .inject(this)
+        inject(context)
 
         val widgetId = GlanceAppWidgetManager(context).getAppWidgetId(id).toString()
 
@@ -100,6 +102,60 @@ class RecordGlanceWidget : GlanceAppWidget() {
             )
         }
     }
+
+    /**
+     * Android 15+: the generated preview in the widget picker, the sample items in the app's
+     * current theme. It's published by [com.kevlina.budgetplus.feature.record.widget.RecordWidgetPlatform.updatePreview].
+     */
+    override suspend fun providePreview(context: Context, widgetCategory: Int) {
+        inject(context)
+        val config = context.sampleRecordWidgetConfig()
+
+        provideContent {
+            val themeColors by themeManager.themeColors.collectAsState()
+            RecordWidgetContent(
+                widgetId = config.id,
+                config = config,
+                colors = WidgetColors.fromTheme(themeColors),
+                isInteractive = false,
+            )
+        }
+    }
+
+    private fun inject(context: Context) {
+        context.resolveGraphExtensionFactory<RecordWidgetGraph.Factory>()
+            .createRecordWidgetGraph()
+            .inject(this)
+    }
+}
+
+/**
+ * The localized sample widget, the categories match the app's default categories.
+ */
+internal fun Context.sampleRecordWidgetConfig(): RecordWidgetConfig {
+    val food = getString(R.string.record_widget_sample_category_food)
+    return RecordWidgetSamples.config.copy(
+        bookName = getString(R.string.record_widget_sample_book),
+        items = listOf(
+            RecordWidgetItem(RecordType.Expense, food, getString(R.string.record_widget_sample_coffee)),
+            RecordWidgetItem(RecordType.Expense, food, getString(R.string.record_widget_sample_lunch)),
+            RecordWidgetItem(
+                type = RecordType.Expense,
+                category = getString(R.string.record_widget_sample_category_transport),
+                name = getString(R.string.record_widget_sample_commute),
+            ),
+            RecordWidgetItem(
+                type = RecordType.Expense,
+                category = getString(R.string.record_widget_sample_category_daily),
+                name = getString(R.string.record_widget_sample_groceries),
+            ),
+            RecordWidgetItem(
+                type = RecordType.Income,
+                category = getString(R.string.record_widget_sample_category_salary),
+                name = getString(R.string.record_widget_sample_salary),
+            ),
+        ),
+    )
 }
 
 // The layout is shared with the in-app preview.
@@ -110,11 +166,15 @@ private val PillHorizontalPadding = RecordWidgetDimens.PillHorizontalPadding
 private val NamePillsSpacing = RecordWidgetDimens.NamePillsSpacing
 private val PillsSpacing = RecordWidgetDimens.PillsSpacing
 
+/**
+ * @param isInteractive False for the previews, which can't be tapped.
+ */
 @Composable
 private fun RecordWidgetContent(
     widgetId: String,
     config: RecordWidgetConfig?,
     colors: WidgetColors,
+    isInteractive: Boolean = true,
 ) {
     val context = LocalContext.current
     Column(
@@ -141,7 +201,9 @@ private fun RecordWidgetContent(
                 .background(colors.headerBackground)
                 .padding(horizontal = HorizontalPadding, vertical = RecordWidgetDimens.HeaderVerticalPadding)
                 // Open the app on the widget's book, without prefill.
-                .clickable(context.openDeeplinkAction(RecordWidgetDeeplink.buildBookLink(config.bookId)))
+                .thenIf(isInteractive) {
+                    clickable(context.openDeeplinkAction(RecordWidgetDeeplink.buildBookLink(config.bookId)))
+                }
         )
 
         LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
@@ -150,7 +212,11 @@ private fun RecordWidgetContent(
                     item = item,
                     colors = colors,
                     isLast = index == config.items.lastIndex,
-                    onClick = context.openDeeplinkAction(RecordWidgetDeeplink.build(config.bookId, item)),
+                    onClick = if (isInteractive) {
+                        context.openDeeplinkAction(RecordWidgetDeeplink.build(config.bookId, item))
+                    } else {
+                        null
+                    },
                 )
             }
         }
@@ -162,7 +228,7 @@ private fun ItemRow(
     item: RecordWidgetItem,
     colors: WidgetColors,
     isLast: Boolean,
-    onClick: Action,
+    onClick: Action?,
 ) {
     val context = LocalContext.current
     val pills = buildList {
@@ -171,7 +237,7 @@ private fun ItemRow(
     }
     val isSingleRow = context.fitsInSingleRow(name = item.name, pills = pills, widgetSize = LocalSize.current)
 
-    Column(modifier = GlanceModifier.fillMaxWidth().clickable(onClick)) {
+    Column(modifier = GlanceModifier.fillMaxWidth().thenIf(onClick != null) { clickable(onClick!!) }) {
         if (isSingleRow) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -352,20 +418,21 @@ internal data class WidgetColors(
     }
 }
 
+private inline fun GlanceModifier.thenIf(
+    condition: Boolean,
+    modifier: GlanceModifier.() -> GlanceModifier,
+): GlanceModifier = if (condition) modifier() else this
+
 // The theme colors are the same in light and dark mode.
 private fun Color.toColorProvider(): ColorProvider = ColorProvider(day = this, night = this)
 
-private val previewConfig = RecordWidgetConfig(
-    id = "preview",
-    bookId = "book",
-    bookName = "Family Book",
+private val previewConfig = RecordWidgetSamples.config
+
+// The long name moves the pills to the 2nd row.
+private val longNameConfig = RecordWidgetSamples.config.copy(
     items = listOf(
-        RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Dinner"),
         RecordWidgetItem(type = RecordType.Expense, category = "Rent", name = "36 Cassia Crescent Apartment"),
-        RecordWidgetItem(type = RecordType.Expense, category = "Transport", name = "Transport"),
-        RecordWidgetItem(type = RecordType.Income, category = "Salary", name = "Salary"),
-    ),
-    createdOn = 0,
+    ) + RecordWidgetSamples.items.take(3),
 )
 
 @OptIn(ExperimentalGlancePreviewApi::class)
@@ -379,7 +446,7 @@ private fun RecordWidgetContent_Preview() {
 @Preview(widthDp = 180, heightDp = 180)
 @Composable
 private fun RecordWidgetContentNarrow_Preview() {
-    RecordWidgetContent(widgetId = "preview", config = previewConfig, colors = WidgetColors.fromTheme(ThemeColors.Dusk))
+    RecordWidgetContent(widgetId = "preview", config = longNameConfig, colors = WidgetColors.fromTheme(ThemeColors.Dusk))
 }
 
 @OptIn(ExperimentalGlancePreviewApi::class)

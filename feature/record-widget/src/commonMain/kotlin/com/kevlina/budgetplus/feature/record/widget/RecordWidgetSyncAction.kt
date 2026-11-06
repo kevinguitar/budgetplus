@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.onEach
  * Keeps the widgets up to date with the app:
  * - The book name snapshot is renamed when the book is renamed.
  * - The widgets are re-rendered on app start and when the theme colors change.
+ * - The widget picker preview follows the theme colors, see [RecordWidgetPlatform.updatePreview].
  */
 @ContributesIntoSet(AppScope::class)
 internal class RecordWidgetSyncAction(
@@ -41,8 +42,19 @@ internal class RecordWidgetSyncAction(
             .launchIn(appScope)
 
         themeManager.themeColors
-            .onEach { refreshWidgets() }
+            .onEach {
+                refreshWidgets()
+                updatePreview()
+            }
             .launchIn(appScope)
+    }
+
+    private suspend fun updatePreview() {
+        try {
+            widgetPlatform.updatePreview()
+        } catch (e: Exception) {
+            Logger.e(e, "Fail to update the record widget preview")
+        }
     }
 
     private suspend fun refreshWidgets() {

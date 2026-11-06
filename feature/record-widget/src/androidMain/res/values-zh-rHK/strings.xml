@@ -4,4 +4,16 @@
     <string name="record_widget_description">點一下就能記下常用的帳目</string>
     <string name="record_widget_setup">點擊以設定</string>
     <string name="record_widget_income">收入</string>
+
+    <!-- The sample widget in the widget picker, categories match the default categories. -->
+    <string name="record_widget_sample_book">我的帳本</string>
+    <string name="record_widget_sample_coffee">早晨咖啡</string>
+    <string name="record_widget_sample_lunch">午餐</string>
+    <string name="record_widget_sample_commute">通勤</string>
+    <string name="record_widget_sample_groceries">買餸</string>
+    <string name="record_widget_sample_salary">薪水</string>
+    <string name="record_widget_sample_category_food">飲食</string>
+    <string name="record_widget_sample_category_transport">交通</string>
+    <string name="record_widget_sample_category_daily">日常</string>
+    <string name="record_widget_sample_category_salary">薪水</string>
 </resources>
