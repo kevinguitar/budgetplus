@@ -1,6 +1,8 @@
 package com.kevlina.budgetplus.feature.record.widget.ui
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +31,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_income
 import budgetplus.core.common.generated.resources.record_widget_preview_empty
 import com.kevlina.budgetplus.core.common.RecordType
+import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDimens
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetItem
@@ -70,6 +73,9 @@ internal expect fun rememberDynamicWidgetPreviewColors(): WidgetPreviewColors?
  * A non-interactive replica of the record widget for the settings screen. Glance can't be
  * rendered in the app's UI, and the screen is shared with iOS, so it mirrors the Glance layout
  * with plain Compose.
+ *
+ * @param outlineColor The widget background can be the same as the screen background, the outline
+ *  separates them. It's part of the screen rather than the widget, so it follows the app's theme.
  */
 @Composable
 internal fun RecordWidgetPreview(
@@ -77,13 +83,17 @@ internal fun RecordWidgetPreview(
     items: List<RecordWidgetItem>,
     colors: WidgetPreviewColors,
     modifier: Modifier = Modifier,
+    outlineColor: Color = LocalAppColors.current.dark,
 ) {
+    val shape = RoundedCornerShape(RecordWidgetDimens.CornerRadius)
     Column(
         modifier = modifier
             .widthIn(max = 320.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(RecordWidgetDimens.CornerRadius))
+            .animateContentSize()
+            .clip(shape)
             .background(colors.background)
+            .border(width = 1.dp, color = outlineColor, shape = shape)
     ) {
         PreviewText(
             text = bookName,
