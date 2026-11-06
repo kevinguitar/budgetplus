@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +31,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
@@ -41,12 +43,12 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.app_name
 import budgetplus.core.common.generated.resources.cta_complete
 import budgetplus.core.common.generated.resources.ic_check
-import budgetplus.core.common.generated.resources.ic_check_circle
 import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.record_income
 import budgetplus.core.common.generated.resources.record_widget_book
 import budgetplus.core.common.generated.resources.record_widget_empty
 import budgetplus.core.common.generated.resources.record_widget_hint
+import budgetplus.core.common.generated.resources.record_widget_position
 import budgetplus.core.common.generated.resources.record_widget_preset_saved
 import budgetplus.core.common.generated.resources.record_widget_times
 import budgetplus.core.common.generated.resources.record_widget_title
@@ -224,9 +226,10 @@ private fun RecordWidgetContent(
                                 frequentItem.item.let { "${it.type}_${it.category}_${it.name}" }
                             }
                         ) { index, frequentItem ->
+                            val position = selectedItems.indexOf(frequentItem.item)
                             FrequentItemRow(
                                 frequentItem = frequentItem,
-                                isSelected = frequentItem.item in selectedItems,
+                                position = if (position >= 0) position + 1 else null,
                                 isLast = index == uiState.items.lastIndex,
                                 onClick = { onItemClick(frequentItem.item) },
                             )
@@ -238,14 +241,19 @@ private fun RecordWidgetContent(
     }
 }
 
+/**
+ * @param position The 1-based position of the item on the widget, null if it's not selected.
+ */
 @Composable
 private fun FrequentItemRow(
     frequentItem: FrequentItem,
-    isSelected: Boolean,
+    position: Int?,
     isLast: Boolean,
     onClick: () -> Unit,
 ) {
     val item = frequentItem.item
+    val isSelected = position != null
+    val positionDescription = position?.let { stringResource(Res.string.record_widget_position, it) }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -255,10 +263,11 @@ private fun FrequentItemRow(
                 }
             }
             .rippleClick(color = LocalAppColors.current.dark, onClick = onClick)
-            // The check icon is decorative, expose the selection to the screen readers.
+            // The badge is decorative, expose the selection and the position to the screen readers.
             .semantics {
                 role = Role.Checkbox
                 toggleableState = ToggleableState(isSelected)
+                if (positionDescription != null) stateDescription = positionDescription
             }
             .padding(horizontal = 16.dp)
     ) {
@@ -268,13 +277,19 @@ private fun FrequentItemRow(
                 .fillMaxWidth()
                 .padding(vertical = 10.dp)
         ) {
-            Icon(
-                imageVector = vectorResource(
-                    if (isSelected) Res.drawable.ic_check_circle else Res.drawable.ic_check_circle_outline
-                ),
-                tint = LocalAppColors.current.dark,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier.padding(end = 16.dp),
-            )
+            ) {
+                if (position == null) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_check_circle_outline),
+                        tint = LocalAppColors.current.dark,
+                    )
+                } else {
+                    PositionBadge(position = position)
+                }
+            }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -315,6 +330,30 @@ private fun FrequentItemRow(
     }
 }
 
+/**
+ * The order of the item on the widget, in place of the check icon. It's the same size as the
+ * outline icon so the row doesn't shift when it's selected.
+ */
+@Composable
+private fun PositionBadge(position: Int) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            // The visible circle of the outline icon is 20dp in a 24dp box.
+            .padding(2.dp)
+            .size(20.dp)
+            .background(color = LocalAppColors.current.dark, shape = CircleShape)
+    ) {
+        Text(
+            text = position.toString(),
+            fontSize = FontSize.Small,
+            fontWeight = FontWeight.Bold,
+            color = LocalAppColors.current.light,
+            singleLine = true,
+        )
+    }
+}
+
 @Composable
 private fun PillLabel(text: String) {
     Text(
@@ -342,7 +381,7 @@ private fun RecordWidgetContent_Preview() = AppTheme {
     RecordWidgetContent(
         bookName = "Family Book",
         uiState = RecordWidgetUiState.Loaded(items),
-        selectedItems = items.take(1).map { it.item },
+        selectedItems = listOf(items[2].item, items[0].item),
         isDoneEnabled = true,
         navigateUp = {},
         onItemClick = {},
