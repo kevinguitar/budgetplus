@@ -303,6 +303,7 @@ private fun DynamicColorsToggle(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
+    val title = stringResource(Res.string.record_widget_dynamic_colors)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -321,7 +322,7 @@ private fun DynamicColorsToggle(
             modifier = Modifier.weight(1F),
         ) {
             Text(
-                text = stringResource(Res.string.record_widget_dynamic_colors),
+                text = title,
                 fontSize = FontSize.SemiLarge,
                 fontWeight = FontWeight.Medium,
             )
@@ -331,7 +332,12 @@ private fun DynamicColorsToggle(
             )
         }
 
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+        // The switch is a separate accessibility node from the row, label it for the screen readers.
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.semantics { contentDescription = title },
+        )
     }
 }
 
