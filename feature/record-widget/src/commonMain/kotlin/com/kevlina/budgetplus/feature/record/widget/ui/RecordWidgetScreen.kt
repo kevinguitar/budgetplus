@@ -50,6 +50,8 @@ import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.record_income
 import budgetplus.core.common.generated.resources.record_widget_book
+import budgetplus.core.common.generated.resources.record_widget_dynamic_colors
+import budgetplus.core.common.generated.resources.record_widget_dynamic_colors_desc
 import budgetplus.core.common.generated.resources.record_widget_empty
 import budgetplus.core.common.generated.resources.record_widget_hint
 import budgetplus.core.common.generated.resources.record_widget_position
@@ -69,6 +71,7 @@ import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.MenuAction
+import com.kevlina.budgetplus.core.ui.Switch
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.rippleClick
@@ -138,6 +141,7 @@ internal fun RecordWidgetContent(
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val selectedItems by vm.selectedItems.collectAsStateWithLifecycle()
     val isDoneEnabled by vm.isDoneEnabled.collectAsStateWithLifecycle()
+    val useDynamicColors by vm.useDynamicColors.collectAsStateWithLifecycle()
 
     RecordWidgetContent(
         book = book,
@@ -145,8 +149,10 @@ internal fun RecordWidgetContent(
         uiState = uiState,
         selectedItems = selectedItems,
         isDoneEnabled = isDoneEnabled,
+        useDynamicColors = useDynamicColors.takeIf { vm.isDynamicColorSupported },
         navigateUp = navigateUp,
         onBookSelect = vm::selectBook,
+        onDynamicColorsChange = vm::setUseDynamicColors,
         onItemClick = vm::toggleItem,
         onDone = onDone,
         applyNavBarPadding = applyNavBarPadding,
@@ -160,8 +166,10 @@ private fun RecordWidgetContent(
     uiState: RecordWidgetUiState,
     selectedItems: List<RecordWidgetItem>,
     isDoneEnabled: Boolean,
+    useDynamicColors: Boolean?,
     navigateUp: () -> Unit,
     onBookSelect: (Book) -> Unit,
+    onDynamicColorsChange: (Boolean) -> Unit,
     onItemClick: (RecordWidgetItem) -> Unit,
     onDone: () -> Unit,
     applyNavBarPadding: Boolean = false,
@@ -198,6 +206,10 @@ private fun RecordWidgetContent(
                 text = stringResource(Res.string.record_widget_hint, RECORD_WIDGET_MAX_ITEMS),
                 fontSize = FontSize.Small,
             )
+        }
+
+        if (useDynamicColors != null) {
+            DynamicColorsToggle(checked = useDynamicColors, onCheckedChange = onDynamicColorsChange)
         }
 
         Box(
@@ -246,6 +258,46 @@ private fun RecordWidgetContent(
                 }
             }
         }
+    }
+}
+
+/**
+ * Android 12+: color the widget by Material You instead of the app's theme.
+ */
+@Composable
+private fun DynamicColorsToggle(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .rippleClick(color = LocalAppColors.current.dark, onClick = { onCheckedChange(!checked) })
+            .thenIf(UiTestFlags.enabled) {
+                Modifier.semantics {
+                    contentDescription = "record_widget_dynamic_colors_${if (checked) "on" else "off"}"
+                }
+            }
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier.weight(1F),
+        ) {
+            Text(
+                text = stringResource(Res.string.record_widget_dynamic_colors),
+                fontSize = FontSize.SemiLarge,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = stringResource(Res.string.record_widget_dynamic_colors_desc),
+                fontSize = FontSize.Small,
+            )
+        }
+
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
@@ -447,8 +499,10 @@ private fun RecordWidgetContent_Preview() = AppTheme {
         uiState = RecordWidgetUiState.Loaded(items),
         selectedItems = listOf(items[2].item, items[0].item),
         isDoneEnabled = true,
+        useDynamicColors = false,
         navigateUp = {},
         onBookSelect = {},
+        onDynamicColorsChange = {},
         onItemClick = {},
         onDone = {},
     )

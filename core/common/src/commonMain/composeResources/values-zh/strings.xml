@@ -61,6 +61,8 @@
     <string name="record_widget_empty">过去 30 天还没有任何记录，先记几笔账吧！</string>
     <string name="record_widget_limit">最多只能选择 %1$s 个项目</string>
     <string name="record_widget_position">第 %1$s 个</string>
+    <string name="record_widget_dynamic_colors">Material You 配色</string>
+    <string name="record_widget_dynamic_colors_desc">让小组件配合壁纸颜色与深色模式</string>
     <plurals name="record_widget_times">
         <item quantity="other">%1$d 次</item>
     </plurals>

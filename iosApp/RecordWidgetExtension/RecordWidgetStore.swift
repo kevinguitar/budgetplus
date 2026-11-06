@@ -11,6 +11,7 @@ struct RecordWidgetItem: Codable, Hashable {
 }
 
 /// Mirrors `RecordWidgetConfig` in the Kotlin `:feature:record-widget` module.
+/// `useDynamicColors` (Material You) is Android-only and intentionally not decoded here.
 struct RecordWidgetConfig: Codable, Hashable {
     let id: String
     let bookId: String

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.action.Action
@@ -58,6 +59,7 @@ import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDeeplink
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetGraph
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetItem
 import com.kevlina.budgetplus.feature.record.widget.config.RecordWidgetConfigActivity
+import com.kevlina.budgetplus.feature.record.widget.isRecordWidgetDynamicColorSupported
 import dev.zacsweers.metro.Inject
 
 /**
@@ -85,10 +87,15 @@ class RecordGlanceWidget : GlanceAppWidget() {
 
             // Render nothing until the configs are loaded, to avoid flashing the setup state.
             val loadedConfigs = configs ?: return@provideContent
+            val config = loadedConfigs.firstOrNull { it.id == widgetId }
             RecordWidgetContent(
                 widgetId = widgetId,
-                config = loadedConfigs.firstOrNull { it.id == widgetId },
-                colors = themeColors,
+                config = config,
+                colors = if (config?.useDynamicColors == true && isRecordWidgetDynamicColorSupported) {
+                    WidgetColors.dynamic()
+                } else {
+                    WidgetColors.fromTheme(themeColors)
+                },
             )
         }
     }
@@ -105,13 +112,13 @@ private val PillsSpacing = 6.dp
 private fun RecordWidgetContent(
     widgetId: String,
     config: RecordWidgetConfig?,
-    colors: ThemeColors,
+    colors: WidgetColors,
 ) {
     val context = LocalContext.current
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(colors.light)
+            .background(colors.background)
             .cornerRadius(16.dp)
     ) {
         if (config == null) {
@@ -123,13 +130,13 @@ private fun RecordWidgetContent(
             text = config.bookName,
             maxLines = 1,
             style = TextStyle(
-                color = colors.light.toColorProvider(),
+                color = colors.headerText,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
             ),
             modifier = GlanceModifier
                 .fillMaxWidth()
-                .background(colors.dark)
+                .background(colors.headerBackground)
                 .padding(horizontal = HorizontalPadding, vertical = 10.dp)
                 // Open the app on the widget's book, without prefill.
                 .clickable(context.openDeeplinkAction(RecordWidgetDeeplink.buildBookLink(config.bookId)))
@@ -151,7 +158,7 @@ private fun RecordWidgetContent(
 @Composable
 private fun ItemRow(
     item: RecordWidgetItem,
-    colors: ThemeColors,
+    colors: WidgetColors,
     isLast: Boolean,
     onClick: Action,
 ) {
@@ -188,19 +195,19 @@ private fun ItemRow(
                 modifier = GlanceModifier
                     .fillMaxWidth()
                     .height(1.dp)
-                    .background(colors.lightBg)
+                    .background(colors.divider)
             )
         }
     }
 }
 
 @Composable
-private fun ItemName(name: String, colors: ThemeColors) {
+private fun ItemName(name: String, colors: WidgetColors) {
     Text(
         text = name,
         maxLines = 1,
         style = TextStyle(
-            color = colors.dark.toColorProvider(),
+            color = colors.itemText,
             fontSize = NameFontSize,
             fontWeight = FontWeight.Medium,
         ),
@@ -208,20 +215,20 @@ private fun ItemName(name: String, colors: ThemeColors) {
 }
 
 @Composable
-private fun Pills(pills: List<String>, colors: ThemeColors) {
+private fun Pills(pills: List<String>, colors: WidgetColors) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         pills.forEachIndexed { index, pill ->
             if (index > 0) Spacer(modifier = GlanceModifier.width(PillsSpacing))
             Box(
                 modifier = GlanceModifier
-                    .background(colors.primary)
+                    .background(colors.pillBackground)
                     .cornerRadius(8.dp)
                     .padding(horizontal = PillHorizontalPadding, vertical = 1.dp)
             ) {
                 Text(
                     text = pill,
                     maxLines = 1,
-                    style = TextStyle(color = colors.light.toColorProvider(), fontSize = PillFontSize),
+                    style = TextStyle(color = colors.pillText, fontSize = PillFontSize),
                 )
             }
         }
@@ -232,7 +239,7 @@ private fun Pills(pills: List<String>, colors: ThemeColors) {
  * The config could be missing, e.g. the app data was cleared. Let the user configure it again.
  */
 @Composable
-private fun SetupContent(widgetId: String, colors: ThemeColors) {
+private fun SetupContent(widgetId: String, colors: WidgetColors) {
     val context = LocalContext.current
     Box(
         contentAlignment = Alignment.Center,
@@ -253,7 +260,7 @@ private fun SetupContent(widgetId: String, colors: ThemeColors) {
         Text(
             text = context.getString(R.string.record_widget_setup),
             style = TextStyle(
-                color = colors.dark.toColorProvider(),
+                color = colors.itemText,
                 fontSize = NameFontSize,
                 fontWeight = FontWeight.Medium,
             ),
@@ -292,6 +299,51 @@ private fun Context.openDeeplinkAction(deeplink: String): Action {
     return actionStartActivity(intent)
 }
 
+/**
+ * The color roles of the widget, either from the app's theme or the system dynamic colors.
+ */
+internal data class WidgetColors(
+    val background: ColorProvider,
+    val headerBackground: ColorProvider,
+    val headerText: ColorProvider,
+    val itemText: ColorProvider,
+    val pillBackground: ColorProvider,
+    val pillText: ColorProvider,
+    val divider: ColorProvider,
+) {
+    companion object {
+
+        fun fromTheme(colors: ThemeColors) = WidgetColors(
+            background = colors.light.toColorProvider(),
+            headerBackground = colors.dark.toColorProvider(),
+            headerText = colors.light.toColorProvider(),
+            itemText = colors.dark.toColorProvider(),
+            pillBackground = colors.primary.toColorProvider(),
+            pillText = colors.light.toColorProvider(),
+            divider = colors.lightBg.toColorProvider(),
+        )
+
+        /**
+         * Material You. The default Glance colors are backed by the system dynamic color resources
+         * on Android 12+, so the launcher resolves them when rendering. The widget follows the
+         * wallpaper and dark mode changes without the app running.
+         */
+        @Composable
+        fun dynamic(): WidgetColors {
+            val colors = GlanceTheme.colors
+            return WidgetColors(
+                background = colors.widgetBackground,
+                headerBackground = colors.primary,
+                headerText = colors.onPrimary,
+                itemText = colors.onSurface,
+                pillBackground = colors.secondaryContainer,
+                pillText = colors.onSecondaryContainer,
+                divider = colors.surfaceVariant,
+            )
+        }
+    }
+}
+
 // The theme colors are the same in light and dark mode.
 private fun Color.toColorProvider(): ColorProvider = ColorProvider(day = this, night = this)
 
@@ -312,19 +364,26 @@ private val previewConfig = RecordWidgetConfig(
 @Preview(widthDp = 250, heightDp = 250)
 @Composable
 private fun RecordWidgetContent_Preview() {
-    RecordWidgetContent(widgetId = "preview", config = previewConfig, colors = ThemeColors.MilkTea)
+    RecordWidgetContent(widgetId = "preview", config = previewConfig, colors = WidgetColors.fromTheme(ThemeColors.MilkTea))
 }
 
 @OptIn(ExperimentalGlancePreviewApi::class)
 @Preview(widthDp = 180, heightDp = 180)
 @Composable
 private fun RecordWidgetContentNarrow_Preview() {
-    RecordWidgetContent(widgetId = "preview", config = previewConfig, colors = ThemeColors.Dusk)
+    RecordWidgetContent(widgetId = "preview", config = previewConfig, colors = WidgetColors.fromTheme(ThemeColors.Dusk))
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(widthDp = 250, heightDp = 250)
+@Composable
+private fun RecordWidgetContentDynamic_Preview() {
+    RecordWidgetContent(widgetId = "preview", config = previewConfig, colors = WidgetColors.dynamic())
 }
 
 @OptIn(ExperimentalGlancePreviewApi::class)
 @Preview(widthDp = 250, heightDp = 120)
 @Composable
 private fun RecordWidgetSetup_Preview() {
-    RecordWidgetContent(widgetId = "preview", config = null, colors = ThemeColors.MilkTea)
+    RecordWidgetContent(widgetId = "preview", config = null, colors = WidgetColors.fromTheme(ThemeColors.MilkTea))
 }

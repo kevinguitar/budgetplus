@@ -78,6 +78,14 @@ internal class RecordWidgetViewModel(
     val selectedItems: StateFlow<List<RecordWidgetItem>>
         field = MutableStateFlow<List<RecordWidgetItem>>(emptyList())
 
+    /**
+     * Android 12+: color the widget by Material You instead of the app's theme.
+     */
+    val useDynamicColors: StateFlow<Boolean>
+        field = MutableStateFlow(false)
+
+    val isDynamicColorSupported: Boolean get() = isRecordWidgetDynamicColorSupported
+
     val isDoneEnabled: StateFlow<Boolean> = selectedItems
         .map { it.size in RECORD_WIDGET_MIN_ITEMS..RECORD_WIDGET_MAX_ITEMS }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
@@ -155,6 +163,10 @@ internal class RecordWidgetViewModel(
         selectedItems.update { it + item }
     }
 
+    fun setUseDynamicColors(enabled: Boolean) {
+        useDynamicColors.value = enabled
+    }
+
     /**
      * Build the config of the current selection, null if the selection is invalid.
      */
@@ -169,6 +181,7 @@ internal class RecordWidgetViewModel(
             bookName = book.name,
             items = items,
             createdOn = Clock.System.now().toEpochMilliseconds(),
+            useDynamicColors = useDynamicColors.value,
         )
     }
 
@@ -211,11 +224,16 @@ internal class RecordWidgetViewModel(
         configStore.save(config)
         widgetPlatform.refreshWidgets()
         if (existingConfig == null) {
-            tracker.trackRecordWidgetAdded(source = RecordWidgetAddedSource.Os, itemCount = config.items.size)
+            tracker.trackRecordWidgetAdded(
+                source = RecordWidgetAddedSource.Os,
+                itemCount = config.items.size,
+                useDynamicColors = config.useDynamicColors,
+            )
         } else {
             tracker.trackRecordWidgetEdited(
                 itemCount = config.items.size,
                 isBookChanged = existingConfig.bookId != config.bookId,
+                useDynamicColors = config.useDynamicColors,
             )
         }
         return config
@@ -231,6 +249,9 @@ internal class RecordWidgetViewModel(
      * @return The id of the book to load the frequent items from.
      */
     private suspend fun resolveExistingConfig(config: RecordWidgetConfig): String? {
+        // The colors are a widget level setting, they're kept even when the book is gone.
+        useDynamicColors.value = config.useDynamicColors
+
         // Show the snapshot right away, then verify the book is still available.
         book.value = Book(id = config.bookId, name = config.bookName)
         selectedItems.value = config.items

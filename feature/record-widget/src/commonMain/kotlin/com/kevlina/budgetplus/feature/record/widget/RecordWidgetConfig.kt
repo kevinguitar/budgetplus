@@ -26,6 +26,8 @@ data class RecordWidgetItem(
  *
  * @param id Android: the appWidgetId, iOS: the preset id.
  * @param bookName Snapshot of the book name for the widget header.
+ * @param useDynamicColors Android 12+: color the widget by the system dynamic colors (Material You)
+ *  instead of the app's theme. Ignored on iOS.
  */
 @Serializable
 data class RecordWidgetConfig(
@@ -34,6 +36,7 @@ data class RecordWidgetConfig(
     val bookName: String,
     val items: List<RecordWidgetItem>,
     val createdOn: Long,
+    val useDynamicColors: Boolean = false,
     val version: Int = CONFIG_VERSION,
 ) {
     companion object {

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -122,7 +123,7 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         assertEquals("42", configStore.configs.value.single().id)
         assertEquals(1, widgetPlatform.refreshCount)
         assertEquals("record_widget_added", tracker.lastEventName)
-        assertEquals(mapOf("source" to "os", "item_count" to 1), tracker.lastEvent?.second)
+        assertEquals(mapOf("source" to "os", "item_count" to 1, "dynamic_colors" to false), tracker.lastEvent?.second)
     }
 
     @Test
@@ -136,7 +137,7 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
         assertEquals(listOf(dinner, lunch), configStore.configs.value.single().items)
         assertEquals("record_widget_edited", tracker.lastEventName)
-        assertEquals(mapOf("item_count" to 2, "book_changed" to false), tracker.lastEvent?.second)
+        assertEquals(mapOf("item_count" to 2, "book_changed" to false, "dynamic_colors" to false), tracker.lastEvent?.second)
     }
 
     // region Editing an existing widget
@@ -249,6 +250,60 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
     // endregion
 
+    // region Material You
+
+    @Test
+    fun `dynamic colors are off by default`() = runTest {
+        val model = createModel()
+        model.toggleItem(dinner)
+
+        assertFalse(model.useDynamicColors.value)
+        assertEquals(false, model.buildConfig()?.useDynamicColors)
+    }
+
+    @Test
+    fun `turning on dynamic colors is saved to the config and tracked`() = runTest {
+        val model = createModel()
+        model.toggleItem(dinner)
+
+        model.setUseDynamicColors(true)
+        model.saveConfigForWidget(widgetId = "42")
+
+        assertTrue(configStore.configs.value.single().useDynamicColors)
+        assertEquals(true, tracker.lastEvent?.second?.get("dynamic_colors"))
+    }
+
+    @Test
+    fun `editing a widget restores its dynamic colors setting`() = runTest {
+        configStore.save(existingConfig(items = listOf(dinner)).copy(useDynamicColors = true))
+
+        val model = createModel(widgetId = "42")
+
+        assertTrue(model.useDynamicColors.value)
+    }
+
+    @Test
+    fun `editing a widget keeps its dynamic colors setting when its book is unavailable`() = runTest {
+        configStore.save(
+            existingConfig(book = Book(id = "gone", name = "Gone"), items = listOf(dinner)).copy(useDynamicColors = true)
+        )
+
+        val model = createModel(widgetId = "42")
+
+        assertTrue(model.useDynamicColors.value)
+    }
+
+    @Test
+    fun `configs saved before dynamic colors existed decode with it off`() {
+        val json = """{"id":"42","bookId":"book","bookName":"Personal","items":[],"createdOn":0,"version":1}"""
+
+        val config = Json.decodeFromString(RecordWidgetConfig.serializer(), json)
+
+        assertFalse(config.useDynamicColors)
+    }
+
+    // endregion
+
     // region Switching book
 
     @Test
@@ -333,7 +388,7 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         model.saveConfigForWidget(widgetId = "42")
 
         assertEquals("travel", configStore.configs.value.single().bookId)
-        assertEquals(mapOf("item_count" to 1, "book_changed" to true), tracker.lastEvent?.second)
+        assertEquals(mapOf("item_count" to 1, "book_changed" to true, "dynamic_colors" to false), tracker.lastEvent?.second)
     }
 
     @Test
