@@ -363,6 +363,95 @@ class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
+    fun `widget book link switches to the widget's book without prefill`() {
+        val nav = createNavController().apply { navigate(BookDest.Settings()) }
+        val bookRepo = WidgetBookRepo(currentBook = bookA, books = listOf(bookA, bookB))
+        val snackbarSender = FakeSnackbarSender()
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            navController = nav,
+            bookRepo = bookRepo,
+            snackbarSender = snackbarSender,
+            recordPrefillHolder = prefillHolder,
+        )
+
+        model.handleDeeplink(RecordWidgetDeeplink.buildBookLink(bookB.id))
+
+        assertEquals(bookB, bookRepo.bookState.value)
+        assertEquals(Res.string.record_widget_switched_book, snackbarSender.lastSentMessageRes)
+        assertNull(prefillHolder.prefill.value)
+        assertEquals(listOf<BookDest>(BookDest.Record), nav.backStack.toList())
+    }
+
+    @Test
+    fun `widget book link doesn't switch book when it's already the current book`() {
+        val nav = createNavController().apply { navigate(BookDest.Settings()) }
+        val bookRepo = WidgetBookRepo(currentBook = bookB, books = listOf(bookA, bookB))
+        val snackbarSender = FakeSnackbarSender()
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            navController = nav,
+            bookRepo = bookRepo,
+            snackbarSender = snackbarSender,
+            recordPrefillHolder = prefillHolder,
+        )
+
+        model.handleDeeplink(RecordWidgetDeeplink.buildBookLink(bookB.id))
+
+        assertEquals(0, bookRepo.selectBookCount)
+        assertNull(snackbarSender.lastSentMessageRes)
+        assertNull(prefillHolder.prefill.value)
+        assertEquals(BookDest.Record, nav.backStack.last())
+    }
+
+    @Test
+    fun `widget book link shows an error when the book is no longer available`() {
+        val nav = createNavController()
+        val bookRepo = WidgetBookRepo(currentBook = bookA, books = listOf(bookA))
+        val snackbarSender = FakeSnackbarSender()
+        val model = createModel(navController = nav, bookRepo = bookRepo, snackbarSender = snackbarSender)
+
+        model.handleDeeplink(RecordWidgetDeeplink.buildBookLink(bookB.id))
+
+        assertEquals(Res.string.record_widget_book_unavailable, snackbarSender.lastSentMessageRes)
+        assertEquals(bookA, bookRepo.bookState.value)
+        assertEquals(BookDest.Record, nav.backStack.last())
+    }
+
+    @Test
+    fun `widget book link opens the record screen when the books aren't loaded in time`() {
+        val nav = createNavController()
+        val snackbarSender = FakeSnackbarSender()
+        val prefillHolder = RecordPrefillHolder()
+        val model = createModel(
+            navController = nav,
+            bookRepo = FakeBookRepo(book = bookA, books = null, currentBookId = bookA.id),
+            snackbarSender = snackbarSender,
+            recordPrefillHolder = prefillHolder,
+        )
+
+        model.handleDeeplink(RecordWidgetDeeplink.buildBookLink(bookA.id))
+        testDispatcher.scheduler.advanceTimeBy(10.seconds)
+
+        assertNull(snackbarSender.lastSentMessageRes)
+        assertNull(prefillHolder.prefill.value)
+        assertEquals(BookDest.Record, nav.backStack.last())
+    }
+
+    @Test
+    fun `widget book link logs the book tap event`() {
+        val tracker = FakeTracker()
+        val model = createModel(
+            bookRepo = WidgetBookRepo(currentBook = bookA, books = listOf(bookA, bookB)),
+            tracker = tracker,
+        )
+
+        model.handleDeeplink(RecordWidgetDeeplink.buildBookLink(bookB.id))
+
+        assertEquals("record_widget_book_tapped", tracker.lastEventName)
+    }
+
+    @Test
     fun `recordWidget link navigates to RecordWidget`() {
         val nav = createNavController()
         val model = createModel(navController = nav)

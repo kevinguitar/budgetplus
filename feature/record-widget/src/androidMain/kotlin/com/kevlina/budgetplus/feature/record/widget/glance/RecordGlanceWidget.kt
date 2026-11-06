@@ -131,6 +131,8 @@ private fun RecordWidgetContent(
                 .fillMaxWidth()
                 .background(colors.dark)
                 .padding(horizontal = HorizontalPadding, vertical = 10.dp)
+                // Open the app on the widget's book, without prefill.
+                .clickable(context.openDeeplinkAction(RecordWidgetDeeplink.buildBookLink(config.bookId)))
         )
 
         LazyColumn(modifier = GlanceModifier.fillMaxSize()) {

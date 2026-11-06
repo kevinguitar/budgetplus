@@ -6,11 +6,33 @@ import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_PATH
 import com.kevlina.budgetplus.core.data.RecordPrefill
 
 /**
- * Builds and parses the deeplink of tapping an item on the record widget, e.g.
- * `budgetplus://record?source=widget&bookId=abc&type=Expense&category=Food&name=Dinner`
+ * A parsed link from the record widget.
+ */
+sealed interface RecordWidgetLink {
+
+    val bookId: String
+
+    /**
+     * The book name is tapped: open the record screen on the book, without prefill.
+     */
+    data class OpenBook(override val bookId: String) : RecordWidgetLink
+
+    /**
+     * An item is tapped: open the record screen on the book, prefilled with the item.
+     */
+    data class Item(val prefill: RecordPrefill) : RecordWidgetLink {
+        override val bookId: String get() = prefill.bookId
+    }
+}
+
+/**
+ * Builds and parses the deeplinks of the record widget:
+ * - Item: `budgetplus://record?source=widget&bookId=abc&type=Expense&category=Food&name=Dinner`
+ * - Book name: `budgetplus://record?source=widget&bookId=abc`
  *
- * The link is self-contained so it still works when the widget config is gone. Note that the
- * iOS widget extension builds the same link in Swift, keep `RecordWidgetDeeplink.swift` in sync.
+ * The links are self-contained so they still work when the widget config is gone. Note that the
+ * iOS widget extension builds the same links in Swift, keep `RecordWidgetDeeplink` in
+ * `RecordWidgetStore.swift` in sync.
  */
 object RecordWidgetDeeplink {
 
@@ -22,31 +44,51 @@ object RecordWidgetDeeplink {
     private const val KEY_CATEGORY = "category"
     private const val KEY_NAME = "name"
 
+    private val ITEM_KEYS = listOf(KEY_TYPE, KEY_CATEGORY, KEY_NAME)
+
     fun build(bookId: String, item: RecordWidgetItem): String {
-        val query = listOf(
+        return buildLink(
             KEY_SOURCE to SOURCE_WIDGET,
             KEY_BOOK_ID to bookId,
             KEY_TYPE to item.type.name,
             KEY_CATEGORY to item.category,
             KEY_NAME to item.name,
-        ).joinToString("&") { [key, value] -> "$key=${value.percentEncode()}" }
-        return "$APP_DEEPLINK_CUSTOM$NAV_RECORD_PATH?$query"
+        )
+    }
+
+    fun buildBookLink(bookId: String): String {
+        return buildLink(
+            KEY_SOURCE to SOURCE_WIDGET,
+            KEY_BOOK_ID to bookId,
+        )
     }
 
     /**
      * @param queries The raw (still encoded) query parameters of a record deeplink.
-     * @return null if the link isn't from the widget or it's malformed.
+     * @return null if the link isn't from the widget or it's malformed. An item link with a
+     *  missing or invalid field is malformed, it's never treated as a book link.
      */
-    fun parse(queries: Map<String, String>): RecordPrefill? {
+    fun parse(queries: Map<String, String>): RecordWidgetLink? {
         if (queries[KEY_SOURCE] != SOURCE_WIDGET) return null
 
         val bookId = queries[KEY_BOOK_ID]?.percentDecode()?.takeIf { it.isNotBlank() } ?: return null
+        if (ITEM_KEYS.none { it in queries }) {
+            return RecordWidgetLink.OpenBook(bookId = bookId)
+        }
+
         val type = queries[KEY_TYPE]?.let { raw -> RecordType.entries.firstOrNull { it.name == raw } }
             ?: return null
         val category = queries[KEY_CATEGORY]?.percentDecode()?.takeIf { it.isNotBlank() } ?: return null
         val name = queries[KEY_NAME]?.percentDecode()?.takeIf { it.isNotBlank() } ?: category
 
-        return RecordPrefill(bookId = bookId, type = type, category = category, name = name)
+        return RecordWidgetLink.Item(
+            RecordPrefill(bookId = bookId, type = type, category = category, name = name)
+        )
+    }
+
+    private fun buildLink(vararg queries: Pair<String, String>): String {
+        val query = queries.joinToString("&") { [key, value] -> "$key=${value.percentEncode()}" }
+        return "$APP_DEEPLINK_CUSTOM$NAV_RECORD_PATH?$query"
     }
 }
 
