@@ -271,8 +271,10 @@ internal class RecordWidgetViewModel(
             return widgetBook.id
         }
 
-        // The book was deleted or the user left it, start over with the current book.
-        book.value = bookRepo.bookState.value
+        // The book was deleted or the user left it, start over with the current book. Pick it from
+        // the loaded books, the repo updates the current book after the books, so it could still be
+        // the unavailable book at this point. Fall back to the last book like the repo does.
+        book.value = books.firstOrNull { it.id == bookRepo.currentBookId } ?: books.lastOrNull()
         selectedItems.value = emptyList()
         snackbarSender.send(Res.string.record_widget_book_unavailable)
         return book.value?.id

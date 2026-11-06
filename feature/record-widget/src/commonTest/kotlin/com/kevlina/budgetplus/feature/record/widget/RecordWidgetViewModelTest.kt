@@ -199,6 +199,23 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
+    fun `editing a widget falls back to a loaded book when the current book is still the unavailable one`() = runTest {
+        // The repo publishes the books before it updates the current book, so the current book
+        // can still be the deleted widget book.
+        val goneBook = Book(id = "gone", name = "Gone")
+        configStore.save(existingConfig(book = goneBook, items = listOf(dinner)))
+
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = goneBook, books = listOf(book, travelBook), currentBookId = goneBook.id),
+            widgetId = "42",
+        )
+
+        assertEquals(travelBook, model.book.value)
+        assertEquals("travel", frequentRecordsClient.lastQueriedBookId)
+        assertEquals(Res.string.record_widget_book_unavailable, snackbarSender.lastSentMessageRes)
+    }
+
+    @Test
     fun `editing a widget keeps its book when the books aren't loaded in time`() = runTest {
         val widgetBook = Book(id = "widget_book", name = "Travel")
         configStore.save(existingConfig(book = widgetBook, items = listOf(dinner)))
