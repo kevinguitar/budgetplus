@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -195,65 +194,100 @@ private fun RecordWidgetContent(
             }
         )
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+        val previewColors = (if (useDynamicColors == true) rememberDynamicWidgetPreviewColors() else null)
+            ?: WidgetPreviewColors.fromTheme(LocalAppColors.current)
+
+        // The header, the toggle and the preview scroll with the items, so the list keeps enough
+        // room on small screens.
+        LazyColumn(
+            // Scroll behind the navigation bar, but the last item can scroll above it.
+            contentPadding = if (applyNavBarPadding) {
+                WindowInsets.navigationBars.asPaddingValues()
+            } else {
+                PaddingValues()
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .weight(1F),
         ) {
-            BookHeader(book = book, books = books, onBookSelect = onBookSelect)
-            Text(
-                text = stringResource(Res.string.record_widget_hint, RECORD_WIDGET_MAX_ITEMS),
-                fontSize = FontSize.Small,
-            )
-        }
-
-        if (useDynamicColors != null) {
-            DynamicColorsToggle(checked = useDynamicColors, onCheckedChange = onDynamicColorsChange)
-        }
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F)
-        ) {
-            when (uiState) {
-                RecordWidgetUiState.Loading -> InfiniteCircularProgress(
-                    modifier = Modifier.thenIf(applyNavBarPadding) { Modifier.navigationBarsPadding() }
-                )
-                is RecordWidgetUiState.Loaded -> if (uiState.items.isEmpty()) {
+            item(key = "header") {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    BookHeader(book = book, books = books, onBookSelect = onBookSelect)
                     Text(
-                        text = stringResource(Res.string.record_widget_empty),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .thenIf(applyNavBarPadding) { Modifier.navigationBarsPadding() }
-                            .padding(horizontal = 32.dp),
+                        text = stringResource(Res.string.record_widget_hint, RECORD_WIDGET_MAX_ITEMS),
+                        fontSize = FontSize.Small,
                     )
-                } else {
-                    LazyColumn(
-                        // Scroll behind the navigation bar, but the last item can scroll above it.
-                        contentPadding = if (applyNavBarPadding) {
-                            WindowInsets.navigationBars.asPaddingValues()
-                        } else {
-                            PaddingValues()
-                        },
-                        modifier = Modifier.fillMaxSize(),
+                }
+            }
+
+            if (useDynamicColors != null) {
+                item(key = "dynamic_colors") {
+                    DynamicColorsToggle(checked = useDynamicColors, onCheckedChange = onDynamicColorsChange)
+                }
+            }
+
+            item(key = "preview") {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    RecordWidgetPreview(
+                        bookName = book?.name.orEmpty(),
+                        items = selectedItems,
+                        colors = previewColors,
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(0.5.dp)
+                        .background(color = LocalAppColors.current.primary)
+                )
+            }
+
+            when (uiState) {
+                RecordWidgetUiState.Loading -> item(key = "loading") {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp)
                     ) {
-                        itemsIndexed(
-                            items = uiState.items,
-                            key = { _, frequentItem ->
-                                frequentItem.item.let { "${it.type}_${it.category}_${it.name}" }
-                            }
-                        ) { index, frequentItem ->
-                            val position = selectedItems.indexOf(frequentItem.item)
-                            FrequentItemRow(
-                                frequentItem = frequentItem,
-                                position = if (position >= 0) position + 1 else null,
-                                isLast = index == uiState.items.lastIndex,
-                                onClick = { onItemClick(frequentItem.item) },
-                            )
+                        InfiniteCircularProgress()
+                    }
+                }
+
+                is RecordWidgetUiState.Loaded -> if (uiState.items.isEmpty()) {
+                    item(key = "empty") {
+                        Text(
+                            text = stringResource(Res.string.record_widget_empty),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 32.dp, vertical = 32.dp),
+                        )
+                    }
+                } else {
+                    itemsIndexed(
+                        items = uiState.items,
+                        key = { _, frequentItem ->
+                            frequentItem.item.let { "${it.type}_${it.category}_${it.name}" }
                         }
+                    ) { index, frequentItem ->
+                        val position = selectedItems.indexOf(frequentItem.item)
+                        FrequentItemRow(
+                            frequentItem = frequentItem,
+                            position = if (position >= 0) position + 1 else null,
+                            isLast = index == uiState.items.lastIndex,
+                            onClick = { onItemClick(frequentItem.item) },
+                        )
                     }
                 }
             }

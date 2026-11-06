@@ -63,6 +63,7 @@
     <string name="record_widget_position">第 %1$s 个</string>
     <string name="record_widget_dynamic_colors">Material You 配色</string>
     <string name="record_widget_dynamic_colors_desc">让小组件配合壁纸颜色与深色模式</string>
+    <string name="record_widget_preview_empty">在下方选择项目来预览小组件</string>
     <plurals name="record_widget_times">
         <item quantity="other">%1$d 次</item>
     </plurals>

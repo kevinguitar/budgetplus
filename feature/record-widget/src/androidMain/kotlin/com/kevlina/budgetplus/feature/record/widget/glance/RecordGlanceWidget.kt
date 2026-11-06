@@ -56,6 +56,7 @@ import com.kevlina.budgetplus.feature.record.widget.R
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetConfig
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetConfigStore
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDeeplink
+import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDimens
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetGraph
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetItem
 import com.kevlina.budgetplus.feature.record.widget.config.RecordWidgetConfigActivity
@@ -101,12 +102,13 @@ class RecordGlanceWidget : GlanceAppWidget() {
     }
 }
 
-private val HorizontalPadding = 16.dp
-private val NameFontSize = 15.sp
-private val PillFontSize = 12.sp
-private val PillHorizontalPadding = 8.dp
-private val NamePillsSpacing = 8.dp
-private val PillsSpacing = 6.dp
+// The layout is shared with the in-app preview.
+private val HorizontalPadding = RecordWidgetDimens.HorizontalPadding
+private val NameFontSize = RecordWidgetDimens.NameFontSize
+private val PillFontSize = RecordWidgetDimens.PillFontSize
+private val PillHorizontalPadding = RecordWidgetDimens.PillHorizontalPadding
+private val NamePillsSpacing = RecordWidgetDimens.NamePillsSpacing
+private val PillsSpacing = RecordWidgetDimens.PillsSpacing
 
 @Composable
 private fun RecordWidgetContent(
@@ -119,7 +121,7 @@ private fun RecordWidgetContent(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(colors.background)
-            .cornerRadius(16.dp)
+            .cornerRadius(RecordWidgetDimens.CornerRadius)
     ) {
         if (config == null) {
             SetupContent(widgetId = widgetId, colors = colors)
@@ -131,13 +133,13 @@ private fun RecordWidgetContent(
             maxLines = 1,
             style = TextStyle(
                 color = colors.headerText,
-                fontSize = 16.sp,
+                fontSize = RecordWidgetDimens.HeaderFontSize,
                 fontWeight = FontWeight.Bold,
             ),
             modifier = GlanceModifier
                 .fillMaxWidth()
                 .background(colors.headerBackground)
-                .padding(horizontal = HorizontalPadding, vertical = 10.dp)
+                .padding(horizontal = HorizontalPadding, vertical = RecordWidgetDimens.HeaderVerticalPadding)
                 // Open the app on the widget's book, without prefill.
                 .clickable(context.openDeeplinkAction(RecordWidgetDeeplink.buildBookLink(config.bookId)))
         )
@@ -173,7 +175,10 @@ private fun ItemRow(
         if (isSingleRow) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = GlanceModifier.fillMaxWidth().padding(horizontal = HorizontalPadding, vertical = 10.dp)
+                modifier = GlanceModifier.fillMaxWidth().padding(
+                    horizontal = HorizontalPadding,
+                    vertical = RecordWidgetDimens.SingleRowVerticalPadding,
+                )
             ) {
                 ItemName(name = item.name, colors = colors)
                 Spacer(modifier = GlanceModifier.width(NamePillsSpacing))
@@ -182,10 +187,13 @@ private fun ItemRow(
         } else {
             // The name is too long, move the pills to the 2nd row.
             Column(
-                modifier = GlanceModifier.fillMaxWidth().padding(horizontal = HorizontalPadding, vertical = 8.dp)
+                modifier = GlanceModifier.fillMaxWidth().padding(
+                    horizontal = HorizontalPadding,
+                    vertical = RecordWidgetDimens.TwoRowsVerticalPadding,
+                )
             ) {
                 ItemName(name = item.name, colors = colors)
-                Spacer(modifier = GlanceModifier.height(4.dp))
+                Spacer(modifier = GlanceModifier.height(RecordWidgetDimens.TwoRowsSpacing))
                 Pills(pills = pills, colors = colors)
             }
         }
@@ -194,7 +202,7 @@ private fun ItemRow(
             Spacer(
                 modifier = GlanceModifier
                     .fillMaxWidth()
-                    .height(1.dp)
+                    .height(RecordWidgetDimens.DividerHeight)
                     .background(colors.divider)
             )
         }
@@ -222,8 +230,8 @@ private fun Pills(pills: List<String>, colors: WidgetColors) {
             Box(
                 modifier = GlanceModifier
                     .background(colors.pillBackground)
-                    .cornerRadius(8.dp)
-                    .padding(horizontal = PillHorizontalPadding, vertical = 1.dp)
+                    .cornerRadius(RecordWidgetDimens.PillCornerRadius)
+                    .padding(horizontal = PillHorizontalPadding, vertical = RecordWidgetDimens.PillVerticalPadding)
             ) {
                 Text(
                     text = pill,
