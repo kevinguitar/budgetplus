@@ -16,6 +16,7 @@ import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.unit.test.BaseTest
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -248,6 +249,110 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
     // endregion
 
+    // region Switching book
+
+    @Test
+    fun `books lists the user's books`() = runTest {
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+
+        assertEquals(listOf(book, travelBook), model.books.value)
+    }
+
+    @Test
+    fun `selecting another book reloads the items and clears the selection`() = runTest {
+        frequentRecordsClient.recordsByBook[travelBook.id] = listOf(
+            Record(type = RecordType.Expense, category = "Hotel", name = "Hotel"),
+        )
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+        model.toggleItem(dinner)
+
+        model.selectBook(travelBook)
+
+        assertEquals(travelBook, model.book.value)
+        assertTrue(model.selectedItems.value.isEmpty())
+        assertEquals("travel", frequentRecordsClient.lastQueriedBookId)
+        assertEquals(
+            RecordWidgetUiState.Loaded(listOf(FrequentItem(RecordWidgetItem(RecordType.Expense, "Hotel", "Hotel"), count = 1))),
+            model.uiState.value
+        )
+        assertEquals("record_widget_book_changed", tracker.lastEventName)
+    }
+
+    @Test
+    fun `selecting another book ties the config to it without changing the app's book`() = runTest {
+        // FakeBookRepo.selectBook throws, so this also verifies the app's book isn't changed.
+        val bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook))
+        val model = createModel(bookRepo = bookRepo)
+
+        model.selectBook(travelBook)
+        model.toggleItem(dinner)
+
+        assertEquals("travel", model.buildConfig()?.bookId)
+        assertEquals("Travel", model.buildConfig()?.bookName)
+        assertEquals(book, bookRepo.bookState.value)
+    }
+
+    @Test
+    fun `selecting the same book does nothing`() = runTest {
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+        model.toggleItem(dinner)
+        tracker.lastEvent = null
+
+        model.selectBook(book)
+
+        assertEquals(listOf(dinner), model.selectedItems.value)
+        assertNull(tracker.lastEvent)
+    }
+
+    @Test
+    fun `switching back to the edited widget's book restores its selection`() = runTest {
+        configStore.save(existingConfig(items = listOf(salary, dinner)))
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)),
+            widgetId = "42",
+        )
+
+        model.selectBook(travelBook)
+        assertTrue(model.selectedItems.value.isEmpty())
+
+        model.selectBook(book)
+        assertEquals(listOf(salary, dinner), model.selectedItems.value)
+        assertEquals(FrequentItem(salary, count = 1), (model.uiState.value as RecordWidgetUiState.Loaded).items.first())
+    }
+
+    @Test
+    fun `saving an edited widget with another book logs the book change`() = runTest {
+        configStore.save(existingConfig(items = listOf(dinner)))
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)),
+            widgetId = "42",
+        )
+        model.selectBook(travelBook)
+        model.toggleItem(lunch)
+
+        model.saveConfigForWidget(widgetId = "42")
+
+        assertEquals("travel", configStore.configs.value.single().bookId)
+        assertEquals(mapOf("item_count" to 1, "book_changed" to true), tracker.lastEvent?.second)
+    }
+
+    @Test
+    fun `a slow load of the previous book doesn't overwrite the new book's items`() = runTest {
+        val gate = CompletableDeferred<Unit>()
+        frequentRecordsClient.gates[book.id] = gate
+        frequentRecordsClient.recordsByBook[travelBook.id] = emptyList()
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+        assertEquals(RecordWidgetUiState.Loading, model.uiState.value)
+
+        model.selectBook(travelBook)
+        gate.complete(Unit)
+
+        assertEquals(RecordWidgetUiState.Loaded(emptyList()), model.uiState.value)
+        assertNull(snackbarSender.lastSentMessageRes)
+    }
+
+    // endregion
+
     @Test
     fun `add widget from settings navigates up after the pin is requested`() = runTest {
         val nav = NavController<BookDest>(startRoot = BookDest.Settings()).apply {
@@ -286,6 +391,7 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     private val book = Book(id = "book", name = "Personal")
+    private val travelBook = Book(id = "travel", name = "Travel")
 
     private fun existingConfig(
         book: Book = this.book,
@@ -331,9 +437,16 @@ private class FakeFrequentRecordsClient(
 
     var lastQueriedBookId: String? = null
 
+    /** The records of the book, [records] by default. */
+    val recordsByBook = mutableMapOf<String, List<Record>>()
+
+    /** Suspend the query of the book until the gate completes. */
+    val gates = mutableMapOf<String, CompletableDeferred<Unit>>()
+
     override suspend fun queryRecords(bookId: String, fromDate: LocalDate): List<Record> {
         lastQueriedBookId = bookId
-        return records
+        gates[bookId]?.await()
+        return recordsByBook[bookId] ?: records
     }
 }
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -37,11 +38,14 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.app_name
+import budgetplus.core.common.generated.resources.book_selection
 import budgetplus.core.common.generated.resources.cta_complete
+import budgetplus.core.common.generated.resources.ic_arrow_drop_down
 import budgetplus.core.common.generated.resources.ic_check
 import budgetplus.core.common.generated.resources.ic_check_circle_outline
 import budgetplus.core.common.generated.resources.record_income
@@ -55,9 +59,12 @@ import budgetplus.core.common.generated.resources.record_widget_title
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.consumeEach
+import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
+import com.kevlina.budgetplus.core.ui.DropdownItemModel
+import com.kevlina.budgetplus.core.ui.DropdownMenu
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
@@ -127,16 +134,19 @@ internal fun RecordWidgetContent(
     applyNavBarPadding: Boolean = false,
 ) {
     val book by vm.book.collectAsStateWithLifecycle()
+    val books by vm.books.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val selectedItems by vm.selectedItems.collectAsStateWithLifecycle()
     val isDoneEnabled by vm.isDoneEnabled.collectAsStateWithLifecycle()
 
     RecordWidgetContent(
-        bookName = book?.name.orEmpty(),
+        book = book,
+        books = books,
         uiState = uiState,
         selectedItems = selectedItems,
         isDoneEnabled = isDoneEnabled,
         navigateUp = navigateUp,
+        onBookSelect = vm::selectBook,
         onItemClick = vm::toggleItem,
         onDone = onDone,
         applyNavBarPadding = applyNavBarPadding,
@@ -145,11 +155,13 @@ internal fun RecordWidgetContent(
 
 @Composable
 private fun RecordWidgetContent(
-    bookName: String,
+    book: Book?,
+    books: List<Book>,
     uiState: RecordWidgetUiState,
     selectedItems: List<RecordWidgetItem>,
     isDoneEnabled: Boolean,
     navigateUp: () -> Unit,
+    onBookSelect: (Book) -> Unit,
     onItemClick: (RecordWidgetItem) -> Unit,
     onDone: () -> Unit,
     applyNavBarPadding: Boolean = false,
@@ -181,11 +193,7 @@ private fun RecordWidgetContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            Text(
-                text = stringResource(Res.string.record_widget_book, bookName),
-                fontSize = FontSize.SemiLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
+            BookHeader(book = book, books = books, onBookSelect = onBookSelect)
             Text(
                 text = stringResource(Res.string.record_widget_hint, RECORD_WIDGET_MAX_ITEMS),
                 fontSize = FontSize.Small,
@@ -238,6 +246,61 @@ private fun RecordWidgetContent(
                 }
             }
         }
+    }
+}
+
+/**
+ * "Adds to: {book}", tap to tie the widget to another book when the user has more than one.
+ */
+@Composable
+private fun BookHeader(
+    book: Book?,
+    books: List<Book>,
+    onBookSelect: (Book) -> Unit,
+) {
+    var isMenuShown by remember { mutableStateOf(false) }
+    val canSwitch = books.size > 1
+
+    Box {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.thenIf(canSwitch) {
+                Modifier.rippleClick(color = LocalAppColors.current.dark, onClick = { isMenuShown = true })
+            }
+        ) {
+            Text(
+                text = stringResource(Res.string.record_widget_book, book?.name.orEmpty()),
+                fontSize = FontSize.SemiLarge,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1F, fill = false),
+            )
+            if (canSwitch) {
+                Icon(
+                    imageVector = vectorResource(Res.drawable.ic_arrow_drop_down),
+                    contentDescription = stringResource(Res.string.book_selection),
+                    tint = LocalAppColors.current.dark,
+                )
+            }
+        }
+
+        DropdownMenu(
+            expanded = isMenuShown,
+            onDismissRequest = { isMenuShown = false },
+            items = books.map { option ->
+                val isSelected = option.id == book?.id
+                DropdownItemModel(
+                    name = option.name,
+                    trailingIcon = if (isSelected) vectorResource(Res.drawable.ic_check) else null,
+                    iosSfSymbol = if (isSelected) "checkmark" else null,
+                    onClick = {
+                        onBookSelect(option)
+                        isMenuShown = false
+                    }
+                )
+            },
+            offset = DpOffset(0.dp, 4.dp),
+            modifier = Modifier.heightIn(max = 300.dp),
+        )
     }
 }
 
@@ -379,11 +442,13 @@ private fun RecordWidgetContent_Preview() = AppTheme {
         FrequentItem(RecordWidgetItem(type = RecordType.Income, category = "Salary", name = "Salary"), count = 1),
     )
     RecordWidgetContent(
-        bookName = "Family Book",
+        book = Book(id = "family", name = "Family Book"),
+        books = listOf(Book(id = "family", name = "Family Book"), Book(id = "travel", name = "Travel")),
         uiState = RecordWidgetUiState.Loaded(items),
         selectedItems = listOf(items[2].item, items[0].item),
         isDoneEnabled = true,
         navigateUp = {},
+        onBookSelect = {},
         onItemClick = {},
         onDone = {},
     )

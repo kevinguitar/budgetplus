@@ -12,6 +12,7 @@ import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.MutableEventFlow
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
+import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.common.now
@@ -23,6 +24,8 @@ import com.kevlina.budgetplus.core.data.remote.Book
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -59,6 +62,11 @@ internal class RecordWidgetViewModel(
     val book: StateFlow<Book?>
         field = MutableStateFlow(bookRepo.bookState.value)
 
+    /**
+     * The books the widget can be tied to, archived books are already excluded.
+     */
+    val books: StateFlow<List<Book>> = bookRepo.booksState.mapState { it.orEmpty() }
+
     val isSignedIn: Boolean get() = authManager.userState.value != null
 
     val uiState: StateFlow<RecordWidgetUiState>
@@ -78,6 +86,12 @@ internal class RecordWidgetViewModel(
         field = MutableEventFlow<Unit>()
 
     private var isStarted = false
+    private var loadJob: Job? = null
+
+    /**
+     * The config of the widget being edited, null when it's a new widget or its book is gone.
+     */
+    private var originalConfig: RecordWidgetConfig? = null
 
     /**
      * Start loading the screen, only the first call takes effect so it's safe to call again after
@@ -91,15 +105,37 @@ internal class RecordWidgetViewModel(
         if (isStarted) return
         isStarted = true
 
-        viewModelScope.launch {
+        loadJob = viewModelScope.launch {
             val existingConfig = widgetId?.let { configStore.get(it) }
             val bookId = if (existingConfig != null) {
                 resolveExistingConfig(existingConfig)
             } else {
                 book.value?.id
             }
-            val pinnedItems = existingConfig?.takeIf { it.bookId == bookId }?.items.orEmpty()
-            loadFrequentItems(bookId = bookId, pinnedItems = pinnedItems)
+            originalConfig = existingConfig?.takeIf { it.bookId == bookId }
+            loadFrequentItems(bookId = bookId, pinnedItems = originalConfig?.items.orEmpty())
+        }
+    }
+
+    /**
+     * Tie the widget to another book. It doesn't change the app's current book.
+     *
+     * The items are book specific, so the selection is cleared. When editing a widget and switching
+     * back to its original book, the original selection is restored.
+     */
+    fun selectBook(book: Book) {
+        if (book.id == this.book.value?.id) return
+
+        this.book.value = book
+        val pinnedItems = originalConfig?.takeIf { it.bookId == book.id }?.items.orEmpty()
+        selectedItems.value = pinnedItems
+        tracker.logEvent("record_widget_book_changed")
+
+        // Discard the pending load of the previous book, so it can't overwrite the list.
+        loadJob?.cancel()
+        uiState.value = RecordWidgetUiState.Loading
+        loadJob = viewModelScope.launch {
+            loadFrequentItems(bookId = book.id, pinnedItems = pinnedItems)
         }
     }
 
@@ -236,6 +272,8 @@ internal class RecordWidgetViewModel(
             val fromDate = LocalDate.now().minus(FREQUENT_RECORDS_DAYS, DateTimeUnit.DAY)
             val records = frequentRecordsClient.queryRecords(bookId = bookId, fromDate = fromDate)
             RecordWidgetUiState.Loaded(records.toFrequentItems(pinnedItems = pinnedItems))
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Logger.e(e, "Fail to load the frequent records")
             snackbarSender.sendError(e)
