@@ -47,12 +47,14 @@ class RecordWidgetReceiver : GlanceAppWidgetReceiver() {
             .createRecordWidgetGraph()
             .inject(this)
 
-        val pendingResult = goAsync()
+        // goAsync() returns null if it was already called for this broadcast, which is the case for
+        // onDeleted since GlanceAppWidgetReceiver.onDeleted calls goAsync() itself.
+        val pendingResult: PendingResult? = goAsync()
         appScope.launch {
             try {
                 block()
             } finally {
-                pendingResult.finish()
+                pendingResult?.finish()
             }
         }
     }
