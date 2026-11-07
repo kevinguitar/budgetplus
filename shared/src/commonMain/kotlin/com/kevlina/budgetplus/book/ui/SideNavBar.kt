@@ -1,5 +1,11 @@
 package com.kevlina.budgetplus.book.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +24,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_group_add
 import budgetplus.core.common.generated.resources.ic_settings
+import com.kevlina.budgetplus.core.common.languageSelectionState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -118,15 +127,18 @@ private fun RailItem(
             )
         }
 
-        Text(
-            text = tab.label(),
-            color = colors.unselectedIcon,
-            fontSize = FontSize.Small,
-            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-            textAlign = TextAlign.Center,
-            singleLine = true,
-            modifier = Modifier.padding(horizontal = 4.dp)
-        )
+        // The rail stays on screen while the language is changed in the settings.
+        key(languageSelectionState.value) {
+            Text(
+                text = tab.label(),
+                color = colors.unselectedIcon,
+                fontSize = FontSize.Small,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                singleLine = true,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
     }
 }
 
@@ -149,8 +161,14 @@ internal fun SideColumnBar(
     width: Dp = sideColumnWidth(),
 ) {
     val colors = sideBarColors(previewColors)
+    // Keep showing the last actions while they animate out.
+    val lastActions = remember { ActionsHolder() }
+    if (actions != null) {
+        lastActions.actions = actions
+    }
+
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxHeight()
@@ -160,23 +178,45 @@ internal fun SideColumnBar(
             .windowInsetsPadding(WindowInsets.safeArea.only(WindowInsetsSides.Vertical))
             .padding(vertical = 8.dp)
     ) {
-        if (actions != null) {
-            // The actions are made for the dark top bar.
-            CompositionLocalProvider(LocalMenuActionTint provides colors.unselectedIcon) {
-                actions()
-            }
-            Spacer(
+        // Expand and shrink the actions, so the tabs slide to the new center instead of jumping.
+        AnimatedVisibility(
+            visible = actions != null,
+            enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .alpha(AppTheme.DIVIDER_ALPHA)
-                    .background(color = colors.unselectedIcon)
-            )
+                    // The gap to the tabs is part of the animated content.
+                    .padding(bottom = 8.dp)
+                    // Screens can have a different number of actions.
+                    .animateContentSize()
+            ) {
+                // The actions are made for the dark top bar.
+                CompositionLocalProvider(LocalMenuActionTint provides colors.unselectedIcon) {
+                    lastActions.actions?.invoke()
+                }
+                Spacer(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .alpha(AppTheme.DIVIDER_ALPHA)
+                        .background(color = colors.unselectedIcon)
+                )
+            }
         }
 
         NavTabs(navController = navController, colors = colors)
     }
+}
+
+/**
+ *  Not a state, it's only updated when the actions change, which recomposes the bar anyway.
+ */
+private class ActionsHolder {
+    var actions: (@Composable () -> Unit)? = null
 }
 
 /**
