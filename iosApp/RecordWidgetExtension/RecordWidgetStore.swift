@@ -11,6 +11,7 @@ struct RecordWidgetItem: Codable, Hashable {
 }
 
 /// Mirrors `RecordWidgetConfig` in the Kotlin `:feature:record-widget` module.
+/// `useDynamicColors` (Material You) is Android-only and intentionally not decoded here.
 struct RecordWidgetConfig: Codable, Hashable {
     let id: String
     let bookId: String
@@ -85,17 +86,30 @@ enum RecordWidgetDeeplink {
 
     static let setup = URL(string: "budgetplus://recordWidget")!
 
+    /// Tapping an item: open the record screen on the book, prefilled with the item.
     static func url(bookId: String, item: RecordWidgetItem) -> URL {
-        let query = [
+        recordUrl(query: [
             ("source", "widget"),
             ("bookId", bookId),
             ("type", item.type),
             ("category", item.category),
             ("name", item.name),
-        ]
+        ])
+    }
+
+    /// Tapping the book name: open the record screen on the book, without prefill.
+    static func book(bookId: String) -> URL {
+        recordUrl(query: [
+            ("source", "widget"),
+            ("bookId", bookId),
+        ])
+    }
+
+    private static func recordUrl(query: [(String, String)]) -> URL {
+        let encoded = query
             .map { key, value in "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: unreserved) ?? "")" }
             .joined(separator: "&")
-        return URL(string: "budgetplus://record?\(query)") ?? setup
+        return URL(string: "budgetplus://record?\(encoded)") ?? setup
     }
 }
 

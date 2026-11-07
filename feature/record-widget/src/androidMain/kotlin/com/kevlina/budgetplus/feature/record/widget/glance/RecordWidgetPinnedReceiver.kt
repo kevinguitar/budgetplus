@@ -52,6 +52,7 @@ class RecordWidgetPinnedReceiver : BroadcastReceiver() {
                 tracker.trackRecordWidgetAdded(
                     source = RecordWidgetAddedSource.Settings,
                     itemCount = config.items.size,
+                    useDynamicColors = config.useDynamicColors,
                 )
             } finally {
                 pendingResult.finish()

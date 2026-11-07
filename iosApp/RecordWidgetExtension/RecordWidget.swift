@@ -89,20 +89,23 @@ struct RecordWidgetView: View {
         let hiddenCount = config.items.count - items.count
 
         return VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text(config.bookName)
-                    .font(.system(size: 16, weight: .bold))
-                    .lineLimit(1)
-                Spacer()
-                if hiddenCount > 0 {
-                    Text("+\(hiddenCount)")
-                        .font(.system(size: 13, weight: .medium))
+            // Open the app on the widget's book, without prefill.
+            Link(destination: RecordWidgetDeeplink.book(bookId: config.bookId)) {
+                HStack {
+                    Text(config.bookName)
+                        .font(.system(size: 16, weight: .bold))
+                        .lineLimit(1)
+                    Spacer()
+                    if hiddenCount > 0 {
+                        Text("+\(hiddenCount)")
+                            .font(.system(size: 13, weight: .medium))
+                    }
                 }
+                .foregroundStyle(Color(hex: entry.theme.light))
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color(hex: entry.theme.dark))
             }
-            .foregroundStyle(Color(hex: entry.theme.light))
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(Color(hex: entry.theme.dark))
 
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                 Link(destination: RecordWidgetDeeplink.url(bookId: config.bookId, item: item)) {

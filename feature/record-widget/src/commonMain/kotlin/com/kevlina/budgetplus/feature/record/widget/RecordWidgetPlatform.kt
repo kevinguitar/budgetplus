@@ -15,6 +15,12 @@ interface RecordWidgetPlatform {
      * Re-render all the widgets, e.g. after the configs or the theme changed.
      */
     suspend fun refreshWidgets()
+
+    /**
+     * Android 15+: publish the generated preview of the widget picker, only when it's outdated
+     * since the platform rate limits the calls. No-op on the other platforms and versions.
+     */
+    suspend fun updatePreview()
 }
 
 enum class AddWidgetResult {

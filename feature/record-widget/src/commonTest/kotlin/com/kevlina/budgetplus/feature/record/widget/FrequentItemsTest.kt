@@ -63,6 +63,42 @@ class FrequentItemsTest {
         assertEquals(FREQUENT_RECORDS_LIMIT, records.toFrequentItems().size)
     }
 
+    @Test
+    fun `pinned items come first in the given order with their counts`() {
+        val records = listOf(
+            record(category = "Food", name = "Dinner"),
+            record(category = "Food", name = "Dinner"),
+            record(category = "Food", name = "Lunch"),
+            record(category = "Food", name = "Coffee"),
+        )
+        val lunch = RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Lunch")
+        val rent = RecordWidgetItem(type = RecordType.Expense, category = "Rent", name = "Rent")
+
+        assertEquals(
+            listOf(
+                FrequentItem(rent, count = 0),
+                FrequentItem(lunch, count = 1),
+                FrequentItem(RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Dinner"), count = 2),
+                FrequentItem(RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Coffee"), count = 1),
+            ),
+            records.toFrequentItems(pinnedItems = listOf(rent, lunch))
+        )
+    }
+
+    @Test
+    fun `pinned items keep their counts beyond the limit and don't count toward it`() {
+        // Item 30 is the least frequent, so it's not in the top items without pinning.
+        val records = (1..30).flatMap { index ->
+            List(31 - index) { record(category = "Food", name = "Item $index") }
+        }
+        val pinned = RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Item 30")
+
+        val items = records.toFrequentItems(pinnedItems = listOf(pinned))
+
+        assertEquals(FrequentItem(pinned, count = 1), items.first())
+        assertEquals(FREQUENT_RECORDS_LIMIT + 1, items.size)
+    }
+
     private fun record(
         category: String,
         name: String,

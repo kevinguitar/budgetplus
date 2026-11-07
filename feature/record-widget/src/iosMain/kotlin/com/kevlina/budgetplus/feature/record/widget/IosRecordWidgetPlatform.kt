@@ -50,6 +50,9 @@ internal class IosRecordWidgetPlatform(
         )
         RecordWidgetTimelines.reload()
     }
+
+    // The widget gallery shows the placeholder entry of the Swift widget.
+    override suspend fun updatePreview() = Unit
 }
 
 /**

@@ -28,10 +28,10 @@ import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.data.AuthManager
 import com.kevlina.budgetplus.core.data.BookRepo
 import com.kevlina.budgetplus.core.data.JoinBookException
-import com.kevlina.budgetplus.core.data.RecordPrefill
 import com.kevlina.budgetplus.core.data.RecordPrefillHolder
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import com.kevlina.budgetplus.feature.record.widget.RecordWidgetDeeplink
+import com.kevlina.budgetplus.feature.record.widget.RecordWidgetLink
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -139,11 +139,11 @@ internal class BookViewModel(
             }
 
             NAV_RECORD_PATH -> {
-                val prefill = RecordWidgetDeeplink.parse(queries)
-                if (prefill == null) {
+                val widgetLink = RecordWidgetDeeplink.parse(queries)
+                if (widgetLink == null) {
                     navController.navigate(BookDest.Record)
                 } else {
-                    handleRecordWidgetTap(prefill)
+                    handleRecordWidgetLink(widgetLink)
                 }
             }
 
@@ -168,11 +168,17 @@ internal class BookViewModel(
     }
 
     /**
-     * The user tapped an item on the record widget. Switch to the widget's book if needed, and
-     * show the record screen with the item prefilled.
+     * The user tapped the record widget. Switch to the widget's book if needed, and show the record
+     * screen. Only an item tap prefills the record screen, tapping the book name doesn't.
      */
-    private fun handleRecordWidgetTap(prefill: RecordPrefill) {
-        tracker.logEvent("record_widget_item_tapped")
+    private fun handleRecordWidgetLink(link: RecordWidgetLink) {
+        val prefill = (link as? RecordWidgetLink.Item)?.prefill
+        tracker.logEvent(
+            when (link) {
+                is RecordWidgetLink.Item -> "record_widget_item_tapped"
+                is RecordWidgetLink.OpenBook -> "record_widget_book_tapped"
+            }
+        )
         viewModelScope.launch {
             // The app could be cold started from the widget, wait for the user to be restored.
             // When the user isn't signed in, the auth screen is displayed instead.
@@ -187,14 +193,14 @@ internal class BookViewModel(
                 // The books aren't loaded in time, e.g. a slow network on a cold start. It doesn't
                 // mean the book is gone, so only prefill when the widget's book is already current.
                 Logger.w("Record widget: books aren't loaded in time")
-                if (bookRepo.currentBookId == prefill.bookId) {
+                if (prefill != null && bookRepo.currentBookId == prefill.bookId) {
                     recordPrefillHolder.set(prefill)
                 }
                 navController.selectRootAndPopToRoot(BookDest.Record)
                 return@launch
             }
 
-            val book = books.firstOrNull { it.id == prefill.bookId }
+            val book = books.firstOrNull { it.id == link.bookId }
             if (book == null) {
                 snackbarSender.send(Res.string.record_widget_book_unavailable)
                 navController.selectRootAndPopToRoot(BookDest.Record)
@@ -206,7 +212,9 @@ internal class BookViewModel(
                 bookRepo.selectBook(book)
             }
 
-            recordPrefillHolder.set(prefill)
+            if (prefill != null) {
+                recordPrefillHolder.set(prefill)
+            }
             navController.selectRootAndPopToRoot(BookDest.Record)
 
             if (isBookSwitched) {

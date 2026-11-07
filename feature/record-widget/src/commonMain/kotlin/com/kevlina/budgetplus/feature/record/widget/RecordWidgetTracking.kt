@@ -13,12 +13,31 @@ enum class RecordWidgetAddedSource(val value: String) {
     Ios("ios"),
 }
 
-fun Tracker.trackRecordWidgetAdded(source: RecordWidgetAddedSource, itemCount: Int? = null) {
+/**
+ * Android: an existing widget is reconfigured from the launcher.
+ */
+fun Tracker.trackRecordWidgetEdited(itemCount: Int, isBookChanged: Boolean, useDynamicColors: Boolean) {
+    logEvent(
+        event = "record_widget_edited",
+        params = mapOf(
+            "item_count" to itemCount,
+            "book_changed" to isBookChanged,
+            "dynamic_colors" to useDynamicColors,
+        )
+    )
+}
+
+fun Tracker.trackRecordWidgetAdded(
+    source: RecordWidgetAddedSource,
+    itemCount: Int? = null,
+    useDynamicColors: Boolean? = null,
+) {
     logEvent(
         event = "record_widget_added",
         params = buildMap {
             put("source", source.value)
             if (itemCount != null) put("item_count", itemCount)
+            if (useDynamicColors != null) put("dynamic_colors", useDynamicColors)
         }
     )
 }

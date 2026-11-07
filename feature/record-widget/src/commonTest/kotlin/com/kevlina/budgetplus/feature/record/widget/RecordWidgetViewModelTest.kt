@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.feature.record.widget
 
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.app_name
+import budgetplus.core.common.generated.resources.record_widget_book_unavailable
 import budgetplus.core.common.generated.resources.record_widget_limit
 import budgetplus.core.common.generated.resources.record_widget_pin_unsupported
 import com.kevlina.budgetplus.core.common.RecordType
@@ -15,10 +16,13 @@ import com.kevlina.budgetplus.core.data.remote.Book
 import com.kevlina.budgetplus.core.data.remote.Record
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.unit.test.BaseTest
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -119,22 +123,307 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         assertEquals("42", configStore.configs.value.single().id)
         assertEquals(1, widgetPlatform.refreshCount)
         assertEquals("record_widget_added", tracker.lastEventName)
-        assertEquals(mapOf("source" to "os", "item_count" to 1), tracker.lastEvent?.second)
+        assertEquals(mapOf("source" to "os", "item_count" to 1, "dynamic_colors" to false), tracker.lastEvent?.second)
     }
 
     @Test
-    fun `reconfiguring an existing widget should not log the added event`() = runTest {
+    fun `reconfiguring an existing widget should log the edited event instead of added`() = runTest {
         val model = createModel()
         model.toggleItem(dinner)
         model.saveConfigForWidget(widgetId = "42")
-        tracker.lastEvent = null
 
         model.toggleItem(lunch)
         model.saveConfigForWidget(widgetId = "42")
 
         assertEquals(listOf(dinner, lunch), configStore.configs.value.single().items)
+        assertEquals("record_widget_edited", tracker.lastEventName)
+        assertEquals(mapOf("item_count" to 2, "book_changed" to false, "dynamic_colors" to false), tracker.lastEvent?.second)
+    }
+
+    // region Editing an existing widget
+
+    @Test
+    fun `editing a widget preselects its items in the same order`() = runTest {
+        configStore.save(existingConfig(items = listOf(salary, dinner, lunch)))
+
+        val model = createModel(widgetId = "42")
+
+        assertEquals(listOf(salary, dinner, lunch), model.selectedItems.value)
+    }
+
+    @Test
+    fun `editing a widget lists its items first, including the ones no longer frequent`() = runTest {
+        val rent = RecordWidgetItem(RecordType.Expense, "Rent", "Rent")
+        configStore.save(existingConfig(items = listOf(rent, lunch)))
+
+        val model = createModel(widgetId = "42")
+
+        assertEquals(
+            RecordWidgetUiState.Loaded(
+                listOf(
+                    FrequentItem(rent, count = 0),
+                    FrequentItem(lunch, count = 1),
+                    FrequentItem(dinner, count = 2),
+                    FrequentItem(salary, count = 1),
+                )
+            ),
+            model.uiState.value
+        )
+    }
+
+    @Test
+    fun `editing a widget uses the widget's book instead of the current book`() = runTest {
+        val widgetBook = Book(id = "widget_book", name = "Travel")
+        configStore.save(existingConfig(book = widgetBook, items = listOf(dinner)))
+
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = book, books = listOf(book, widgetBook), currentBookId = book.id),
+            widgetId = "42",
+        )
+
+        assertEquals(widgetBook, model.book.value)
+        assertEquals("widget_book", frequentRecordsClient.lastQueriedBookId)
+        assertEquals("widget_book", model.buildConfig(id = "42")?.bookId)
+    }
+
+    @Test
+    fun `editing a widget falls back to the current book when its book is unavailable`() = runTest {
+        configStore.save(existingConfig(book = Book(id = "gone", name = "Gone"), items = listOf(dinner)))
+
+        val model = createModel(widgetId = "42")
+
+        assertEquals(book, model.book.value)
+        assertTrue(model.selectedItems.value.isEmpty())
+        assertEquals("book", frequentRecordsClient.lastQueriedBookId)
+        assertEquals(Res.string.record_widget_book_unavailable, snackbarSender.lastSentMessageRes)
+    }
+
+    @Test
+    fun `editing a widget falls back to a loaded book when the current book is still the unavailable one`() = runTest {
+        // The repo publishes the books before it updates the current book, so the current book
+        // can still be the deleted widget book.
+        val goneBook = Book(id = "gone", name = "Gone")
+        configStore.save(existingConfig(book = goneBook, items = listOf(dinner)))
+
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = goneBook, books = listOf(book, travelBook), currentBookId = goneBook.id),
+            widgetId = "42",
+        )
+
+        assertEquals(travelBook, model.book.value)
+        assertEquals("travel", frequentRecordsClient.lastQueriedBookId)
+        assertEquals(Res.string.record_widget_book_unavailable, snackbarSender.lastSentMessageRes)
+    }
+
+    @Test
+    fun `editing a widget keeps its book when the books aren't loaded in time`() = runTest {
+        val widgetBook = Book(id = "widget_book", name = "Travel")
+        configStore.save(existingConfig(book = widgetBook, items = listOf(dinner)))
+
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = book, books = null, currentBookId = book.id),
+            widgetId = "42",
+        )
+        advanceUntilIdle()
+
+        assertEquals("widget_book", model.book.value?.id)
+        assertEquals("Travel", model.book.value?.name)
+        assertEquals(listOf(dinner), model.selectedItems.value)
+        assertNull(snackbarSender.lastSentMessageRes)
+    }
+
+    @Test
+    fun `saving an edited widget keeps when it was created and logs the edited event`() = runTest {
+        configStore.save(existingConfig(items = listOf(dinner), createdOn = 123))
+        val model = createModel(widgetId = "42")
+        model.toggleItem(lunch)
+
+        model.saveConfigForWidget(widgetId = "42")
+
+        val config = configStore.configs.value.single()
+        assertEquals(listOf(dinner, lunch), config.items)
+        assertEquals(123, config.createdOn)
+        assertEquals("record_widget_edited", tracker.lastEventName)
+    }
+
+    @Test
+    fun `a new widget from the launcher starts with nothing selected`() = runTest {
+        val model = createModel(widgetId = "42")
+
+        assertTrue(model.selectedItems.value.isEmpty())
+        assertEquals("book", frequentRecordsClient.lastQueriedBookId)
+    }
+
+    @Test
+    fun `start only takes effect once`() = runTest {
+        configStore.save(existingConfig(items = listOf(dinner)))
+        val model = createModel(widgetId = "42")
+        model.toggleItem(lunch)
+
+        model.start(widgetId = "42")
+
+        assertEquals(listOf(dinner, lunch), model.selectedItems.value)
+    }
+
+    // endregion
+
+    // region Material You
+
+    @Test
+    fun `dynamic colors are off by default`() = runTest {
+        val model = createModel()
+        model.toggleItem(dinner)
+
+        assertFalse(model.useDynamicColors.value)
+        assertEquals(false, model.buildConfig()?.useDynamicColors)
+    }
+
+    @Test
+    fun `turning on dynamic colors is saved to the config and tracked`() = runTest {
+        val model = createModel()
+        model.toggleItem(dinner)
+
+        model.setUseDynamicColors(true)
+        model.saveConfigForWidget(widgetId = "42")
+
+        assertTrue(configStore.configs.value.single().useDynamicColors)
+        assertEquals(true, tracker.lastEvent?.second?.get("dynamic_colors"))
+    }
+
+    @Test
+    fun `editing a widget restores its dynamic colors setting`() = runTest {
+        configStore.save(existingConfig(items = listOf(dinner)).copy(useDynamicColors = true))
+
+        val model = createModel(widgetId = "42")
+
+        assertTrue(model.useDynamicColors.value)
+    }
+
+    @Test
+    fun `editing a widget keeps its dynamic colors setting when its book is unavailable`() = runTest {
+        configStore.save(
+            existingConfig(book = Book(id = "gone", name = "Gone"), items = listOf(dinner)).copy(useDynamicColors = true)
+        )
+
+        val model = createModel(widgetId = "42")
+
+        assertTrue(model.useDynamicColors.value)
+    }
+
+    @Test
+    fun `configs saved before dynamic colors existed decode with it off`() {
+        val json = """{"id":"42","bookId":"book","bookName":"Personal","items":[],"createdOn":0,"version":1}"""
+
+        val config = Json.decodeFromString(RecordWidgetConfig.serializer(), json)
+
+        assertFalse(config.useDynamicColors)
+    }
+
+    // endregion
+
+    // region Switching book
+
+    @Test
+    fun `books lists the user's books`() = runTest {
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+
+        assertEquals(listOf(book, travelBook), model.books.value)
+    }
+
+    @Test
+    fun `selecting another book reloads the items and clears the selection`() = runTest {
+        frequentRecordsClient.recordsByBook[travelBook.id] = listOf(
+            Record(type = RecordType.Expense, category = "Hotel", name = "Hotel"),
+        )
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+        model.toggleItem(dinner)
+
+        model.selectBook(travelBook)
+
+        assertEquals(travelBook, model.book.value)
+        assertTrue(model.selectedItems.value.isEmpty())
+        assertEquals("travel", frequentRecordsClient.lastQueriedBookId)
+        assertEquals(
+            RecordWidgetUiState.Loaded(listOf(FrequentItem(RecordWidgetItem(RecordType.Expense, "Hotel", "Hotel"), count = 1))),
+            model.uiState.value
+        )
+        assertEquals("record_widget_book_changed", tracker.lastEventName)
+    }
+
+    @Test
+    fun `selecting another book ties the config to it without changing the app's book`() = runTest {
+        // FakeBookRepo.selectBook throws, so this also verifies the app's book isn't changed.
+        val bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook))
+        val model = createModel(bookRepo = bookRepo)
+
+        model.selectBook(travelBook)
+        model.toggleItem(dinner)
+
+        assertEquals("travel", model.buildConfig()?.bookId)
+        assertEquals("Travel", model.buildConfig()?.bookName)
+        assertEquals(book, bookRepo.bookState.value)
+    }
+
+    @Test
+    fun `selecting the same book does nothing`() = runTest {
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+        model.toggleItem(dinner)
+        tracker.lastEvent = null
+
+        model.selectBook(book)
+
+        assertEquals(listOf(dinner), model.selectedItems.value)
         assertNull(tracker.lastEvent)
     }
+
+    @Test
+    fun `switching back to the edited widget's book restores its selection`() = runTest {
+        configStore.save(existingConfig(items = listOf(salary, dinner)))
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)),
+            widgetId = "42",
+        )
+
+        model.selectBook(travelBook)
+        assertTrue(model.selectedItems.value.isEmpty())
+
+        model.selectBook(book)
+        assertEquals(listOf(salary, dinner), model.selectedItems.value)
+        assertEquals(FrequentItem(salary, count = 1), (model.uiState.value as RecordWidgetUiState.Loaded).items.first())
+    }
+
+    @Test
+    fun `saving an edited widget with another book logs the book change`() = runTest {
+        configStore.save(existingConfig(items = listOf(dinner)))
+        val model = createModel(
+            bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)),
+            widgetId = "42",
+        )
+        model.selectBook(travelBook)
+        model.toggleItem(lunch)
+
+        model.saveConfigForWidget(widgetId = "42")
+
+        assertEquals("travel", configStore.configs.value.single().bookId)
+        assertEquals(mapOf("item_count" to 1, "book_changed" to true, "dynamic_colors" to false), tracker.lastEvent?.second)
+    }
+
+    @Test
+    fun `a slow load of the previous book doesn't overwrite the new book's items`() = runTest {
+        val gate = CompletableDeferred<Unit>()
+        frequentRecordsClient.gates[book.id] = gate
+        frequentRecordsClient.recordsByBook[travelBook.id] = emptyList()
+        val model = createModel(bookRepo = FakeBookRepo(book = book, books = listOf(book, travelBook)))
+        assertEquals(RecordWidgetUiState.Loading, model.uiState.value)
+
+        model.selectBook(travelBook)
+        gate.complete(Unit)
+
+        assertEquals(RecordWidgetUiState.Loaded(emptyList()), model.uiState.value)
+        assertNull(snackbarSender.lastSentMessageRes)
+    }
+
+    // endregion
 
     @Test
     fun `add widget from settings navigates up after the pin is requested`() = runTest {
@@ -174,6 +463,13 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     private val book = Book(id = "book", name = "Personal")
+    private val travelBook = Book(id = "travel", name = "Travel")
+
+    private fun existingConfig(
+        book: Book = this.book,
+        items: List<RecordWidgetItem>,
+        createdOn: Long = 0,
+    ) = RecordWidgetConfig(id = "42", bookId = book.id, bookName = book.name, items = items, createdOn = createdOn)
     private val dinner = RecordWidgetItem(RecordType.Expense, "Food", "Dinner")
     private val lunch = RecordWidgetItem(RecordType.Expense, "Food", "Lunch")
     private val salary = RecordWidgetItem(RecordType.Income, "Salary", "Salary")
@@ -192,8 +488,9 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     private val tracker = FakeTracker()
 
     private fun createModel(
-        bookRepo: FakeBookRepo = FakeBookRepo(book = book, currentBookId = book.id),
+        bookRepo: FakeBookRepo = FakeBookRepo(book = book, books = listOf(book), currentBookId = book.id),
         navController: NavController<BookDest> = NavController(startRoot = BookDest.RecordWidget),
+        widgetId: String? = null,
     ) = RecordWidgetViewModel(
         navController = navController,
         bookRepo = bookRepo,
@@ -203,7 +500,7 @@ class RecordWidgetViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         widgetPlatform = widgetPlatform,
         snackbarSender = snackbarSender,
         tracker = tracker,
-    )
+    ).apply { start(widgetId) }
 }
 
 private class FakeFrequentRecordsClient(
@@ -212,9 +509,16 @@ private class FakeFrequentRecordsClient(
 
     var lastQueriedBookId: String? = null
 
+    /** The records of the book, [records] by default. */
+    val recordsByBook = mutableMapOf<String, List<Record>>()
+
+    /** Suspend the query of the book until the gate completes. */
+    val gates = mutableMapOf<String, CompletableDeferred<Unit>>()
+
     override suspend fun queryRecords(bookId: String, fromDate: LocalDate): List<Record> {
         lastQueriedBookId = bookId
-        return records
+        gates[bookId]?.await()
+        return recordsByBook[bookId] ?: records
     }
 }
 
@@ -260,4 +564,6 @@ internal class FakeRecordWidgetPlatform : RecordWidgetPlatform {
     override suspend fun refreshWidgets() {
         refreshCount++
     }
+
+    override suspend fun updatePreview() = Unit
 }

@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,8 +36,6 @@ import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.di.resolveGraphExtensionFactory
-import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK_CUSTOM
-import com.kevlina.budgetplus.core.common.nav.NAV_RECORD_PATH
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeManager
 import com.kevlina.budgetplus.core.ui.AppTheme
@@ -92,6 +89,10 @@ class RecordWidgetConfigActivity : ComponentActivity() {
                 val themeColors by themeManager.themeColors.collectAsStateWithLifecycle()
                 AppTheme(themeColors) {
                     val vm = metroViewModel<RecordWidgetViewModel>()
+                    val book by vm.book.collectAsStateWithLifecycle()
+
+                    // Preselect the items when an existing widget is reconfigured.
+                    LaunchedEffect(vm) { vm.start(widgetId = appWidgetId.toString()) }
 
                     // This activity is outside of the book activity, show the snackbars on its own.
                     var snackbarData: SnackbarData? by remember { mutableStateOf(null) }
@@ -102,16 +103,17 @@ class RecordWidgetConfigActivity : ComponentActivity() {
                     }
 
                     Scaffold(snackbarHost = { SnackbarHost(snackbarData) }) {
-                        if (!vm.isSignedIn || vm.book == null) {
+                        if (!vm.isSignedIn || book == null) {
                             MessageContent(
                                 message = stringResource(Res.string.record_widget_sign_in, stringResource(Res.string.app_name)),
                                 cta = stringResource(Res.string.cta_go),
-                                onCtaClick = { openApp("$APP_DEEPLINK_CUSTOM$NAV_RECORD_PATH") },
+                                onCtaClick = ::openApp,
                             )
                         } else {
                             RecordWidgetContent(
                                 vm = vm,
                                 navigateUp = ::finish,
+                                applyNavBarPadding = true,
                                 onDone = {
                                     lifecycleScope.launch {
                                         if (vm.saveConfigForWidget(widgetId = appWidgetId.toString()) != null) {
@@ -131,12 +133,9 @@ class RecordWidgetConfigActivity : ComponentActivity() {
     private fun resultIntent(appWidgetId: Int) = Intent()
         .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
 
-    private fun openApp(deeplink: String) {
-        startActivity(
-            Intent(Intent.ACTION_VIEW, deeplink.toUri())
-                .setPackage(packageName)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+    private fun openApp() {
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName) ?: return
+        startActivity(launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         finish()
     }
 }

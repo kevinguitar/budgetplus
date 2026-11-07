@@ -60,6 +60,10 @@
     <string name="record_widget_hint">Pick up to %1$s items you recorded often in the last 30 days, you will fill in the price each time.</string>
     <string name="record_widget_empty">No records in the last 30 days yet. Record a few expenses first!</string>
     <string name="record_widget_limit">You can select up to %1$s items</string>
+    <string name="record_widget_position">Position %1$s</string>
+    <string name="record_widget_dynamic_colors">Material You colors</string>
+    <string name="record_widget_dynamic_colors_desc">Match the widget to your wallpaper colors and dark mode</string>
+    <string name="record_widget_preview_empty">Pick items below to see your widget</string>
     <plurals name="record_widget_times">
         <item quantity="one">%1$d time</item>
         <item quantity="other">%1$d times</item>
