@@ -15,14 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
@@ -31,18 +35,17 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
-import com.kevlina.budgetplus.core.ui.TOP_BAR_DARKEN_FACTOR
-import com.kevlina.budgetplus.core.ui.darken
+import com.kevlina.budgetplus.core.ui.LocalMenuActionTint
 import com.kevlina.budgetplus.core.ui.safeArea
 
 private val RailWidth = 80.dp
 private val TabHeight = 48.dp
 private val SidePillSize = DpSize(56.dp, 32.dp)
 private val SideIconSize = 24.dp
+private val SeparatorWidth = 1.dp
 
 /**
- *  The tabs in a rail at the start, for wide windows. It shares the color of the top bar, so they
- *  frame the content together.
+ *  The tabs in a rail at the start, for wide windows.
  */
 @Composable
 internal fun NavRail(
@@ -57,6 +60,7 @@ internal fun NavRail(
         modifier = modifier
             .fillMaxHeight()
             .background(colors.background)
+            .contentSeparator(isStart = true, color = colors.separator)
             .windowInsetsPadding(
                 WindowInsets.safeArea.only(WindowInsetsSides.Start + WindowInsetsSides.Vertical)
             )
@@ -71,12 +75,14 @@ internal fun NavRail(
  *  status bar and the camera on the iPhone Duo. The items are centered vertically: depending on the
  *  orientation, the status bar and the camera can be at either end of the column.
  *
+ *  @param isStart whether the column is on the start side, the separator goes on the content side.
  *  @param actions the actions of the current screen's top bar.
  */
 @Composable
 internal fun SideColumnBar(
     navController: NavController<BookDest>,
     previewColors: ThemeColors?,
+    isStart: Boolean,
     actions: (@Composable () -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
@@ -95,11 +101,15 @@ internal fun SideColumnBar(
             .fillMaxHeight()
             .width(width)
             .background(colors.background)
+            .contentSeparator(isStart = isStart, color = colors.separator)
             .windowInsetsPadding(WindowInsets.safeArea.only(WindowInsetsSides.Vertical))
             .padding(vertical = 8.dp)
     ) {
         if (actions != null) {
-            actions()
+            // The actions are made for the dark top bar.
+            CompositionLocalProvider(LocalMenuActionTint provides colors.unselectedIcon) {
+                actions()
+            }
             Spacer(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -124,7 +134,7 @@ private fun ColumnScope.NavTabs(
             navController = navController,
             tab = tab,
             pillColor = colors.pill,
-            selectedIconColor = colors.background,
+            selectedIconColor = colors.selectedIcon,
             unselectedIconColor = colors.unselectedIcon,
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,21 +146,43 @@ private fun ColumnScope.NavTabs(
     }
 }
 
+/**
+ *  A thin line on the edge that faces the content.
+ */
+private fun Modifier.contentSeparator(isStart: Boolean, color: Color): Modifier = drawBehind {
+    val isLeft = isStart == (layoutDirection == LayoutDirection.Ltr)
+    val strokeWidth = SeparatorWidth.toPx()
+    val x = if (isLeft) size.width - strokeWidth / 2 else strokeWidth / 2
+    drawLine(
+        color = color,
+        start = Offset(x, 0F),
+        end = Offset(x, size.height),
+        strokeWidth = strokeWidth,
+        alpha = AppTheme.DIVIDER_ALPHA,
+    )
+}
+
 @Immutable
 private class SideBarColors(
     val background: Color,
     val pill: Color,
+    val selectedIcon: Color,
     val unselectedIcon: Color,
+    val separator: Color,
 )
 
+/**
+ *  Same as the bottom nav, which the side bars replace.
+ */
 @Composable
 private fun sideBarColors(previewColors: ThemeColors?): SideBarColors {
-    val primary = previewColors?.primary ?: LocalAppColors.current.primary
-    val light = previewColors?.light ?: LocalAppColors.current.light
+    val lightBg = previewColors?.lightBg ?: LocalAppColors.current.lightBg
+    val dark = previewColors?.dark ?: LocalAppColors.current.dark
     return SideBarColors(
-        // Same as the top bar, so the menu actions keep their light tint.
-        background = primary.darken(TOP_BAR_DARKEN_FACTOR),
-        pill = light,
-        unselectedIcon = light,
+        background = lightBg,
+        pill = dark,
+        selectedIcon = lightBg,
+        unselectedIcon = dark,
+        separator = dark,
     )
 }

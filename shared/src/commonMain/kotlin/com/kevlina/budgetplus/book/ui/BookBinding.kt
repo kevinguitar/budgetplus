@@ -122,6 +122,7 @@ internal fun BookBinding(
                     SideColumnBar(
                         navController = navController,
                         previewColors = previewColors,
+                        isStart = true,
                         actions = topBarActionsHost.actions,
                     )
                 }
@@ -162,6 +163,7 @@ internal fun BookBinding(
                     SideColumnBar(
                         navController = navController,
                         previewColors = previewColors,
+                        isStart = false,
                         actions = topBarActionsHost.actions,
                     )
                 }
