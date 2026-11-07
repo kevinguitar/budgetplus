@@ -82,6 +82,7 @@ import budgetplus.core.common.generated.resources.settings_view_members
 import budgetplus.core.common.generated.resources.username_title
 import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.UiTestFlags
+import com.kevlina.budgetplus.core.common.languageSelectionState
 import com.kevlina.budgetplus.core.common.isRecordWidgetSupported
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BookDest.CurrencyPicker.Purpose
@@ -103,9 +104,6 @@ import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.settings.member.MembersDialog
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-
-// A hack to recompose iOS UI when the language is changed
-internal val languageSelectionState = mutableStateOf<String?>(null)
 
 @Composable
 internal fun SettingsContent(

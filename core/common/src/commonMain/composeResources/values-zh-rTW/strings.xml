@@ -14,6 +14,10 @@
     <string name="welcome_create_book_title">你可以創建帳本</string>
     <string name="welcome_join_instruction">或是想加入好友創建的帳本一起記帳嗎？\n快請他們分享加入連結給你吧！</string>
 
+    <!-- Navigation -->
+    <string name="nav_record">記帳</string>
+    <string name="nav_overview">總覽</string>
+
     <!-- Record -->
     <string name="record_note">內容</string>
     <string name="record_note_placeholder_expense">花在哪裡？</string>

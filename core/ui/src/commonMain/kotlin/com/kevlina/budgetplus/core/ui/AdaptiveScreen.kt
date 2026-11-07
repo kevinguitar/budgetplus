@@ -15,7 +15,6 @@ fun AdaptiveScreen(
     packedContent: @Composable () -> Unit = regularContent,
     extraContent: @Composable (BoxScope.() -> Unit)? = null,
 ) {
-
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center

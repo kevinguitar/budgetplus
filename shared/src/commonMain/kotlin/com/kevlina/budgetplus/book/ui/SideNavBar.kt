@@ -1,7 +1,15 @@
 package com.kevlina.budgetplus.book.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,19 +19,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -32,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_group_add
 import budgetplus.core.common.generated.resources.ic_settings
+import com.kevlina.budgetplus.core.common.languageSelectionState
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -39,13 +54,16 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
+import com.kevlina.budgetplus.core.ui.FontSize
+import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.LocalMenuActionTint
 import com.kevlina.budgetplus.core.ui.MenuAction
+import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.safeArea
 import org.jetbrains.compose.resources.vectorResource
 
 private val RailWidth = 80.dp
-private val TabHeight = 48.dp
+private val TabSpacing = 16.dp
 private val SidePillSize = DpSize(56.dp, 32.dp)
 private val SideIconSize = 24.dp
 private val SeparatorWidth = 1.dp
@@ -61,7 +79,7 @@ internal fun NavRail(
 ) {
     val colors = sideBarColors(previewColors)
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(TabSpacing, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxHeight()
@@ -72,7 +90,57 @@ internal fun NavRail(
             )
             .width(RailWidth.withTypographyScale())
     ) {
-        NavTabs(navController = navController, colors = colors)
+        BottomNavTab.entries.forEach { tab ->
+            RailItem(navController = navController, tab = tab, colors = colors)
+        }
+    }
+}
+
+/**
+ *  The label below the icon, the pill only wraps the icon.
+ */
+@Composable
+private fun RailItem(
+    navController: NavController<BookDest>,
+    tab: BottomNavTab,
+    colors: SideBarColors,
+) {
+    val isSelected = navController.isTabSelected(tab)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .navTabClick(navController, tab)
+            .padding(vertical = 4.dp)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            NavTabPill(
+                isSelected = isSelected,
+                color = colors.pill,
+                size = SidePillSize,
+            )
+            // Keep the space of the pill while it animates.
+            Spacer(modifier = Modifier.size(SidePillSize))
+            Icon(
+                imageVector = tab.icon(),
+                tint = if (isSelected) colors.selectedIcon else colors.unselectedIcon,
+                size = SideIconSize,
+            )
+        }
+
+        // The rail stays on screen while the language is changed in the settings.
+        key(languageSelectionState.value) {
+            Text(
+                text = tab.label(),
+                color = colors.unselectedIcon,
+                fontSize = FontSize.Small,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                singleLine = true,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
     }
 }
 
@@ -95,8 +163,20 @@ internal fun SideColumnBar(
     width: Dp = sideColumnWidth(),
 ) {
     val colors = sideBarColors(previewColors)
+    val lastActions = remember { ActionsHolder() }
+    if (actions != null) {
+        if (lastActions.actions == null) {
+            // The screen sets the first actions after the bar is shown, e.g. on app start, show
+            // them without animation.
+            lastActions.visibleState = MutableTransitionState(true)
+        }
+        // Keep showing the last actions while they animate out.
+        lastActions.actions = actions
+    }
+    lastActions.visibleState.targetState = actions != null
+
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxHeight()
@@ -106,23 +186,69 @@ internal fun SideColumnBar(
             .windowInsetsPadding(WindowInsets.safeArea.only(WindowInsetsSides.Vertical))
             .padding(vertical = 8.dp)
     ) {
-        if (actions != null) {
-            // The actions are made for the dark top bar.
-            CompositionLocalProvider(LocalMenuActionTint provides colors.unselectedIcon) {
-                actions()
-            }
-            Spacer(
+        // Expand and shrink the actions, so the tabs slide to the new center instead of jumping.
+        AnimatedVisibility(
+            visibleState = lastActions.visibleState,
+            enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .alpha(AppTheme.DIVIDER_ALPHA)
-                    .background(color = colors.unselectedIcon)
-            )
+                    // The gap to the tabs is part of the animated content.
+                    .padding(bottom = 8.dp)
+                    // Screens can have a different number of actions.
+                    .animateContentSize()
+            ) {
+                // The actions are made for the dark top bar.
+                CompositionLocalProvider(LocalMenuActionTint provides colors.unselectedIcon) {
+                    lastActions.actions?.invoke()
+                }
+                Spacer(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .alpha(AppTheme.DIVIDER_ALPHA)
+                        .background(color = colors.unselectedIcon)
+                )
+            }
         }
 
         NavTabs(navController = navController, colors = colors)
     }
+}
+
+/**
+ *  Composes [content] when it's measured, i.e. after the rest of the composition, including the
+ *  effects of the movable content.
+ *
+ *  The screens in the nav display are movable content, which is inserted at the end of the
+ *  composition, so they register their top bar actions after the side bar is composed. Without
+ *  this, the side bar shows a frame without the actions on start.
+ */
+@Composable
+internal fun ComposeOnLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    SubcomposeLayout(modifier) { constraints ->
+        val placeables = subcompose(Unit, content).map { it.measure(constraints) }
+        val width = placeables.maxOfOrNull { it.width } ?: constraints.minWidth
+        val height = placeables.maxOfOrNull { it.height } ?: constraints.minHeight
+        layout(width, height) {
+            placeables.forEach { it.place(0, 0) }
+        }
+    }
+}
+
+/**
+ *  Not a state, it's only updated when the actions change, which recomposes the bar anyway.
+ */
+private class ActionsHolder {
+    var actions: (@Composable () -> Unit)? = null
+    var visibleState = MutableTransitionState(false)
 }
 
 /**
@@ -143,20 +269,11 @@ private fun NavTabs(
     navController: NavController<BookDest>,
     colors: SideBarColors,
 ) {
-    BottomNavTab.entries.forEach { tab ->
-        NavTabItem(
-            navController = navController,
-            tab = tab,
-            pillColor = colors.pill,
-            selectedIconColor = colors.selectedIcon,
-            unselectedIconColor = colors.unselectedIcon,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(TabHeight),
-            // Fit the narrow bar, e.g. the 84pt column on the iPhone Duo, regardless of the text scale.
-            pillSize = SidePillSize,
-            iconSize = SideIconSize,
-        )
+    // Same as the rail, the fixed pill and icon sizes fit the 84pt column on the iPhone Duo.
+    Column(verticalArrangement = Arrangement.spacedBy(TabSpacing)) {
+        BottomNavTab.entries.forEach { tab ->
+            RailItem(navController = navController, tab = tab, colors = colors)
+        }
     }
 }
 

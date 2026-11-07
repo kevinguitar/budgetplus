@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.feature.add.record.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -92,8 +92,12 @@ enum class CalculatorAction {
     Clear, Evaluate, Ok;
 }
 
-private val horizontalSpacing = 12.dp
-private val verticalSpacing = 8.dp
+internal val CalculatorHorizontalSpacing = 12.dp
+internal val CalculatorVerticalSpacing = 8.dp
+internal const val CALCULATOR_COLUMNS = 5
+internal const val CALCULATOR_ROWS = 4
+private val horizontalSpacing = CalculatorHorizontalSpacing
+private val verticalSpacing = CalculatorVerticalSpacing
 private val calcButtons = CalculatorButton.entries.toList()
 
 /**
@@ -133,7 +137,9 @@ internal fun Calculator(
         verticalArrangement = Arrangement.spacedBy(verticalSpacing),
         modifier = modifier
             .focusRequester(focusRequester)
-            .focusable()
+            // The focus is only for the hardware keyboard. Unlike focusable(), focusTarget() doesn't
+            // bring itself into view, which would scroll the packed layout down to the keypad.
+            .focusTarget()
             .onKeyEvent { event ->
                 if (event.type != KeyEventType.KeyUp) return@onKeyEvent false
                 when (event.key) {
