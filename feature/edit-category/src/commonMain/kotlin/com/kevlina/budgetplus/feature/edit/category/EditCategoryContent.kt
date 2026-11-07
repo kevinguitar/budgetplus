@@ -22,7 +22,6 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Fab
-import com.kevlina.budgetplus.core.ui.FabDefaults
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleShape
 import com.kevlina.budgetplus.core.ui.thenIf
@@ -49,11 +48,7 @@ internal fun EditCategoryContent(
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = lazyListState,
-            // Let the last item scroll above the add FAB.
-            contentPadding = AppTheme.listContentPaddings(
-                all = 16.dp,
-                bottom = FabDefaults.listBottomPadding,
-            ),
+            contentPadding = AppTheme.listContentPaddings(all = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             itemsIndexed(

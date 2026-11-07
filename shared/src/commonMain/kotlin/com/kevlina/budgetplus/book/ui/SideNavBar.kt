@@ -3,7 +3,6 @@ package com.kevlina.budgetplus.book.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -25,9 +24,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.ic_group_add
+import budgetplus.core.common.generated.resources.ic_settings
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
 import com.kevlina.budgetplus.core.common.nav.NavController
@@ -36,7 +40,9 @@ import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.LocalMenuActionTint
+import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.safeArea
+import org.jetbrains.compose.resources.vectorResource
 
 private val RailWidth = 80.dp
 private val TabHeight = 48.dp
@@ -77,6 +83,7 @@ internal fun NavRail(
  *
  *  @param isStart whether the column is on the start side, the separator goes on the content side.
  *  @param actions the actions of the current screen's top bar.
+ *  @param width the width of the reserved column, it's filled exactly.
  */
 @Composable
 internal fun SideColumnBar(
@@ -85,15 +92,9 @@ internal fun SideColumnBar(
     isStart: Boolean,
     actions: (@Composable () -> Unit)?,
     modifier: Modifier = Modifier,
+    width: Dp = sideColumnWidth(),
 ) {
     val colors = sideBarColors(previewColors)
-    val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
-    val insets = WindowInsets.safeArea
-    // Fill the reserved column exactly. Only one side has an inset in this layout, see rememberBookNavLayout.
-    val width = with(density) {
-        maxOf(insets.getLeft(density, layoutDirection), insets.getRight(density, layoutDirection)).toDp()
-    }
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,8 +125,21 @@ internal fun SideColumnBar(
     }
 }
 
+/**
+ *  Only one side has an inset in the side column layout, see [rememberBookNavLayout].
+ */
 @Composable
-private fun ColumnScope.NavTabs(
+private fun sideColumnWidth(): Dp {
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    val insets = WindowInsets.safeArea
+    return with(density) {
+        maxOf(insets.getLeft(density, layoutDirection), insets.getRight(density, layoutDirection)).toDp()
+    }
+}
+
+@Composable
+private fun NavTabs(
     navController: NavController<BookDest>,
     colors: SideBarColors,
 ) {
@@ -186,3 +200,38 @@ private fun sideBarColors(previewColors: ThemeColors?): SideBarColors {
         separator = dark,
     )
 }
+
+@Preview(heightDp = 480)
+@Composable
+private fun NavRail_Preview() = AppTheme {
+    NavRail(navController = NavController.preview, previewColors = null)
+}
+
+@Preview(heightDp = 480)
+@Composable
+private fun SideColumnBar_Preview() = AppTheme {
+    SideColumnBar(
+        navController = NavController.preview,
+        previewColors = null,
+        isStart = false,
+        actions = {
+            MenuAction(imageVector = vectorResource(Res.drawable.ic_group_add), description = "")
+            MenuAction(imageVector = vectorResource(Res.drawable.ic_settings), description = "")
+        },
+        // The width of the column on the iPhone Duo, previews have no safe area.
+        width = 84.dp,
+    )
+}
+
+@Preview(heightDp = 480)
+@Composable
+private fun SideColumnBarNoActions_Preview() = AppTheme(themeColors = ThemeColors.AzureCoast) {
+    SideColumnBar(
+        navController = NavController.preview,
+        previewColors = null,
+        isStart = true,
+        actions = null,
+        width = 84.dp,
+    )
+}
+

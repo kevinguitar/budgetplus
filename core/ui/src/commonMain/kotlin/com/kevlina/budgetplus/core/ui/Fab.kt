@@ -5,7 +5,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import budgetplus.core.common.generated.resources.Res
@@ -35,15 +33,6 @@ import org.jetbrains.compose.resources.vectorResource
 
 private val FabMargin = 24.dp
 private val FabSize = 56.dp
-
-object FabDefaults {
-
-    /**
-     *  Bottom padding for a list under a [Fab], so the last item can scroll above it.
-     */
-    val listBottomPadding: Dp
-        @Composable get() = FabSize.withTypographyScale() + FabMargin * 2
-}
 
 @Composable
 fun BoxScope.Fab(
