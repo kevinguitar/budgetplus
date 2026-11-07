@@ -14,6 +14,10 @@
     <string name="welcome_create_book_title">가계부를 생성할 수 있습니다</string>
     <string name="welcome_join_instruction">친구가 만든 가계부에 참여하고 싶으신가요?\n초대 링크를 공유해 달라고 요청해 보세요!</string>
 
+    <!-- Navigation -->
+    <string name="nav_record">기록</string>
+    <string name="nav_overview">통계</string>
+
     <!-- Record -->
     <string name="record_note">내용</string>
     <string name="record_note_placeholder_expense">어디에 사용했나요?</string>

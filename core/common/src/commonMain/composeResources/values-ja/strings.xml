@@ -14,6 +14,10 @@
     <string name="welcome_create_book_title">帳簿を作成できます</string>
     <string name="welcome_join_instruction">または、友達と一緒に記帳したいですか？\n彼らに参加リンクをお願いしてみてください！</string>
 
+    <!-- Navigation -->
+    <string name="nav_record">記帳</string>
+    <string name="nav_overview">概要</string>
+
     <!-- Record -->
     <string name="record_note">内容</string>
     <string name="record_note_placeholder_expense">何にお金を使った？</string>

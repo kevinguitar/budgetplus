@@ -14,6 +14,10 @@
     <string name="welcome_create_book_title">You can create a new accounting book</string>
     <string name="welcome_join_instruction">Or want to join your friends and family?\nAsk your fellows to share the join link with you!</string>
 
+    <!-- Navigation -->
+    <string name="nav_record">Record</string>
+    <string name="nav_overview">Overview</string>
+
     <!-- Record -->
     <string name="record_note">Note</string>
     <string name="record_note_placeholder_expense">What did you pay for?</string>

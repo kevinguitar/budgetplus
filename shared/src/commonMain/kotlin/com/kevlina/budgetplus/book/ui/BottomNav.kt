@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_format_list_bulleted
 import budgetplus.core.common.generated.resources.ic_post_add
+import budgetplus.core.common.generated.resources.nav_overview
+import budgetplus.core.common.generated.resources.nav_record
 import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
@@ -42,6 +45,7 @@ import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.rippleClick
 import com.kevlina.budgetplus.core.ui.safeArea
 import com.kevlina.budgetplus.core.ui.thenIf
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 private const val BOTTOM_NAV_ADD_DESC = "bottom_nav_add"
@@ -108,42 +112,78 @@ internal fun NavTabItem(
     pillSize: DpSize = DpSize(60.dp.withTypographyScale(), 36.dp.withTypographyScale()),
     iconSize: Dp = 28.dp,
 ) {
-    val isSelected = navController.rootStack.lastOrNull() == tab.root
+    val isSelected = navController.isTabSelected(tab)
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
-            .rippleClick { navController.selectRoot(tab.root) }
-            .thenIf(UiTestFlags.enabled) {
-                Modifier.semantics {
-                    contentDescription = when (tab) {
-                        BottomNavTab.Add -> BOTTOM_NAV_ADD_DESC
-                        BottomNavTab.History -> BOTTOM_NAV_HISTORY_DESC
-                    }
-                }
-            }
+        modifier = modifier.navTabClick(navController, tab)
     ) {
-        AnimatedVisibility(
-            visible = isSelected,
-            enter = scaleIn(),
-            exit = scaleOut()
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .size(pillSize)
-                    .background(
-                        color = pillColor,
-                        shape = CircleShape
-                    )
-            )
-        }
+        NavTabPill(
+            isSelected = isSelected,
+            color = pillColor,
+            size = pillSize,
+        )
 
         Icon(
-            imageVector = when (tab) {
-                BottomNavTab.Add -> vectorResource(Res.drawable.ic_post_add)
-                BottomNavTab.History -> vectorResource(Res.drawable.ic_format_list_bulleted)
-            },
+            imageVector = tab.icon(),
             tint = if (isSelected) selectedIconColor else unselectedIconColor,
             size = iconSize,
         )
     }
+}
+
+/**
+ *  The pill behind the icon of the selected tab.
+ */
+@Composable
+internal fun NavTabPill(
+    isSelected: Boolean,
+    color: Color,
+    size: DpSize,
+) {
+    AnimatedVisibility(
+        visible = isSelected,
+        enter = scaleIn(),
+        exit = scaleOut()
+    ) {
+        Spacer(
+            modifier = Modifier
+                .size(size)
+                .background(
+                    color = color,
+                    shape = CircleShape
+                )
+        )
+    }
+}
+
+internal fun NavController<BookDest>.isTabSelected(tab: BottomNavTab): Boolean =
+    rootStack.lastOrNull() == tab.root
+
+/**
+ *  Selects the tab on click, and tags it for the UI tests.
+ */
+internal fun Modifier.navTabClick(
+    navController: NavController<BookDest>,
+    tab: BottomNavTab,
+): Modifier = this
+    .rippleClick { navController.selectRoot(tab.root) }
+    .thenIf(UiTestFlags.enabled) {
+        Modifier.semantics {
+            contentDescription = when (tab) {
+                BottomNavTab.Add -> BOTTOM_NAV_ADD_DESC
+                BottomNavTab.History -> BOTTOM_NAV_HISTORY_DESC
+            }
+        }
+    }
+
+@Composable
+internal fun BottomNavTab.icon(): ImageVector = when (this) {
+    BottomNavTab.Add -> vectorResource(Res.drawable.ic_post_add)
+    BottomNavTab.History -> vectorResource(Res.drawable.ic_format_list_bulleted)
+}
+
+@Composable
+internal fun BottomNavTab.label(): String = when (this) {
+    BottomNavTab.Add -> stringResource(Res.string.nav_record)
+    BottomNavTab.History -> stringResource(Res.string.nav_overview)
 }

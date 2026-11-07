@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.book.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
@@ -24,6 +26,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -39,13 +43,16 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
+import com.kevlina.budgetplus.core.ui.FontSize
+import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.LocalMenuActionTint
 import com.kevlina.budgetplus.core.ui.MenuAction
+import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.safeArea
 import org.jetbrains.compose.resources.vectorResource
 
 private val RailWidth = 80.dp
-private val TabHeight = 48.dp
+private val TabSpacing = 16.dp
 private val SidePillSize = DpSize(56.dp, 32.dp)
 private val SideIconSize = 24.dp
 private val SeparatorWidth = 1.dp
@@ -61,7 +68,7 @@ internal fun NavRail(
 ) {
     val colors = sideBarColors(previewColors)
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(TabSpacing, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxHeight()
@@ -72,7 +79,54 @@ internal fun NavRail(
             )
             .width(RailWidth.withTypographyScale())
     ) {
-        NavTabs(navController = navController, colors = colors)
+        BottomNavTab.entries.forEach { tab ->
+            RailItem(navController = navController, tab = tab, colors = colors)
+        }
+    }
+}
+
+/**
+ *  The label below the icon, the pill only wraps the icon.
+ */
+@Composable
+private fun RailItem(
+    navController: NavController<BookDest>,
+    tab: BottomNavTab,
+    colors: SideBarColors,
+) {
+    val isSelected = navController.isTabSelected(tab)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .navTabClick(navController, tab)
+            .padding(vertical = 4.dp)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            NavTabPill(
+                isSelected = isSelected,
+                color = colors.pill,
+                size = SidePillSize,
+            )
+            // Keep the space of the pill while it animates.
+            Spacer(modifier = Modifier.size(SidePillSize))
+            Icon(
+                imageVector = tab.icon(),
+                tint = if (isSelected) colors.selectedIcon else colors.unselectedIcon,
+                size = SideIconSize,
+            )
+        }
+
+        Text(
+            text = tab.label(),
+            color = colors.unselectedIcon,
+            fontSize = FontSize.Small,
+            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+            textAlign = TextAlign.Center,
+            singleLine = true,
+            modifier = Modifier.padding(horizontal = 4.dp)
+        )
     }
 }
 
@@ -143,20 +197,11 @@ private fun NavTabs(
     navController: NavController<BookDest>,
     colors: SideBarColors,
 ) {
-    BottomNavTab.entries.forEach { tab ->
-        NavTabItem(
-            navController = navController,
-            tab = tab,
-            pillColor = colors.pill,
-            selectedIconColor = colors.selectedIcon,
-            unselectedIconColor = colors.unselectedIcon,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(TabHeight),
-            // Fit the narrow bar, e.g. the 84pt column on the iPhone Duo, regardless of the text scale.
-            pillSize = SidePillSize,
-            iconSize = SideIconSize,
-        )
+    // Same as the rail, the fixed pill and icon sizes fit the 84pt column on the iPhone Duo.
+    Column(verticalArrangement = Arrangement.spacedBy(TabSpacing)) {
+        BottomNavTab.entries.forEach { tab ->
+            RailItem(navController = navController, tab = tab, colors = colors)
+        }
     }
 }
 
