@@ -40,6 +40,8 @@ internal fun TonePickerContentWide(
             getThemeColors = getThemeColors,
             unlockPremium = unlockPremium,
             onColorPicked = onColorPicked,
+            // The pane next to the preview can be taller than wide, e.g. on the iPhone Duo.
+            allowVerticalCards = true,
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1F)
