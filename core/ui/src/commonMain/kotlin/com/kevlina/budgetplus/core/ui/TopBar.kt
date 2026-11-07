@@ -37,6 +37,12 @@ fun TopBar(
     menuActions: @Composable (() -> Unit)? = null,
     applyWindowInsets: Boolean = true,
 ) {
+    // Previews of the top bar, e.g. in the color tone picker, always keep their actions.
+    val actionsHost = LocalTopBarActionsHost.current?.takeIf { applyWindowInsets }
+    if (actionsHost != null) {
+        RegisterTopBarActions(host = actionsHost, menuActions = menuActions)
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -78,7 +84,9 @@ fun TopBar(
             }
         }
 
-        menuActions?.invoke()
+        if (actionsHost == null) {
+            menuActions?.invoke()
+        }
     }
 }
 

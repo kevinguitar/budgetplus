@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -78,31 +77,37 @@ internal fun BottomNav(
                 .fillMaxWidth()
         ) {
             BottomNavTab.entries.forEach { tab ->
-                BottomNavItem(
+                NavTabItem(
                     navController = navController,
                     tab = tab,
-                    isSelected = navController.rootStack.lastOrNull() == tab.root,
-                    darkColor = darkColor,
-                    lightColor = lightColor
+                    pillColor = darkColor,
+                    selectedIconColor = lightColor,
+                    unselectedIconColor = darkColor,
+                    modifier = Modifier
+                        .weight(1F)
+                        .fillMaxHeight()
                 )
             }
         }
     }
 }
 
+/**
+ *  A tab of the book navigation, shared by the bottom nav and the side bars.
+ */
 @Composable
-private fun RowScope.BottomNavItem(
+internal fun NavTabItem(
     navController: NavController<BookDest>,
     tab: BottomNavTab,
-    isSelected: Boolean,
-    darkColor: Color,
-    lightColor: Color,
+    pillColor: Color,
+    selectedIconColor: Color,
+    unselectedIconColor: Color,
+    modifier: Modifier = Modifier,
 ) {
+    val isSelected = navController.rootStack.lastOrNull() == tab.root
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .weight(1F)
-            .fillMaxHeight()
+        modifier = modifier
             .rippleClick { navController.selectRoot(tab.root) }
             .thenIf(UiTestFlags.enabled) {
                 Modifier.semantics {
@@ -113,7 +118,7 @@ private fun RowScope.BottomNavItem(
                 }
             }
     ) {
-        this@BottomNavItem.AnimatedVisibility(
+        AnimatedVisibility(
             visible = isSelected,
             enter = scaleIn(),
             exit = scaleOut()
@@ -125,7 +130,7 @@ private fun RowScope.BottomNavItem(
                         height = 36.dp.withTypographyScale()
                     )
                     .background(
-                        color = darkColor,
+                        color = pillColor,
                         shape = CircleShape
                     )
             )
@@ -136,7 +141,7 @@ private fun RowScope.BottomNavItem(
                 BottomNavTab.Add -> vectorResource(Res.drawable.ic_post_add)
                 BottomNavTab.History -> vectorResource(Res.drawable.ic_format_list_bulleted)
             },
-            tint = if (isSelected) lightColor else darkColor,
+            tint = if (isSelected) selectedIconColor else unselectedIconColor,
             size = 28.dp,
         )
     }
