@@ -176,12 +176,12 @@ private class SideBarColors(
  */
 @Composable
 private fun sideBarColors(previewColors: ThemeColors?): SideBarColors {
-    val lightBg = previewColors?.lightBg ?: LocalAppColors.current.lightBg
+    val light = previewColors?.light ?: LocalAppColors.current.light
     val dark = previewColors?.dark ?: LocalAppColors.current.dark
     return SideBarColors(
-        background = lightBg,
+        background = light,
         pill = dark,
-        selectedIcon = lightBg,
+        selectedIcon = light,
         unselectedIcon = dark,
         separator = dark,
     )
