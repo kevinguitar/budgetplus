@@ -1,14 +1,9 @@
 package com.kevlina.budgetplus.feature.add.record.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,7 +12,6 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.WideContentRow
-import com.kevlina.budgetplus.core.ui.safeArea
 
 @Composable
 internal fun RecordContentWide(
@@ -36,11 +30,8 @@ internal fun RecordContentWide(
             modifier = Modifier
                 .weight(1F)
                 .fillMaxHeight()
-                .padding(top = 16.dp)
-                // Keep the keys above the home indicator when there's no bottom nav below.
-                .windowInsetsPadding(
-                    WindowInsets.safeArea.only(WindowInsetsSides.Bottom).union(WindowInsets(bottom = 16.dp))
-                )
+                // Match the bottom padding of the record info next to it.
+                .padding(top = 16.dp, bottom = 8.dp)
         )
     }
 }
