@@ -2,7 +2,9 @@ package com.kevlina.budgetplus.feature.add.record.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -31,6 +33,7 @@ import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.feature.add.record.RecordViewModel
 import com.kevlina.budgetplus.feature.category.pills.toState
 import com.kevlina.budgetplus.feature.freeze.FreezeBookDialog
@@ -89,7 +92,8 @@ fun RecordScreen() {
         AdaptiveScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .weight(1F),
+                .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal),
             regularContent = {
                 val recordInfoState = vm.toState(scrollable = true)
                 RecordContentRegular(recordInfoState)

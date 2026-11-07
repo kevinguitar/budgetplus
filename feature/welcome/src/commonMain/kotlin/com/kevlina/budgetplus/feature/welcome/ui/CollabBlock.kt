@@ -4,10 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +27,7 @@ import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Text
+import com.kevlina.budgetplus.core.ui.safeArea
 import com.kevlina.budgetplus.core.ui.thenIf
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -32,6 +37,7 @@ internal fun CollabBlock(
     modifier: Modifier = Modifier,
     applyStatusBarPadding: Boolean = false,
     applyNavBarPadding: Boolean = true,
+    horizontalInsets: WindowInsetsSides = WindowInsetsSides.Horizontal,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,6 +45,7 @@ internal fun CollabBlock(
             .background(LocalAppColors.current.primary)
             .thenIf(applyStatusBarPadding) { Modifier.statusBarsPadding() }
             .thenIf(applyNavBarPadding) { Modifier.navigationBarsPadding() }
+            .windowInsetsPadding(WindowInsets.safeArea.only(horizontalInsets))
     ) {
 
         Text(

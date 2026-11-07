@@ -23,8 +23,7 @@ fun AdaptiveScreen(
 
         val windowSizeClass = WindowSizeClass.calculate()
         when {
-            windowSizeClass.width >= WindowSizeClass.Size.Medium &&
-                windowSizeClass.width > windowSizeClass.height -> wideContent()
+            windowSizeClass.isWide -> wideContent()
 
             windowSizeClass.height == WindowSizeClass.Size.Compat -> packedContent()
             else -> regularContent()

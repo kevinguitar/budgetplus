@@ -3,8 +3,10 @@ package com.kevlina.budgetplus.feature.insider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import budgetplus.core.common.generated.resources.cta_add
@@ -14,6 +16,7 @@ import budgetplus.feature.insider.generated.resources.insider_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.feature.insider.ui.InsiderContent
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -44,6 +47,7 @@ fun InsiderScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal)
         ) {
             InsiderContent()
         }

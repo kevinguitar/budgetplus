@@ -1,11 +1,12 @@
 package com.kevlina.budgetplus.feature.color.tone.picker.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +40,7 @@ internal fun ColorToneCard(
     unlockPremium: () -> Unit,
     onColorPicked: (ThemeColorSemantic, String) -> Unit,
     modifier: Modifier = Modifier,
+    allowVertical: Boolean = false,
 ) {
 
     var isPickingColor by remember { mutableStateOf<ThemeColorSemantic?>(null) }
@@ -52,27 +54,38 @@ internal fun ColorToneCard(
         )
     }
 
-    Box(
+    BoxWithConstraints(
         contentAlignment = Alignment.Center,
         modifier = modifier
     ) {
+        // Stack the colors vertically in a tall card, light on top and dark at the bottom.
+        val isVertical = allowVertical && maxHeight > maxWidth
 
         ColorToneShowcase(
             colors = colors,
-            outlineColor = themeColors.primary.darken(TOP_BAR_DARKEN_FACTOR)
+            outlineColor = themeColors.primary.darken(TOP_BAR_DARKEN_FACTOR),
+            isVertical = isVertical,
         )
 
         if (colorTone == ColorTone.Customized) {
-            Row(
-                horizontalArrangement = Arrangement.Absolute.SpaceAround,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(ColorToneConstants.CardCornerRadius))
-            ) {
-                EditColorButton(color = colors[3]) { isPickingColor = ThemeColorSemantic.Light }
-                EditColorButton(color = colors[2]) { isPickingColor = ThemeColorSemantic.LightBg }
-                EditColorButton(color = colors[1]) { isPickingColor = ThemeColorSemantic.Primary }
-                EditColorButton(color = colors[0]) { isPickingColor = ThemeColorSemantic.Dark }
+            val editButtons: @Composable (Modifier) -> Unit = { bandModifier ->
+                // Tint each icon with a contrasting color of the palette.
+                EditColorButton(color = colors[3], modifier = bandModifier) { isPickingColor = ThemeColorSemantic.Light }
+                EditColorButton(color = colors[2], modifier = bandModifier) { isPickingColor = ThemeColorSemantic.LightBg }
+                EditColorButton(color = colors[1], modifier = bandModifier) { isPickingColor = ThemeColorSemantic.Primary }
+                EditColorButton(color = colors[0], modifier = bandModifier) { isPickingColor = ThemeColorSemantic.Dark }
+            }
+            val buttonsModifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(ColorToneConstants.CardCornerRadius))
+            if (isVertical) {
+                Column(modifier = buttonsModifier) {
+                    editButtons(Modifier.weight(1F).fillMaxWidth())
+                }
+            } else {
+                Row(modifier = buttonsModifier) {
+                    editButtons(Modifier.weight(1F).fillMaxHeight())
+                }
             }
         }
 
@@ -104,16 +117,14 @@ internal fun ColorToneCard(
 }
 
 @Composable
-private fun RowScope.EditColorButton(
+private fun EditColorButton(
     color: Color,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
 
     Box(
-        modifier = Modifier
-            .weight(1F)
-            .fillMaxHeight()
-            .rippleClick(onClick = onClick)
+        modifier = modifier.rippleClick(onClick = onClick)
     ) {
 
         Icon(

@@ -2,7 +2,9 @@ package com.kevlina.budgetplus.feature.edit.category
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +30,7 @@ import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -99,7 +102,9 @@ fun EditCategoryScreen(
         )
 
         EditCategoryContent(
-            modifier = Modifier.weight(1F),
+            modifier = Modifier
+                .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal),
             categories = list,
             lazyListState = lazyListState,
             reorderableState = reorderableState,

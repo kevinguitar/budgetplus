@@ -1,6 +1,7 @@
 package com.kevlina.budgetplus.feature.overview.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -22,7 +23,6 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
-import com.kevlina.budgetplus.core.ui.thenIf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -59,21 +59,15 @@ internal fun DateRange(
             tint = LocalAppColors.current.dark
         )
 
-        Text(
-            text = if (isOneDayPeriod) {
-                fromDate.fullFormatted
-            } else {
-                fromDate.mediumFormatted
-            },
-            singleLine = true,
-            modifier = Modifier
-                .padding(all = 8.dp)
-                .thenIf(isOneDayPeriod) {
-                    Modifier.weight(1F, fill = false)
-                }
-        )
-
         if (isOneDayPeriod) {
+            Text(
+                text = fromDate.fullFormatted,
+                singleLine = true,
+                modifier = Modifier
+                    .padding(all = 8.dp)
+                    .weight(1F, fill = false)
+            )
+
             Icon(
                 imageVector = vectorResource(Res.drawable.ic_chevron_right),
                 tint = LocalAppColors.current.dark,
@@ -82,15 +76,33 @@ internal fun DateRange(
                     .rippleClick(borderless = true, onClick = state.nextDay)
             )
         } else {
-            Text(text = stringResource(Res.string.date_to))
-
-            Text(
-                text = untilDate.mediumFormatted,
-                singleLine = true,
+            // Never truncate the dates. When the period doesn't fit in one line, break it evenly
+            // into "from to" and "until".
+            FlowRow(
+                horizontalArrangement = Arrangement.Center,
+                itemVerticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(all = 8.dp)
                     .weight(1F, fill = false)
-            )
+                    // Split the vertical padding, so a single line keeps its height and two lines
+                    // aren't too far apart.
+                    .padding(vertical = 4.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = fromDate.mediumFormatted,
+                        singleLine = true,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+
+                    Text(text = stringResource(Res.string.date_to))
+                }
+
+                Text(
+                    text = untilDate.mediumFormatted,
+                    singleLine = true,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
         }
     }
 }

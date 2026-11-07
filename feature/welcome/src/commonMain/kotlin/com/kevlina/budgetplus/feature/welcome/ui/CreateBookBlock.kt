@@ -9,14 +9,18 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -42,6 +46,7 @@ import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TextField
+import com.kevlina.budgetplus.core.ui.safeArea
 import com.kevlina.budgetplus.core.ui.thenIf
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -55,12 +60,14 @@ fun CreateBookBlock(
     isWideMode: Boolean = false,
     applyStatusBarPadding: Boolean = true,
     applyNavBarPadding: Boolean = false,
+    horizontalInsets: WindowInsetsSides = WindowInsetsSides.Horizontal,
 ) {
     Box(
         modifier = modifier
             .background(LocalAppColors.current.light)
             .thenIf(applyStatusBarPadding) { Modifier.statusBarsPadding() }
             .thenIf(applyNavBarPadding) { Modifier.navigationBarsPadding() }
+            .windowInsetsPadding(WindowInsets.safeArea.only(horizontalInsets))
     ) {
 
         Column(

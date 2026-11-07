@@ -60,6 +60,7 @@ internal fun ColorToneCarousel(
     unlockPremium: () -> Unit,
     onColorPicked: (ThemeColorSemantic, String) -> Unit,
     modifier: Modifier = Modifier,
+    allowVerticalCards: Boolean = false,
 ) {
 
     Column(
@@ -147,6 +148,7 @@ internal fun ColorToneCarousel(
                 isLocked = colorTone.requiresPremium && !isPremium,
                 unlockPremium = unlockPremium,
                 onColorPicked = onColorPicked,
+                allowVertical = allowVerticalCards,
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer {

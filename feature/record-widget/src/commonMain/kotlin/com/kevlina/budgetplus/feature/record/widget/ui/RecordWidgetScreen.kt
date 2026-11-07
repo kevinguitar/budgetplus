@@ -3,19 +3,18 @@ package com.kevlina.budgetplus.feature.record.widget.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -74,6 +73,7 @@ import com.kevlina.budgetplus.core.ui.Switch
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.record.widget.FrequentItem
 import com.kevlina.budgetplus.feature.record.widget.RECORD_WIDGET_MAX_ITEMS
@@ -199,95 +199,97 @@ private fun RecordWidgetContent(
 
         // The header, the toggle and the preview scroll with the items, so the list keeps enough
         // room on small screens.
-        LazyColumn(
-            // Scroll behind the navigation bar, but the last item can scroll above it.
-            contentPadding = if (applyNavBarPadding) {
-                WindowInsets.navigationBars.asPaddingValues()
-            } else {
-                PaddingValues()
-            },
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1F),
+                .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal),
         ) {
-            item(key = "header") {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                ) {
-                    BookHeader(book = book, books = books, onBookSelect = onBookSelect)
-                    Text(
-                        text = stringResource(Res.string.record_widget_hint, RECORD_WIDGET_MAX_ITEMS),
-                        fontSize = FontSize.Small,
-                    )
+            LazyColumn(
+                // Limit the items to the container width on wide screens. Scroll behind the navigation
+                // bar, but the last item can scroll above it.
+                contentPadding = AppTheme.listContentPaddings(addNavigationBarPadding = applyNavBarPadding),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                item(key = "header") {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                    ) {
+                        BookHeader(book = book, books = books, onBookSelect = onBookSelect)
+                        Text(
+                            text = stringResource(Res.string.record_widget_hint, RECORD_WIDGET_MAX_ITEMS),
+                            fontSize = FontSize.Small,
+                        )
+                    }
                 }
-            }
 
-            if (useDynamicColors != null) {
-                item(key = "dynamic_colors") {
-                    DynamicColorsToggle(checked = useDynamicColors, onCheckedChange = onDynamicColorsChange)
+                if (useDynamicColors != null) {
+                    item(key = "dynamic_colors") {
+                        DynamicColorsToggle(checked = useDynamicColors, onCheckedChange = onDynamicColorsChange)
+                    }
                 }
-            }
 
-            item(key = "preview") {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                ) {
-                    RecordWidgetPreview(
-                        bookName = book?.name.orEmpty(),
-                        items = selectedItems,
-                        colors = previewColors,
-                    )
-                }
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(0.5.dp)
-                        .background(color = LocalAppColors.current.primary)
-                )
-            }
-
-            when (uiState) {
-                RecordWidgetUiState.Loading -> item(key = "loading") {
+                item(key = "preview") {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 32.dp)
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
-                        InfiniteCircularProgress()
+                        RecordWidgetPreview(
+                            bookName = book?.name.orEmpty(),
+                            items = selectedItems,
+                            colors = previewColors,
+                        )
                     }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(0.5.dp)
+                            .background(color = LocalAppColors.current.primary)
+                    )
                 }
 
-                is RecordWidgetUiState.Loaded -> if (uiState.items.isEmpty()) {
-                    item(key = "empty") {
-                        Text(
-                            text = stringResource(Res.string.record_widget_empty),
-                            textAlign = TextAlign.Center,
+                when (uiState) {
+                    RecordWidgetUiState.Loading -> item(key = "loading") {
+                        Box(
+                            contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 32.dp, vertical = 32.dp),
-                        )
-                    }
-                } else {
-                    itemsIndexed(
-                        items = uiState.items,
-                        key = { _, frequentItem ->
-                            frequentItem.item.let { "${it.type}_${it.category}_${it.name}" }
+                                .padding(vertical = 32.dp)
+                        ) {
+                            InfiniteCircularProgress()
                         }
-                    ) { index, frequentItem ->
-                        val position = selectedItems.indexOf(frequentItem.item)
-                        FrequentItemRow(
-                            frequentItem = frequentItem,
-                            position = if (position >= 0) position + 1 else null,
-                            isLast = index == uiState.items.lastIndex,
-                            onClick = { onItemClick(frequentItem.item) },
-                        )
+                    }
+
+                    is RecordWidgetUiState.Loaded -> if (uiState.items.isEmpty()) {
+                        item(key = "empty") {
+                            Text(
+                                text = stringResource(Res.string.record_widget_empty),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 32.dp, vertical = 32.dp),
+                            )
+                        }
+                    } else {
+                        itemsIndexed(
+                            items = uiState.items,
+                            key = { _, frequentItem ->
+                                frequentItem.item.let { "${it.type}_${it.category}_${it.name}" }
+                            }
+                        ) { index, frequentItem ->
+                            val position = selectedItems.indexOf(frequentItem.item)
+                            FrequentItemRow(
+                                frequentItem = frequentItem,
+                                position = if (position >= 0) position + 1 else null,
+                                isLast = index == uiState.items.lastIndex,
+                                onClick = { onItemClick(frequentItem.item) },
+                            )
+                        }
                     }
                 }
             }

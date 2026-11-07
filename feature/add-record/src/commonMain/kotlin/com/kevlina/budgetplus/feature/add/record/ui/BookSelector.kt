@@ -2,7 +2,6 @@ package com.kevlina.budgetplus.feature.add.record.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -47,7 +46,9 @@ fun BookSelector() {
     var isSelectorShown by remember { mutableStateOf(false) }
     var isBookCreationDialogShown by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    // Wrap the title, so the dropdown anchors to it, the native iOS menu is positioned relative to
+    // the whole anchor, and the top bar can be wide, e.g. when its actions move to a side bar.
+    Box {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier

@@ -6,10 +6,19 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,9 +43,14 @@ import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.theme.LocalAppColors
+import com.kevlina.budgetplus.core.theme.ThemeColors
+import com.kevlina.budgetplus.core.ui.LocalTopBarActionsHost
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
+import com.kevlina.budgetplus.core.ui.TopBarActionsHost
 import com.kevlina.budgetplus.core.ui.bubble.Bubble
+import com.kevlina.budgetplus.core.ui.safeArea
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.core.ui.thenIf
 import kotlinx.coroutines.flow.launchIn
 
@@ -78,46 +92,80 @@ internal fun BookBinding(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        val navLayout = rememberBookNavLayout()
+        // The side bars replace the bottom nav, so they only show where the bottom nav would.
+        val sideColumn = (navLayout as? BookNavLayout.SideColumn)?.takeIf { showBottomNav }
+        val showRail = navLayout == BookNavLayout.Rail && showBottomNav
+        val showBottomBar = navLayout == BookNavLayout.Bottom && showBottomNav
+        val topBarActionsHost = remember { TopBarActionsHost() }
+
         Scaffold(
             bottomBar = {
-                if (showBottomNav) {
+                if (showBottomBar) {
                     BottomNav(navController, previewColors)
                 }
             },
             snackbarHost = { SnackbarHost(snackbarData) },
         ) { innerPadding ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            // Keep the same structure for every layout, so rotating or folding the device keeps the
+            // state of the screens.
+            Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .thenIf(showBottomNav) {
-                        // Do not consider the top padding, and let TopBar handle it.
-                        Modifier.padding(bottom = innerPadding.calculateBottomPadding())
-                    }
                     .background(color = previewColors?.light ?: LocalAppColors.current.light)
             ) {
-                NavDisplay(
-                    backStack = vm.navController.backStack,
-                    entryProvider = ::bookNavGraph,
-                    entryDecorators = listOf(
-                        rememberSaveableStateHolderNavEntryDecorator(),
-                        rememberViewModelStoreNavEntryDecorator()
-                    ),
-                    onBack = vm.navController::navigateUp,
-                    transitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-                    popTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-                    predictivePopTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-                    modifier = Modifier
-                        .weight(1F)
-                        .fillMaxWidth()
-                        .background(color = previewColors?.light ?: LocalAppColors.current.light)
-                )
+                if (showRail) {
+                    NavRail(navController = navController, previewColors = previewColors)
+                }
 
-                if (showBannerAd) {
-                    LaunchedEffect(vm) {
-                        vm.admobInitializer.requestTrackingAuthorization()
-                    }
-                    BannerAd(bannerId = vm.adUnitId.banner)
+                if (sideColumn?.isStart == true) {
+                    SideColumnBar(
+                        navController = navController,
+                        previewColors = previewColors,
+                        isStart = true,
+                        actions = topBarActionsHost.actions,
+                    )
+                }
+
+                CompositionLocalProvider(
+                    LocalTopBarActionsHost provides topBarActionsHost.takeIf { sideColumn != null }
+                ) {
+                    BookContent(
+                        vm = vm,
+                        showBannerAd = showBannerAd,
+                        previewColors = previewColors,
+                        modifier = Modifier
+                            .weight(1F)
+                            .fillMaxHeight()
+                            // Without the bottom nav, the content goes to the bottom edge, e.g. lists
+                            // scroll behind the home indicator.
+                            .thenIf(showBottomBar) {
+                                // Do not consider the top padding, and let TopBar handle it.
+                                val bottomPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding())
+                                // The bottom nav already covers the bottom insets, so the screens shouldn't
+                                // add them again.
+                                Modifier
+                                    .padding(bottomPadding)
+                                    .consumeWindowInsets(bottomPadding)
+                            }
+                            // The side bars cover the insets on their side.
+                            .thenIf(showRail) {
+                                Modifier.consumeWindowInsets(WindowInsets.safeArea.only(WindowInsetsSides.Start))
+                            }
+                            .thenIf(sideColumn != null) {
+                                val side = if (sideColumn?.isStart == true) WindowInsetsSides.Start else WindowInsetsSides.End
+                                Modifier.consumeWindowInsets(WindowInsets.safeArea.only(side))
+                            }
+                    )
+                }
+
+                if (sideColumn?.isStart == false) {
+                    SideColumnBar(
+                        navController = navController,
+                        previewColors = previewColors,
+                        isStart = false,
+                        actions = topBarActionsHost.actions,
+                    )
                 }
             }
         }
@@ -139,3 +187,43 @@ internal fun BookBinding(
 }
 
 private val lightBackgroundNavKeys = setOf(BookDest.Welcome::class, BookDest.UnlockPremium::class)
+
+@Composable
+private fun BookContent(
+    vm: BookViewModel,
+    showBannerAd: Boolean,
+    previewColors: ThemeColors?,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.background(color = previewColors?.light ?: LocalAppColors.current.light)
+    ) {
+        NavDisplay(
+            backStack = vm.navController.backStack,
+            entryProvider = ::bookNavGraph,
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
+            onBack = vm.navController::navigateUp,
+            transitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
+            popTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
+            predictivePopTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
+            modifier = Modifier
+                .weight(1F)
+                .fillMaxWidth()
+                .background(color = previewColors?.light ?: LocalAppColors.current.light)
+        )
+
+        if (showBannerAd) {
+            LaunchedEffect(vm) {
+                vm.admobInitializer.requestTrackingAuthorization()
+            }
+            Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeHorizontal)) {
+                BannerAd(bannerId = vm.adUnitId.banner)
+            }
+        }
+    }
+}
+

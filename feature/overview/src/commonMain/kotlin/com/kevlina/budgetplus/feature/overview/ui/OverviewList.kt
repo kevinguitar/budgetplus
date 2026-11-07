@@ -2,7 +2,11 @@ package com.kevlina.budgetplus.feature.overview.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -42,6 +46,7 @@ import com.kevlina.budgetplus.core.ui.Fab
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleShape
+import com.kevlina.budgetplus.core.ui.safeArea
 import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.overview.OverviewMode
 import com.kevlina.budgetplus.feature.record.card.DeleteRecordDialog
@@ -95,7 +100,11 @@ internal fun OverviewList(
     BoxWithConstraints(modifier) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = AppTheme.listContentPaddings(),
+            // The search FAB hides when scrolling forward, so the end of the list only needs to clear
+            // the home indicator, e.g. without the bottom nav.
+            contentPadding = AppTheme.listContentPaddings(
+                bottom = WindowInsets.safeArea.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
+            ),
             state = listState,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

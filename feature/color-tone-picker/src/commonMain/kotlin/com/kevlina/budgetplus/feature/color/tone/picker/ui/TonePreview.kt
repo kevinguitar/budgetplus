@@ -81,7 +81,7 @@ internal fun TonePreview(
                     description = stringResource(Res.string.settings_description),
                 )
             },
-            applyStatusBarPadding = false
+            applyWindowInsets = false
         )
 
         RecordTypeTab(
