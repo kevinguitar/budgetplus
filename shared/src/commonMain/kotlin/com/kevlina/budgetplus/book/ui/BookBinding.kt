@@ -119,12 +119,14 @@ internal fun BookBinding(
                 }
 
                 if (sideColumn?.isStart == true) {
-                    SideColumnBar(
-                        navController = navController,
-                        previewColors = previewColors,
-                        isStart = true,
-                        actions = topBarActionsHost.actions,
-                    )
+                    ComposeOnLayout {
+                        SideColumnBar(
+                            navController = navController,
+                            previewColors = previewColors,
+                            isStart = true,
+                            actions = topBarActionsHost.actions,
+                        )
+                    }
                 }
 
                 CompositionLocalProvider(
@@ -160,12 +162,14 @@ internal fun BookBinding(
                 }
 
                 if (sideColumn?.isStart == false) {
-                    SideColumnBar(
-                        navController = navController,
-                        previewColors = previewColors,
-                        isStart = false,
-                        actions = topBarActionsHost.actions,
-                    )
+                    ComposeOnLayout {
+                        SideColumnBar(
+                            navController = navController,
+                            previewColors = previewColors,
+                            isStart = false,
+                            actions = topBarActionsHost.actions,
+                        )
+                    }
                 }
             }
         }

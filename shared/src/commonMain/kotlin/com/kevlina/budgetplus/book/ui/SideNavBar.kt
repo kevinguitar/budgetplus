@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.book.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
@@ -161,11 +163,17 @@ internal fun SideColumnBar(
     width: Dp = sideColumnWidth(),
 ) {
     val colors = sideBarColors(previewColors)
-    // Keep showing the last actions while they animate out.
     val lastActions = remember { ActionsHolder() }
     if (actions != null) {
+        if (lastActions.actions == null) {
+            // The screen sets the first actions after the bar is shown, e.g. on app start, show
+            // them without animation.
+            lastActions.visibleState = MutableTransitionState(true)
+        }
+        // Keep showing the last actions while they animate out.
         lastActions.actions = actions
     }
+    lastActions.visibleState.targetState = actions != null
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -180,7 +188,7 @@ internal fun SideColumnBar(
     ) {
         // Expand and shrink the actions, so the tabs slide to the new center instead of jumping.
         AnimatedVisibility(
-            visible = actions != null,
+            visibleState = lastActions.visibleState,
             enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
             exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
         ) {
@@ -213,10 +221,34 @@ internal fun SideColumnBar(
 }
 
 /**
+ *  Composes [content] when it's measured, i.e. after the rest of the composition, including the
+ *  effects of the movable content.
+ *
+ *  The screens in the nav display are movable content, which is inserted at the end of the
+ *  composition, so they register their top bar actions after the side bar is composed. Without
+ *  this, the side bar shows a frame without the actions on start.
+ */
+@Composable
+internal fun ComposeOnLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    SubcomposeLayout(modifier) { constraints ->
+        val placeables = subcompose(Unit, content).map { it.measure(constraints) }
+        val width = placeables.maxOfOrNull { it.width } ?: constraints.minWidth
+        val height = placeables.maxOfOrNull { it.height } ?: constraints.minHeight
+        layout(width, height) {
+            placeables.forEach { it.place(0, 0) }
+        }
+    }
+}
+
+/**
  *  Not a state, it's only updated when the actions change, which recomposes the bar anyway.
  */
 private class ActionsHolder {
     var actions: (@Composable () -> Unit)? = null
+    var visibleState = MutableTransitionState(false)
 }
 
 /**
