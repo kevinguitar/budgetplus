@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -105,7 +106,20 @@ internal fun BookBinding(
                     BottomNav(navController, previewColors)
                 }
             },
-            snackbarHost = { SnackbarHost(snackbarData) },
+            snackbarHost = {
+                SnackbarHost(
+                    snackbarData = snackbarData,
+                    bottomSpacing = if (sideColumn != null) SideColumnSnackbarSpacing else null,
+                )
+            },
+            // In the side column layout, the system UI is in the column, so the snackbar doesn't
+            // need to avoid the bottom insets. Keep the horizontal ones, so it's centered over the
+            // content instead of the whole window.
+            contentWindowInsets = if (sideColumn != null) {
+                WindowInsets.safeArea.only(WindowInsetsSides.Horizontal)
+            } else {
+                null
+            },
         ) { innerPadding ->
             // Keep the same structure for every layout, so rotating or folding the device keeps the
             // state of the screens.
@@ -191,6 +205,8 @@ internal fun BookBinding(
 }
 
 private val lightBackgroundNavKeys = setOf(BookDest.Welcome::class, BookDest.UnlockPremium::class)
+
+private val SideColumnSnackbarSpacing = 16.dp
 
 @Composable
 private fun BookContent(

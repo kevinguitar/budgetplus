@@ -3,6 +3,7 @@ package com.kevlina.budgetplus.core.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -17,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.SnackbarDuration
 import com.kevlina.budgetplus.core.common.UiTestFlags
@@ -27,9 +30,15 @@ import kotlin.time.Duration.Companion.milliseconds
 import androidx.compose.material3.SnackbarDuration as MaterialSnackbarDuration
 import androidx.compose.material3.SnackbarHost as MaterialSnackbarHost
 
+/**
+ *  @param bottomSpacing the distance between the snackbar and the bottom of the host, null to keep
+ *  the default Material spacing.
+ */
 @Composable
-fun SnackbarHost(snackbarData: SnackbarData?) {
-
+fun SnackbarHost(
+    snackbarData: SnackbarData?,
+    bottomSpacing: Dp? = null,
+) {
     val hostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -62,6 +71,9 @@ fun SnackbarHost(snackbarData: SnackbarData?) {
     }
 
     val dismissSnackbarState = rememberSwipeToDismissBoxState()
+    val extraBottomPadding = bottomSpacing
+        ?.let { (it - SnackbarOuterPadding).coerceAtLeast(0.dp) }
+        ?: 0.dp
 
     SwipeToDismissBox(
         modifier = Modifier.fillMaxWidth(),
@@ -89,7 +101,9 @@ fun SnackbarHost(snackbarData: SnackbarData?) {
                         Modifier
                             .semantics { contentDescription = data.visuals.message }
                             .clickable { data.dismiss() }
-                    },
+                    }
+                    // Only pad the shown snackbar, an empty host must not take space or touches.
+                    .padding(bottom = extraBottomPadding),
                 contentAlignment = Alignment.Center
             ) {
                 Snackbar(
@@ -107,6 +121,9 @@ fun SnackbarHost(snackbarData: SnackbarData?) {
 
 // A small delay for better animation
 private val SnackbarDelay = 50.milliseconds
+
+// The Material snackbar pads itself by 12dp on every side.
+private val SnackbarOuterPadding = 12.dp
 
 @Preview
 @Composable
