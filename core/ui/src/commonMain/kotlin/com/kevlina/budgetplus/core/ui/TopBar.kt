@@ -4,10 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,13 +35,18 @@ fun TopBar(
     titleContent: @Composable (() -> Unit)? = null,
     navigateUp: (() -> Unit)? = null,
     menuActions: @Composable (() -> Unit)? = null,
-    applyStatusBarPadding: Boolean = true,
+    applyWindowInsets: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            // The background goes edge to edge, the content avoids the status bar and side cutouts.
             .background(color = LocalAppColors.current.primary.darken(TOP_BAR_DARKEN_FACTOR))
-            .thenIf(applyStatusBarPadding) { Modifier.statusBarsPadding() }
+            .thenIf(applyWindowInsets) {
+                Modifier.windowInsetsPadding(
+                    WindowInsets.safeArea.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                )
+            }
             .fillMaxWidth()
             .height(56.dp.withTypographyScale())
     ) {

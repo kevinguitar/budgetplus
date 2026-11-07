@@ -2,7 +2,9 @@ package com.kevlina.budgetplus.feature.overview.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +34,7 @@ import com.kevlina.budgetplus.core.ui.AdaptiveScreen
 import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.feature.overview.OverviewMode
@@ -120,7 +123,8 @@ fun OverviewScreen() {
         AdaptiveScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .weight(1F),
+                .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal),
             regularContent = {
                 OverviewContent(
                     state = vm.state,

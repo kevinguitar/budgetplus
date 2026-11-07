@@ -39,6 +39,7 @@ import com.kevlina.budgetplus.core.settings.api.ChartMode
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Fab
+import com.kevlina.budgetplus.core.ui.FabDefaults
 import com.kevlina.budgetplus.core.ui.InfiniteCircularProgress
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
 import com.kevlina.budgetplus.core.ui.bubble.BubbleShape
@@ -95,7 +96,8 @@ internal fun OverviewList(
     BoxWithConstraints(modifier) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = AppTheme.listContentPaddings(),
+            // Let the last item scroll above the search FAB.
+            contentPadding = AppTheme.listContentPaddings(bottom = FabDefaults.listBottomPadding),
             state = listState,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

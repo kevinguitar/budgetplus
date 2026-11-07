@@ -2,7 +2,9 @@ package com.kevlina.budgetplus.feature.color.tone.picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,6 +35,7 @@ import com.kevlina.budgetplus.core.ui.ConfirmDialog
 import com.kevlina.budgetplus.core.ui.MenuAction
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.bubble.BubbleDest
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.feature.color.tone.picker.ui.TonePickerContentRegular
 import com.kevlina.budgetplus.feature.color.tone.picker.ui.TonePickerContentWide
 import com.kevlina.budgetplus.feature.color.tone.picker.ui.colorTones
@@ -166,7 +169,9 @@ fun ColorTonePickerScreen(
             )
 
             AdaptiveScreen(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .weight(1F)
+                    .windowInsetsPadding(WindowInsets.safeHorizontal),
                 regularContent = {
                     TonePickerContentRegular(
                         selectedColorTone = selectedColorTone,

@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,11 +39,13 @@ import com.kevlina.budgetplus.core.theme.withTypographyScale
 import com.kevlina.budgetplus.core.ui.AppTheme
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.safeArea
 import com.kevlina.budgetplus.core.ui.thenIf
 import org.jetbrains.compose.resources.vectorResource
 
 private const val BOTTOM_NAV_ADD_DESC = "bottom_nav_add"
 private const val BOTTOM_NAV_HISTORY_DESC = "bottom_nav_history"
+private val DividerHeight = 1.dp
 
 @Composable
 internal fun BottomNav(
@@ -50,24 +55,26 @@ internal fun BottomNav(
     val lightColor = previewColors?.light ?: LocalAppColors.current.light
     val darkColor = previewColors?.dark ?: LocalAppColors.current.dark
 
+    // The background and the divider go edge to edge, the tabs avoid the home indicator and side cutouts.
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = lightColor)
-            .navigationBarsPadding()
-            .height(50.dp.withTypographyScale())
     ) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(1.dp)
+                .height(DividerHeight)
                 .alpha(AppTheme.DIVIDER_ALPHA)
                 .background(color = darkColor)
         )
 
         Row(
             modifier = Modifier
-                .weight(1F)
+                .windowInsetsPadding(
+                    WindowInsets.safeArea.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                )
+                .height(50.dp.withTypographyScale() - DividerHeight)
                 .fillMaxWidth()
         ) {
             BottomNavTab.entries.forEach { tab ->

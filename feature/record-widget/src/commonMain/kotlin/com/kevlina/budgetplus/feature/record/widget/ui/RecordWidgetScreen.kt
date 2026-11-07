@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -74,6 +75,7 @@ import com.kevlina.budgetplus.core.ui.Switch
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.TopBar
 import com.kevlina.budgetplus.core.ui.rippleClick
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.core.ui.thenIf
 import com.kevlina.budgetplus.feature.record.widget.FrequentItem
 import com.kevlina.budgetplus.feature.record.widget.RECORD_WIDGET_MAX_ITEMS
@@ -208,7 +210,8 @@ private fun RecordWidgetContent(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1F),
+                .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal),
         ) {
             item(key = "header") {
                 Column(

@@ -6,9 +6,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +41,7 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
 import com.kevlina.budgetplus.core.ui.bubble.Bubble
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.core.ui.thenIf
 import kotlinx.coroutines.flow.launchIn
 
@@ -92,7 +97,11 @@ internal fun BookBinding(
                     .fillMaxSize()
                     .thenIf(showBottomNav) {
                         // Do not consider the top padding, and let TopBar handle it.
-                        Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+                        val bottomPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding())
+                        // The bottom nav already covers the bottom insets, so the screens shouldn't add them again.
+                        Modifier
+                            .padding(bottomPadding)
+                            .consumeWindowInsets(bottomPadding)
                     }
                     .background(color = previewColors?.light ?: LocalAppColors.current.light)
             ) {
@@ -117,7 +126,9 @@ internal fun BookBinding(
                     LaunchedEffect(vm) {
                         vm.admobInitializer.requestTrackingAuthorization()
                     }
-                    BannerAd(bannerId = vm.adUnitId.banner)
+                    Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeHorizontal)) {
+                        BannerAd(bannerId = vm.adUnitId.banner)
+                    }
                 }
             }
         }

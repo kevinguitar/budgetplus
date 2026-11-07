@@ -2,8 +2,10 @@ package com.kevlina.budgetplus.feature.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +16,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.settings_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -45,6 +48,7 @@ fun SettingsScreen(showMembers: Boolean) {
                 modifier = Modifier
                     .weight(1F)
                     .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.safeHorizontal)
             )
         }
     }

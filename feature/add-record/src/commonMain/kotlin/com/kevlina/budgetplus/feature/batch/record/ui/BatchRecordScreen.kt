@@ -3,8 +3,10 @@ package com.kevlina.budgetplus.feature.batch.record.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +14,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.batch_record_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
+import com.kevlina.budgetplus.core.ui.safeHorizontal
 import com.kevlina.budgetplus.feature.add.record.ui.DoneAnimator
 import com.kevlina.budgetplus.feature.batch.record.BatchRecordViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -37,6 +40,7 @@ fun BatchRecordScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1F)
+                .windowInsetsPadding(WindowInsets.safeHorizontal)
         ) {
 
             BatchRecordContent()

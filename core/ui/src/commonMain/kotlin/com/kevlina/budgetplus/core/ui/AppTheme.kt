@@ -29,7 +29,6 @@ import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.LocalTypographyScale
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.theme.TypographyScale
-import com.kevlina.budgetplus.core.ui.AppTheme.containerMaxWidth
 
 @Composable
 fun AppTheme(
@@ -66,12 +65,13 @@ object AppTheme {
      *  Useful in LazyList, to make sure the entire container is scrollable, but still limit
      *  the children within the [containerMaxWidth].
      */
-    context(scope: BoxWithConstraintsScope)
     @Composable
+    context(scope: BoxWithConstraintsScope)
     fun listContentPaddings(
         all: Dp = 0.dp,
         horizontal: Dp = all,
         vertical: Dp = all,
+        bottom: Dp = vertical,
         addNavigationBarPadding: Boolean = false,
     ): PaddingValues {
         val containerHorizontalPadding = (scope.maxWidth - containerMaxWidth).coerceAtLeast(0.dp) / 2
@@ -84,7 +84,7 @@ object AppTheme {
             start = containerHorizontalPadding + horizontal,
             end = containerHorizontalPadding + horizontal,
             top = vertical,
-            bottom = vertical + navigationBarPadding
+            bottom = bottom + navigationBarPadding
         )
     }
 }

@@ -1,6 +1,7 @@
 package com.kevlina.budgetplus.feature.welcome.ui
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -24,6 +25,8 @@ fun WelcomeContentWide(state: WelcomeState) {
             isWideMode = true,
             applyStatusBarPadding = true,
             applyNavBarPadding = true,
+            // In wide mode the blocks are side by side, so each one only avoids the insets on its outer edge.
+            horizontalInsets = WindowInsetsSides.Start,
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1F)
@@ -32,6 +35,7 @@ fun WelcomeContentWide(state: WelcomeState) {
         CollabBlock(
             applyStatusBarPadding = true,
             applyNavBarPadding = true,
+            horizontalInsets = WindowInsetsSides.End,
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1F)
