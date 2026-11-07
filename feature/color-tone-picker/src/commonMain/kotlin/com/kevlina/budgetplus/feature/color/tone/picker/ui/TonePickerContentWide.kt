@@ -1,7 +1,5 @@
 package com.kevlina.budgetplus.feature.color.tone.picker.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.theme.ColorTone
 import com.kevlina.budgetplus.core.theme.ThemeColorSemantic
 import com.kevlina.budgetplus.core.theme.ThemeColors
+import com.kevlina.budgetplus.core.ui.WideContentRow
 
 @Composable
 internal fun TonePickerContentWide(
@@ -25,14 +24,7 @@ internal fun TonePickerContentWide(
     unlockPremium: () -> Unit,
     onColorPicked: (ThemeColorSemantic, String) -> Unit,
 ) {
-
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp)
-    ) {
-
+    WideContentRow(modifier = Modifier.fillMaxSize()) {
         TonePreview(
             modifier = Modifier
                 .weight(1F)

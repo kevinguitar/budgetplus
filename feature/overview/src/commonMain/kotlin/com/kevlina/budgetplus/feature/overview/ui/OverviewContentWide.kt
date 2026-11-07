@@ -1,8 +1,6 @@
 package com.kevlina.budgetplus.feature.overview.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +14,7 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NavController
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AppTheme
+import com.kevlina.budgetplus.core.ui.WideContentRow
 
 @Composable
 internal fun OverviewContentWide(
@@ -23,12 +22,7 @@ internal fun OverviewContentWide(
     navController: NavController<BookDest>,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 32.dp)
-    ) {
+    WideContentRow(modifier = modifier.fillMaxSize()) {
         OverviewHeader(
             state = state.headerState,
             modifier = Modifier

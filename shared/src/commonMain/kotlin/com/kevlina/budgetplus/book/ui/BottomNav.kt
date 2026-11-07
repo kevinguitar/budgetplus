@@ -24,6 +24,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.ic_format_list_bulleted
@@ -103,6 +105,8 @@ internal fun NavTabItem(
     selectedIconColor: Color,
     unselectedIconColor: Color,
     modifier: Modifier = Modifier,
+    pillSize: DpSize = DpSize(60.dp.withTypographyScale(), 36.dp.withTypographyScale()),
+    iconSize: Dp = 28.dp,
 ) {
     val isSelected = navController.rootStack.lastOrNull() == tab.root
     Box(
@@ -125,10 +129,7 @@ internal fun NavTabItem(
         ) {
             Spacer(
                 modifier = Modifier
-                    .size(
-                        width = 60.dp.withTypographyScale(),
-                        height = 36.dp.withTypographyScale()
-                    )
+                    .size(pillSize)
                     .background(
                         color = pillColor,
                         shape = CircleShape
@@ -142,7 +143,7 @@ internal fun NavTabItem(
                 BottomNavTab.History -> vectorResource(Res.drawable.ic_format_list_bulleted)
             },
             tint = if (isSelected) selectedIconColor else unselectedIconColor,
-            size = 28.dp,
+            size = iconSize,
         )
     }
 }

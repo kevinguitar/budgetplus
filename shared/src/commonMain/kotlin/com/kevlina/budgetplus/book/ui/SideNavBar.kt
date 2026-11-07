@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.BottomNavTab
@@ -35,7 +36,9 @@ import com.kevlina.budgetplus.core.ui.darken
 import com.kevlina.budgetplus.core.ui.safeArea
 
 private val RailWidth = 80.dp
-private val TabHeight = 56.dp
+private val TabHeight = 48.dp
+private val SidePillSize = DpSize(56.dp, 32.dp)
+private val SideIconSize = 24.dp
 
 /**
  *  The tabs in a rail at the start, for wide windows. It shares the color of the top bar, so they
@@ -65,8 +68,8 @@ internal fun NavRail(
 
 /**
  *  The tabs and the top bar actions in the column the system reserves on one side, e.g. for the
- *  status bar and the camera on the iPhone Duo. The items sit at the bottom, away from the status
- *  bar and the camera, and within reach of the thumb.
+ *  status bar and the camera on the iPhone Duo. The items are centered vertically: depending on the
+ *  orientation, the status bar and the camera can be at either end of the column.
  *
  *  @param actions the actions of the current screen's top bar.
  */
@@ -86,7 +89,7 @@ internal fun SideColumnBar(
         maxOf(insets.getLeft(density, layoutDirection), insets.getRight(density, layoutDirection)).toDp()
     }
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Bottom),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxHeight()
@@ -125,7 +128,10 @@ private fun ColumnScope.NavTabs(
             unselectedIconColor = colors.unselectedIcon,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(TabHeight.withTypographyScale())
+                .height(TabHeight),
+            // Fit the narrow bar, e.g. the 84pt column on the iPhone Duo, regardless of the text scale.
+            pillSize = SidePillSize,
+            iconSize = SideIconSize,
         )
     }
 }

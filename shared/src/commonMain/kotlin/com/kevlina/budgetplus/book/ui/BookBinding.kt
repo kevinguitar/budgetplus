@@ -112,7 +112,6 @@ internal fun BookBinding(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    // Also behind the bottom insets, which the content avoids without the bottom nav.
                     .background(color = previewColors?.light ?: LocalAppColors.current.light)
             ) {
                 if (showRail) {
@@ -137,26 +136,17 @@ internal fun BookBinding(
                         modifier = Modifier
                             .weight(1F)
                             .fillMaxHeight()
-                            .then(
-                                when {
-                                    showBottomBar -> {
-                                        // Do not consider the top padding, and let TopBar handle it.
-                                        val bottomPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding())
-                                        // The bottom nav already covers the bottom insets, so the screens
-                                        // shouldn't add them again.
-                                        Modifier
-                                            .padding(bottomPadding)
-                                            .consumeWindowInsets(bottomPadding)
-                                    }
-
-                                    // Without the bottom nav, keep the content above the home indicator.
-                                    showRail || sideColumn != null -> Modifier.windowInsetsPadding(
-                                        WindowInsets.safeArea.only(WindowInsetsSides.Bottom)
-                                    )
-
-                                    else -> Modifier
-                                }
-                            )
+                            // Without the bottom nav, the content goes to the bottom edge, e.g. lists
+                            // scroll behind the home indicator.
+                            .thenIf(showBottomBar) {
+                                // Do not consider the top padding, and let TopBar handle it.
+                                val bottomPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding())
+                                // The bottom nav already covers the bottom insets, so the screens shouldn't
+                                // add them again.
+                                Modifier
+                                    .padding(bottomPadding)
+                                    .consumeWindowInsets(bottomPadding)
+                            }
                             // The side bars cover the insets on their side.
                             .thenIf(showRail) {
                                 Modifier.consumeWindowInsets(WindowInsets.safeArea.only(WindowInsetsSides.Start))
