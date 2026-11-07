@@ -92,8 +92,12 @@ enum class CalculatorAction {
     Clear, Evaluate, Ok;
 }
 
-private val horizontalSpacing = 12.dp
-private val verticalSpacing = 8.dp
+internal val CalculatorHorizontalSpacing = 12.dp
+internal val CalculatorVerticalSpacing = 8.dp
+internal const val CALCULATOR_COLUMNS = 5
+internal const val CALCULATOR_ROWS = 4
+private val horizontalSpacing = CalculatorHorizontalSpacing
+private val verticalSpacing = CalculatorVerticalSpacing
 private val calcButtons = CalculatorButton.entries.toList()
 
 /**
