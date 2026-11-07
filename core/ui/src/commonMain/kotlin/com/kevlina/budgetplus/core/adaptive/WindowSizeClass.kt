@@ -33,8 +33,8 @@ data class WindowSizeClass(
 
             return WindowSizeClass(
                 width = when {
-                    widthDp < 600.dp -> Size.Compat
-                    widthDp < 840.dp -> Size.Medium
+                    widthDp < 720.dp -> Size.Compat
+                    widthDp < 900.dp -> Size.Medium
                     else -> Size.Expanded
                 },
                 height = when {
