@@ -1,0 +1,40 @@
+{
+  "_note": "Pixel centers (in raw screenshot pixels) of the in-app icons that badges enlarge.",
+  "record-entry": {
+    "invite": [
+      891,
+      192
+    ]
+  },
+  "tone-share": {
+    "share": [
+      892,
+      192
+    ]
+  },
+  "currency-record": {
+    "convert": [
+      822,
+      1219
+    ]
+  },
+  "overview-summary": {
+    "mode": [
+      891,
+      192
+    ]
+  },
+  "color-wheel": {
+    "edit": [
+      746,
+      2094
+    ]
+  },
+  "crop-currency-overview": [
+    0,
+    461,
+    1080,
+    996
+  ],
+  "icon-half": 32
+}
