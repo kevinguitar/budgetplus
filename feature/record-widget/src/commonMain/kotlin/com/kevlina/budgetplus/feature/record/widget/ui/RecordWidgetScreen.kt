@@ -194,8 +194,10 @@ private fun RecordWidgetContent(
             }
         )
 
-        val previewColors = (if (useDynamicColors == true) rememberDynamicWidgetPreviewColors() else null)
-            ?: WidgetPreviewColors.fromTheme(LocalAppColors.current)
+        val previewColors = animateWidgetPreviewColors(
+            target = (if (useDynamicColors == true) rememberDynamicWidgetPreviewColors() else null)
+                ?: WidgetPreviewColors.fromTheme(LocalAppColors.current)
+        )
 
         // The header, the toggle and the preview scroll with the items, so the list keeps enough
         // room on small screens.

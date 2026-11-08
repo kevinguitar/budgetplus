@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.feature.record.widget.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +63,30 @@ internal data class WidgetPreviewColors(
             divider = colors.lightBg,
         )
     }
+}
+
+/**
+ * Animate every color role towards [target], e.g. when switching between the theme and the
+ * Material You colors.
+ */
+@Composable
+internal fun animateWidgetPreviewColors(target: WidgetPreviewColors): WidgetPreviewColors {
+    val background by animateColorAsState(target.background, label = "background")
+    val headerBackground by animateColorAsState(target.headerBackground, label = "headerBackground")
+    val headerText by animateColorAsState(target.headerText, label = "headerText")
+    val itemText by animateColorAsState(target.itemText, label = "itemText")
+    val pillBackground by animateColorAsState(target.pillBackground, label = "pillBackground")
+    val pillText by animateColorAsState(target.pillText, label = "pillText")
+    val divider by animateColorAsState(target.divider, label = "divider")
+    return WidgetPreviewColors(
+        background = background,
+        headerBackground = headerBackground,
+        headerText = headerText,
+        itemText = itemText,
+        pillBackground = pillBackground,
+        pillText = pillText,
+        divider = divider,
+    )
 }
 
 /**
