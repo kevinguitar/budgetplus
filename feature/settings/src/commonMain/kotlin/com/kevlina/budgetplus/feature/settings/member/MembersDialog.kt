@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_delete
-import budgetplus.core.common.generated.resources.ic_account_circle
+import budgetplus.core.common.generated.resources.ic_avatar_placeholder
 import budgetplus.core.common.generated.resources.ic_delete
 import budgetplus.core.common.generated.resources.members_confirm_remove
 import budgetplus.core.common.generated.resources.members_owner_label
@@ -127,7 +127,7 @@ private fun MemberCard(
             .height(56.dp)
             .padding(vertical = 4.dp)
     ) {
-        val vectorPainter = rememberVectorPainter(vectorResource(Res.drawable.ic_account_circle))
+        val vectorPainter = rememberVectorPainter(vectorResource(Res.drawable.ic_avatar_placeholder))
         val accountCircle = rememberTintedPainter(vectorPainter, LocalAppColors.current.primary)
         AsyncImage(
             model = ImageRequest.Builder(LocalPlatformContext.current)
