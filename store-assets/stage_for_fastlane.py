@@ -8,7 +8,8 @@ Writes:
   OUT_DIR/android/<play-locale>/images/<type>/<NN>.png       (supply metadata_path)
 
 Checks every file is an RGB PNG (no alpha), sizes are uniform per device class,
-and per-type counts stay within store limits (App Store 10, Google Play 8).
+per-type counts stay within store limits (App Store 10, Google Play 8), and the
+files follow ORDER. Staged names keep the NN- prefix, which sets the display order.
 """
 import os, shutil, struct, sys
 
@@ -25,6 +26,9 @@ IOS = ["iphone-6.3", "ipad-13"]          # deliver detects the display type from
 DUO = ["iphone-duo-outer"]                # newer size class; fastlane may not know it yet
 ANDROID = {"phone": "phoneScreenshots", "tablet": "tenInchScreenshots"}
 LIMIT = {"ios": 10, "android": 8}
+# Store display order. Both App Store Connect (deliver re-sorts each set by file name)
+# and Google Play (supply uploads in sorted file-name order) follow the NN- prefix.
+ORDER = ["01-login", "02-books", "03-shared", "04-currency", "05-overview", "06-tones", "07-colors", "08-share"]
 
 def png_info(path):
     with open(path, "rb") as f:
@@ -46,6 +50,8 @@ def main():
                 files = sorted(f for f in os.listdir(src) if f.endswith(".png")) if os.path.isdir(src) else []
                 if not files: errors.append(f"missing {platform}/{cls}/{loc}"); continue
                 if len(files) > LIMIT[platform]: errors.append(f"{platform}/{cls}/{loc}: {len(files)} > {LIMIT[platform]}")
+                if [f[:-4] for f in files] != ORDER[:len(files)]:
+                    errors.append(f"{platform}/{cls}/{loc}: files {[f[:-4] for f in files]} don't match the order {ORDER}")
                 for f in files:
                     w, h, ct = png_info(os.path.join(src, f)); sizes.add((w, h))
                     if ct != 2: errors.append(f"{platform}/{cls}/{loc}/{f}: color type {ct}, expected RGB without alpha")

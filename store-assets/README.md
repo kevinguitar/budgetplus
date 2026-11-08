@@ -5,8 +5,10 @@ Store screenshots for the App Store and Google Play, in five languages.
 - `originals/<platform>/<device>/<locale>/` — raw device screenshots, unedited.
   `anchors.json` next to them holds the pixel positions the editor uses (badge
   icons, currency crop box), so the edited set can be regenerated.
-- `final/<platform>/<device-class>/<locale>/01-login.png … 08-colors.png` — the
-  edited, upload-ready screenshots.
+- `final/<platform>/<device-class>/<locale>/01-login.png … 08-share.png` — the
+  edited, upload-ready screenshots, in store order: login, books, shared, currency,
+  overview, tones, colors, share. The `NN-` prefix sets the display order on both
+  stores (both sort by file name).
 
 | Device class | Size | Store slot | Source device |
 |---|---|---|---|
