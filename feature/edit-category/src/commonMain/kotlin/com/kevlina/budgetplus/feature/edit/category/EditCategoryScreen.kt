@@ -42,14 +42,16 @@ fun EditCategoryScreen(
     type: RecordType,
 ) {
     val vm = metroViewModel<EditCategoryViewModel>()
+    // Compare as an ordered List: the source is a Set, and Set.equals(List) is always false.
+    // Order matters here because reordering is a change that should be saved.
     val originalCategories = when (type) {
         RecordType.Expense -> vm.expenseCategories
         RecordType.Income -> vm.incomeCategories
-    }
+    }.toList()
 
     var editDialogMode by remember { mutableStateOf<CategoryEditMode?>(null) }
     var isExitDialogShown by remember { mutableStateOf(false) }
-    var list by rememberSaveable { mutableStateOf(originalCategories.toList()) }
+    var list by rememberSaveable { mutableStateOf(originalCategories) }
 
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
