@@ -1,0 +1,17 @@
+appId: com.kevlina.budgetplus.stage
+---
+- tapOn:
+    text: ${CURRENT}
+- tapOn:
+    text: ${BOOK}
+- waitForAnimationToEnd
+- tapOn:
+    text: ${SETTINGS}
+- scrollUntilVisible:
+    element:
+      text: ${DELETE}
+- tapOn:
+    text: ${DELETE}
+- tapOn:
+    text: ${CONFIRM}
+- waitForAnimationToEnd

@@ -1,0 +1,173 @@
+{
+  "_note": "Two lines per screen; empty string for one line. Keys = locale folder names.",
+  "zh-Hant": {
+    "01-login": [
+      "簡單上手",
+      "快速登入"
+    ],
+    "02-books": [
+      "依據計畫",
+      "分類帳本"
+    ],
+    "03-shared": [
+      "共同記帳",
+      "家人朋友即時同步"
+    ],
+    "04-currency": [
+      "自動匯率換算",
+      "全球匯率一把罩"
+    ],
+    "05-overview": [
+      "一鍵切換",
+      "檢視收支模式"
+    ],
+    "06-tones": [
+      "切換主題色",
+      "多變不無聊"
+    ],
+    "07-colors": [
+      "自由配色",
+      "隨心所欲"
+    ],
+    "08-share": [
+      "分享你的調色盤",
+      "親朋好友一起用"
+    ]
+  },
+  "zh-Hans": {
+    "01-login": [
+      "简单上手",
+      "快速登录"
+    ],
+    "02-books": [
+      "依据计划",
+      "分类账本"
+    ],
+    "03-shared": [
+      "共同记账",
+      "家人朋友实时同步"
+    ],
+    "04-currency": [
+      "自动汇率换算",
+      "全球汇率一手掌握"
+    ],
+    "05-overview": [
+      "一键切换",
+      "查看收支模式"
+    ],
+    "06-tones": [
+      "切换主题色",
+      "多变不无聊"
+    ],
+    "07-colors": [
+      "自由配色",
+      "随心所欲"
+    ],
+    "08-share": [
+      "分享你的调色盘",
+      "亲朋好友一起用"
+    ]
+  },
+  "en-US": {
+    "01-login": [
+      "Sign in",
+      "in seconds"
+    ],
+    "02-books": [
+      "A book for",
+      "every plan"
+    ],
+    "03-shared": [
+      "Track spending",
+      "together"
+    ],
+    "04-currency": [
+      "Automatic",
+      "currency conversion"
+    ],
+    "05-overview": [
+      "See every record",
+      "or the big picture"
+    ],
+    "06-tones": [
+      "Switch themes",
+      "anytime"
+    ],
+    "07-colors": [
+      "Pick your",
+      "own colors"
+    ],
+    "08-share": [
+      "Share your palette",
+      "with friends"
+    ]
+  },
+  "ja": {
+    "01-login": [
+      "かんたん",
+      "すぐにログイン"
+    ],
+    "02-books": [
+      "目的ごとに",
+      "帳簿を分けて"
+    ],
+    "03-shared": [
+      "家族や友だちと",
+      "いっしょに記録"
+    ],
+    "04-currency": [
+      "為替レートを",
+      "自動で換算"
+    ],
+    "05-overview": [
+      "ワンタップで",
+      "表示を切り替え"
+    ],
+    "06-tones": [
+      "テーマカラーを",
+      "気分で切り替え"
+    ],
+    "07-colors": [
+      "好きな色で",
+      "自由にカスタマイズ"
+    ],
+    "08-share": [
+      "カラーパレットを",
+      "みんなとシェア"
+    ]
+  },
+  "ko": {
+    "01-login": [
+      "간편하게",
+      "바로 로그인"
+    ],
+    "02-books": [
+      "목적에 따라",
+      "가계부를 나눠서"
+    ],
+    "03-shared": [
+      "가족, 친구와",
+      "함께 쓰는 가계부"
+    ],
+    "04-currency": [
+      "환율 자동 계산",
+      "해외에서도 걱정 없이"
+    ],
+    "05-overview": [
+      "원터치로",
+      "보기 방식 전환"
+    ],
+    "06-tones": [
+      "테마 색상을",
+      "기분 따라 바꿔요"
+    ],
+    "07-colors": [
+      "원하는 색으로",
+      "자유롭게 꾸미기"
+    ],
+    "08-share": [
+      "나만의 팔레트를",
+      "친구와 공유"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+# env: NAME, OPEN (text of the book dropdown title), CREATE (localized "create new book")
+appId: com.kevlina.budgetplus.stage
+---
+- tapOn:
+    text: ${OPEN}
+- tapOn:
+    text: ${CREATE}
+- eraseText: 20
+- inputText: ${NAME}
+- hideKeyboard
+- tapOn:
+    text: ${BUILD}
+- waitForAnimationToEnd
