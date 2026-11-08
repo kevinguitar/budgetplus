@@ -1,0 +1,121 @@
+name: Upload store screenshots
+
+# Manual only. Uploads store-assets/final/ to App Store Connect and/or Google Play.
+# Defaults to a dry run: files are staged and validated (Play also runs a validate-only edit),
+# nothing is published.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which store(s) to upload to
+        type: choice
+        options: [both, ios, android]
+        default: both
+      dry_run:
+        description: Dry run (stage + validate only, upload nothing)
+        type: boolean
+        default: true
+      ios_app_version:
+        description: App Store version to attach screenshots to (must be editable, e.g. Prepare for Submission). Empty = latest editable version.
+        type: string
+        default: ''
+      ios_replace_existing:
+        description: App Store - delete the existing screenshots in each language before uploading
+        type: boolean
+        default: false
+      ios_include_duo:
+        description: App Store - include the iPhone Duo outer-display set (needs a fastlane version that knows the size)
+        type: boolean
+        default: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Stage and validate screenshots
+        run: |
+          ARGS=""
+          if [ "${{ inputs.ios_include_duo }}" = "true" ]; then ARGS="--with-duo"; fi
+          python3 store-assets/stage_for_fastlane.py "$RUNNER_TEMP/store" $ARGS
+          echo "STAGE_DIR=$RUNNER_TEMP/store" >> "$GITHUB_ENV"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      - name: Write Fastfile
+        run: |
+          mkdir -p fastlane
+          cat > fastlane/Fastfile <<'EOF'
+          lane :ios_screenshots do
+            app_store_connect_api_key(
+              key_id: ENV["ASC_KEY_ID"],
+              issuer_id: ENV["ASC_ISSUER_ID"],
+              key_filepath: ENV["ASC_KEY_PATH"],
+              in_house: false
+            )
+            options = {
+              app_identifier: "com.kevlina.budgetplus",
+              screenshots_path: File.join(ENV["STAGE_DIR"], "ios"),
+              skip_binary_upload: true,
+              skip_metadata: true,
+              skip_app_version_update: ENV["IOS_APP_VERSION"].to_s.empty?,
+              overwrite_screenshots: ENV["IOS_REPLACE"] == "true",
+              submit_for_review: false,
+              run_precheck_before_submit: false,
+              force: true
+            }
+            options[:app_version] = ENV["IOS_APP_VERSION"] unless ENV["IOS_APP_VERSION"].to_s.empty?
+            upload_to_app_store(options)
+          end
+
+          lane :android_screenshots do
+            upload_to_play_store(
+              package_name: "com.kevlina.budgetplus",
+              json_key: ENV["PLAY_KEY_PATH"],
+              metadata_path: File.join(ENV["STAGE_DIR"], "android"),
+              skip_upload_apk: true,
+              skip_upload_aab: true,
+              skip_upload_metadata: true,
+              skip_upload_changelogs: true,
+              skip_upload_images: true,
+              skip_upload_screenshots: false,
+              validate_only: ENV["DRY_RUN"] == "true"
+            )
+          end
+          EOF
+
+      - name: Upload to Google Play
+        if: ${{ inputs.target != 'ios' }}
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          PLAY_KEY_PATH="$RUNNER_TEMP/play-service-account.json"
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > "$PLAY_KEY_PATH"
+          PLAY_KEY_PATH="$PLAY_KEY_PATH" fastlane android_screenshots
+
+      - name: Upload to App Store Connect
+        if: ${{ inputs.target != 'android' && !inputs.dry_run }}
+        env:
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          IOS_APP_VERSION: ${{ inputs.ios_app_version }}
+          IOS_REPLACE: ${{ inputs.ios_replace_existing }}
+        run: |
+          ASC_KEY_PATH="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$ASC_KEY_PATH"
+          ASC_KEY_PATH="$ASC_KEY_PATH" fastlane ios_screenshots
+
+      - name: Clean up keys
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP"/play-service-account.json "$RUNNER_TEMP"/AuthKey_*.p8
