@@ -37,16 +37,28 @@ appId: com.kevlina.budgetplus
       RECORD_TYPE: "Income"
       CATEGORY: "Salary"
       PRICE: "50"
-# restore to Expense for subsequent flows. The info band may be scrolled down after
-# adding the record, so reveal the record-type tabs before tapping.
-- runFlow:
-    when:
-      notVisible:
-        text: "Expense"
+# restore to Expense for subsequent flows. The info band may be scrolled all the way down
+# after adding the record, which one swipe doesn't always undo, so keep swiping down until
+# the record-type tabs are visible (see add-record.yml).
+- retry:
+    maxRetries: 4
     commands:
-      - swipe:
-          start: "50%,25%"
-          end: "50%,45%"
-          duration: 400
+      - evalScript: ${output.expenseTabVisible = false}
+      - runFlow:
+          when:
+            visible:
+              text: "Expense"
+          commands:
+            - evalScript: ${output.expenseTabVisible = true}
+      - runFlow:
+          when:
+            true: ${!output.expenseTabVisible}
+          commands:
+            - swipe:
+                start: "50%,25%"
+                end: "50%,45%"
+                duration: 400
+      - assertVisible:
+          text: "Expense"
 - tapOn:
     text: "Expense"

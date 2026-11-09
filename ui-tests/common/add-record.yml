@@ -6,21 +6,30 @@ appId: com.kevlina.budgetplus
 - tapOn:
     text: "AC"
 # Do not inherit Income from a prior flow that failed before restoring the tab.
-- evalScript: ${output.expenseTabVisible = false}
-- runFlow:
-    when:
-      visible:
-        text: "Expense"
+# Entering a price scrolls the record info all the way down to keep the price visible. With
+# enough categories (e.g. one added by an earlier flow), one swipe within the band doesn't
+# scroll back far enough to reveal the type tab, so keep swiping down until it's visible.
+# Each swipe is guarded by the visibility probe, so it is skipped once the tab is on screen.
+- retry:
+    maxRetries: 4
     commands:
-      - evalScript: ${output.expenseTabVisible = true}
-- runFlow:
-    when:
-      true: ${!output.expenseTabVisible}
-    commands:
-      - swipe:
-          start: "50%,25%"
-          end: "50%,45%"
-          duration: 400
+      - evalScript: ${output.expenseTabVisible = false}
+      - runFlow:
+          when:
+            visible:
+              text: "Expense"
+          commands:
+            - evalScript: ${output.expenseTabVisible = true}
+      - runFlow:
+          when:
+            true: ${!output.expenseTabVisible}
+          commands:
+            - swipe:
+                start: "50%,25%"
+                end: "50%,45%"
+                duration: 400
+      - assertVisible:
+          text: "Expense"
 - tapOn:
     text: "Expense"
 # On short screens the category grid can be pushed out of view behind the fixed
