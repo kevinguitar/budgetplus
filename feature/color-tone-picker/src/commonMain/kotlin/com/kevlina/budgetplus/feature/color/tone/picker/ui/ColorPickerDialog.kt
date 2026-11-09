@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.Composable
@@ -90,7 +91,9 @@ internal fun ColorPickerDialog(
             }
 
             HsvColorPicker(
-                modifier = Modifier.aspectRatio(1F),
+                modifier = Modifier
+                    .widthIn(max = 320.dp)
+                    .aspectRatio(1F),
                 initialColor = currentColor,
                 controller = controller,
                 onColorChanged = { envelope: ColorEnvelope ->
