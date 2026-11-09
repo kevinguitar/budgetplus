@@ -1,8 +1,5 @@
 package com.kevlina.budgetplus.insider.app.main.ui
 
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +19,8 @@ import androidx.navigation3.ui.NavDisplay
 import com.kevlina.budgetplus.core.common.SnackbarData
 import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.common.nav.InsiderDest
+import com.kevlina.budgetplus.core.ui.NavTransitions.pop
+import com.kevlina.budgetplus.core.ui.NavTransitions.push
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
 import com.kevlina.budgetplus.feature.auth.AuthViewModel
@@ -81,9 +80,9 @@ internal fun InsiderBinding(vm: InsiderRootViewModel = metroViewModel()) {
                         rememberSaveableStateHolderNavEntryDecorator(),
                         rememberViewModelStoreNavEntryDecorator()
                     ),
-                    transitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-                    popTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-                    predictivePopTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
+                    transitionSpec = { push() },
+                    popTransitionSpec = { pop() },
+                    predictivePopTransitionSpec = { pop() },
                     modifier = Modifier
                         .weight(1F)
                         .fillMaxWidth()

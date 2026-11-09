@@ -67,28 +67,28 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0A3F62202F4899E9008A7161 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */ = {
+		0A3F62202F4899E9008A7161 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
 		};
-		0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */ = {
+		0A68BAD12F78F5440059B0BC /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BudgetPlusPremium.storekit,
 			);
 			target = 0A3F62142F4899E9008A7161 /* NotificationServiceExtension */;
 		};
-		0B5E00022FA0C0DE00A1B2C3 /* Exceptions for "RecordWidgetExtension" folder in "RecordWidgetExtension" target */ = {
+		0B5E00022FA0C0DE00A1B2C3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 0B5E00062FA0C0DE00A1B2C3 /* RecordWidgetExtension */;
 		};
-		6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
+		6A30F6F7833DB0C2DCAF74E0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -101,7 +101,11 @@
 		0A3F62162F4899E9008A7161 /* NotificationServiceExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0A3F62202F4899E9008A7161 /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */,
+				0A3F62202F4899E9008A7161 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
 			);
 			path = NotificationServiceExtension;
 			sourceTree = "<group>";
@@ -109,21 +113,33 @@
 		0B5E00012FA0C0DE00A1B2C3 /* RecordWidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				0B5E00022FA0C0DE00A1B2C3 /* Exceptions for "RecordWidgetExtension" folder in "RecordWidgetExtension" target */,
+				0B5E00022FA0C0DE00A1B2C3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
 			);
 			path = RecordWidgetExtension;
 			sourceTree = "<group>";
 		};
 		71E7052F54B8BB3AD6D9BF6C /* Configuration */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
 			path = Configuration;
 			sourceTree = "<group>";
 		};
 		DC4748B39A09E11CF6A64645 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6A30F6F7833DB0C2DCAF74E0 /* Exceptions for "iosApp" folder in "iosApp" target */,
-				0A68BAD12F78F5440059B0BC /* Exceptions for "iosApp" folder in "NotificationServiceExtension" target */,
+				6A30F6F7833DB0C2DCAF74E0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				0A68BAD12F78F5440059B0BC /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
 			);
 			path = iosApp;
 			sourceTree = "<group>";
