@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.batch_record_created
+import budgetplus.core.common.generated.resources.record_empty_price
 import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
@@ -103,6 +104,11 @@ internal class BatchRecordViewModel(
             priceText.text.toString().toDouble()
         } catch (e: Exception) {
             snackbarSender.sendError(e)
+            return
+        }
+
+        if (price <= 0.0) {
+            viewModelScope.launch { snackbarSender.send(Res.string.record_empty_price) }
             return
         }
 

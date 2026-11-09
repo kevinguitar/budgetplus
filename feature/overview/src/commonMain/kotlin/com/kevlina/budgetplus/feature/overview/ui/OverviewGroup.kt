@@ -134,7 +134,10 @@ internal fun OverviewGroup(
 private const val PROGRESS_AMP = 0.2F
 
 private fun calcProgressWidth(maxWidth: Dp, ratio: Double): Dp {
-    val base = maxWidth * ratio.toFloat()
+    // The ratio can fall outside [0, 1] (or be NaN) when the total is zero or negative, e.g. books
+    // that contain negative-priced records. Clamp it so the bar never exceeds the available width.
+    val safeRatio = if (ratio.isNaN()) 0F else ratio.toFloat().coerceIn(0F, 1F)
+    val base = maxWidth * safeRatio
     val amp = (maxWidth - base) * PROGRESS_AMP
     return base + amp
 }
