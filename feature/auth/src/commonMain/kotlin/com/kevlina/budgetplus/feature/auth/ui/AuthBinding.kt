@@ -1,14 +1,16 @@
 package com.kevlina.budgetplus.feature.auth.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.AdaptiveScreen
+import com.kevlina.budgetplus.core.ui.safeArea
 import com.kevlina.budgetplus.feature.auth.CommonAuthViewModel
 
 @Composable
@@ -22,8 +24,7 @@ fun AuthBinding(
     AdaptiveScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(LocalAppColors.current.primary)
-            .systemBarsPadding(),
+            .background(LocalAppColors.current.primary),
         regularContent = {
             AuthContent(
                 signInWithGoogle = signInWithGoogle,
