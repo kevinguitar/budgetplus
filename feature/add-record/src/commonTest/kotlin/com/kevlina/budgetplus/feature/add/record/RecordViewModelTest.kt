@@ -71,6 +71,17 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
+    fun `show message and skip recording when price evaluates to negative`() = runTest {
+        FakeRecordRepo.lastCreatedRecord = null
+        val model = createModel()
+        model.calculatorVm.input("10-20")
+        model.calculatorVm.evaluate()
+
+        assertEquals(Res.string.record_empty_price, snackbarSender.lastSentMessageRes)
+        assertNull(FakeRecordRepo.lastCreatedRecord)
+    }
+
+    @Test
     fun `record should be created with correct info in RecordRepo`() = runTest {
         val date = LocalDate.now().minus(1, DateTimeUnit.DAY)
 

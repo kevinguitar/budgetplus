@@ -363,7 +363,7 @@ internal class RecordViewModel(
             return
         }
 
-        if (price == 0.0) {
+        if (price <= 0.0) {
             viewModelScope.launch { snackbarSender.send(Res.string.record_empty_price) }
             return
         }
