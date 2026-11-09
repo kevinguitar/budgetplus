@@ -2,8 +2,10 @@ package com.kevlina.budgetplus.book.ui
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
 import com.kevlina.budgetplus.core.common.UiTestFlags
 import com.kevlina.budgetplus.core.common.nav.BookDest
+import com.kevlina.budgetplus.core.ui.NavTransitions
 import com.kevlina.budgetplus.feature.add.record.ui.RecordScreen
 import com.kevlina.budgetplus.feature.auth.AuthViewModel
 import com.kevlina.budgetplus.feature.auth.ui.AuthBinding
@@ -24,9 +26,22 @@ import com.kevlina.budgetplus.feature.welcome.ui.WelcomeBinding
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
+/**
+ * Top level destinations have no hierarchy between them, so they don't slide like the screens
+ * pushed on top of them. Switching to them doesn't animate when they're bottom nav tabs, and
+ * crossfades otherwise.
+ */
+private val rootDestMetadata: Map<String, Any> = NavDisplay.transitionSpec { NavTransitions.crossfade() } +
+    NavDisplay.popTransitionSpec { NavTransitions.crossfade() } +
+    NavDisplay.predictivePopTransitionSpec { NavTransitions.crossfade() }
+
+private val bottomTabDestMetadata: Map<String, Any> = NavDisplay.transitionSpec { NavTransitions.none() } +
+    NavDisplay.popTransitionSpec { NavTransitions.none() } +
+    NavDisplay.predictivePopTransitionSpec { NavTransitions.none() }
+
 internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
     return when (bookDest) {
-        is BookDest.Auth -> NavEntry(bookDest) {
+        is BookDest.Auth -> NavEntry(bookDest, metadata = rootDestMetadata) {
             val vm = metroViewModel<AuthViewModel>()
             LaunchedEffect(bookDest) {
                 // Test auth is anonymous against the emulator. A device's saved Google
@@ -50,11 +65,11 @@ internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
             }
         }
 
-        BookDest.Welcome -> NavEntry(bookDest) {
+        BookDest.Welcome -> NavEntry(bookDest, metadata = rootDestMetadata) {
             WelcomeBinding()
         }
 
-        BookDest.Record -> NavEntry(bookDest) {
+        BookDest.Record -> NavEntry(bookDest, metadata = bottomTabDestMetadata) {
             RecordScreen()
         }
 
@@ -88,7 +103,7 @@ internal fun bookNavGraph(bookDest: BookDest): NavEntry<BookDest> {
             )
         }
 
-        BookDest.Overview -> NavEntry(bookDest) {
+        BookDest.Overview -> NavEntry(bookDest, metadata = bottomTabDestMetadata) {
             OverviewScreen()
         }
 

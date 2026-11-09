@@ -1,8 +1,6 @@
 package com.kevlina.budgetplus.book.ui
 
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import coil3.compose.LocalPlatformContext
 import com.kevlina.budgetplus.book.BookViewModel
@@ -46,6 +45,9 @@ import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.theme.ThemeColors
 import com.kevlina.budgetplus.core.ui.LocalTopBarActionsHost
+import com.kevlina.budgetplus.core.ui.NavTransitions
+import com.kevlina.budgetplus.core.ui.NavTransitions.pop
+import com.kevlina.budgetplus.core.ui.NavTransitions.push
 import com.kevlina.budgetplus.core.ui.Scaffold
 import com.kevlina.budgetplus.core.ui.SnackbarHost
 import com.kevlina.budgetplus.core.ui.TopBarActionsHost
@@ -204,6 +206,16 @@ internal fun BookBinding(
     }
 }
 
+/**
+ * Whether the target screen is pushed right on top of the current one. Switching the bottom nav
+ * tabs reorders the back stack instead, e.g. going back to a tab that has another screen on top of
+ * its root, which shouldn't animate like a push.
+ */
+private fun <T : Any> AnimatedContentTransitionScope<Scene<T>>.isPushedOnTop(): Boolean {
+    val currentTop = initialState.entries.lastOrNull() ?: return false
+    return targetState.previousEntries.lastOrNull()?.contentKey == currentTop.contentKey
+}
+
 private val lightBackgroundNavKeys = setOf(BookDest.Welcome::class, BookDest.UnlockPremium::class)
 
 private val SideColumnSnackbarSpacing = 16.dp
@@ -227,9 +239,9 @@ private fun BookContent(
                 rememberViewModelStoreNavEntryDecorator()
             ),
             onBack = vm.navController::navigateUp,
-            transitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-            popTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
-            predictivePopTransitionSpec = { ContentTransform(fadeIn(), fadeOut()) },
+            transitionSpec = { if (isPushedOnTop()) push() else NavTransitions.none() },
+            popTransitionSpec = { pop() },
+            predictivePopTransitionSpec = { pop() },
             modifier = Modifier
                 .weight(1F)
                 .fillMaxWidth()
