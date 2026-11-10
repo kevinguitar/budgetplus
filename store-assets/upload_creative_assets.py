@@ -17,8 +17,9 @@ fastlane does not handle these placements, so this talks to the App Store Connec
 An image whose bytes already sit in that placement is skipped. Apple's processing time varies; an
 image still processing when --wait-minutes runs out is left in the library for the next run.
 Most uploads process in seconds, but Apple occasionally stalls one for half an hour or more, so an
-image still processing after --retry-minutes is uploaded again (up to 3 copies); whichever copy
-finishes first is placed.
+image still processing after --retry-minutes is uploaded again (up to 2 more copies per run, each
+under its own reference name, which Apple requires to be unique); whichever copy finishes first is
+placed. Uploads a previous run left processing get a fresh copy straight away.
 The placed art goes to App Review with the version, like screenshots.
 """
 import argparse, base64, hashlib, json, os, struct, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
@@ -32,7 +33,8 @@ KINDS = {"header": "PRODUCT_PAGE_HEADER_ASSET", "search": "APP_STORE_SEARCH_RESU
 EDITABLE = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"}
 PROCESSING = {"AWAITING_UPLOAD", "UPLOAD_COMPLETE"}          # still with Apple
 BROKEN = {"FAILED", "REJECTED", "ARCHIVED"}                     # can't be placed
-MAX_COPIES = 3                                                  # uploads of one image when Apple stalls
+RETRIES = 2                 # fresh copies per image per run when Apple stalls on processing
+NAME_SLOTS = 10             # reference names per image: <ref>, <ref>-2 ... <ref>-10 (Apple wants them unique)
 
 
 # ---------- validation (shared with stage_for_fastlane.py) ----------
@@ -129,20 +131,39 @@ def find_version(api, app_id, wanted):
         if state(v) in EDITABLE: return v
     sys.exit("no editable iOS App Store version (Prepare for Submission); create one or pass --version")
 
-def find_uploads(api, library_id, ref):
-    """Earlier uploads of the same bytes that can still be placed, processed ones first, newest first."""
+def ref_names(ref):
+    return [ref] + [f"{ref}-{i}" for i in range(2, NAME_SLOTS + 1)]
+
+def find_uploads(api, library_id, names):
+    """Earlier uploads of the same bytes: (placeable ones, processed first then newest first; names in use)."""
     imgs = api.must("GET", f"/v1/appAssetLibraries/{library_id}/images" + q({
-        "filter[referenceName]": ref, "filter[category]": "CREATIVE_ASSETS", "sort": "-createdDate", "limit": 20}))["data"]
+        "filter[referenceName]": ",".join(names), "filter[category]": "CREATIVE_ASSETS",
+        "sort": "-createdDate", "limit": 50}))["data"]
+    taken = {i["attributes"].get("referenceName") for i in imgs}
     usable = [i for i in imgs if i["attributes"].get("state") not in BROKEN | {"AWAITING_UPLOAD"}]
-    return sorted(usable, key=lambda i: i["attributes"].get("state") in PROCESSING)  # stable: keeps newest first
+    return sorted(usable, key=lambda i: i["attributes"].get("state") in PROCESSING), taken  # stable sort
+
+def upload_new(api, library_id, path, names, taken):
+    """Upload under the first free reference name. Returns the image id, or None if every name is used."""
+    for name in names:
+        if name in taken: continue
+        taken.add(name)
+        image_id = upload_image(api, library_id, path, name)
+        if image_id: return image_id
+    return None
 
 def upload_image(api, library_id, path, ref):
     data = open(path, "rb").read()
-    res = api.must("POST", "/v1/appAssetLibraryImages", {"data": {
+    status, payload = api.call("POST", "/v1/appAssetLibraryImages", {"data": {
         "type": "appAssetLibraryImages",
         "attributes": {"category": "CREATIVE_ASSETS", "fileName": os.path.basename(path),
                        "fileSize": len(data), "referenceName": ref},
-        "relationships": {"assetLibrary": {"data": {"type": "appAssetLibraries", "id": library_id}}}}})["data"]
+        "relationships": {"assetLibrary": {"data": {"type": "appAssetLibraries", "id": library_id}}}}})
+    if status == 409 and "DUPLICATE" in json.dumps(payload):
+        return None                                       # name already used: caller tries the next one
+    if status not in (200, 201):
+        sys.exit(f"POST /v1/appAssetLibraryImages -> {status}\n{errors_text(payload)}")
+    res = payload["data"]
     for op in res["attributes"].get("uploadOperations") or []:
         part = data[op["offset"]:op["offset"] + op["length"]]
         headers = {h["name"]: h["value"] for h in op.get("requestHeaders") or []}
@@ -216,16 +237,23 @@ def main():
             ref = f"{asc_loc}-{kind}-{hashlib.md5(open(path, 'rb').read()).hexdigest()}"
             old = [p for p in current if p["type"] == ptype]
             label = f"{asc_loc:8} {kind:6}"
-            if any(p["ref"] == ref for p in old):
+            names = ref_names(ref)
+            if any(p["ref"] in names for p in old):
                 print(f"{label} unchanged"); continue
-            found = find_uploads(api, library_id, ref)[:MAX_COPIES]
+            found, taken = find_uploads(api, library_id, names)
+            since = time.time()
             if found:
-                images = [i["id"] for i in found]
+                images = [i["id"] for i in found[:3]]
                 print(f"{label} reusing earlier upload ({found[0]['attributes'].get('state')})")
+                if found[0]["attributes"].get("state") in PROCESSING:
+                    since -= a.retry_minutes * 60          # it already had a whole run: retry right away
             else:
-                images = [upload_image(api, library_id, path, ref)]; print(f"{label} uploaded")
-            jobs.append({"label": label, "loc": locs[asc_loc], "ptype": ptype, "old": old, "path": path, "ref": ref,
-                         "images": images, "state": None, "since": time.time()})
+                image_id = upload_new(api, library_id, path, names, taken)
+                if not image_id: sys.exit(f"{label}: all {NAME_SLOTS} reference names are used")
+                images = [image_id]; print(f"{label} uploaded")
+            jobs.append({"label": label, "loc": locs[asc_loc], "ptype": ptype, "old": old, "path": path,
+                         "names": names, "taken": taken, "images": images, "retries": 0,
+                         "state": None, "since": since})
 
     # 2. wait for Apple to process them together; place each one as soon as a copy is ready
     deadline, failed = time.time() + a.wait_minutes * 60, []
@@ -242,9 +270,12 @@ def main():
             if not ready:
                 if all(s in BROKEN for s, _ in states.values()):
                     jobs.remove(j); failed.append(f"{j['label']} {st}"); continue
-                if len(j["images"]) < MAX_COPIES and time.time() - j["since"] > a.retry_minutes * 60:
-                    j["images"].append(upload_image(api, library_id, j["path"], j["ref"])); j["since"] = time.time()
-                    print(f"{j['label']} still processing after {a.retry_minutes} min, uploaded copy {len(j['images'])}")
+                if j["retries"] < RETRIES and time.time() - j["since"] > a.retry_minutes * 60:
+                    j["retries"] += 1; j["since"] = time.time()
+                    image_id = upload_new(api, library_id, j["path"], j["names"], j["taken"])
+                    if image_id:
+                        j["images"].append(image_id)
+                        print(f"{j['label']} still processing, uploaded a fresh copy")
                 continue
             jobs.remove(j)
             for p in j["old"]:                             # placements can't be edited: replace
