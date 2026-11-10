@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lay out store-assets/final/ for fastlane and check it.
 
-usage: stage_for_fastlane.py OUT_DIR [--with-duo]
+usage: stage_for_fastlane.py OUT_DIR
 
 Writes:
   OUT_DIR/ios/<asc-locale>/<NN>-<device>-<screen>.png        (deliver screenshots_path)
@@ -26,8 +26,7 @@ LOCALES = {  # repo locale -> (App Store Connect, Google Play)
     "ja": ("ja", "ja-JP"),
     "ko": ("ko", "ko-KR"),
 }
-IOS = ["iphone-6.3", "ipad-13"]          # deliver detects the display type from the pixel size
-DUO = ["iphone-duo-outer"]                # iPhone Duo outer display, opt-in
+IOS = ["iphone-6.3", "iphone-duo-outer", "ipad-13"]  # deliver detects the display type from the pixel size
 ANDROID = {"phone": "phoneScreenshots", "tablet": "tenInchScreenshots"}
 LIMIT = {"ios": 10, "android": 8}
 # Store display order. Both App Store Connect (deliver re-sorts each set by file name)
@@ -43,10 +42,10 @@ def png_info(path):
     return w, h, head[25]  # color type: 2 = RGB, 6 = RGBA
 
 def main():
-    out = sys.argv[1]; with_duo = "--with-duo" in sys.argv
+    out = sys.argv[1]
     if os.path.exists(out): shutil.rmtree(out)
     errors, summary = [], []
-    for platform, classes in (("ios", IOS + (DUO if with_duo else [])), ("android", list(ANDROID))):
+    for platform, classes in (("ios", IOS), ("android", list(ANDROID))):
         for cls in classes:
             sizes = set()
             for loc, (asc, play) in LOCALES.items():

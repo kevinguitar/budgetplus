@@ -1,7 +1,8 @@
 name: Upload store screenshots
 
-# Manual only. Uploads store-assets/final/ to App Store Connect and/or Google Play:
-# screenshots via fastlane, plus the App Store product page header and search results art
+# Manual only. Uploads store-assets/final/ to App Store Connect and/or Google Play.
+# App Store: screenshots via fastlane (every device class, iPhone Duo included, replacing the
+# current ones), and optionally the product page header and search results art
 # (store-assets/final/ios/creative/) via the App Store Connect API.
 # Tick dry_run to stage and validate only (Play also runs a validate-only edit); nothing is published.
 on:
@@ -20,14 +21,10 @@ on:
         description: App Store version to attach screenshots to (must be editable, e.g. Prepare for Submission). Empty = latest editable version.
         type: string
         default: ''
-      ios_replace_existing:
-        description: App Store - delete the existing screenshots in each language before uploading
+      ios_screenshots:
+        description: App Store - upload screenshots (replaces the current ones in each language)
         type: boolean
-        default: false
-      ios_include_duo:
-        description: App Store - include the iPhone Duo outer-display set
-        type: boolean
-        default: false
+        default: true
       ios_creative_assets:
         description: App Store - upload the product page header and search results art (replaces the current ones)
         type: boolean
@@ -43,9 +40,7 @@ jobs:
 
       - name: Stage and validate screenshots
         run: |
-          ARGS=""
-          if [ "${{ inputs.ios_include_duo }}" = "true" ]; then ARGS="--with-duo"; fi
-          python3 store-assets/stage_for_fastlane.py "$RUNNER_TEMP/store" $ARGS
+          python3 store-assets/stage_for_fastlane.py "$RUNNER_TEMP/store"
           echo "STAGE_DIR=$RUNNER_TEMP/store" >> "$GITHUB_ENV"
 
       - name: Setup Ruby
@@ -73,7 +68,7 @@ jobs:
               skip_binary_upload: true,
               skip_metadata: true,
               skip_app_version_update: ENV["IOS_APP_VERSION"].to_s.empty?,
-              overwrite_screenshots: ENV["IOS_REPLACE"] == "true",
+              overwrite_screenshots: true,
               submit_for_review: false,
               run_precheck_before_submit: false,
               force: true
@@ -109,7 +104,7 @@ jobs:
           PLAY_KEY_PATH="$PLAY_KEY_PATH" fastlane android_screenshots
 
       - name: Write App Store Connect key
-        if: ${{ inputs.target != 'android' && !inputs.dry_run }}
+        if: ${{ inputs.target != 'android' && !inputs.dry_run && (inputs.ios_screenshots || inputs.ios_creative_assets) }}
         env:
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
@@ -119,12 +114,11 @@ jobs:
           echo "ASC_KEY_PATH=$ASC_KEY_PATH" >> "$GITHUB_ENV"
 
       - name: Upload screenshots to App Store Connect
-        if: ${{ inputs.target != 'android' && !inputs.dry_run }}
+        if: ${{ inputs.target != 'android' && !inputs.dry_run && inputs.ios_screenshots }}
         env:
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           IOS_APP_VERSION: ${{ inputs.ios_app_version }}
-          IOS_REPLACE: ${{ inputs.ios_replace_existing }}
         run: fastlane ios_screenshots
 
       - name: Upload header and search results to App Store Connect
@@ -133,7 +127,7 @@ jobs:
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           IOS_APP_VERSION: ${{ inputs.ios_app_version }}
-        run: python3 store-assets/upload_creative_assets.py --version "$IOS_APP_VERSION"
+        run: python3 -u store-assets/upload_creative_assets.py --version "$IOS_APP_VERSION"
 
       - name: Clean up keys
         if: ${{ always() }}

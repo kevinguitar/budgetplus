@@ -32,13 +32,16 @@ Store screenshots for the App Store and Google Play, in five languages.
 
 ## Uploading
 
-Run the **Upload store screenshots** workflow (Actions tab, manual trigger). It
-uploads by default; tick `dry_run` to only stage and validate everything (Google
-Play also runs a validate-only edit).
+Run the **Upload store screenshots** workflow (Actions tab, manual trigger). By
+default it uploads the screenshots for every device class (iPhone Duo included),
+replacing the ones already in each language. Tick `ios_creative_assets` to also
+upload the header and search results art, untick `ios_screenshots` to skip the
+App Store screenshots, or tick `dry_run` to only stage and validate everything
+(Google Play also runs a validate-only edit).
 
-`stage_for_fastlane.py OUT_DIR [--with-duo]` lays the files out for fastlane
-and checks sizes, alpha and per-store limits, including the header and search
-results art; it runs locally too.
+`stage_for_fastlane.py OUT_DIR` lays the files out for fastlane and checks sizes,
+alpha and per-store limits, including the header and search results art; it runs
+locally too.
 
 fastlane doesn't upload the header and search results art, so
 `upload_creative_assets.py [--version X]` does it through the App Store Connect API
