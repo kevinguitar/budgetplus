@@ -1,8 +1,9 @@
 name: Upload store screenshots
 
-# Manual only. Uploads store-assets/final/ to App Store Connect and/or Google Play.
-# Defaults to a dry run: files are staged and validated (Play also runs a validate-only edit),
-# nothing is published.
+# Manual only. Uploads store-assets/final/ to App Store Connect and/or Google Play:
+# screenshots via fastlane, plus the App Store product page header and search results art
+# (store-assets/final/ios/creative/) via the App Store Connect API.
+# Tick dry_run to stage and validate only (Play also runs a validate-only edit); nothing is published.
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +15,7 @@ on:
       dry_run:
         description: Dry run (stage + validate only, upload nothing)
         type: boolean
-        default: true
+        default: false
       ios_app_version:
         description: App Store version to attach screenshots to (must be editable, e.g. Prepare for Submission). Empty = latest editable version.
         type: string
@@ -24,7 +25,11 @@ on:
         type: boolean
         default: false
       ios_include_duo:
-        description: App Store - include the iPhone Duo outer-display set (needs a fastlane version that knows the size)
+        description: App Store - include the iPhone Duo outer-display set
+        type: boolean
+        default: false
+      ios_creative_assets:
+        description: App Store - upload the product page header and search results art (replaces the current ones)
         type: boolean
         default: false
 
@@ -103,18 +108,32 @@ jobs:
           printf '%s' "$SERVICE_ACCOUNT_JSON" > "$PLAY_KEY_PATH"
           PLAY_KEY_PATH="$PLAY_KEY_PATH" fastlane android_screenshots
 
-      - name: Upload to App Store Connect
+      - name: Write App Store Connect key
         if: ${{ inputs.target != 'android' && !inputs.dry_run }}
         env:
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          IOS_APP_VERSION: ${{ inputs.ios_app_version }}
-          IOS_REPLACE: ${{ inputs.ios_replace_existing }}
         run: |
           ASC_KEY_PATH="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
           printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$ASC_KEY_PATH"
-          ASC_KEY_PATH="$ASC_KEY_PATH" fastlane ios_screenshots
+          echo "ASC_KEY_PATH=$ASC_KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: Upload screenshots to App Store Connect
+        if: ${{ inputs.target != 'android' && !inputs.dry_run }}
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          IOS_APP_VERSION: ${{ inputs.ios_app_version }}
+          IOS_REPLACE: ${{ inputs.ios_replace_existing }}
+        run: fastlane ios_screenshots
+
+      - name: Upload header and search results to App Store Connect
+        if: ${{ inputs.target != 'android' && !inputs.dry_run && inputs.ios_creative_assets }}
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          IOS_APP_VERSION: ${{ inputs.ios_app_version }}
+        run: python3 store-assets/upload_creative_assets.py --version "$IOS_APP_VERSION"
 
       - name: Clean up keys
         if: ${{ always() }}
