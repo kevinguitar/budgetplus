@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -245,6 +246,9 @@ private fun BookContent(
             modifier = Modifier
                 .weight(1F)
                 .fillMaxWidth()
+                // The screens slide horizontally during the transitions, keep them from drawing
+                // over the side bars, e.g. the nav rail.
+                .clipToBounds()
                 .background(color = previewColors?.light ?: LocalAppColors.current.light)
         )
 
