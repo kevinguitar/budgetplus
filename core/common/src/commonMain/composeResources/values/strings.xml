@@ -45,18 +45,36 @@
     <string name="batch_record_start_date">Start Date:</string>
     <string name="batch_record_frequency">Frequency:</string>
     <string name="batch_record_every_duration">Every</string>
-    <string name="batch_record_unit_month">Month</string>
-    <string name="batch_record_unit_week">Week</string>
-    <string name="batch_record_unit_day">Day</string>
+    <plurals name="batch_record_unit_month">
+        <item quantity="one">Month</item>
+        <item quantity="other">Months</item>
+    </plurals>
+    <plurals name="batch_record_unit_week">
+        <item quantity="one">Week</item>
+        <item quantity="other">Weeks</item>
+    </plurals>
+    <plurals name="batch_record_unit_day">
+        <item quantity="one">Day</item>
+        <item quantity="other">Days</item>
+    </plurals>
     <string name="batch_record_times">Number of times:</string>
     <string name="batch_record_cta">Batch Record</string>
-    <string name="batch_record_created">%1$s records added to %2$s</string>
+    <plurals name="batch_record_created">
+        <item quantity="one">%1$d record added to %2$s</item>
+        <item quantity="other">%1$d records added to %2$s</item>
+    </plurals>
     <string name="batch_record_edit_confirmation">Do you want to apply these changes to all future records as well?</string>
     <string name="batch_record_delete_confirmation">Do you want to delete all future records as well?</string>
     <string name="batch_record_only_this">Only this record</string>
     <string name="batch_record_all_future_records">All future records</string>
-    <string name="batch_record_edited">%1$s records were edited</string>
-    <string name="batch_record_deleted">%1$s records were deleted</string>
+    <plurals name="batch_record_edited">
+        <item quantity="one">%1$d record was edited</item>
+        <item quantity="other">%1$d records were edited</item>
+    </plurals>
+    <plurals name="batch_record_deleted">
+        <item quantity="one">%1$d record was deleted</item>
+        <item quantity="other">%1$d records were deleted</item>
+    </plurals>
 
     <!-- Record Widget -->
     <string name="record_widget_title">Record Widget</string>
@@ -143,7 +161,10 @@
     <string name="overview_balance">Balance</string>
     <string name="overview_details_title">%1$s: %2$s</string>
     <string name="overview_author_everyone">Everyone</string>
-    <string name="overview_selected_delete_confirmation">Are you sure you want to delete the %1$s selected records?</string>
+    <plurals name="overview_selected_delete_confirmation">
+        <item quantity="one">Are you sure you want to delete the %1$d selected record?</item>
+        <item quantity="other">Are you sure you want to delete the %1$d selected records?</item>
+    </plurals>
 
     <!-- Export -->
     <string name="export_cta">Export Report</string>

@@ -45,18 +45,30 @@
     <string name="batch_record_start_date">开始日期</string>
     <string name="batch_record_frequency">循环周期</string>
     <string name="batch_record_every_duration">每</string>
-    <string name="batch_record_unit_month">月</string>
-    <string name="batch_record_unit_week">周</string>
-    <string name="batch_record_unit_day">天</string>
+    <plurals name="batch_record_unit_month">
+        <item quantity="other">月</item>
+    </plurals>
+    <plurals name="batch_record_unit_week">
+        <item quantity="other">周</item>
+    </plurals>
+    <plurals name="batch_record_unit_day">
+        <item quantity="other">天</item>
+    </plurals>
     <string name="batch_record_times">循环次数</string>
     <string name="batch_record_cta">批量记账</string>
-    <string name="batch_record_created">%1$s笔账目已新增至%2$s</string>
+    <plurals name="batch_record_created">
+        <item quantity="other">%1$d笔账目已新增至%2$s</item>
+    </plurals>
     <string name="batch_record_edit_confirmation">您要一并应用到未来的所有账目吗？</string>
     <string name="batch_record_delete_confirmation">您要一并删除未来的所有账目吗？</string>
     <string name="batch_record_only_this">这笔就好</string>
     <string name="batch_record_all_future_records">所有账目</string>
-    <string name="batch_record_edited">已编辑%1$s笔账目</string>
-    <string name="batch_record_deleted">已删除%1$s笔账目</string>
+    <plurals name="batch_record_edited">
+        <item quantity="other">已编辑%1$d笔账目</item>
+    </plurals>
+    <plurals name="batch_record_deleted">
+        <item quantity="other">已删除%1$d笔账目</item>
+    </plurals>
 
     <!-- Record Widget -->
     <string name="record_widget_title">记账小组件</string>
@@ -142,7 +154,9 @@
     <string name="overview_balance">结余</string>
     <string name="overview_details_title">%1$s：%2$s</string>
     <string name="overview_author_everyone">所有人</string>
-    <string name="overview_selected_delete_confirmation">确定要删除所选的%1$s笔账目吗？</string>
+    <plurals name="overview_selected_delete_confirmation">
+        <item quantity="other">确定要删除所选的%1$d笔账目吗？</item>
+    </plurals>
 
     <!-- Export -->
     <string name="export_cta">导出报表</string>

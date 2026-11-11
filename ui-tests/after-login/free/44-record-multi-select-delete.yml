@@ -1,6 +1,7 @@
 # E6 — Multi-select records and bulk-delete from the Records screen.
 # Adds three expense records in one category, drills into the Records screen,
-# enters selection mode via the long-press "Select" option, selects a second
+# enters selection mode via the long-press "Select" option, checks the singular
+# confirmation without deleting, selects a second
 # record row, then deletes both via the top-bar delete icon and the confirmation
 # dialog (which shows the selected count).
 #
@@ -40,6 +41,19 @@ appId: com.kevlina.budgetplus
     timeout: 10000
 - tapOn:
     text: "Select"
+# A single selection must use the singular confirmation; cancel to keep the record.
+- tapOn:
+    text: "Delete"
+- extendedWaitUntil:
+    visible:
+      text: "Are you sure you want to delete the 1 selected record?"
+    timeout: 10000
+- tapOn:
+    text: "Cancel"
+- extendedWaitUntil:
+    notVisible:
+      text: "Are you sure you want to delete the 1 selected record?"
+    timeout: 10000
 # In selection mode, tapping another record immediately selects it too. Tap the
 # second row so both records are selected.
 - tapOn:

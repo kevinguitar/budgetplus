@@ -74,6 +74,55 @@ class LocalizationTests(unittest.TestCase):
         for region in ("HK", "MO"):
             self.assertEqual(reference, (COMMON / f"values-zh-r{region}/strings.xml").read_bytes())
 
+    def test_batch_units_have_correct_english_forms_for_zero_one_two(self):
+        resources = self.resources(COMMON / "values/strings.xml")
+        for unit in ("month", "week", "day"):
+            resource = resources[f"batch_record_unit_{unit}"]
+            self.assertEqual("plurals", resource.tag)
+            for count, form, suffix in ((0, "other", "s"), (1, "one", ""), (2, "other", "s")):
+                with self.subTest(unit=unit, count=count):
+                    # English CLDR cardinal rules: only the integer 1 uses 'one'.
+                    label = resource.find(f"item[@quantity='{form}']").text
+                    self.assertEqual(f"{count} {unit.title()}{suffix}", f"{count} {label}")
+
+    def test_record_count_messages_have_correct_english_forms_for_zero_one_two(self):
+        resources = self.resources(COMMON / "values/strings.xml")
+        expected = {
+            "batch_record_created": (
+                "0 records added to Food", "1 record added to Food", "2 records added to Food"),
+            "batch_record_edited": (
+                "0 records were edited", "1 record was edited", "2 records were edited"),
+            "batch_record_deleted": (
+                "0 records were deleted", "1 record was deleted", "2 records were deleted"),
+            "overview_selected_delete_confirmation": (
+                "Are you sure you want to delete the 0 selected records?",
+                "Are you sure you want to delete the 1 selected record?",
+                "Are you sure you want to delete the 2 selected records?"),
+        }
+        for key, messages in expected.items():
+            resource = resources[key]
+            self.assertEqual("plurals", resource.tag)
+            for count, message in enumerate(messages):
+                with self.subTest(key=key, count=count):
+                    form = "one" if count == 1 else "other"
+                    template = resource.find(f"item[@quantity='{form}']").text
+                    actual = template.replace("%1$d", str(count)).replace("%2$s", "Food")
+                    self.assertEqual(message, actual)
+
+    def test_record_count_plurals_require_integer_counts_in_every_locale(self):
+        for path in sorted(COMMON.glob("*/strings.xml")):
+            resources = self.resources(path)
+            for key in ("batch_record_created", "batch_record_edited", "batch_record_deleted",
+                        "overview_selected_delete_confirmation"):
+                with self.subTest(path=path.relative_to(ROOT), key=key):
+                    resource = resources[key]
+                    self.assertEqual("plurals", resource.tag)
+                    expected = Counter({"%1$d": 1})
+                    if key == "batch_record_created":
+                        expected["%2$s"] = 1
+                    for item in resource:
+                        self.assertEqual(expected, placeholders(item.text))
+
     def test_ios_user_facing_strings_cover_all_locales(self):
         catalogs = (
             ("iosApp/InfoPlist.xcstrings", {"CFBundleName", "NSHumanReadableCopyright"}),

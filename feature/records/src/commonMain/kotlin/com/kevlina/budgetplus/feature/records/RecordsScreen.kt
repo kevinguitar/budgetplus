@@ -48,6 +48,7 @@ import com.kevlina.budgetplus.feature.record.card.RecordCard
 import com.kevlina.budgetplus.feature.record.card.RecordCardState
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -197,9 +198,10 @@ fun RecordsScreen(vm: RecordsViewModel) {
 
     if (showDeleteSelectedDialog) {
         ConfirmDialog(
-            message = stringResource(
-                Res.string.overview_selected_delete_confirmation,
-                selectedIds.size.toString()
+            message = pluralStringResource(
+                Res.plurals.overview_selected_delete_confirmation,
+                selectedIds.size,
+                selectedIds.size
             ),
             onConfirm = {
                 vm.deleteSelectedRecords()

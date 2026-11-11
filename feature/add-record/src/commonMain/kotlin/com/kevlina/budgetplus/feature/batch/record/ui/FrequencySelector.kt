@@ -35,7 +35,8 @@ import com.kevlina.budgetplus.core.ui.FontSize
 import com.kevlina.budgetplus.core.ui.Icon
 import com.kevlina.budgetplus.core.ui.Text
 import com.kevlina.budgetplus.core.ui.rippleClick
-import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.PluralStringResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
@@ -124,7 +125,7 @@ internal fun FrequencySelector(
         ) {
 
             Text(
-                text = stringResource(frequency.unit.stringRes),
+                text = pluralStringResource(frequency.unit.pluralRes, frequency.duration),
                 fontSize = fontSize,
             )
 
@@ -139,7 +140,7 @@ internal fun FrequencySelector(
                     onDismissRequest = { isUnitDropdownShown = false },
                     items = BatchUnit.entries.map { unit ->
                         DropdownItemModel(
-                            name = stringResource(unit.stringRes),
+                            name = pluralStringResource(unit.pluralRes, frequency.duration),
                             onClick = {
                                 setUnit(unit)
                                 isUnitDropdownShown = false
@@ -152,11 +153,11 @@ internal fun FrequencySelector(
     }
 }
 
-private val BatchUnit.stringRes: StringResource
+private val BatchUnit.pluralRes: PluralStringResource
     get() = when (this) {
-        BatchUnit.Month -> Res.string.batch_record_unit_month
-        BatchUnit.Week -> Res.string.batch_record_unit_week
-        BatchUnit.Day -> Res.string.batch_record_unit_day
+        BatchUnit.Month -> Res.plurals.batch_record_unit_month
+        BatchUnit.Week -> Res.plurals.batch_record_unit_week
+        BatchUnit.Day -> Res.plurals.batch_record_unit_day
     }
 
 @Preview

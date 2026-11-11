@@ -45,18 +45,30 @@
     <string name="batch_record_start_date">開始日</string>
     <string name="batch_record_frequency">周期</string>
     <string name="batch_record_every_duration">毎</string>
-    <string name="batch_record_unit_month">か月</string>
-    <string name="batch_record_unit_week">週間</string>
-    <string name="batch_record_unit_day">日</string>
+    <plurals name="batch_record_unit_month">
+        <item quantity="other">か月</item>
+    </plurals>
+    <plurals name="batch_record_unit_week">
+        <item quantity="other">週間</item>
+    </plurals>
+    <plurals name="batch_record_unit_day">
+        <item quantity="other">日</item>
+    </plurals>
     <string name="batch_record_times">繰り返し回数</string>
     <string name="batch_record_cta">一括記帳</string>
-    <string name="batch_record_created">%1$s件の記録を%2$sに追加しました</string>
+    <plurals name="batch_record_created">
+        <item quantity="other">%1$d件の記録を%2$sに追加しました</item>
+    </plurals>
     <string name="batch_record_edit_confirmation">今後のすべての記録にも変更を適用しますか？</string>
     <string name="batch_record_delete_confirmation">今後のすべての記録も削除しますか？</string>
     <string name="batch_record_only_this">この記録のみ</string>
     <string name="batch_record_all_future_records">すべての記録</string>
-    <string name="batch_record_edited">%1$s件の記録を編集しました</string>
-    <string name="batch_record_deleted">%1$s件の記録を削除しました</string>
+    <plurals name="batch_record_edited">
+        <item quantity="other">%1$d件の記録を編集しました</item>
+    </plurals>
+    <plurals name="batch_record_deleted">
+        <item quantity="other">%1$d件の記録を削除しました</item>
+    </plurals>
 
     <!-- Record Widget -->
     <string name="record_widget_title">記帳ウィジェット</string>
@@ -142,7 +154,9 @@
     <string name="overview_balance">残高</string>
     <string name="overview_details_title">%1$s：%2$s</string>
     <string name="overview_author_everyone">みんな</string>
-    <string name="overview_selected_delete_confirmation">選択した%1$s件の記録を削除してもよろしいですか？</string>
+    <plurals name="overview_selected_delete_confirmation">
+        <item quantity="other">選択した%1$d件の記録を削除してもよろしいですか？</item>
+    </plurals>
 
     <!-- Export -->
     <string name="export_cta">レポートをエクスポート</string>

@@ -45,18 +45,30 @@
     <string name="batch_record_start_date">시작 날짜</string>
     <string name="batch_record_frequency">반복 주기</string>
     <string name="batch_record_every_duration">매</string>
-    <string name="batch_record_unit_month">개월</string>
-    <string name="batch_record_unit_week">주</string>
-    <string name="batch_record_unit_day">일</string>
+    <plurals name="batch_record_unit_month">
+        <item quantity="other">개월</item>
+    </plurals>
+    <plurals name="batch_record_unit_week">
+        <item quantity="other">주</item>
+    </plurals>
+    <plurals name="batch_record_unit_day">
+        <item quantity="other">일</item>
+    </plurals>
     <string name="batch_record_times">반복 횟수</string>
     <string name="batch_record_cta">일괄 기록</string>
-    <string name="batch_record_created">%1$s개의 기록이 %2$s에 추가되었습니다</string>
+    <plurals name="batch_record_created">
+        <item quantity="other">%1$d개의 기록이 %2$s에 추가되었습니다</item>
+    </plurals>
     <string name="batch_record_edit_confirmation">미래의 모든 기록에도 적용하시겠습니까?</string>
     <string name="batch_record_delete_confirmation">미래의 모든 기록도 함께 삭제하시겠습니까?</string>
     <string name="batch_record_only_this">이 기록만</string>
     <string name="batch_record_all_future_records">모든 기록</string>
-    <string name="batch_record_edited">%1$s개의 기록이 수정되었습니다</string>
-    <string name="batch_record_deleted">%1$s개의 기록이 삭제되었습니다</string>
+    <plurals name="batch_record_edited">
+        <item quantity="other">%1$d개의 기록이 수정되었습니다</item>
+    </plurals>
+    <plurals name="batch_record_deleted">
+        <item quantity="other">%1$d개의 기록이 삭제되었습니다</item>
+    </plurals>
 
     <!-- Record Widget -->
     <string name="record_widget_title">기록 위젯</string>
@@ -142,7 +154,9 @@
     <string name="overview_balance">잔액</string>
     <string name="overview_details_title">%1$s: %2$s</string>
     <string name="overview_author_everyone">모두</string>
-    <string name="overview_selected_delete_confirmation">선택한 %1$s개의 기록을 삭제하시겠습니까?</string>
+    <plurals name="overview_selected_delete_confirmation">
+        <item quantity="other">선택한 %1$d개의 기록을 삭제하시겠습니까?</item>
+    </plurals>
 
     <!-- Export -->
     <string name="export_cta">보고서 내보내기</string>

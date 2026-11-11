@@ -49,7 +49,7 @@ Flow names below correspond to `.yml` files in each suite directory.
 | Books | `10-book-dropdown`, `11-book-limit-paywall`, `12-invite` | Book menu, free-tier book limit, native invitation share sheet. |
 | Categories | `20-category-add`, `21-category-duplicate`, `22-category-unsaved-guard` | Save a category, reject duplicates, confirm leaving unsaved changes. |
 | Overview | `30-overview-basics`, `31-overview-mode-drill`, `32-overview-export` | Totals, period/type controls, category drill-down, CSV confirmation (cancelled). |
-| Records | `40-record-edit`, `41-record-duplicate`, `42-record-delete`, `43-record-sort`, `44-record-multi-select-delete` | Edit, duplicate, delete, sort, and delete two selected records while leaving a third. |
+| Records | `40-record-edit`, `41-record-duplicate`, `42-record-delete`, `43-record-sort`, `44-record-multi-select-delete` | Edit, duplicate, delete, sort, check singular/plural delete confirmations, and delete two selected records while leaving a third. |
 | Search | `50-search-basics`, `51-search-period-gate` | Search controls; Past Month allowed, Past 6 Months paywalled. |
 | Members | `60-settings-members`, `61-settings-rename-user` | Owner shown; renamed user verified in Members. |
 | Book settings | `62-settings-rename-book`, `63-settings-book-currency` | Change and restore book name/currency. |
