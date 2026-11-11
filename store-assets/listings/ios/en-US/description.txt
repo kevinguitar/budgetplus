@@ -1,0 +1,22 @@
+One book, shared with the people in your life. Budget+ helps you organize everyday spending, household costs and travel expenses, so you can see where your money goes.
+
+Track together
+Sign in to create or join a book. Send an invitation link to family, a partner or friends, and record income and expenses together. Shared books sync while connected to the internet.
+
+See spending by category
+Organize records by category. Review category totals and proportions, income, expenses and your balance in the overview.
+
+Automatic currency conversion (Premium)
+Switch between your book currency and preferred currency when entering an amount. Budget+ converts it automatically using available rates. You can also switch the overview's display currency to review travel spending in a familiar currency.
+Rates come from an online data source. If an applicable rate is unavailable, record in the book currency instead. Changing a book's currency does not convert existing amounts.
+
+Export the selected period
+Export the selected period's records as CSV to review, organize and save in Excel.
+
+Make it your own
+Choose a color theme, or create a custom palette with Premium. Share your colors with friends and family.
+
+Free and Premium
+The free version includes ads and one book. Premium removes ads and adds more books, up to 10 in total across books you create and join, plus automatic currency conversion, custom colors and longer date ranges for reviewing records. See the app for available plans and prices.
+
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

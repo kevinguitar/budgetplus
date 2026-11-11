@@ -1,0 +1,135 @@
+name: Update store listing
+
+# Manual only; app release workflows do not use these listing sources or lanes.
+# Listing text and screenshots are independently opt-in for the selected stores.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which store(s) to upload to
+        type: choice
+        options: [both, ios, android]
+        default: both
+      store_listing:
+        description: Upload store listing text (names, subtitles/short descriptions, full descriptions)
+        type: boolean
+        default: false
+      screenshots:
+        description: Upload screenshots to the selected store(s) (replaces the current ones in each language)
+        type: boolean
+        default: false
+      ios_creative_assets:
+        description: App Store - upload the product page header and search results art (replaces the current ones)
+        type: boolean
+        default: false
+
+# Serialize manual uploads so two runs cannot create competing iOS versions or
+# invalidate each other's Google Play edits. Do not cancel an in-progress edit.
+concurrency:
+  group: upload-store-assets
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    # No selected work means no uploads or implicit iOS version bump.
+    if: ${{ inputs.store_listing || inputs.screenshots || (inputs.target != 'android' && inputs.ios_creative_assets) }}
+    runs-on: ubuntu-latest
+    env:
+      UPLOAD_STORE_LISTING: ${{ inputs.store_listing }}
+      UPLOAD_SCREENSHOTS: ${{ inputs.screenshots }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Configure staging paths
+        run: |
+          echo "STAGE_DIR=$RUNNER_TEMP/store" >> "$GITHUB_ENV"
+          echo "STORE_LISTINGS_DIR=$RUNNER_TEMP/store-listings" >> "$GITHUB_ENV"
+
+      - name: Stage and validate screenshots
+        if: ${{ inputs.screenshots || (inputs.target != 'android' && inputs.ios_creative_assets) }}
+        env:
+          TARGET: ${{ inputs.target }}
+          SCREENSHOTS: ${{ inputs.screenshots }}
+          IOS_CREATIVE_ASSETS: ${{ inputs.ios_creative_assets }}
+        run: |
+          args=("$STAGE_DIR" --target "$TARGET")
+          if [[ "$SCREENSHOTS" != true ]]; then args+=(--skip-screenshots); fi
+          if [[ "$IOS_CREATIVE_ASSETS" != true ]]; then args+=(--skip-creative-assets); fi
+          python3 store-assets/stage_for_fastlane.py "${args[@]}"
+
+      - name: Stage and validate selected store listing text
+        if: ${{ inputs.store_listing }}
+        env:
+          TARGET: ${{ inputs.target }}
+        run: |
+          python3 store-assets/listings.py --target "$TARGET" --stage-dir "$STORE_LISTINGS_DIR"
+          # Play uses one metadata directory/edit for text and screenshots.
+          if [[ "$TARGET" != ios ]]; then
+            mkdir -p "$STAGE_DIR/android"
+            cp -R "$STORE_LISTINGS_DIR/android/." "$STAGE_DIR/android/"
+          fi
+
+      - name: Setup Ruby
+        if: ${{ inputs.store_listing || inputs.screenshots }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+
+      - name: Install Fastlane
+        if: ${{ inputs.store_listing || inputs.screenshots }}
+        run: gem install fastlane --no-document
+
+      - name: Use manual store upload lanes
+        if: ${{ inputs.store_listing || inputs.screenshots }}
+        run: cp store-assets/Fastfile fastlane/Fastfile
+
+      - name: Upload to Google Play
+        if: ${{ inputs.target != 'ios' && (inputs.store_listing || inputs.screenshots) }}
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          umask 077
+          export PLAY_KEY_PATH="$RUNNER_TEMP/play-service-account.json"
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > "$PLAY_KEY_PATH"
+          fastlane android_assets
+
+      - name: Write App Store Connect key
+        if: ${{ inputs.target != 'android' && (inputs.store_listing || inputs.screenshots || inputs.ios_creative_assets) }}
+        env:
+          APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+        run: |
+          umask 077
+          ASC_KEY_PATH="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s' "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode > "$ASC_KEY_PATH"
+          echo "ASC_KEY_PATH=$ASC_KEY_PATH" >> "$GITHUB_ENV"
+
+      - name: Resolve or create editable iOS version
+        id: ios_version
+        if: ${{ inputs.target != 'android' && (inputs.store_listing || inputs.screenshots || inputs.ios_creative_assets) }}
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: python3 store-assets/ensure_ios_version.py
+
+      - name: Upload listing text and/or screenshots to App Store Connect
+        if: ${{ inputs.target != 'android' && (inputs.store_listing || inputs.screenshots) }}
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          IOS_APP_VERSION: ${{ steps.ios_version.outputs.version }}
+        run: fastlane ios_assets
+
+      - name: Upload header and search results to App Store Connect
+        if: ${{ inputs.target != 'android' && inputs.ios_creative_assets }}
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          IOS_APP_VERSION: ${{ steps.ios_version.outputs.version }}
+        run: python3 -u store-assets/upload_creative_assets.py --version "$IOS_APP_VERSION"
+
+      - name: Clean up keys
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP"/play-service-account.json "$RUNNER_TEMP"/AuthKey_*.p8

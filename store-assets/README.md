@@ -1,6 +1,8 @@
 # Store assets
 
-Store screenshots for the App Store and Google Play, in five languages.
+Store screenshots and listing-text tooling for the App Store and Google Play,
+in five languages. See [Store listing text](LISTINGS.md) for version-controlled
+names, subtitles, descriptions, validation, and manual uploads.
 
 - `originals/<platform>/<device>/<locale>/` — raw device screenshots, unedited.
   `anchors.json` next to them holds the pixel positions the editor uses (badge
@@ -32,16 +34,26 @@ Store screenshots for the App Store and Google Play, in five languages.
 
 ## Uploading
 
-Run the **Upload store screenshots** workflow (Actions tab, manual trigger). By
-default it uploads the screenshots for every device class (iPhone Duo included),
-replacing the ones already in each language. Tick `ios_creative_assets` to also
-upload the header and search results art, untick `ios_screenshots` to skip the
-App Store screenshots, or tick `dry_run` to only stage and validate everything
-(Google Play also runs a validate-only edit).
+Run the **Update store listing** workflow (Actions tab, manual
+trigger; filename `update-store-listing.yml`). Keep `target` set to
+`both`, or select `android` / `ios`. Tick `store_listing` to upload names,
+subtitles/short descriptions, and full descriptions from `listings/` (off by
+default). Tick `screenshots` to replace screenshots on the selected store(s) for
+every device class, iPhone Duo included (off by default), or `ios_creative_assets`
+for the App Store header and search-results art (also off). Listing-only uploads
+leave screenshots untouched on both stores. Every upload is real; use local
+staging to preview without contacting stores.
+
+For any selected iOS upload, the workflow reuses an editable version or creates
+the latest released version's next patch draft (e.g. `1.7.3` → `1.7.4`). It does
+not upload a build or submit/release that draft. All options off is a no-op for
+any target. See [Store listing text](LISTINGS.md) for details and limitations.
 
 `stage_for_fastlane.py OUT_DIR` lays the files out for fastlane and checks sizes,
 alpha and per-store limits, including the header and search results art; it runs
-locally too.
+locally too. Add `--target ios` / `--target android`, `--skip-screenshots`,
+and/or `--skip-creative-assets` to validate only selected assets. Use a new output
+directory; existing directories are never deleted or overwritten.
 
 fastlane doesn't upload the header and search results art, so
 `upload_creative_assets.py [--version X]` does it through the App Store Connect API

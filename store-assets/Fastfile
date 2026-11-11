@@ -1,0 +1,56 @@
+# Used only by the manual store-assets workflow, never by app releases.
+
+desc "Upload optional iOS listing text and/or screenshots to the resolved editable version"
+lane :ios_assets do
+  app_store_connect_api_key(
+    key_id: ENV.fetch("ASC_KEY_ID"),
+    issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+    key_filepath: ENV.fetch("ASC_KEY_PATH"),
+    in_house: false
+  )
+  listing = ENV.fetch("UPLOAD_STORE_LISTING") == "true"
+  screenshots = ENV.fetch("UPLOAD_SCREENSHOTS") == "true"
+  raise "Select listing text or screenshots" unless listing || screenshots
+  options = {
+    app_identifier: "com.kevlina.budgetplus",
+    app_version: ENV.fetch("IOS_APP_VERSION"),
+    skip_app_version_update: true, # ensure_ios_version.py already resolved/created it.
+    skip_binary_upload: true,
+    skip_metadata: !listing,
+    skip_screenshots: !screenshots,
+    overwrite_screenshots: screenshots,
+    submit_for_review: false,
+    run_precheck_before_submit: false,
+    force: true
+  }
+  options[:metadata_path] = File.join(ENV.fetch("STORE_LISTINGS_DIR"), "ios") if listing
+  options[:screenshots_path] = File.join(ENV.fetch("STAGE_DIR"), "ios") if screenshots
+  upload_to_app_store(options)
+end
+
+desc "Upload optional Play screenshots and/or app-wide listing text without changing releases"
+lane :android_assets do
+  listing = ENV.fetch("UPLOAD_STORE_LISTING") == "true"
+  screenshots = ENV.fetch("UPLOAD_SCREENSHOTS") == "true"
+  raise "Select listing text or screenshots" unless listing || screenshots
+  key = ENV.fetch("PLAY_KEY_PATH")
+  # Supply needs an unambiguous release lookup even when changelogs are skipped.
+  # Select a production version code, but never upload/promote/update a release.
+  versions = google_play_track_version_codes(
+    package_name: "com.kevlina.budgetplus", json_key: key, track: "production"
+  )
+  raise "No production Play release found for the metadata edit" if versions.empty?
+  upload_to_play_store(
+    package_name: "com.kevlina.budgetplus",
+    json_key: key,
+    metadata_path: File.join(ENV.fetch("STAGE_DIR"), "android"),
+    track: "production",
+    version_code: versions.map(&:to_i).max,
+    skip_upload_apk: true,
+    skip_upload_aab: true,
+    skip_upload_metadata: !listing,
+    skip_upload_changelogs: true,
+    skip_upload_images: true,
+    skip_upload_screenshots: !screenshots
+  )
+end
