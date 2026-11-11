@@ -1,20 +1,12 @@
 # Store assets
 
-Store screenshots and listing-text tooling for the App Store and Google Play,
-in five languages. See [Store listing text](LISTINGS.md) for version-controlled
-names, subtitles, descriptions, validation, and manual uploads.
+Localized listing copy and screenshots for the App Store and Google Play.
+See [LISTINGS.md](LISTINGS.md) for copy rules, validation, and upload details.
 
-- `originals/<platform>/<device>/<locale>/` — raw device screenshots, unedited.
-  `anchors.json` next to them holds the pixel positions the editor uses (badge
-  icons, currency crop box), so the edited set can be regenerated.
-- `final/<platform>/<device-class>/<locale>/01-login.png … 08-share.png` — the
-  edited, upload-ready screenshots, in store order: login, books, shared, currency,
-  overview, tones, colors, share. The `NN-` prefix sets the display order on both
-  stores (both sort by file name).
-- `final/ios/creative/<locale>/header.png`, `search.png` — App Store product page
-  header (3840×1646) and search results art (3840×2560), one pair per language.
-  Composed from the iPhone 18 Pro originals by `build/screenshot-bridge/tools/creative.py`
-  (headline and feature line in `creative.json` next to it).
+- `listings/<platform>/<locale>/` — titles, subtitles, and descriptions.
+- `originals/<platform>/<device>/<locale>/` — raw screenshots and editor positions (`anchors.json`).
+- `final/<platform>/<device-class>/<locale>/` — upload-ready screenshots, ordered by `NN-` prefix.
+- `final/ios/creative/<locale>/` — `header.png` (3840×1646) and `search.png` (3840×2560).
 
 | Device class | Size | Store slot | Source device |
 |---|---|---|---|
@@ -34,29 +26,17 @@ names, subtitles, descriptions, validation, and manual uploads.
 
 ## Uploading
 
-Run the **update_store_assets** workflow (Actions tab, manual
-trigger; filename `update_store_assets.yml`). Keep `target` set to
-`both`, or select `android` / `ios`. Tick `store_listing` to upload names,
-subtitles/short descriptions, and full descriptions from `listings/` (off by
-default). Tick `screenshots` to replace screenshots on the selected store(s) for
-every device class, iPhone Duo included (off by default), or `ios_creative_assets`
-for the App Store header and search-results art (also off). Listing-only uploads
-leave screenshots untouched on both stores. Every upload is real; use local
-staging to preview without contacting stores.
+Run [update_store_assets](../.github/workflows/update_store_assets.yml) manually.
+Choose `android`, `ios`, or `both`, then enable `store_listing`, `screenshots`,
+and/or `ios_creative_assets` (all off by default). Only selected assets are
+uploaded. iOS reuses an editable version or creates a patch draft; no builds
+are uploaded or submitted for review.
 
-For any selected iOS upload, the workflow reuses an editable version or creates
-the latest released version's next patch draft (e.g. `1.7.3` → `1.7.4`). It does
-not upload a build or submit/release that draft. All options off is a no-op for
-any target. See [Store listing text](LISTINGS.md) for details and limitations.
+Preview screenshots locally using a new output directory:
 
-`stage_for_fastlane.py OUT_DIR` lays the files out for fastlane and checks sizes,
-alpha and per-store limits, including the header and search results art; it runs
-locally too. Add `--target ios` / `--target android`, `--skip-screenshots`,
-and/or `--skip-creative-assets` to validate only selected assets. Use a new output
-directory; existing directories are never deleted or overwritten.
+```bash
+python3 store-assets/stage_for_fastlane.py build/store-assets-preview
+```
 
-fastlane doesn't upload the header and search results art, so
-`upload_creative_assets.py [--version X]` does it through the App Store Connect API
-(needs `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_PATH`). It places each language's
-pair on the editable version's matching localization, replacing what is there, and
-skips images that are already placed. The art goes to App Review with the version.
+Use `--target ios` / `--target android`, `--skip-screenshots`, or
+`--skip-creative-assets` to limit staging. This makes no store API calls.

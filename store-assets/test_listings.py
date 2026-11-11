@@ -31,6 +31,15 @@ class ListingValidationTests(unittest.TestCase):
             actual = {(item.store, item.locale, item.field) for item in files if item.store == store}
             self.assertEqual(actual, expected)
 
+    def test_paid_tier_labels_stay_in_full_descriptions_only(self):
+        paid_tiers = r"(?i)premium|進階版|高级版|プレミアム|프리미엄"
+        for listing in load_listings(self.root):
+            with self.subTest(store=listing.store, locale=listing.locale, field=listing.field):
+                if listing.field in {"description", "full_description"}:
+                    self.assertRegex(listing.text, paid_tiers)
+                else:
+                    self.assertNotRegex(listing.text, paid_tiers)
+
     def test_unicode_lengths_not_utf8_byte_lengths(self):
         path = SOURCES["ios"] / "zh-Hant/name.txt"
         self.replace(path, "記" * 30 + "\n")

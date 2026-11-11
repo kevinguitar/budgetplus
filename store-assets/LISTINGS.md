@@ -21,7 +21,8 @@ notes stay in their existing locations and are not part of manual uploads.
 - Use UTF-8 with LF line breaks; names, titles, subtitles, and short descriptions are single-line.
 - App Store headings: `【Heading】`. Play full-description headings: `<b>Heading</b>`.
   Separate sections with blank lines; no HTML on App Store or Markdown formatting on either store.
-- Keep paid-tier labels out of titles/subtitles and disclose Premium features in descriptions.
+- Keep paid-tier labels out of titles, subtitles, and short descriptions;
+  disclose Premium features in full descriptions.
 - Keep the Apple EULA link in iOS descriptions only; confirm it matches the configured agreement.
 - Limits: Apple name/subtitle **30**, Play title **30**, Play short description **80**,
   full descriptions **4,000** characters. Counts include line breaks and HTML tags.
