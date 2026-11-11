@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lay out store-assets/final/ for fastlane and check it.
 
-usage: stage_for_fastlane.py OUT_DIR [--with-duo]
+usage: stage_for_fastlane.py OUT_DIR
 
 Writes:
   OUT_DIR/ios/<asc-locale>/<NN>-<device>-<screen>.png        (deliver screenshots_path)
@@ -10,8 +10,12 @@ Writes:
 Checks every file is an RGB PNG (no alpha), sizes are uniform per device class,
 per-type counts stay within store limits (App Store 10, Google Play 8), and the
 files follow ORDER. Staged names keep the NN- prefix, which sets the display order.
+
+Also checks the App Store header and search results art in final/ios/creative/ (not staged:
+fastlane doesn't upload it; upload_creative_assets.py does).
 """
 import os, shutil, struct, sys
+from upload_creative_assets import check_creative
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FINAL = os.path.join(HERE, "final")
@@ -22,8 +26,7 @@ LOCALES = {  # repo locale -> (App Store Connect, Google Play)
     "ja": ("ja", "ja-JP"),
     "ko": ("ko", "ko-KR"),
 }
-IOS = ["iphone-6.3", "ipad-13"]          # deliver detects the display type from the pixel size
-DUO = ["iphone-duo-outer"]                # newer size class; fastlane may not know it yet
+IOS = ["iphone-6.3", "iphone-duo-outer", "ipad-13"]  # deliver detects the display type from the pixel size
 ANDROID = {"phone": "phoneScreenshots", "tablet": "tenInchScreenshots"}
 LIMIT = {"ios": 10, "android": 8}
 # Store display order. Both App Store Connect (deliver re-sorts each set by file name)
@@ -39,10 +42,10 @@ def png_info(path):
     return w, h, head[25]  # color type: 2 = RGB, 6 = RGBA
 
 def main():
-    out = sys.argv[1]; with_duo = "--with-duo" in sys.argv
+    out = sys.argv[1]
     if os.path.exists(out): shutil.rmtree(out)
     errors, summary = [], []
-    for platform, classes in (("ios", IOS + (DUO if with_duo else [])), ("android", list(ANDROID))):
+    for platform, classes in (("ios", IOS), ("android", list(ANDROID))):
         for cls in classes:
             sizes = set()
             for loc, (asc, play) in LOCALES.items():
@@ -63,6 +66,8 @@ def main():
                 summary.append(f"{platform:8} {cls:18} {loc:8} -> {asc if platform == 'ios' else play:8} {len(files)} files")
             if len(sizes) != 1: errors.append(f"{platform}/{cls}: mixed sizes {sorted(sizes)}")
             else: summary.append(f"{platform:8} {cls:18} size {sizes.pop()}")
+    creative_errors, creative_summary = check_creative()
+    errors += creative_errors; summary += creative_summary
     print("\n".join(summary))
     if errors:
         print("\nERRORS:\n" + "\n".join(errors)); sys.exit(1)
