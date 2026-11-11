@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.getPluralString
 
 @AssistedInject
 class RecordsViewModel(
@@ -214,7 +214,7 @@ class RecordsViewModel(
         viewModelScope.launch {
             try {
                 val count = recordRepo.deleteRecords(ids)
-                snackbarSender.send(getString(Res.string.batch_record_deleted, count.toString()))
+                snackbarSender.send(getPluralString(Res.plurals.batch_record_deleted, count, count))
             } catch (e: Exception) {
                 snackbarSender.sendError(e)
             } finally {

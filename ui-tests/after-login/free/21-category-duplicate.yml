@@ -13,7 +13,7 @@ appId: com.kevlina.budgetplus
 - pressKey: Enter
 - extendedWaitUntil:
     visible:
-      text: "Category Food already exist"
+      text: "Category Food already exists"
     timeout: 10000
 # No category was added, but the editor may be marked dirty — handle the exit guard.
 - tapOn:

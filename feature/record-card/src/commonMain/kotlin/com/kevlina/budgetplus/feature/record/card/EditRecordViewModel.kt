@@ -19,6 +19,7 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 
 @ViewModelKey
@@ -61,7 +62,7 @@ internal class EditRecordViewModel(
                         newName = newName,
                         newPriceText = newPriceText
                     )
-                    snackbarSender.send(getString(Res.string.batch_record_edited, count.toString()))
+                    snackbarSender.send(getPluralString(Res.plurals.batch_record_edited, count, count))
                 } else {
                     recordRepo.editRecord(
                         oldRecord = record,
@@ -83,7 +84,7 @@ internal class EditRecordViewModel(
             try {
                 if (deleteBatch) {
                     val count = recordRepo.deleteBatch(record)
-                    snackbarSender.send(getString(Res.string.batch_record_deleted, count.toString()))
+                    snackbarSender.send(getPluralString(Res.plurals.batch_record_deleted, count, count))
                 } else {
                     recordRepo.deleteRecord(record.id)
                     snackbarSender.send(getString(Res.string.record_deleted, record.name))

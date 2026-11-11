@@ -25,7 +25,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "极简记帐"
+            "value" : "极简记账"
           }
         },
         "zh-Hant" : {
@@ -84,7 +84,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "极简记帐需要麦克风权限来使用语音记账功能"
+            "value" : "极简记账需要麦克风权限来使用语音记账功能"
           }
         },
         "zh-Hant" : {
@@ -119,7 +119,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "极简记帐需要语音识别权限将您的语音转换为帐目"
+            "value" : "极简记账需要语音识别权限将您的语音转换为账目"
           }
         },
         "zh-Hant" : {

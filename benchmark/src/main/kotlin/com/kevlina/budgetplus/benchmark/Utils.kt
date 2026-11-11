@@ -43,8 +43,8 @@ internal fun MacrobenchmarkScope.signInAndCreateBook() {
  * Best-effort: each bubble is only tapped when present.
  */
 internal fun MacrobenchmarkScope.dismissOnboardingBubbles() {
-    clickTextIfPresent("Invite fellows to track expenses together!")
-    clickTextIfPresent("Long tap to record your expenses by voice")
+    clickTextIfPresent("Tap to share an invite link and track expenses with friends!")
+    clickTextIfPresent("Long press to record by voice")
     clickTextIfPresent("Scroll to switch the record currency")
     waitForText("Expense")
 }

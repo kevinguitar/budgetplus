@@ -29,7 +29,7 @@ appId: com.kevlina.budgetplus
     text: "Confirm"
 - extendedWaitUntil:
     visible:
-      text: "Record.*is deleted"
+      text: "Deleted .*"
     timeout: 10000
 - tapOn:
     text: "bottom_nav_add"

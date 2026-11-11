@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.getPluralString
 
 @ViewModelKey
 @ContributesIntoMap(AppScope::class)
@@ -120,17 +120,18 @@ internal class BatchRecordViewModel(
             author = authManager.userState.value?.toAuthor()
         )
 
+        val count = times.value
         recordRepo.batchRecord(
             record = record,
             startDate = startRecordDate.value.date,
             frequency = frequency.value,
-            times = times.value
+            times = count
         )
         recordEvent.sendEvent(Unit)
         resetScreen()
 
         viewModelScope.launch {
-            snackbarSender.send(getString(Res.string.batch_record_created, times.value.toString(), category))
+            snackbarSender.send(getPluralString(Res.plurals.batch_record_created, count, count, category))
         }
     }
 
