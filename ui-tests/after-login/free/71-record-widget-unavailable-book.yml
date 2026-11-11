@@ -24,7 +24,7 @@ appId: com.kevlina.budgetplus
                 optional: true
       - extendedWaitUntil:
           visible:
-      text: "This widget's book is no longer available"
+            text: "This widget's book is no longer available"
           timeout: 15000
 - runFlow: ../../common/assert-on-record.yml
 # UI-test snackbars are persistent and tap-to-dismiss, don't leave it for later flows.

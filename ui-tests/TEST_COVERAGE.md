@@ -168,7 +168,9 @@ maestro check-syntax ui-tests/login/03-create-book.yml
 
 CI runs the device-free Python checks on both operating systems before building.
 They cover selection, failure propagation, retries, deadlines, config restoration,
-prebuilt apps, and reporting—not actual UI behavior.
+prebuilt apps, reporting, localization resources, and visibility-selector nesting—not
+actual UI behavior. The nesting guard catches empty `visible`/`notVisible` blocks;
+use `maestro check-syntax <flow>` for full syntax validation.
 
 ## Retries and diagnostics
 

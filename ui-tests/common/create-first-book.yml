@@ -24,7 +24,7 @@ appId: com.kevlina.budgetplus
                 timeout: 8000
 # Neutral label dismisses the keyboard on both platforms.
 - tapOn:
-      text: "You can create a new book"
+    text: "You can create a new book"
 - tapOn:
     text: "Go"
 - runFlow: dismiss-system-dialogs.yml

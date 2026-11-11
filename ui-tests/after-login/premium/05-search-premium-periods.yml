@@ -14,7 +14,7 @@ appId: com.kevlina.budgetplus
     text: "Past 6 Months"
 - extendedWaitUntil:
     notVisible:
-    text: "Past Year"
+      text: "Past Year"
     timeout: 15000
 - extendedWaitUntil:
     visible:
