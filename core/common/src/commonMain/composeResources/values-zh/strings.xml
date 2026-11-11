@@ -110,7 +110,7 @@
     <string-array name="default_income_categories">
         <item>薪水</item>
         <item>奖金</item>
-        <item>现金回馈</item>
+        <item>返现</item>
         <item>其他</item>
     </string-array>
 
@@ -180,7 +180,7 @@
     <string name="settings_rename_book">重命名账本</string>
     <string name="settings_rename_book_success">账本名称已更改为%1$s</string>
     <string name="settings_edit_book_currency">编辑账本币种</string>
-    <string name="settings_edit_preferred_currency">编辑默认币种</string>
+    <string name="settings_edit_preferred_currency">编辑首选币种</string>
     <string name="settings_edit_preferred_currency_desc">即时换算显示汇率，且后续新增账本时将默认沿用此币种设置</string>
     <string name="settings_view_members">查看成员</string>
     <string name="settings_allow_members_edit">允许成员编辑</string>
@@ -208,7 +208,7 @@
     <string name="settings_no_email_app_found">找不到邮件应用程序</string>
     <string name="settings_delete_account">删除账号</string>
     <string name="settings_delete_account_description">确定要删除账号吗？删除账号后，所有账本与账目数据将一并清除，且无法恢复。</string>
-    <string name="settings_delete_account_description2">确认永久删除</string>
+    <string name="settings_delete_account_description2">确认永久删除？</string>
 
     <!-- Color Tone Picker -->
     <string name="color_tone_picker_title">主题调色板</string>
@@ -224,10 +224,10 @@
 
     <!-- Currency Picker -->
     <string name="currency_picker_book_title">账本币种</string>
-    <string name="currency_picker_preferred_title">默认币种</string>
+    <string name="currency_picker_preferred_title">首选币种</string>
     <string name="currency_picker_hint">日元或 JPY</string>
     <string name="currency_picker_book_edit_success">%1$s的币种已更换为%2$s</string>
-    <string name="currency_picker_preferred_edit_success">默认币种已设置为%1$s</string>
+    <string name="currency_picker_preferred_edit_success">首选币种已设置为%1$s</string>
     <string name="currency_picker_no_conversion_disclaimer">更改币种只会改变币值符号，原有的金额数字不会自动换算</string>
 
     <!-- Bubble -->

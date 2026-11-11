@@ -15,16 +15,16 @@ appId: com.kevlina.budgetplus
 - runFlow:
     when:
       visible:
-        text: "Sort by price"
+        text: "Sort by amount"
     commands:
       - tapOn:
-          text: "Sort by price"
+          text: "Sort by amount"
 - assertVisible:
     text: "Sort by date"
 - tapOn:
     text: "Sort by date"
 - assertVisible:
-    text: "Sort by price"
+    text: "Sort by amount"
 # Back to Overview, restore All-Records mode, then Record.
 - tapOn:
     text: "Back"

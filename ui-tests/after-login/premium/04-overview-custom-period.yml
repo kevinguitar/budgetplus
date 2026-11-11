@@ -14,7 +14,7 @@ appId: com.kevlina.budgetplus
     timeout: 15000
 # Premium: no "above one month" upsell is shown.
 - assertNotVisible:
-    text: "Unlock premium to set the period above one month"
+    text: "Unlock Premium to view records over a period longer than one month"
 # Dismiss the date-range picker and return to Record.
 - tapOn:
     text: "Cancel"

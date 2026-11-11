@@ -5,14 +5,14 @@
 
     <!-- Auth -->
     <string name="auth_welcome_title">Welcome to Budget+</string>
-    <string name="auth_welcome_description">A mighty co-spending tracker\nUse it anywhere with your friends and family</string>
+    <string name="auth_welcome_description">A fast expense tracker—record in just 5 seconds\nTrack together with friends and family!</string>
     <string name="auth_google">Continue with Google</string>
     <string name="auth_apple">Continue with Apple</string>
     <string name="auth_success">Welcome, %1$s!</string>
 
     <!-- Welcome -->
-    <string name="welcome_create_book_title">You can create a new accounting book</string>
-    <string name="welcome_join_instruction">Or want to join your friends and family?\nAsk your fellows to share the join link with you!</string>
+    <string name="welcome_create_book_title">You can create a new book</string>
+    <string name="welcome_join_instruction">Want to join a friend's book and track together?\nAsk them to share an invite link with you!</string>
 
     <!-- Navigation -->
     <string name="nav_record">Record</string>
@@ -21,21 +21,21 @@
     <!-- Record -->
     <string name="record_note">Note</string>
     <string name="record_note_placeholder_expense">What did you pay for?</string>
-    <string name="record_note_placeholder_income">Where did you earn from?</string>
-    <string name="record_price">Price (%1$s)</string>
+    <string name="record_note_placeholder_income">Where did the money come from?</string>
+    <string name="record_price">Amount (%1$s)</string>
     <string name="record_expense">Expense</string>
     <string name="record_income">Income</string>
     <string name="record_empty_category">Please choose a category</string>
-    <string name="record_empty_price">Please input the price</string>
+    <string name="record_empty_price">Please enter an amount</string>
     <string name="record_edit_title">Edit Record</string>
-    <string name="record_edited">Record edited</string>
-    <string name="record_deleted">Record %1$s is deleted</string>
+    <string name="record_edited">Record saved</string>
+    <string name="record_deleted">Deleted %1$s</string>
     <string name="record_confirm_delete">Are you sure you want to delete the record?</string>
     <string name="record_duplicated">Record duplicated</string>
-    <string name="record_speech_recognition_format">Say the note and price</string>
-    <string name="record_speech_recognition_not_supported">Feature is not supported on this device</string>
-    <string name="record_speech_recognition_no_result">Cannot recognize, please try again</string>
-    <string name="record_freeze_book_title">Sad to see you go\nPlease choose a book to continue recording</string>
+    <string name="record_speech_recognition_format">Say the note and amount</string>
+    <string name="record_speech_recognition_not_supported">Voice recording is not supported on this device</string>
+    <string name="record_speech_recognition_no_result">Couldn't recognize that. Please try again</string>
+    <string name="record_freeze_book_title">Sorry to see you cancel your subscription\nPlease choose one book to continue recording</string>
     <string name="record_freeze_book_description">Don't worry! All your data will be preserved</string>
     <string name="record_currency_exchange">Currency Converter</string>
     <string name="record_currency_rate_unavailable">Exchange rate is not available yet, please try again later</string>
@@ -43,17 +43,17 @@
     <!-- Batch Record -->
     <string name="batch_record_title">Batch Record</string>
     <string name="batch_record_start_date">Start Date:</string>
-    <string name="batch_record_frequency">Batch Frequency:</string>
+    <string name="batch_record_frequency">Frequency:</string>
     <string name="batch_record_every_duration">Every</string>
     <string name="batch_record_unit_month">Month</string>
     <string name="batch_record_unit_week">Week</string>
     <string name="batch_record_unit_day">Day</string>
     <string name="batch_record_times">Number of times:</string>
-    <string name="batch_record_cta">Record</string>
+    <string name="batch_record_cta">Batch Record</string>
     <string name="batch_record_created">%1$s records added to %2$s</string>
-    <string name="batch_record_edit_confirmation">Do you want to apply for all the future records as well?</string>
-    <string name="batch_record_delete_confirmation">Do you want to delete all the future records as well?</string>
-    <string name="batch_record_only_this">Only this</string>
+    <string name="batch_record_edit_confirmation">Do you want to apply these changes to all future records as well?</string>
+    <string name="batch_record_delete_confirmation">Do you want to delete all future records as well?</string>
+    <string name="batch_record_only_this">Only this record</string>
     <string name="batch_record_all_future_records">All future records</string>
     <string name="batch_record_edited">%1$s records were edited</string>
     <string name="batch_record_deleted">%1$s records were deleted</string>
@@ -61,8 +61,8 @@
     <!-- Record Widget -->
     <string name="record_widget_title">Record Widget</string>
     <string name="record_widget_book">Adds to: %1$s</string>
-    <string name="record_widget_hint">Pick up to %1$s items you recorded often in the last 30 days, you will fill in the price each time.</string>
-    <string name="record_widget_empty">No records in the last 30 days yet. Record a few expenses first!</string>
+    <string name="record_widget_hint">Pick up to %1$s items you recorded often in the last 30 days. Enter the amount each time you record.</string>
+    <string name="record_widget_empty">No records in the last 30 days yet. Add a few records first!</string>
     <string name="record_widget_limit">You can select up to %1$s items</string>
     <string name="record_widget_position">Position %1$s</string>
     <string name="record_widget_dynamic_colors">Material You colors</string>
@@ -75,19 +75,19 @@
     <string name="record_widget_pin_unsupported">Your launcher doesn't support adding widgets from the app. Long press your home screen to add the %1$s widget.</string>
     <string name="record_widget_preset_saved">Saved! Long press your home screen, tap + and add the %1$s Record Widget. Then tap Edit Widget to choose this preset.</string>
     <string name="record_widget_switched_book">Switched to %1$s</string>
-    <string name="record_widget_book_unavailable">The book of this widget is no longer available</string>
+    <string name="record_widget_book_unavailable">This widget's book is no longer available</string>
     <string name="record_widget_setup">Tap to set up</string>
     <string name="record_widget_sign_in">Sign in to %1$s first</string>
 
     <!-- Book -->
     <string name="book_selection">Select book</string>
-    <string name="book_create_success">Your book %1$s is created!</string>
+    <string name="book_create_success">Your book %1$s has been created!</string>
     <string name="book_join_success">You have joined %1$s successfully!</string>
-    <string name="book_join_link_expired">The join link is expired…</string>
+    <string name="book_join_link_expired">The invite link has expired…</string>
     <string name="book_already_archived">Oops, the book has been deleted…</string>
-    <string name="book_already_joined">You have already joined</string>
-    <string name="book_join_exceed_free_limit">Unlock premium to create/ join more books!</string>
-    <string name="book_exceed_maximum">You have reached the maximum books limit</string>
+    <string name="book_already_joined">You have already joined this book</string>
+    <string name="book_join_exceed_free_limit">Unlock Premium to create or join more books!</string>
+    <string name="book_exceed_maximum">You have reached the maximum number of books</string>
     <string name="book_copy_categories_from">Copy categories from</string>
     <string name="book_copy_categories_default">Default</string>
 
@@ -95,7 +95,7 @@
     <string name="category_title">Category</string>
     <string name="category_edit_title">Edit Categories</string>
     <string name="category_edit_successful">Category list has been saved</string>
-    <string name="category_already_exist">Category %1$s already exist</string>
+    <string name="category_already_exist">Category %1$s already exists</string>
 
     <string-array name="default_expense_categories">
         <item>Food</item>
@@ -103,15 +103,15 @@
         <item>Transport</item>
         <item>Entertainment</item>
         <item>Rent</item>
-        <item>Mobile</item>
-        <item>Utility</item>
+        <item>Telecom</item>
+        <item>Utilities</item>
         <item>Other</item>
     </string-array>
 
     <string-array name="default_income_categories">
         <item>Salary</item>
         <item>Bonus</item>
-        <item>Rebate</item>
+        <item>Cashback</item>
         <item>Other</item>
     </string-array>
 
@@ -123,7 +123,7 @@
     <!-- Review -->
     <string name="review_request_message">Hope you like our product! Would you like to rate the app?</string>
     <string name="review_request_yes">Sure!</string>
-    <string name="review_request_no">No</string>
+    <string name="review_request_no">Not now</string>
 
     <!-- Menu -->
     <string name="menu_invite_to_book">Click the link to track expenses with me!\n%1$s</string>
@@ -137,33 +137,33 @@
     <string name="overview_period_week">1W</string>
     <string name="overview_period_month">1M</string>
     <string name="overview_period_last_month">LM</string>
-    <string name="overview_exceed_max_period">Unlock premium to set the period above one month</string>
+    <string name="overview_exceed_max_period">Unlock Premium to view records over a period longer than one month</string>
     <string name="overview_sort_by_date">Sort by date</string>
-    <string name="overview_sort_by_price">Sort by price</string>
+    <string name="overview_sort_by_price">Sort by amount</string>
     <string name="overview_balance">Balance</string>
     <string name="overview_details_title">%1$s: %2$s</string>
     <string name="overview_author_everyone">Everyone</string>
     <string name="overview_selected_delete_confirmation">Are you sure you want to delete the %1$s selected records?</string>
 
     <!-- Export -->
-    <string name="export_cta">Export csv</string>
+    <string name="export_cta">Export Report</string>
     <string name="export_csv_confirmation">Do you want to export all the records from %1$s to %2$s?</string>
     <string name="export_csv_confirmation_single_day">Do you want to export all the records on %1$s?</string>
-    <string name="export_csv_success">Your report has been saved to the Download folder</string>
+    <string name="export_csv_success">Your CSV report has been saved to the Downloads folder</string>
     <string name="export_column_type">Type</string>
     <string name="export_column_name">Name</string>
-    <string name="export_column_price">Price (%1$s)</string>
+    <string name="export_column_price">Amount (%1$s)</string>
     <string name="export_column_category">Category</string>
-    <string name="export_column_created_on">Created On</string>
+    <string name="export_column_created_on">Date and Time</string>
     <string name="export_column_author">Author</string>
 
     <!-- Search -->
     <string name="search_title">Search</string>
     <string name="search_field_placeholder">Enter keyword</string>
     <string name="search_all_categories">All Categories</string>
-    <string name="search_period_last_month">Last Month</string>
-    <string name="search_period_last_half_year">Last 6 Months</string>
-    <string name="search_period_last_year">Last Year</string>
+    <string name="search_period_last_month">Past Month</string>
+    <string name="search_period_last_half_year">Past 6 Months</string>
+    <string name="search_period_last_year">Past Year</string>
     <string name="search_period_custom">Custom</string>
     <string name="search_period_custom_range">From %1$s to %2$s</string>
 
@@ -171,7 +171,7 @@
     <string name="premium_hide_ads">Hide Ads</string>
     <string name="premium_unlock">Unlock Premium</string>
     <string name="premium_unlocked">Budget+ Premium unlocked!</string>
-    <string name="premium_acknowledge_fail">Payment can't be acknowledged, please come back later.</string>
+    <string name="premium_acknowledge_fail">Couldn't confirm your payment. Please try again later</string>
 
     <!-- Settings -->
     <string name="settings_title">%1$s's Settings</string>
@@ -185,13 +185,13 @@
     <string name="settings_edit_preferred_currency_desc">Real-time exchange rate conversion. This setting will be the default for new books.</string>
     <string name="settings_view_members">View Members</string>
     <string name="settings_allow_members_edit">Allow Members to Edit</string>
-    <string name="settings_allow_members_edit_desc">Let your book members edit name, categories, currency and all records.</string>
+    <string name="settings_allow_members_edit_desc">Let members edit the book name, categories, currency, and all records.</string>
     <string name="settings_logout">Logout</string>
     <string name="settings_delete_book">Delete Book</string>
     <string name="settings_leave_book">Leave Book</string>
     <string name="settings_confirm_delete">Are you sure you want to delete %1$s?</string>
     <string name="settings_confirm_leave">Are you sure you want to leave %1$s?</string>
-    <string name="settings_book_deleted">You have deleted %1$s</string>
+    <string name="settings_book_deleted">%1$s has been deleted</string>
     <string name="settings_book_left">You have left %1$s</string>
     <string name="settings_language">Language</string>
     <string name="settings_input_vibration">Input Vibration</string>
@@ -199,7 +199,7 @@
     <string name="settings_bar_chart">Bar Chart</string>
     <string name="settings_pie_chart">Pie Chart</string>
     <string name="settings_calculator_button">Calculator Decimal Button</string>
-    <string name="settings_calculator_dot">Dot</string>
+    <string name="settings_calculator_dot">Decimal Point</string>
     <string name="settings_share_app">Share the app with friends</string>
     <string name="settings_share_app_message">I found an awesome budget app! Try it out!\n%1$s</string>
     <string name="settings_rate_us">Rate Us on %1$s</string>
@@ -219,9 +219,9 @@
     <string name="color_tone_countryside">Countryside</string>
     <string name="color_tone_barbie">Barbie and Ken</string>
     <string name="color_tone_azure_coast">Azure Coast</string>
-    <string name="color_tone_customized">Customized</string>
-    <string name="color_tone_color_hex_code">Color Hex</string>
-    <string name="color_tone_applied_from_link">Applied the colors, save it if you like it!</string>
+    <string name="color_tone_customized">My Palette</string>
+    <string name="color_tone_color_hex_code">Hex Color Code</string>
+    <string name="color_tone_applied_from_link">Theme colors applied. Save them if you like them!</string>
 
     <!-- Currency Picker -->
     <string name="currency_picker_book_title">Book's Currency</string>
@@ -232,28 +232,28 @@
     <string name="currency_picker_no_conversion_disclaimer">Changing the currency only updates the currency symbol; existing amounts will not be converted automatically</string>
 
     <!-- Bubble -->
-    <string name="bubble_invite">Invite fellows to track expenses together!</string>
-    <string name="bubble_speak_to_record">Long tap to record your expenses by voice</string>
+    <string name="bubble_invite">Tap to share an invite link and track expenses with friends!</string>
+    <string name="bubble_speak_to_record">Long press to record by voice</string>
     <string name="bubble_scroll_to_select_currency">Scroll to switch the record currency</string>
-    <string name="bubble_edit_category">Tap to rename or delete, long tap to reorder</string>
-    <string name="bubble_save_category">Click save after you finish editing</string>
-    <string name="bubble_overview_mode">Tap to group the records by category</string>
-    <string name="bubble_overview_export">You can export the records to csv</string>
-    <string name="bubble_overview_record_tap_hint">Tap to edit, long tap to duplicate or delete</string>
-    <string name="bubble_overview_pie_chart">Long tap to view more details</string>
-    <string name="bubble_records_sorting">Change the records sorting by date or price</string>
+    <string name="bubble_edit_category">Tap to rename or delete. Long press and drag to reorder</string>
+    <string name="bubble_save_category">Remember to save when you finish editing!</string>
+    <string name="bubble_overview_mode">Switch between categories and individual records</string>
+    <string name="bubble_overview_export">Export your records to a CSV file</string>
+    <string name="bubble_overview_record_tap_hint">Tap to edit, long press to duplicate or delete</string>
+    <string name="bubble_overview_pie_chart">Long press to view more details</string>
+    <string name="bubble_records_sorting">Sort your records by date or amount</string>
     <string name="bubble_colors_sharing">Share the colors with your friends!</string>
 
     <!-- Notification -->
     <string name="notification_channel_general">General</string>
-    <string name="notification_channel_general_desc">Some reminders and any other updates regarding the app changes</string>
+    <string name="notification_channel_general_desc">Reminders and app-related notifications</string>
     <string name="notification_channel_new_member">New Member</string>
-    <string name="notification_channel_new_member_desc">We'll notify you when a new member joins your accounting book</string>
+    <string name="notification_channel_new_member_desc">We'll notify you when a new member joins your book</string>
 
     <!-- General -->
     <string name="cta_add">Add</string>
     <string name="cta_create">Create</string>
-    <string name="cta_rename">Rename</string>
+    <string name="cta_rename">Save</string>
     <string name="cta_invite">Invite</string>
     <string name="cta_edit">Edit</string>
     <string name="cta_save">Save</string>
@@ -282,6 +282,6 @@
     <string name="notification_permission_hint">Turn on the notification permission in the settings if you change your mind</string>
     <string name="write_storage_permission_hint">Turn on the storage permission in the settings if you change your mind</string>
     <string name="microphone_permission_hint">Turn on the microphone permission in the settings if you change your mind</string>
-    <string name="app_update_downloaded">The update is ready!</string>
+    <string name="app_update_downloaded">The Budget+ update is ready!</string>
     <string name="unsaved_warning_message">Do you want to leave without saving the changes?</string>
 </resources>

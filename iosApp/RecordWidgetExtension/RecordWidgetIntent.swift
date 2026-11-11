@@ -48,7 +48,7 @@ struct RecordWidgetPresetQuery: EntityQuery {
 struct RecordWidgetConfigurationIntent: WidgetConfigurationIntent {
 
     static var title: LocalizedStringResource = "Record Widget"
-    static var description = IntentDescription("Record your frequent expenses with a tap")
+    static var description = IntentDescription("Record your frequent items with a tap")
 
     @Parameter(title: "Preset")
     var preset: RecordWidgetPresetEntity?

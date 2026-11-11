@@ -4,15 +4,15 @@
     <string name="app_language">ja</string>
 
     <!-- Auth -->
-    <string name="auth_welcome_title">ミニマリストな帳簿への参加を歓迎します。</string>
-    <string name="auth_welcome_description">高速な帳簿アプリ、開始から記帳完了までたった 5 秒、友達や親戚と一緒に記帳しましょう！</string>
+    <string name="auth_welcome_title">ミニマリストな帳簿へようこそ</string>
+    <string name="auth_welcome_description">アプリを開いてから記帳完了まで、たった5秒\n家族や友達と一緒に記帳しましょう！</string>
     <string name="auth_google">Google で続行</string>
     <string name="auth_apple">Apple で続行</string>
     <string name="auth_success">ようこそ、%1$sさん！</string>
 
     <!-- Welcome -->
     <string name="welcome_create_book_title">帳簿を作成できます</string>
-    <string name="welcome_join_instruction">または、友達と一緒に記帳したいですか？\n彼らに参加リンクをお願いしてみてください！</string>
+    <string name="welcome_join_instruction">友達が作った帳簿に参加して、一緒に記帳したいですか？\n招待リンクを共有してもらいましょう！</string>
 
     <!-- Navigation -->
     <string name="nav_record">記帳</string>
@@ -21,18 +21,18 @@
     <!-- Record -->
     <string name="record_note">内容</string>
     <string name="record_note_placeholder_expense">何にお金を使った？</string>
-    <string name="record_note_placeholder_income">収入源はどこから？</string>
+    <string name="record_note_placeholder_income">何からの収入？</string>
     <string name="record_price">金額（%1$s）</string>
     <string name="record_expense">支出</string>
     <string name="record_income">収入</string>
     <string name="record_empty_category">カテゴリを選択してください</string>
     <string name="record_empty_price">金額を入力してください</string>
-    <string name="record_edit_title">帳面を編集</string>
+    <string name="record_edit_title">記録を編集</string>
     <string name="record_edited">保存済み</string>
-    <string name="record_deleted">%1$sを削除しました" となります</string>
-    <string name="record_confirm_delete">この帳面を削除してもよろしいですか？</string>
-    <string name="record_duplicated">帳面がコピーされました</string>
-    <string name="record_speech_recognition_format">内容と金額</string>
+    <string name="record_deleted">%1$sを削除しました</string>
+    <string name="record_confirm_delete">この記録を削除してもよろしいですか？</string>
+    <string name="record_duplicated">記録をコピーしました</string>
+    <string name="record_speech_recognition_format">内容と金額を話してください</string>
     <string name="record_speech_recognition_not_supported">このデバイスは音声機能に対応していません。</string>
     <string name="record_speech_recognition_no_result">認識できませんでした。もう一度お話しください。</string>
     <string name="record_freeze_book_title">解約は残念です。\n引き続き記帳する帳簿を1つお選びください。</string>
@@ -41,22 +41,22 @@
     <string name="record_currency_rate_unavailable">為替レートをまだ取得できていません。後でもう一度お試しください</string>
 
     <!-- Batch Record -->
-    <string name="batch_record_title">一括で記帳する</string>
+    <string name="batch_record_title">一括記帳</string>
     <string name="batch_record_start_date">開始日</string>
     <string name="batch_record_frequency">周期</string>
     <string name="batch_record_every_duration">毎</string>
-    <string name="batch_record_unit_month">月</string>
-    <string name="batch_record_unit_week">週</string>
+    <string name="batch_record_unit_month">か月</string>
+    <string name="batch_record_unit_week">週間</string>
     <string name="batch_record_unit_day">日</string>
-    <string name="batch_record_times">サイクル回数</string>
+    <string name="batch_record_times">繰り返し回数</string>
     <string name="batch_record_cta">一括記帳</string>
-    <string name="batch_record_created">%1$sの帳面が%2$sに追加されました</string>
-    <string name="batch_record_edit_confirmation">将来のすべての帳面にも適用しますか？</string>
-    <string name="batch_record_delete_confirmation">将来のすべての帳面を削除しますか？</string>
-    <string name="batch_record_only_this">これだけです</string>
-    <string name="batch_record_all_future_records">すべての帳面</string>
-    <string name="batch_record_edited">%1$s件の帳面を編集しました</string>
-    <string name="batch_record_deleted">%1$s件の帳面を削除しました</string>
+    <string name="batch_record_created">%1$s件の記録を%2$sに追加しました</string>
+    <string name="batch_record_edit_confirmation">今後のすべての記録にも変更を適用しますか？</string>
+    <string name="batch_record_delete_confirmation">今後のすべての記録も削除しますか？</string>
+    <string name="batch_record_only_this">この記録のみ</string>
+    <string name="batch_record_all_future_records">すべての記録</string>
+    <string name="batch_record_edited">%1$s件の記録を編集しました</string>
+    <string name="batch_record_deleted">%1$s件の記録を削除しました</string>
 
     <!-- Record Widget -->
     <string name="record_widget_title">記帳ウィジェット</string>
@@ -84,8 +84,8 @@
     <string name="book_join_success">「%1$s」に参加しました</string>
     <string name="book_join_link_expired">リンクは無効です</string>
     <string name="book_already_archived">しまった、帳簿はすでに削除されました</string>
-    <string name="book_already_joined">その帳簿は既に参加しました</string>
-    <string name="book_join_exceed_free_limit">進化版を取得して、さらに多くの帳簿を作成したり参加したりできます。</string>
+    <string name="book_already_joined">この帳簿にはすでに参加しています</string>
+    <string name="book_join_exceed_free_limit">プレミアム版で、さらに多くの帳簿を作成・参加できます</string>
     <string name="book_exceed_maximum">帳簿の合計数が上限に達しました</string>
     <string name="book_copy_categories_from">カテゴリをコピー</string>
     <string name="book_copy_categories_default">デフォルト</string>
@@ -103,13 +103,13 @@
         <item>娯楽</item>
         <item>家賃</item>
         <item>通信</item>
-        <item>電気</item>
+        <item>水道光熱</item>
         <item>その他</item>
     </string-array>
 
     <string-array name="default_income_categories">
         <item>給与</item>
-        <item>賞金</item>
+        <item>賞与</item>
         <item>現金還元</item>
         <item>その他</item>
     </string-array>
@@ -122,7 +122,7 @@
     <!-- Review -->
     <string name="review_request_message">アプリをお楽しみいただけましたでしょうか？もしよろしければ、評価をお願いできますでしょうか？</string>
     <string name="review_request_yes">もちろん、喜んで！</string>
-    <string name="review_request_no">いいえ、結構です</string>
+    <string name="review_request_no">今はしない</string>
 
     <!-- Menu -->
     <string name="menu_invite_to_book">以下のリンクをクリックして、一緒に帳簿をつけましょう！\n%1$s</string>
@@ -136,18 +136,18 @@
     <string name="overview_period_week">今週</string>
     <string name="overview_period_month">今月</string>
     <string name="overview_period_last_month">先月</string>
-    <string name="overview_exceed_max_period">1 か月以上前の帳面を選別するためにプレミアム版をアンロックする</string>
+    <string name="overview_exceed_max_period">1か月を超える期間の記録を表示するには、プレミアム版をご利用ください</string>
     <string name="overview_sort_by_date">日付で並べ替える</string>
     <string name="overview_sort_by_price">金額で並べ替える</string>
     <string name="overview_balance">残高</string>
     <string name="overview_details_title">%1$s：%2$s</string>
     <string name="overview_author_everyone">みんな</string>
-    <string name="overview_selected_delete_confirmation">選択した%1$s件の帳面を削除してもよろしいですか？</string>
+    <string name="overview_selected_delete_confirmation">選択した%1$s件の記録を削除してもよろしいですか？</string>
 
     <!-- Export -->
-    <string name="export_cta">報告書を出力する</string>
-    <string name="export_csv_confirmation">%1$sから%2$sまでのすべての帳面をエクスポートしますか？</string>
-    <string name="export_csv_confirmation_single_day">%1$sのすべての帳面をエクスポートしますか？</string>
+    <string name="export_cta">レポートをエクスポート</string>
+    <string name="export_csv_confirmation">%1$sから%2$sまでのすべての記録をエクスポートしますか？</string>
+    <string name="export_csv_confirmation_single_day">%1$sのすべての記録をエクスポートしますか？</string>
     <string name="export_csv_success">CSVレポートはダウンロードフォルダに保存されました</string>
     <string name="export_column_type">項目</string>
     <string name="export_column_name">内容</string>
@@ -168,18 +168,18 @@
 
     <!-- Premium -->
     <string name="premium_hide_ads">広告を非表示にする</string>
-    <string name="premium_unlock">プレミアム版を解除する</string>
-    <string name="premium_unlocked">ミニマリストな帳簿アプレミアム版、解除！</string>
+    <string name="premium_unlock">プレミアム版を利用する</string>
+    <string name="premium_unlocked">ミニマリストな帳簿のプレミアム版が有効になりました！</string>
     <string name="premium_acknowledge_fail">支払いを確認できません、後でもう一度試してください</string>
 
     <!-- Settings -->
-    <string name="settings_title">%1$s設定</string>
+    <string name="settings_title">%1$sの設定</string>
     <string name="settings_description">設定</string>
     <string name="settings_rename_user">ユーザー名を編集</string>
     <string name="settings_rename_user_success">ユーザー名が%1$sに変更されました</string>
     <string name="settings_rename_book">帳簿の名前を変更</string>
     <string name="settings_rename_book_success">帳簿の名前が%1$sに変更されました</string>
-    <string name="settings_edit_book_currency">勘定通貨の編集</string>
+    <string name="settings_edit_book_currency">帳簿の通貨を編集</string>
     <string name="settings_edit_preferred_currency">お好みの通貨を編集</string>
     <string name="settings_edit_preferred_currency_desc">為替レートをリアルタイム換算。新規帳簿の作成時にもこの設定が自動的に適用されます。</string>
     <string name="settings_view_members">メンバーを表示</string>
@@ -198,12 +198,12 @@
     <string name="settings_bar_chart">棒グラフ</string>
     <string name="settings_pie_chart">円グラフ</string>
     <string name="settings_calculator_button">電卓の小数点ボタン</string>
-    <string name="settings_calculator_dot">ドット</string>
+    <string name="settings_calculator_dot">小数点</string>
     <string name="settings_share_app">友達にアプリを共有する</string>
     <string name="settings_share_app_message">使いやすい記帳アプリを見つけました、ぜひダウンロードして試してみてください！\n%1$s</string>
     <string name="settings_rate_us">%1$s で評価する</string>
-    <string name="settings_follow_on_instagram">インスタフォローしてください</string>
-    <string name="settings_contact_us">私たちに連絡する</string>
+    <string name="settings_follow_on_instagram">Instagramでフォロー</string>
+    <string name="settings_contact_us">お問い合わせ</string>
     <string name="settings_privacy_policy">プライバシーポリシー</string>
     <string name="settings_no_email_app_found">電子メールアプリが見当たりません</string>
     <string name="settings_delete_account">アカウントを削除</string>
@@ -223,7 +223,7 @@
     <string name="color_tone_applied_from_link">テーマカラーが適用されました、気に入ったら保存してください！</string>
 
     <!-- Currency Picker -->
-    <string name="currency_picker_book_title">勘定通貨</string>
+    <string name="currency_picker_book_title">帳簿の通貨</string>
     <string name="currency_picker_preferred_title">お好みの通貨</string>
     <string name="currency_picker_hint">米ドルまたは USD</string>
     <string name="currency_picker_book_edit_success">%1$sの通貨が%2$sに変更されました</string>
@@ -234,7 +234,7 @@
     <string name="bubble_invite">リンクを共有し、友達を招待して一緒に記帳しましょう</string>
     <string name="bubble_speak_to_record">長押しして音声記帳を開始しましょう</string>
     <string name="bubble_scroll_to_select_currency">スクロールして記帳する通貨を切り替えられます</string>
-    <string name="bubble_edit_category">クリックして名前を変更または削除し、長押しして並び替えます</string>
+    <string name="bubble_edit_category">タップして名前を変更・削除、長押ししてドラッグで並べ替え</string>
     <string name="bubble_save_category">編集が完了したら、保存をお忘れなく！</string>
     <string name="bubble_overview_mode">カテゴリまたは詳細で収支を表示することができます</string>
     <string name="bubble_overview_export">収支データを CSV ファイルとしてエクスポートして保存する</string>
@@ -244,7 +244,7 @@
     <string name="bubble_colors_sharing">友達にカラーパレットを共有しましょう！</string>
 
     <!-- Notification -->
-    <string name="notification_channel_general">一般の</string>
+    <string name="notification_channel_general">一般</string>
     <string name="notification_channel_general_desc">リマインダーやアプリに関連する通知</string>
     <string name="notification_channel_new_member">新メンバー</string>
     <string name="notification_channel_new_member_desc">あなたの帳簿に新しいメンバーが参加した際にお知らせいたします</string>
@@ -276,7 +276,7 @@
     <string name="book_name_title">帳簿の名前</string>
     <string name="book_name_placeholder">私の帳簿</string>
     <string name="anonymous_user">匿名ユーザー</string>
-    <string name="ads_not_available">広告なし</string>
+    <string name="ads_not_available">現在表示できる広告はありません</string>
     <string name="fallback_error_message">エラーが発生しました、後でもう一度お試しください</string>
     <string name="notification_permission_hint">もし、気が変わったら、設定で通知の権限を有効にしてください</string>
     <string name="write_storage_permission_hint">もし、気が変わったら、設定でストレージの権限を有効にしてください</string>

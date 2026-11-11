@@ -50,7 +50,7 @@ Flow names below correspond to `.yml` files in each suite directory.
 | Categories | `20-category-add`, `21-category-duplicate`, `22-category-unsaved-guard` | Save a category, reject duplicates, confirm leaving unsaved changes. |
 | Overview | `30-overview-basics`, `31-overview-mode-drill`, `32-overview-export` | Totals, period/type controls, category drill-down, CSV confirmation (cancelled). |
 | Records | `40-record-edit`, `41-record-duplicate`, `42-record-delete`, `43-record-sort`, `44-record-multi-select-delete` | Edit, duplicate, delete, sort, and delete two selected records while leaving a third. |
-| Search | `50-search-basics`, `51-search-period-gate` | Search controls; Last Month allowed, Last 6 Months paywalled. |
+| Search | `50-search-basics`, `51-search-period-gate` | Search controls; Past Month allowed, Past 6 Months paywalled. |
 | Members | `60-settings-members`, `61-settings-rename-user` | Owner shown; renamed user verified in Members. |
 | Book settings | `62-settings-rename-book`, `63-settings-book-currency` | Change and restore book name/currency. |
 | Preferences | `64-settings-vibration`, `68-allow-members-edit` | Toggle both ways, verify persistence after re-entry, restore original state. |
@@ -70,7 +70,7 @@ Each flow runs login setup and premium seeding before its assertions.
 | `02-no-interstitial` | Add seven records without an interstitial; banner remains absent. |
 | `03-create-additional-book` | Create a second book without a paywall, then switch back. |
 | `04-overview-custom-period` | Custom date-range picker opens without an upsell. |
-| `05-search-premium-periods` | Last 6 Months selectable without a paywall. |
+| `05-search-premium-periods` | Past 6 Months selectable without a paywall. |
 | `06-preferred-currency` | Change preferred currency to Euro, then restore. |
 | `07-premium-color-tones` | Save Barbie and Ken, reopen to verify, restore Milk Tea. |
 | `08-batch-record` | Batch Record opens with frequency/date controls, not a paywall. |

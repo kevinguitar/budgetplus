@@ -3,19 +3,19 @@ appId: com.kevlina.budgetplus
 ---
 - runFlow: ../../common/setup-login.yml
 - runFlow: ../../common/open-search.yml
-# Open the period selector (pill initially shows "Last Month").
+# Open the period selector (pill initially shows "Past Month").
 - tapOn:
-    text: "Last Month"
+    text: "Past Month"
 # The bottom sheet lists all periods.
 - assertVisible:
-    text: "Last 6 Months"
+    text: "Past 6 Months"
 - assertVisible:
-    text: "Last Year"
+    text: "Past Year"
 - assertVisible:
     text: "Custom"
 # Selecting a premium period routes a free user to the paywall (leaves Search).
 - tapOn:
-    text: "Last 6 Months"
+    text: "Past 6 Months"
 - extendedWaitUntil:
     notVisible:
       text: "Enter keyword"

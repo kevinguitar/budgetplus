@@ -10,4 +10,4 @@ appId: com.kevlina.budgetplus
 - assertVisible:
     text: "Go"
 - assertVisible:
-    text: "You can create a new accounting book"
+    text: "You can create a new book"

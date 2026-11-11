@@ -6,15 +6,15 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/assert-on-record.yml
 - runFlow: ../../common/open-search.yml
 - tapOn:
-    text: "Last Month"
+    text: "Past Month"
 - assertVisible:
-    text: "Last 6 Months"
+    text: "Past 6 Months"
 # Premium: selecting a premium period stays in Search (no paywall).
 - tapOn:
-    text: "Last 6 Months"
+    text: "Past 6 Months"
 - extendedWaitUntil:
     notVisible:
-      text: "Last Year"
+    text: "Past Year"
     timeout: 15000
 - extendedWaitUntil:
     visible:
@@ -23,5 +23,5 @@ appId: com.kevlina.budgetplus
 - assertVisible:
     text: "Enter keyword"
 - assertVisible:
-    text: "Last 6 Months"
+    text: "Past 6 Months"
 - runFlow: ../../common/return-to-record.yml
