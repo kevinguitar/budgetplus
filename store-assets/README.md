@@ -34,8 +34,8 @@ names, subtitles, descriptions, validation, and manual uploads.
 
 ## Uploading
 
-Run the **Update store listing** workflow (Actions tab, manual
-trigger; filename `update-store-listing.yml`). Keep `target` set to
+Run the **update_store_assets** workflow (Actions tab, manual
+trigger; filename `update_store_assets.yml`). Keep `target` set to
 `both`, or select `android` / `ios`. Tick `store_listing` to upload names,
 subtitles/short descriptions, and full descriptions from `listings/` (off by
 default). Tick `screenshots` to replace screenshots on the selected store(s) for

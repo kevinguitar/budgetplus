@@ -1,4 +1,4 @@
-name: Update store listing
+name: update_store_assets
 
 # Manual only; app release workflows do not use these listing sources or lanes.
 # Listing text and screenshots are independently opt-in for the selected stores.

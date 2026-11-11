@@ -130,7 +130,7 @@ class ManualWorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         result = subprocess.run(
             ["ruby", "-ryaml", "-rjson", "-e", "puts JSON.generate(YAML.load_file(ARGV.fetch(0)))",
-             str(ROOT / ".github/workflows/update-store-listing.yml")],
+             str(ROOT / ".github/workflows/update_store_assets.yml")],
             capture_output=True, text=True, check=True,
         )
         cls.workflow = json.loads(result.stdout)
@@ -149,7 +149,7 @@ class ManualWorkflowTests(unittest.TestCase):
         return eval(condition.replace("&&", " and ").replace("||", " or "), {"__builtins__": {}})
 
     def test_manual_options_order_and_defaults(self):
-        self.assertEqual(self.workflow["name"], "Update store listing")
+        self.assertEqual(self.workflow["name"], "update_store_assets")
         triggers = self.workflow.get("on", self.workflow.get("true"))
         self.assertEqual(list(triggers), ["workflow_dispatch"])
         inputs = triggers["workflow_dispatch"]["inputs"]
@@ -158,7 +158,7 @@ class ManualWorkflowTests(unittest.TestCase):
         self.assertEqual(inputs["target"]["default"], "both")
         for key in ("store_listing", "screenshots", "ios_creative_assets"):
             self.assertIs(inputs[key]["default"], False)
-        text = (ROOT / ".github/workflows/update-store-listing.yml").read_text()
+        text = (ROOT / ".github/workflows/update_store_assets.yml").read_text()
         self.assertNotIn("dry_run", text)
         self.assertNotIn("inputs.ios_app_version", text)
         self.assertNotIn("ios_screenshots", text)

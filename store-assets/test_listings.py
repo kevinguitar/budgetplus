@@ -1,6 +1,7 @@
 """Offline validation and staging tests; no credentials or store API calls."""
 
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -36,6 +37,33 @@ class ListingValidationTests(unittest.TestCase):
         load_listings(self.root)
         self.replace(path, "記" * 31)
         with self.assertRaisesRegex(ValueError, r"31 characters; expected 2–30"):
+            load_listings(self.root)
+
+    def test_description_heading_styles_and_wording_match_across_stores(self):
+        for apple_locale, play_locale in LOCALES.items():
+            with self.subTest(locale=apple_locale):
+                apple = (self.root / SOURCES["ios"] / apple_locale / "description.txt").read_text().rstrip("\n")
+                play = (self.root / SOURCES["android"] / play_locale / "full_description.txt").read_text().rstrip("\n")
+                apple_body, footer = apple.rsplit("\n\n", 1)
+                apple_headings = re.findall(r"^【([^\n]+)】$", apple_body, re.M)
+                play_headings = re.findall(r"^<b>([^<>\n]+)</b>$", play, re.M)
+                self.assertEqual(len(apple_headings), 6)
+                self.assertEqual(apple_headings, play_headings)
+                self.assertNotIn("<", apple)
+                self.assertNotIn("**", apple + play)
+                plain_apple = re.sub(r"^【([^\n]+)】$", r"\1", apple_body, flags=re.M)
+                plain_play = re.sub(r"^<b>([^<>\n]+)</b>$", r"\1", play, flags=re.M)
+                self.assertNotIn("<", plain_play)
+                self.assertEqual(plain_apple, plain_play)
+                self.assertTrue(footer.endswith("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"))
+
+    def test_play_length_limit_includes_html_tags(self):
+        path = SOURCES["android"] / "en-US/full_description.txt"
+        text = "<b>Heading</b>\n" + "x" * (4000 - len("<b>Heading</b>\n"))
+        self.replace(path, text)
+        load_listings(self.root)
+        self.replace(path, text + "x")
+        with self.assertRaisesRegex(ValueError, "4001 characters; expected 1–4000"):
             load_listings(self.root)
 
     def test_each_field_length_limit(self):

@@ -1,7 +1,7 @@
 # Store listing text
 
-Listing text is version-controlled and uploaded only by the manual **Update
-store listing** workflow. Its selected branch/ref supplies the
+Listing text is version-controlled and uploaded only by the manual
+**update_store_assets** workflow. Its selected branch/ref supplies the
 text and assets. App release workflows are unchanged and do not read these
 sources. The initial text comes from the November 2026 store audit, with
 **Traditional Chinese as the semantic reference**.
@@ -21,10 +21,20 @@ sources. The initial text comes from the November 2026 store audit, with
 | Japanese | `ja` | `ja-JP` |
 | Korean | `ko` | `ko-KR` |
 
-Both stores' description bodies currently match within each language. App Store
+Both stores' description wording matches within each language, with different
+heading styles: App Store uses plain-text `【Heading】`, while Google Play full
+descriptions use `<b>Heading</b>`. Keep a blank line between sections. App Store
 descriptions additionally include the Apple standard EULA link; Play descriptions
 do not. Edit both files when changing a shared claim. These are independent,
 editable store fields, not machine translations generated during upload.
+
+Do not use HTML on App Store or Markdown `**bold**` on either store. Limit Play
+HTML to the full-description headings; names, titles, subtitles, and short
+descriptions remain unformatted. No custom colors, fonts, or font sizes are used.
+Preview Play descriptions on both web and mobile because rendering can differ.
+
+Titles and App Store subtitles lead with benefits, without paid-tier labels.
+Keep Premium feature disclosures in descriptions so pricing scope stays clear.
 
 Release notes remain exclusively in the app release workflows' existing locations:
 
@@ -81,13 +91,14 @@ Validation checks all five locales and required fields against these limits:
 | Play short description | 1–80 characters |
 | Play full description | 1–4,000 characters |
 
-Counts use Unicode code points, including internal line breaks. Store Console
+Counts use Unicode code points, including internal line breaks and Play HTML
+tags (not just the rendered text). Store Console
 validation and review remain authoritative. Local validation does not establish
 policy approval, translation quality, live feature availability, or permissions.
 
 ## Manual upload workflow
 
-Open `.github/workflows/update-store-listing.yml` (**Update store listing**) in
+Open `.github/workflows/update_store_assets.yml` (**update_store_assets**) in
 GitHub Actions and use **Run workflow**. It supports listing text, screenshots,
 and creative assets. Every dispatched upload is real; use the local preview commands
 above to validate without making store changes.
