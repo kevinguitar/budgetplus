@@ -13,6 +13,10 @@ Store screenshots for the App Store and Google Play, in five languages.
   header (3840×1646) and search results art (3840×2560), one pair per language.
   Composed from the iPhone 18 Pro originals by `build/screenshot-bridge/tools/creative.py`
   (headline and feature line in `creative.json` next to it).
+- `final/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic
+  (1024×500), same headline and otters, composed from the Pixel 7a originals by
+  `build/screenshot-bridge/tools/feature.py` (screens as rounded cards: Play asks for
+  no device frames here).
 
 | Device class | Size | Store slot | Source device |
 |---|---|---|---|
@@ -34,10 +38,11 @@ Store screenshots for the App Store and Google Play, in five languages.
 
 Run the **Upload store screenshots** workflow (Actions tab, manual trigger). By
 default it uploads the screenshots for every device class (iPhone Duo included),
-replacing the ones already in each language. Tick `ios_creative_assets` to also
-upload the header and search results art, untick `ios_screenshots` to skip the
-App Store screenshots, or tick `dry_run` to only stage and validate everything
-(Google Play also runs a validate-only edit).
+replacing the ones already in each language. Tick `creative_assets` to also
+upload the creative art (App Store header and search results, Google Play feature
+graphic), untick `ios_screenshots` to skip the App Store screenshots, or tick
+`dry_run` to only stage and validate everything (Google Play also runs a
+validate-only edit).
 
 `stage_for_fastlane.py OUT_DIR` lays the files out for fastlane and checks sizes,
 alpha and per-store limits, including the header and search results art; it runs
