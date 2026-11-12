@@ -83,10 +83,15 @@ appId: com.kevlina.budgetplus
     text: "${CATEGORY}"
 - tapOn:
     text: "1"
+# The read-only price field also exposes its value as text, and the iOS a11y tree can
+# still show the pre-tap "0" after a digit tap. Anchor the zero key below the amount
+# display so the tap cannot land on the price field.
 - tapOn:
     text: "0"
+    below: "record_amount_.*"
 - tapOn:
     text: "0"
+    below: "record_amount_.*"
 - assertVisible:
     text: "record_amount_100(,.*)?"
 - tapOn:

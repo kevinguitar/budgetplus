@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Lay out store-assets/final/ for fastlane and check it.
 
-usage: stage_for_fastlane.py OUT_DIR
+usage: stage_for_fastlane.py OUT_DIR [--target both|ios|android]
+       [--skip-screenshots] [--skip-creative-assets]
 
 Writes:
   OUT_DIR/ios/<asc-locale>/<NN>-<device>-<screen>.png        (deliver screenshots_path)
@@ -16,7 +17,7 @@ Also checks the creative art: the Google Play feature graphic (1024x500, staged 
 uploads it unless skip_upload_images) and the App Store header and search results art in
 final/ios/creative/ (not staged: fastlane doesn't upload it; upload_creative_assets.py does).
 """
-import os, shutil, struct, sys
+import argparse, os, shutil, struct, sys
 from upload_creative_assets import check_creative
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -44,10 +45,19 @@ def png_info(path):
     return w, h, head[25]  # color type: 2 = RGB, 6 = RGBA
 
 def main():
-    out = sys.argv[1]
-    if os.path.exists(out): shutil.rmtree(out)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("out")
+    parser.add_argument("--target", choices=("both", "ios", "android"), default="both")
+    parser.add_argument("--skip-screenshots", action="store_true")
+    parser.add_argument("--skip-creative-assets", action="store_true")
+    args = parser.parse_args()
+    out = args.out
+    # Never remove an existing directory (including source assets) on a rerun.
+    os.makedirs(out, exist_ok=False)
     errors, summary = [], []
     for platform, classes in (("ios", IOS), ("android", list(ANDROID))):
+        if args.target != "both" and platform != args.target: continue
+        if args.skip_screenshots: continue
         for cls in classes:
             sizes = set()
             for loc, (asc, play) in LOCALES.items():
@@ -68,17 +78,19 @@ def main():
                 summary.append(f"{platform:8} {cls:18} {loc:8} -> {asc if platform == 'ios' else play:8} {len(files)} files")
             if len(sizes) != 1: errors.append(f"{platform}/{cls}: mixed sizes {sorted(sizes)}")
             else: summary.append(f"{platform:8} {cls:18} size {sizes.pop()}")
-    for loc, (asc, play) in LOCALES.items():                     # Google Play feature graphic
-        src = os.path.join(FINAL, "android", "creative", loc, "featureGraphic.png")
-        if not os.path.isfile(src): errors.append(f"missing android/creative/{loc}/featureGraphic.png"); continue
-        w, h, ct = png_info(src)
-        if (w, h) != (1024, 500): errors.append(f"android/creative/{loc}/featureGraphic.png: {w}x{h}, expected 1024x500")
-        if ct != 2: errors.append(f"android/creative/{loc}/featureGraphic.png: color type {ct}, expected RGB without alpha")
-        dst = os.path.join(out, "android", play, "images", "featureGraphic.png")
-        os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.copy(src, dst)
-        summary.append(f"android  creative           {loc:8} -> {play:8} featureGraphic")
-    creative_errors, creative_summary = check_creative()
-    errors += creative_errors; summary += creative_summary
+    if args.target != "ios" and not args.skip_creative_assets:
+        for loc, (asc, play) in LOCALES.items():                 # Google Play feature graphic
+            src = os.path.join(FINAL, "android", "creative", loc, "featureGraphic.png")
+            if not os.path.isfile(src): errors.append(f"missing android/creative/{loc}/featureGraphic.png"); continue
+            w, h, ct = png_info(src)
+            if (w, h) != (1024, 500): errors.append(f"android/creative/{loc}/featureGraphic.png: {w}x{h}, expected 1024x500")
+            if ct != 2: errors.append(f"android/creative/{loc}/featureGraphic.png: color type {ct}, expected RGB without alpha")
+            dst = os.path.join(out, "android", play, "images", "featureGraphic.png")
+            os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.copy(src, dst)
+            summary.append(f"android  creative           {loc:8} -> {play:8} featureGraphic")
+    if args.target != "android" and not args.skip_creative_assets:
+        creative_errors, creative_summary = check_creative()
+        errors += creative_errors; summary += creative_summary
     print("\n".join(summary))
     if errors:
         print("\nERRORS:\n" + "\n".join(errors)); sys.exit(1)

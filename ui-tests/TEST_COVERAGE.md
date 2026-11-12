@@ -223,6 +223,8 @@ Prefer existing setup, navigation, record, picker, and cleanup subflows over cop
   switch inside the state-bearing row.
 - Use `ensure-all-records-mode.yml` before record-list operations and the color-tone
   helpers to reveal/advance the carousel and restore Milk Tea through real saves.
+- Tap the calculator's `0` key with `below: "record_amount_.*"`: the read-only price
+  field also exposes its value as text, and a stale iOS tree can still read `0`.
 - Guard flaky taps with bounded retries and verify the destination. An enabled child
   icon does not prove its parent is actionable.
 - Prefer positive visibility probes before optional recovery: negative conditions

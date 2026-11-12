@@ -1,22 +1,13 @@
 # Store assets
 
-Store screenshots for the App Store and Google Play, in five languages.
+Localized listing copy and screenshots for the App Store and Google Play.
+See [LISTINGS.md](LISTINGS.md) for copy rules, validation, and upload details.
 
-- `originals/<platform>/<device>/<locale>/` — raw device screenshots, unedited.
-  `anchors.json` next to them holds the pixel positions the editor uses (badge
-  icons, currency crop box), so the edited set can be regenerated.
-- `final/<platform>/<device-class>/<locale>/01-login.png … 08-share.png` — the
-  edited, upload-ready screenshots, in store order: login, books, shared, currency,
-  overview, tones, colors, share. The `NN-` prefix sets the display order on both
-  stores (both sort by file name).
-- `final/ios/creative/<locale>/header.png`, `search.png` — App Store product page
-  header (3840×1646) and search results art (3840×2560), one pair per language.
-  Composed from the iPhone 18 Pro originals by `build/screenshot-bridge/tools/creative.py`
-  (headline and feature line in `creative.json` next to it).
-- `final/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic
-  (1024×500), same headline and otters, composed from the Pixel 7a originals by
-  `build/screenshot-bridge/tools/feature.py` (screens as rounded cards: Play asks for
-  no device frames here).
+- `listings/<platform>/<locale>/` — titles, subtitles, and descriptions.
+- `originals/<platform>/<device>/<locale>/` — raw screenshots and editor positions (`anchors.json`).
+- `final/<platform>/<device-class>/<locale>/` — upload-ready screenshots, ordered by `NN-` prefix.
+- `final/ios/creative/<locale>/` — `header.png` (3840×1646) and `search.png` (3840×2560).
+- `final/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic (1024×500).
 
 | Device class | Size | Store slot | Source device |
 |---|---|---|---|
@@ -36,20 +27,18 @@ Store screenshots for the App Store and Google Play, in five languages.
 
 ## Uploading
 
-Run the **Upload store screenshots** workflow (Actions tab, manual trigger). By
-default it uploads the screenshots for every device class (iPhone Duo included),
-replacing the ones already in each language. Tick `creative_assets` to also
-upload the creative art (App Store header and search results, Google Play feature
-graphic), untick `ios_screenshots` to skip the App Store screenshots, or tick
-`dry_run` to only stage and validate everything (Google Play also runs a
-validate-only edit).
+Run [update_store_assets](../.github/workflows/update_store_assets.yml) manually.
+Choose `android`, `ios`, or `both`, then enable `store_listing`, `screenshots`,
+and/or `creative_assets` (App Store header and search results, Google Play
+feature graphic; all off by default). Only selected assets are
+uploaded. iOS reuses an editable version or creates a patch draft; no builds
+are uploaded or submitted for review.
 
-`stage_for_fastlane.py OUT_DIR` lays the files out for fastlane and checks sizes,
-alpha and per-store limits, including the header and search results art; it runs
-locally too.
+Preview screenshots locally using a new output directory:
 
-fastlane doesn't upload the header and search results art, so
-`upload_creative_assets.py [--version X]` does it through the App Store Connect API
-(needs `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_PATH`). It places each language's
-pair on the editable version's matching localization, replacing what is there, and
-skips images that are already placed. The art goes to App Review with the version.
+```bash
+python3 store-assets/stage_for_fastlane.py build/store-assets-preview
+```
+
+Use `--target ios` / `--target android`, `--skip-screenshots`, or
+`--skip-creative-assets` to limit staging. This makes no store API calls.
