@@ -8,9 +8,9 @@ appId: com.kevlina.budgetplus
     env:
       CATEGORY: "Food"
 - runFlow: ../../common/open-overview.yml
-# Export icon (top-right, contentDescription "Export csv").
+# Export icon (top-right, contentDescription "Export Report").
 - tapOn:
-    text: "Export csv"
+    text: "Export Report"
 - extendedWaitUntil:
     visible:
       text: "Do you want to export.*"

@@ -18,9 +18,9 @@ appId: com.kevlina.budgetplus
     text: "Food"
 - assertVisible:
     text: "Edit Record"
-# Change the price via the Price field, then save.
+# Change the amount via the Amount field, then save.
 - tapOn:
-    text: "Price.*"
+    text: "Amount.*"
 - eraseText
 - inputText: "150"
 - pressKey: Enter
@@ -28,7 +28,7 @@ appId: com.kevlina.budgetplus
     text: "Save"
 - extendedWaitUntil:
     visible:
-      text: "Record edited"
+      text: "Record saved"
     timeout: 10000
 # Back to Record.
 - tapOn:

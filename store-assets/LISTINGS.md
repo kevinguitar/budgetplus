@@ -49,9 +49,9 @@ In GitHub Actions, run **update_store_assets** against the desired branch/ref:
 | `target` | `both` | Choose `android`, `ios`, or `both`. |
 | `store_listing` | Off | Upload listing text. |
 | `screenshots` | Off | Replace screenshots on the selected store(s). |
-| `ios_creative_assets` | Off | Replace App Store header and search-results art. |
+| `creative_assets` | Off | Replace App Store header/search-results art and the Play feature graphic. |
 
-Text and screenshots are independently opt-in. All options off is a no-op.
+Text, screenshots, and creative art are independently opt-in. All options off is a no-op.
 Every upload is real; review the copy and confirm released features/entitlements first.
 
 - **iOS:** Reuses an editable version or creates the latest release's next patch

@@ -28,11 +28,12 @@ lane :ios_assets do
   upload_to_app_store(options)
 end
 
-desc "Upload optional Play screenshots and/or app-wide listing text without changing releases"
+desc "Upload optional Play screenshots, feature graphic, and/or app-wide listing text without changing releases"
 lane :android_assets do
   listing = ENV.fetch("UPLOAD_STORE_LISTING") == "true"
   screenshots = ENV.fetch("UPLOAD_SCREENSHOTS") == "true"
-  raise "Select listing text or screenshots" unless listing || screenshots
+  creative = ENV.fetch("UPLOAD_CREATIVE_ASSETS", "false") == "true"
+  raise "Select listing text, screenshots, or creative assets" unless listing || screenshots || creative
   key = ENV.fetch("PLAY_KEY_PATH")
   # Supply needs an unambiguous release lookup even when changelogs are skipped.
   # Select a production version code, but never upload/promote/update a release.
@@ -50,7 +51,7 @@ lane :android_assets do
     skip_upload_aab: true,
     skip_upload_metadata: !listing,
     skip_upload_changelogs: true,
-    skip_upload_images: true,
+    skip_upload_images: !creative, # featureGraphic, the only image staged
     skip_upload_screenshots: !screenshots
   )
 end

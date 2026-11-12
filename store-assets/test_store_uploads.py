@@ -88,12 +88,15 @@ class ManualLaneTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Select listing text or screenshots", result.stderr)
 
-    def test_android_independently_toggles_listing_and_screenshots(self):
-        for listing, screenshots in (("true", "false"), ("false", "true"), ("true", "true")):
-            with self.subTest(listing=listing, screenshots=screenshots):
+    def test_android_independently_toggles_listing_screenshots_and_creative(self):
+        for listing, screenshots, creative in itertools.product(("true", "false"), repeat=3):
+            if "true" not in (listing, screenshots, creative):
+                continue
+            with self.subTest(listing=listing, screenshots=screenshots, creative=creative):
                 options = self.options_for("android_assets", "upload_to_play_store",
                                            overrides={"UPLOAD_STORE_LISTING": listing,
                                                       "UPLOAD_SCREENSHOTS": screenshots,
+                                                      "UPLOAD_CREATIVE_ASSETS": creative,
                                                       "TEST_VERSION_CODES": '["99","100"]'})
                 self.assertEqual(options["package_name"], "com.kevlina.budgetplus")
                 self.assertEqual(options["metadata_path"], "/validated/screenshots/android")
@@ -101,7 +104,8 @@ class ManualLaneTests(unittest.TestCase):
                 self.assertEqual(options["version_code"], 100)
                 self.assertEqual(options["skip_upload_metadata"], listing != "true")
                 self.assertEqual(options["skip_upload_screenshots"], screenshots != "true")
-                for field in ("apk", "aab", "changelogs", "images"):
+                self.assertEqual(options["skip_upload_images"], creative != "true")
+                for field in ("apk", "aab", "changelogs"):
                     self.assertTrue(options["skip_upload_" + field])
                 for field in ("apk", "aab", "rollout", "track_promote_to", "version_codes_to_retain", "validate_only"):
                     self.assertNotIn(field, options)
@@ -109,7 +113,11 @@ class ManualLaneTests(unittest.TestCase):
     def test_android_no_options_fails_closed(self):
         result = self.run_lane("android_assets", overrides={"UPLOAD_STORE_LISTING": "false"})
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Select listing text or screenshots", result.stderr)
+        self.assertIn("Select listing text, screenshots, or creative assets", result.stderr)
+
+    def test_android_creative_defaults_off_when_unset(self):
+        options = self.options_for("android_assets", "upload_to_play_store", missing="UPLOAD_CREATIVE_ASSETS")
+        self.assertTrue(options["skip_upload_images"])
 
     def test_android_missing_production_release_is_an_actionable_failure(self):
         result = self.run_lane("android_assets", overrides={"TEST_VERSION_CODES": "[]"})
@@ -143,7 +151,7 @@ class ManualWorkflowTests(unittest.TestCase):
         if condition is None:
             return True
         values = {"target": target, "store_listing": listing, "screenshots": screenshots,
-                  "ios_creative_assets": creative}
+                  "creative_assets": creative}
         condition = condition.removeprefix("${{").removesuffix("}}")
         condition = re.sub(r"inputs\.(\w+)", lambda match: repr(values[match[1]]), condition)
         return eval(condition.replace("&&", " and ").replace("||", " or "), {"__builtins__": {}})
@@ -153,10 +161,10 @@ class ManualWorkflowTests(unittest.TestCase):
         triggers = self.workflow.get("on", self.workflow.get("true"))
         self.assertEqual(list(triggers), ["workflow_dispatch"])
         inputs = triggers["workflow_dispatch"]["inputs"]
-        self.assertEqual(list(inputs), ["target", "store_listing", "screenshots", "ios_creative_assets"])
+        self.assertEqual(list(inputs), ["target", "store_listing", "screenshots", "creative_assets"])
         self.assertEqual(inputs["target"]["options"], ["both", "ios", "android"])
         self.assertEqual(inputs["target"]["default"], "both")
-        for key in ("store_listing", "screenshots", "ios_creative_assets"):
+        for key in ("store_listing", "screenshots", "creative_assets"):
             self.assertIs(inputs[key]["default"], False)
         text = (ROOT / ".github/workflows/update_store_assets.yml").read_text()
         self.assertNotIn("dry_run", text)
@@ -170,14 +178,15 @@ class ManualWorkflowTests(unittest.TestCase):
                 with self.subTest(**options):
                     ios = target != "android"
                     android = target != "ios"
-                    self.assertEqual(self.enabled(self.job, **options), listing or screenshots or (ios and creative))
+                    self.assertEqual(self.enabled(self.job, **options), listing or screenshots or creative)
                     self.assertEqual(self.enabled(self.steps["Upload to Google Play"], **options),
-                                     android and (listing or screenshots))
+                                     android and (listing or screenshots or creative))
                     self.assertEqual(self.enabled(self.steps["Stage and validate selected store listing text"], **options), listing)
                     self.assertEqual(self.enabled(self.steps["Stage and validate screenshots"], **options),
-                                     screenshots or (ios and creative))
+                                     screenshots or creative)
                     for name in ("Setup Ruby", "Install Fastlane", "Use manual store upload lanes"):
-                        self.assertEqual(self.enabled(self.steps[name], **options), listing or screenshots)
+                        self.assertEqual(self.enabled(self.steps[name], **options),
+                                         listing or screenshots or (android and creative))
                     for name in ("Write App Store Connect key", "Resolve or create editable iOS version"):
                         self.assertEqual(self.enabled(self.steps[name], **options), ios and (listing or screenshots or creative))
                     self.assertEqual(self.enabled(self.steps["Upload listing text and/or screenshots to App Store Connect"], **options),
@@ -206,8 +215,10 @@ class ManualWorkflowTests(unittest.TestCase):
                 self.assertFalse(list(stage.rglob("*.png")))
                 self.assertFalse(list(stage.rglob("images")))
 
-    def test_creative_only_does_not_install_fastlane(self):
+    def test_ios_creative_only_does_not_install_fastlane(self):
         self.assertFalse(self.enabled(self.steps["Install Fastlane"], target="ios", creative=True))
+        # The Play feature graphic goes up through supply.
+        self.assertTrue(self.enabled(self.steps["Install Fastlane"], target="android", creative=True))
 
     def test_all_ios_uploads_use_same_resolved_version(self):
         self.assertEqual(self.steps["Resolve or create editable iOS version"]["id"], "ios_version")

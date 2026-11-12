@@ -22,7 +22,7 @@ appId: com.kevlina.budgetplus
 - assertVisible:
     text: "Number of times:"
 - assertVisible:
-    text: "Batch Frequency:"
+    text: "Frequency:"
 - assertVisible:
     text: "Start Date:"
 - runFlow: ../../common/return-to-record.yml

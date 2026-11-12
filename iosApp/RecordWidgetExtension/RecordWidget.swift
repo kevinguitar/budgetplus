@@ -56,7 +56,7 @@ struct RecordWidget: Widget {
                 .containerBackground(Color(hex: entry.theme.light), for: .widget)
         }
         .configurationDisplayName("Record Widget")
-        .description("Record your frequent expenses with a tap")
+        .description("Record your frequent items with a tap")
         .supportedFamilies([.systemMedium, .systemLarge])
         .contentMarginsDisabled()
     }
