@@ -6,13 +6,15 @@ usage: stage_for_fastlane.py OUT_DIR
 Writes:
   OUT_DIR/ios/<asc-locale>/<NN>-<device>-<screen>.png        (deliver screenshots_path)
   OUT_DIR/android/<play-locale>/images/<type>/<NN>.png       (supply metadata_path)
+  OUT_DIR/android/<play-locale>/images/featureGraphic.png    (from final/android/creative/)
 
 Checks every file is an RGB PNG (no alpha), sizes are uniform per device class,
 per-type counts stay within store limits (App Store 10, Google Play 8), and the
 files follow ORDER. Staged names keep the NN- prefix, which sets the display order.
 
-Also checks the App Store header and search results art in final/ios/creative/ (not staged:
-fastlane doesn't upload it; upload_creative_assets.py does).
+Also checks the creative art: the Google Play feature graphic (1024x500, staged above; supply
+uploads it unless skip_upload_images) and the App Store header and search results art in
+final/ios/creative/ (not staged: fastlane doesn't upload it; upload_creative_assets.py does).
 """
 import os, shutil, struct, sys
 from upload_creative_assets import check_creative
@@ -66,6 +68,15 @@ def main():
                 summary.append(f"{platform:8} {cls:18} {loc:8} -> {asc if platform == 'ios' else play:8} {len(files)} files")
             if len(sizes) != 1: errors.append(f"{platform}/{cls}: mixed sizes {sorted(sizes)}")
             else: summary.append(f"{platform:8} {cls:18} size {sizes.pop()}")
+    for loc, (asc, play) in LOCALES.items():                     # Google Play feature graphic
+        src = os.path.join(FINAL, "android", "creative", loc, "featureGraphic.png")
+        if not os.path.isfile(src): errors.append(f"missing android/creative/{loc}/featureGraphic.png"); continue
+        w, h, ct = png_info(src)
+        if (w, h) != (1024, 500): errors.append(f"android/creative/{loc}/featureGraphic.png: {w}x{h}, expected 1024x500")
+        if ct != 2: errors.append(f"android/creative/{loc}/featureGraphic.png: color type {ct}, expected RGB without alpha")
+        dst = os.path.join(out, "android", play, "images", "featureGraphic.png")
+        os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.copy(src, dst)
+        summary.append(f"android  creative           {loc:8} -> {play:8} featureGraphic")
     creative_errors, creative_summary = check_creative()
     errors += creative_errors; summary += creative_summary
     print("\n".join(summary))
