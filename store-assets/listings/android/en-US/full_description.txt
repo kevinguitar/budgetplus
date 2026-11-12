@@ -1,20 +1,75 @@
-One book, shared with the people in your life. Budget+ helps you organize everyday spending, household costs and travel expenses, so you can see where your money goes.
+One book, shared with the people in your life. Budget+ helps you organize everyday spending, household costs and travel expenses. Track on your own or together, and see where your money goes.
 
 <b>Track together</b>
-Sign in to create or join a book. Send an invitation link to family, a partner or friends, and record income and expenses together. Shared books sync while connected to the internet.
+• Sign in to create or join a book. Invite family, a partner or friends by link. Shared records sync while online.
 
-<b>See spending by category</b>
-Organize records by category. Review category totals and proportions, income, expenses and your balance in the overview.
+<b>Different phones, one book</b>
+• Share household and travel spending with friends on Android or iPhone.
+
+<b>Speak instead of typing</b>
+• Hold the mic and say an item and amount, such as “Lunch 12”, then check the result, choose a category and save. Requires mic permission and device speech support.
+
+<b>Keep frequent items on your Home Screen</b>
+• Pick up to 5 items from the past 30 days for a widget. Tap to open its book with the category and note filled in, then enter the amount.
+
+<b>Widget colors that fit your wallpaper</b>
+• On Android 12+, enable Material You colors to match your wallpaper and system dark mode.
+
+<b>Categories that fit your life</b>
+• Add, rename, delete and drag to reorder income and expense categories, subject to book permissions.
+
+<b>See where your money goes</b>
+• Review income, expenses and balance. Bar and pie charts show category totals and shares.
+
+<b>From totals to details</b>
+• Switch between all records and categories. Open a category for details; swipe to view another.
+
+<b>Track together, view separately</b>
+• Filter the overview and search by who recorded each entry, or view everyone's records.
+
+<b>Choose how you collaborate</b>
+• Book owners can remove members and decide whether members may edit the book name, categories, currency and all records.
+
+<b>Pick your period</b>
+• View today, this week, this month, last month or a date range. Overview ranges over one month require Premium.
+
+<b>Find that expense</b>
+• Search notes or categories; filter by income, expense, category and author. Free search covers the past month; Premium adds more date ranges.
+
+<b>Sort by date or amount</b>
+• Sort category details to see recent records or larger expenses first.
+
+<b>Batch entry (Premium)</b>
+• Set a start date, an interval in days, weeks or months, and 2–30 entries. Create rent, subscription or regular income records in one batch.
+
+<b>Adjust a batch (Premium)</b>
+• Edit or delete one entry, or apply the change to that entry and later ones in the same batch.
+
+<b>A book for each part of life (Premium)</b>
+• Separate personal, household and travel spending. Create or join up to 10 books in total.
+
+<b>Reuse your categories (Premium)</b>
+• Copy an existing book's income and expense categories when creating a new book.
+
+<b>Choose your book currency</b>
+• Search by currency name or code and pin favorites. Changing a book's currency does not convert saved amounts.
 
 <b>Automatic currency conversion (Premium)</b>
-Switch between your book currency and preferred currency when entering an amount. Budget+ converts it automatically using available rates. You can also switch the overview's display currency to review travel spending in a familiar currency.
-Rates come from an online data source. If an applicable rate is unavailable, record in the book currency instead. Changing a book's currency does not convert existing amounts.
+• Automatically convert between your book and preferred currencies as you enter amounts. Switch the overview's display currency for a familiar view of travel costs.
+Online rates are for reference and may differ from bank or card rates. If a rate is unavailable, record in the book currency.
 
-<b>Export the selected period</b>
-Export the selected period's records as CSV to review, organize and save in Excel.
+<b>Review longer periods (Premium)</b>
+• Review more than a month at once. Search the past 6 months, past year or a custom period.
+
+<b>Export your selected period</b>
+• Export all records in the period as CSV for Excel, including date, note, amount, type, category and author.
 
 <b>Make it your own</b>
-Choose a color theme, or create a custom palette with Premium. Share your colors with friends and family.
+• Choose free themes such as Milk Tea, Warm Tones of Dusk and Countryside.
+
+<b>Custom colors (Premium)</b>
+• Unlock more themes, make a palette with the color picker or Hex codes, preview it and share its link.
 
 <b>Free and Premium</b>
-The free version includes ads and one book. Premium removes ads and adds more books, up to 10 in total across books you create and join, plus automatic currency conversion, custom colors and longer date ranges for reviewing records. See the app for available plans and prices.
+• Free includes ads and one book you create or join, for solo or shared tracking.
+• Premium removes ads and adds up to 10 books in total, batch entry, currency conversion, more themes, custom colors and longer review and search periods. See the app for plans and prices.

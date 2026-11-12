@@ -157,7 +157,7 @@ class ManualWorkflowTests(unittest.TestCase):
         return eval(condition.replace("&&", " and ").replace("||", " or "), {"__builtins__": {}})
 
     def test_manual_options_order_and_defaults(self):
-        self.assertEqual(self.workflow["name"], "update_store_assets")
+        self.assertEqual(self.workflow["name"], "Update Store Assets")
         triggers = self.workflow.get("on", self.workflow.get("true"))
         self.assertEqual(list(triggers), ["workflow_dispatch"])
         inputs = triggers["workflow_dispatch"]["inputs"]

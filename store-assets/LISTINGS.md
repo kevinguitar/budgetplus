@@ -12,7 +12,11 @@ not app releases. Validation runs locally or before manual uploads, not in PR CI
 | Google Play | `store-assets/listings/android/<locale>/` | `title.txt`, `short_description.txt`, `full_description.txt` |
 
 Use **Traditional Chinese as the reference** and update both platforms' wording
-together. See [locale mappings](README.md). Keep listing files outside
+together. Translate the latest approved selection; do not restore removed points.
+Keep shared feature claims consistent, but adapt platform-specific wording:
+Material You widget colors are Android-only; iOS widgets require iOS 17+, saved
+presets, and show up to 3 items at medium size or 5 at large size. iOS voice input
+also needs speech recognition permission. See [locale mappings](README.md). Keep listing files outside
 `fastlane/metadata`, which the iOS release workflow already uploads. Release
 notes stay in their existing locations and are not part of manual uploads.
 
@@ -25,7 +29,9 @@ notes stay in their existing locations and are not part of manual uploads.
   disclose Premium features in full descriptions.
 - Keep the Apple EULA link in iOS descriptions only; confirm it matches the configured agreement.
 - Limits: Apple name/subtitle **30**, Play title **30**, Play short description **80**,
-  full descriptions **4,000** characters. Counts include line breaks and HTML tags.
+  full descriptions **4,000** characters. Counts include line breaks, bullet characters,
+  HTML tags on Play, and the EULA footer on iOS. Shorten translations as needed without
+  dropping paid-tier disclosures or important limitations; paragraph counts are not fixed.
 
 ## Check and preview
 

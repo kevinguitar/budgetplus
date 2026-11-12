@@ -11,6 +11,33 @@ import unittest
 from listings import FIELDS, LOCALES, ROOT, SOURCES, load_listings, stage_listings
 
 
+# Only these sections may differ between stores. All other localized copy stays
+# identical apart from heading markup and the iOS EULA footer.
+PLATFORM_SECTIONS = {
+    "zh-Hant": (
+        "小工具配色，跟著桌布走",
+        ("不同手機，也能一起記", "語音輸入，少打一點字", "常記的項目，放在桌面"),
+    ),
+    "zh-Hans": (
+        "小组件配色，跟着壁纸走",
+        ("不同手机，也能一起记", "语音输入，少打一点字", "常记的项目，放在桌面"),
+    ),
+    "en-US": (
+        "Widget colors that fit your wallpaper",
+        ("Different phones, one book", "Speak instead of typing", "Keep frequent items on your Home Screen"),
+    ),
+    "ja": (
+        "壁紙になじむウィジェット",
+        ("違うスマホでも、一緒に記帳", "音声入力で、文字入力を少なく", "よく使う項目をホーム画面に"),
+    ),
+    "ko": (
+        "배경화면에 어울리는 위젯 색상",
+        ("휴대폰이 달라도 함께 기록", "음성 입력으로 타이핑을 줄이세요", "자주 쓰는 항목을 홈 화면에"),
+    ),
+}
+EULA_URL = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+
+
 class ListingValidationTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -48,23 +75,89 @@ class ListingValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r"31 characters; expected 2–30"):
             load_listings(self.root)
 
-    def test_description_heading_styles_and_wording_match_across_stores(self):
+    def description_sections(self, text, heading_pattern):
+        parts = re.split(heading_pattern, text, flags=re.M)
+        pairs = list(zip(parts[1::2], parts[2::2]))
+        self.assertTrue(pairs)
+        self.assertEqual(len(pairs), len({heading for heading, _ in pairs}))
+        for heading, body in pairs:
+            self.assertTrue(heading.strip())
+            self.assertTrue(body.strip().startswith("• "))
+        return parts[0].strip(), {heading: body.strip() for heading, body in pairs}
+
+    def assert_store_descriptions_match(self, apple_locale, play_locale):
+        apple = (self.root / SOURCES["ios"] / apple_locale / "description.txt").read_text().rstrip("\n")
+        play = (self.root / SOURCES["android"] / play_locale / "full_description.txt").read_text().rstrip("\n")
+        apple_body, footer = apple.rsplit("\n\n", 1)
+        apple_intro, apple_sections = self.description_sections(apple_body, r"^【([^\n]+)】$")
+        play_intro, play_sections = self.description_sections(play, r"^<b>([^<>\n]+)</b>$")
+        android_only, adapted = PLATFORM_SECTIONS[apple_locale]
+
+        self.assertEqual(apple_intro, play_intro)
+        self.assertIn(android_only, play_sections)
+        self.assertEqual(list(apple_sections), [heading for heading in play_sections if heading != android_only])
+        # Match the user's approved reference, not an obsolete fixed section count.
+        reference = (self.root / SOURCES["android"] / "zh-TW/full_description.txt").read_text()
+        self.assertEqual(len(play_sections), len(re.findall(r"^<b>([^<>\n]+)</b>$", reference, re.M)))
+        for heading, body in apple_sections.items():
+            if heading in adapted:
+                self.assertNotEqual(body, play_sections[heading])
+            else:
+                self.assertEqual(body, play_sections[heading])
+
+        self.assertNotIn("<", apple)
+        self.assertNotIn("**", apple + play)
+        self.assertNotIn("<", re.sub(r"^<b>([^<>\n]+)</b>$", r"\1", play, flags=re.M))
+        self.assertNotRegex(apple, r"Android|Material You")
+        self.assertIn("Material You", play_sections[android_only])
+        self.assertIn("12", play_sections[android_only])
+        widget = apple_sections[adapted[2]]
+        for detail in ("iOS 17", "30", "3", "5"):
+            self.assertIn(detail, widget)
+        self.assertTrue(footer.endswith(EULA_URL))
+        self.assertEqual(apple.count(EULA_URL), 1)
+        self.assertNotIn(EULA_URL, play)
+
+    def test_description_heading_styles_and_shared_wording_match_across_stores(self):
         for apple_locale, play_locale in LOCALES.items():
             with self.subTest(locale=apple_locale):
-                apple = (self.root / SOURCES["ios"] / apple_locale / "description.txt").read_text().rstrip("\n")
-                play = (self.root / SOURCES["android"] / play_locale / "full_description.txt").read_text().rstrip("\n")
-                apple_body, footer = apple.rsplit("\n\n", 1)
-                apple_headings = re.findall(r"^【([^\n]+)】$", apple_body, re.M)
-                play_headings = re.findall(r"^<b>([^<>\n]+)</b>$", play, re.M)
-                self.assertEqual(len(apple_headings), 6)
-                self.assertEqual(apple_headings, play_headings)
-                self.assertNotIn("<", apple)
-                self.assertNotIn("**", apple + play)
-                plain_apple = re.sub(r"^【([^\n]+)】$", r"\1", apple_body, flags=re.M)
-                plain_play = re.sub(r"^<b>([^<>\n]+)</b>$", r"\1", play, flags=re.M)
-                self.assertNotIn("<", plain_play)
-                self.assertEqual(plain_apple, plain_play)
-                self.assertTrue(footer.endswith("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"))
+                self.assert_store_descriptions_match(apple_locale, play_locale)
+
+    def test_shared_description_wording_drift_fails(self):
+        path = SOURCES["android"] / "en-US/full_description.txt"
+        self.replace(path, (self.root / path).read_text().replace("Invite family", "Invite anyone"))
+        with self.assertRaises(AssertionError):
+            self.assert_store_descriptions_match("en-US", "en-US")
+
+    def test_android_only_widget_section_in_ios_fails(self):
+        path = SOURCES["ios"] / "en-US/description.txt"
+        body, footer = (self.root / path).read_text().rstrip("\n").rsplit("\n\n", 1)
+        section = "【Widget colors that fit your wallpaper】\n• Material You on Android 12+."
+        self.replace(path, f"{body}\n\n{section}\n\n{footer}\n")
+        with self.assertRaises(AssertionError):
+            self.assert_store_descriptions_match("en-US", "en-US")
+
+    def test_ios_widget_minimum_version_is_required(self):
+        path = SOURCES["ios"] / "en-US/description.txt"
+        self.replace(path, (self.root / path).read_text().replace("iOS 17+", "iOS 16+"))
+        with self.assertRaises(AssertionError):
+            self.assert_store_descriptions_match("en-US", "en-US")
+
+    def test_ios_eula_is_required(self):
+        path = SOURCES["ios"] / "en-US/description.txt"
+        self.replace(path, (self.root / path).read_text().replace(EULA_URL, "https://example.com/"))
+        with self.assertRaises(AssertionError):
+            self.assert_store_descriptions_match("en-US", "en-US")
+
+    def test_ios_length_limit_includes_eula_footer(self):
+        path = SOURCES["ios"] / "en-US/description.txt"
+        footer = f"\n\nTerms of Use (EULA): {EULA_URL}"
+        text = "x" * (4000 - len(footer)) + footer
+        self.replace(path, text)
+        load_listings(self.root)
+        self.replace(path, "x" + text)
+        with self.assertRaisesRegex(ValueError, "4001 characters; expected 1–4000"):
+            load_listings(self.root)
 
     def test_play_length_limit_includes_html_tags(self):
         path = SOURCES["android"] / "en-US/full_description.txt"
