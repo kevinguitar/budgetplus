@@ -12,9 +12,9 @@ Budget+ is an easy-to-use co-spending tracker to track expenses together with yo
 
 ## Feature Overview
 
-![overview_1](https://github.com/user-attachments/assets/29101061-de8c-4007-954a-f9eb03419d53)
+![overview_1](misc/images/overview_1.jpg)
 
-![overview_2](https://github.com/user-attachments/assets/782a20cc-8460-416a-b0be-7a9afdbdb5d7)
+![overview_2](misc/images/overview_2.jpg)
 
 ### Some cool animated features!! ✨
 |                                                      Pie Chart                                                       |                                                  Color Tone Picker                                                   |                                                 Customize Color Tone                                                 |
@@ -112,91 +112,106 @@ generated artifact.
 ---
 
 ## Build the Project Locally
-If you want to build the project locally, follow these steps:
 
 1. Clone the repository.
-2. Add a `google-services.json` file under `:androidApp` folder by copying the dummy config already committed for the UI tests:
-```bash
-cp ui-tests/config/google-services.json androidApp/google-services.json
-```
-3. Now you should be able to build both Android and iOS apps:
-   - Build the Android app, run `./gradlew :androidApp:assembleDebug`
-   - Build the iOS app, run `./gradlew :shared:linkDebugFrameworkIosSimulatorArm64`
-4. If you want to have the app running with real functionalities, you'll need to create a new project on Firebase and wire your API keys in the project.
+2. Copy the dummy Firebase config used by the UI tests into the Android app module:
+   ```bash
+   cp ui-tests/config/google-services.json androidApp/google-services.json
+   ```
+3. Build:
+   - Android app: `./gradlew :androidApp:assembleDebug`
+   - Shared iOS framework: `./gradlew :shared:linkDebugFrameworkIosSimulatorArm64`
+4. To build the iOS app in Xcode, also copy the dummy iOS config. Debug builds swap in the staging config, so both paths are needed:
+   ```bash
+   cp ui-tests/config/GoogleService-Info.plist iosApp/iosApp/GoogleService-Info.plist
+   mkdir -p iosApp/Firebase/Stage
+   cp ui-tests/config/GoogleService-Info.plist iosApp/Firebase/Stage/GoogleService-Info.plist
+   ```
+
+The dummy configs are only enough to compile. For a working app, create your own Firebase project and replace them with its config files and API keys.
 
 ### iOS Swift package dependencies
 
-Native SDK dependencies are declared with Kotlin's [SwiftPM import](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html)
-in `shared/build.gradle.kts` (Firebase and Google Sign-In) and `core/ads/build.gradle.kts`
-(Google Mobile Ads). This Alpha integration requires Kotlin 2.5.0-Beta1. It does not
-change the static `Shared` framework or its Objective-C-based API to Swift.
+Native iOS SDKs are declared with Kotlin's [SwiftPM import](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html), an Alpha feature that requires Kotlin 2.5.0-Beta1 or newer:
 
-Firebase is linked through SwiftPM but its Kotlin bindings remain owned by GitLive.
-Implicit Clang-module discovery is disabled to avoid generating duplicate Firebase
-bindings. Google Sign-In and Google Mobile Ads use the generated `swiftPMImport`
-namespaces.
+- `shared/build.gradle.kts`: Firebase and Google Sign-In
+- `core/ads/build.gradle.kts`: Google Mobile Ads
 
-After changing native dependencies, regenerate the Xcode linkage package:
+The `Shared` framework is still static, and its API is still Objective-C based. SwiftPM import doesn't change either one.
+
+Firebase is linked through SwiftPM, but its Kotlin bindings still come from GitLive. Implicit Clang-module discovery is disabled so Firebase bindings aren't generated twice. Google Sign-In and Google Mobile Ads are accessed through the generated `swiftPMImport` namespaces.
+
+#### Updating native dependencies
+
+After changing a native dependency, regenerate the Xcode linkage package:
 
 ```bash
 XCODEPROJ_PATH="$PWD/iosApp/iosApp.xcodeproj" ./gradlew :shared:integrateLinkagePackage
 ./gradlew :shared:fetchSyntheticImportProjectPackages
 ```
 
-Commit all files in `iosApp/KotlinMultiplatformLinkedPackage` (including empty source
-stubs), `.swiftpm-locks/default/swiftImport/Package.resolved`, and Xcode's
-`Package.resolved`. Everything else under `.swiftpm-locks` is regenerated and
-git-ignored. In Xcode, use **File → Packages → Resolve Package Versions** before
-rebuilding. Meta mediation remains an Xcode dependency;
-preserve the `-ObjC` linker flag (which retains its dynamically discovered adapter)
-and the Crashlytics upload phase. Do not also force-load the Meta artifact: that
-would link it twice.
+Commit:
 
-Publishing checks the stripped Release archive's Objective-C class metadata for
-`GADMediationAdapterFacebook` before exporting the IPA. To run this check locally:
+- every file in `iosApp/KotlinMultiplatformLinkedPackage`, including empty source stubs
+- `.swiftpm-locks/default/swiftImport/Package.resolved`
+- `iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved`
+
+The rest of `.swiftpm-locks` is regenerated and git-ignored. In Xcode, run **File → Packages → Resolve Package Versions** before rebuilding.
+
+#### Xcode project constraints
+
+- Meta Audience Network mediation is still an Xcode package dependency, not a SwiftPM import.
+- Keep the `-ObjC` linker flag in `iosApp/Configuration/Config.xcconfig`. The Meta adapter is discovered at runtime, and this flag keeps the linker from stripping it.
+- Don't also force-load the Meta artifact. That would link it twice.
+- Keep the Crashlytics upload build phase.
+
+Before exporting the IPA, the publish workflow checks that `GADMediationAdapterFacebook` is still in the stripped Release archive. To run the same check locally:
 
 ```bash
 python3 iosApp/scripts/verify_meta_adapter.py build/iosApp.xcarchive
 ```
 
-This detects a missing/dead-stripped adapter, not ad delivery. Verify real-device
-Meta bidding and test-ad delivery with Ad Inspector before shipping ad SDK changes.
+This check only catches a missing or stripped adapter. It doesn't prove that ads are delivered. Before shipping ad SDK changes, use Ad Inspector on a real device to verify Meta bidding and test-ad delivery.
 
 ---
 
 ## UI Tests
 
-UI tests use [Maestro](https://maestro.mobile.dev/) to launch the real Android or iOS application. Both platforms run the same flows from `ui-tests/` against local Firebase Auth and Firestore emulators, so production data is never used.
+UI tests use [Maestro](https://maestro.mobile.dev/) to drive the real Android and iOS apps. Both platforms run the same flows from `ui-tests/` against local Firebase Auth and Firestore emulators, so production data is never touched.
 
-The flows are split into three independent suites — `login/` (auth + onboarding), `after-login/free/`, and `after-login/premium/` — with shared subflows in `common/`. See [`ui-tests/TEST_COVERAGE.md`](ui-tests/TEST_COVERAGE.md) for the full coverage map, the test-mode hooks, and the cross-platform selector strategy.
+Flows are split into three independent suites: `login/` (auth and onboarding), `after-login/free/`, and `after-login/premium/`. Shared subflows live in `common/`. See [`ui-tests/TEST_COVERAGE.md`](ui-tests/TEST_COVERAGE.md) for the coverage map, test-mode hooks, and selector strategy.
 
 ### Adding a Test
 
-1. Add a Maestro YAML flow under the relevant suite in `ui-tests/`. The runner scripts execute every flow in each suite.
-2. Prefer stable visible text for selectors because Maestro reads it consistently from both Android and iOS accessibility trees. Add custom semantics only when no stable visible text exists, and verify the selector on both platforms.
-3. Keep platform-specific commands out of flows where possible so the same test runs on Android and iOS. Gate a genuinely platform-specific flow with `platform: Android`/`platform: iOS`.
+1. Add a Maestro YAML flow to the relevant suite. The runners pick up every flow in a suite automatically.
+2. Select elements by stable visible text, which Maestro reads the same way from Android and iOS accessibility trees. Add custom semantics only when there's no stable text, and verify the selector on both platforms.
+3. Avoid platform-specific commands so one flow runs on both platforms. If a flow is genuinely platform-specific, add a top-level `platform: Android` or `platform: iOS` key, and the other platform's runner will skip it.
 
 ### Running Locally
 
-Install the [Firebase CLI](https://firebase.google.com/docs/cli) and [Maestro CLI](https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli). Use the setup helpers below to reserve test devices. Android also needs **Android SDK Command-line Tools (latest)** installed from Android Studio's SDK Tools tab.
+Install the [Firebase CLI](https://firebase.google.com/docs/cli) and the [Maestro CLI](https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli). For Android, also install **Android SDK Command-line Tools (latest)** from the SDK Tools tab in Android Studio.
 
-Run the Android tests:
+Each platform has a setup script that creates and boots a dedicated test device.
+
+Android:
 
 ```bash
 ./ui-tests/scripts/setup-local-android-emulator.sh
 EMULATOR_AVD=budgetplus_ci_api34 ./ui-tests/scripts/run-android-ui-tests.sh
 ```
 
-Run the iOS tests using a dedicated `iPhone 17 Pro UI Tests` simulator:
+iOS:
 
 ```bash
-./ui-tests/scripts/setup-local-ios-simulator.sh "iPhone 17 Pro"
+./ui-tests/scripts/setup-local-ios-simulator.sh
 ./ui-tests/scripts/run-ios-ui-tests.sh "iPhone 17 Pro UI Tests"
 ```
 
-The iOS runner defaults to `iPhone 17 Pro UI Tests`; pass another dedicated simulator name if needed. Do not use a simulator with personal/Stage sessions: the runner resets its keychain, and Stage's shared URL scheme can intercept premium seeding. Both runners temporarily install the test Firebase configuration, then restore the exact original local file (or its absence), including after test failures.
+Don't point the iOS runner at a simulator you use day to day. The runner resets the simulator's keychain, and an installed Stage build can intercept the shared `budgetplus://` URL scheme used to seed premium.
 
-Reports and per-attempt diagnostics are written under `build/maestro/{android,ios}`. See the [coverage guide](ui-tests/TEST_COVERAGE.md#targeted-local-reliability-smoke-run) for filtered smoke runs, retry-health reporting, and device-free runner checks.
+Both runners temporarily install the test Firebase config and restore your original file, or remove it if there wasn't one, even when tests fail. Reports and per-attempt diagnostics go to `build/maestro/{android,ios}`.
+
+To run a single suite or filter flows, see [`TEST_COVERAGE.md`](ui-tests/TEST_COVERAGE.md#running-locally). That guide also covers retry reporting and the device-free runner checks.
 
 ---
 
