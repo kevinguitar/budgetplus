@@ -20,8 +20,10 @@ appId: com.kevlina.budgetplus
       NOTE: "${output.recordNote}"
 - tapOn:
     text: "5"
+# Anchor below the amount display: the price field can also match "0" (see add-record.yml).
 - tapOn:
     text: "0"
+    below: "record_amount_.*"
 - assertVisible:
     text: "record_amount_50(,.*)?"
 - tapOn:
