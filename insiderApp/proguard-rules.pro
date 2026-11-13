@@ -29,6 +29,18 @@
   *;
 }
 
+# Google Cloud Translate: gax reads library versions via `Class.getPackage().getImplementationVersion()`.
+# When R8 repackages these classes into the unnamed package, `getPackage()` returns null on Android,
+# causing a NPE when creating the translation service. Keep their original names/packages.
+-keepnames class com.google.cloud.**
+-keepnames class com.google.api.gax.**
+# google-http-client parses JSON reflectively into GenericJson models via @Key fields.
+-keepattributes Signature,*Annotation*
+-keep class * extends com.google.api.client.json.GenericJson { *; }
+-keepclassmembers class * {
+    @com.google.api.client.util.Key <fields>;
+}
+
 # Required rules for r8
 -dontwarn com.google.appengine.api.urlfetch.FetchOptions$Builder
 -dontwarn com.google.appengine.api.urlfetch.FetchOptions
