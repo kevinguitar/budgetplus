@@ -3,12 +3,18 @@
     The static preview in the widget picker on Android 12 to 14, it mirrors the Glance widget with
     the sample items. Android 15+ shows the generated preview instead, see RecordGlanceWidget.
     Only the views supported by RemoteViews can be used.
+
+    The rows overflow the widget and are clipped at its bottom edge, like the LazyColumn of the
+    Glance widget. clipToOutline keeps the overflowing rows inside the rounded corners.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/record_widget_preview_background"
-    android:orientation="vertical">
+    android:clipToOutline="true"
+    android:orientation="vertical"
+    tools:targetApi="31">
 
     <TextView
         android:layout_width="match_parent"
@@ -22,9 +28,15 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
+    <!--
+        A fixed height taller than the widget on purpose. With wrap_content, the row that doesn't
+        fit is squeezed into the remaining space and its bottom padding clips the text, which
+        leaves a gap at the bottom of the widget, e.g. in Chinese where the rows are taller. The
+        fixed height measures every row at its full height, and the widget clips the overflow.
+    -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1000dp"
         android:orientation="vertical">
 
         <LinearLayout
