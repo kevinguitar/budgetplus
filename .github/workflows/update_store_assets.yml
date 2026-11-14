@@ -117,7 +117,7 @@ jobs:
           umask 077
           export PLAY_KEY_PATH="$RUNNER_TEMP/play-service-account.json"
           printf '%s' "$SERVICE_ACCOUNT_JSON" > "$PLAY_KEY_PATH"
-          python3 -u store-assets/upload_in_app_listings.py --store android --dry-run
+          python3 -u store-assets/upload_in_app_listings.py --store android
 
       - name: Write App Store Connect key
         if: ${{ inputs.target != 'android' && (inputs.store_listing || inputs.screenshots || inputs.creative_assets || inputs.in_app_listing) }}
@@ -160,7 +160,7 @@ jobs:
         env:
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        run: python3 -u store-assets/upload_in_app_listings.py --store ios --dry-run
+        run: python3 -u store-assets/upload_in_app_listings.py --store ios
 
       - name: Clean up keys
         if: ${{ always() }}
