@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lay out store-assets/final/ for fastlane and check it.
+"""Lay out store-assets/screenshots/ for fastlane and check it.
 
 usage: stage_for_fastlane.py OUT_DIR [--target both|ios|android]
        [--skip-screenshots] [--skip-creative-assets]
@@ -7,7 +7,7 @@ usage: stage_for_fastlane.py OUT_DIR [--target both|ios|android]
 Writes:
   OUT_DIR/ios/<asc-locale>/<NN>-<device>-<screen>.png        (deliver screenshots_path)
   OUT_DIR/android/<play-locale>/images/<type>/<NN>.png       (supply metadata_path)
-  OUT_DIR/android/<play-locale>/images/featureGraphic.png    (from final/android/creative/)
+  OUT_DIR/android/<play-locale>/images/featureGraphic.png    (from screenshots/android/creative/)
 
 Checks every file is an RGB PNG (no alpha), sizes are uniform per device class,
 per-type counts stay within store limits (App Store 10, Google Play 8), and the
@@ -15,13 +15,13 @@ files follow ORDER. Staged names keep the NN- prefix, which sets the display ord
 
 Also checks the creative art: the Google Play feature graphic (1024x500, staged above; supply
 uploads it unless skip_upload_images) and the App Store header and search results art in
-final/ios/creative/ (not staged: fastlane doesn't upload it; upload_creative_assets.py does).
+screenshots/ios/creative/ (not staged: fastlane doesn't upload it; upload_creative_assets.py does).
 """
 import argparse, os, shutil, struct, sys
 from upload_creative_assets import check_creative
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FINAL = os.path.join(HERE, "final")
+FINAL = os.path.join(HERE, "screenshots")
 LOCALES = {  # repo locale -> (App Store Connect, Google Play)
     "en-US": ("en-US", "en-US"),
     "zh-Hant": ("zh-Hant", "zh-TW"),

@@ -10,9 +10,9 @@ not app releases. Validation runs locally or before manual uploads, not in PR CI
 |---|---|---|
 | App Store | `store-assets/listings/ios/<locale>/` | `name.txt`, `subtitle.txt`, `description.txt` |
 | Google Play | `store-assets/listings/android/<locale>/` | `title.txt`, `short_description.txt`, `full_description.txt` |
-| App Store in-app | `store-assets/listings/in-app/ios/products/<product ID>/<locale>/` | `name.txt`, `description.txt` |
-| App Store subscription groups | `store-assets/listings/in-app/ios/subscription-groups/<reference name>/<locale>/` | `name.txt`, optional `custom_app_name.txt` |
-| Google Play in-app | `store-assets/listings/in-app/android/<product ID>/<locale>/` | `title.txt`, `description.txt`, optional `benefits.txt` (subscriptions) |
+| App Store in-app | `store-assets/in-app/ios/products/<product ID>/<locale>/` | `name.txt`, `description.txt` |
+| App Store subscription groups | `store-assets/in-app/ios/subscription-groups/<reference name>/<locale>/` | `name.txt`, optional `custom_app_name.txt` |
+| Google Play in-app | `store-assets/in-app/android/<product ID>/<locale>/` | `title.txt`, `description.txt`, optional `benefits.txt` (subscriptions) |
 
 Use **Traditional Chinese as the reference** and update both platforms' wording
 together. Translate the latest approved selection; do not restore removed points.

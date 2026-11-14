@@ -3,8 +3,8 @@
 
 usage: upload_creative_assets.py [--version 1.2.3] [--locale zh-Hant,ja] [--wait-minutes 30] [--retry-minutes 5]
 
-Reads   store-assets/final/ios/creative/<repo-locale>/header.png   3840x1646
-        store-assets/final/ios/creative/<repo-locale>/search.png   3840x2560 (any 3:2 from 1920x1280)
+Reads   store-assets/screenshots/ios/creative/<repo-locale>/header.png   3840x1646
+        store-assets/screenshots/ios/creative/<repo-locale>/search.png   3840x2560 (any 3:2 from 1920x1280)
 Env     ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH (App Store Connect API key, .p8)
 
 fastlane does not handle these placements, so this talks to the App Store Connect API directly
@@ -25,7 +25,7 @@ The placed art goes to App Review with the version, like screenshots.
 import argparse, base64, hashlib, json, os, struct, subprocess, sys, time, urllib.error, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CREATIVE = os.path.join(HERE, "final", "ios", "creative")
+CREATIVE = os.path.join(HERE, "screenshots", "ios", "creative")
 BUNDLE_ID = "com.kevlina.budgetplus"
 API = "https://api.appstoreconnect.apple.com"
 LOCALES = {"en-US": "en-US", "zh-Hant": "zh-Hant", "zh-Hans": "zh-Hans", "ja": "ja", "ko": "ko"}  # repo -> ASC
@@ -47,7 +47,7 @@ def png_info(path):
     return w, h, head[25]
 
 def check_creative(locales=LOCALES):
-    """Return (errors, summary) for store-assets/final/ios/creative."""
+    """Return (errors, summary) for store-assets/screenshots/ios/creative."""
     errors, summary = [], []
     for loc in locales:
         for kind in KINDS:

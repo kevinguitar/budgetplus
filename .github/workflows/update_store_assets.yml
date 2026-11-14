@@ -3,10 +3,10 @@ name: Update Store Assets
 # Manual only; app release workflows do not use these listing sources or lanes.
 # Listing text, screenshots, creative art, and in-app product text are independently opt-in for the selected stores.
 # Creative art: the App Store product page header and search results art
-# (store-assets/final/ios/creative/, via the App Store Connect API) and the Google Play
-# feature graphic (store-assets/final/android/creative/, via fastlane).
+# (store-assets/screenshots/ios/creative/, via the App Store Connect API) and the Google Play
+# feature graphic (store-assets/screenshots/android/creative/, via fastlane).
 # In-app text: product, subscription, and subscription group names/descriptions
-# (store-assets/listings/in-app/, via the store APIs; App Store drafts are not submitted).
+# (store-assets/in-app/, via the store APIs; App Store drafts are not submitted).
 on:
   workflow_dispatch:
     inputs:

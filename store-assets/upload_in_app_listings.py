@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload in-app product and subscription names/descriptions from store-assets/listings/in-app.
+"""Upload in-app product and subscription names/descriptions from store-assets/in-app.
 
 usage: upload_in_app_listings.py --store ios|android [--dry-run]
 
@@ -163,7 +163,7 @@ def upload_ios(listings, dry_run):
     for item in listings:
         wanted[item.kind, item.key][item.locale] = {ATTRIBUTES[k]: v for k, v in item.fields.items()}
     if not wanted:
-        print("No App Store in-app text in store-assets/listings/in-app/ios; nothing to upload.")
+        print("No App Store in-app text in store-assets/in-app/ios; nothing to upload.")
         return []
 
     api = ASC(os.environ["ASC_KEY_ID"], os.environ["ASC_ISSUER_ID"], os.environ["ASC_KEY_PATH"])
@@ -314,7 +314,7 @@ def upload_android(listings, dry_run):
     for item in listings:
         wanted[item.key][item.locale] = item.fields
     if not wanted:
-        print("No Google Play in-app text in store-assets/listings/in-app/android; nothing to upload.")
+        print("No Google Play in-app text in store-assets/in-app/android; nothing to upload.")
         return []
 
     play = Play(os.environ["PLAY_KEY_PATH"])

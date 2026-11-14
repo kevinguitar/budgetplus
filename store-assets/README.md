@@ -4,11 +4,11 @@ Localized listing copy and screenshots for the App Store and Google Play.
 See [LISTINGS.md](LISTINGS.md) for copy rules, validation, and upload details.
 
 - `listings/<platform>/<locale>/` — titles, subtitles, and descriptions.
-- `listings/in-app/<platform>/…` — in-app product and subscription names and descriptions.
-- `originals/<platform>/<device>/<locale>/` — raw screenshots and editor positions (`anchors.json`).
-- `final/<platform>/<device-class>/<locale>/` — upload-ready screenshots, ordered by `NN-` prefix.
-- `final/ios/creative/<locale>/` — `header.png` (3840×1646) and `search.png` (3840×2560).
-- `final/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic (1024×500).
+- `in-app/<platform>/…` — in-app product and subscription names and descriptions.
+- `original-screenshots/<platform>/<device>/<locale>/` — raw screenshots and editor positions (`anchors.json`).
+- `screenshots/<platform>/<device-class>/<locale>/` — upload-ready screenshots, ordered by `NN-` prefix.
+- `screenshots/ios/creative/<locale>/` — `header.png` (3840×1646) and `search.png` (3840×2560).
+- `screenshots/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic (1024×500).
 
 | Device class | Size | Store slot | Source device |
 |---|---|---|---|

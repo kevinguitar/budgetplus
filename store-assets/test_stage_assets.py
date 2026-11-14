@@ -16,7 +16,7 @@ class StageAssetsTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
-        self.final = self.root / "final"
+        self.final = self.root / "screenshots"
         self.out = self.root / "out"
 
     def screenshots(self, platform):

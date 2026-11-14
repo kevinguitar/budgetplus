@@ -3,7 +3,7 @@
 
 Usage: python3 store-assets/in_app_listings.py [--target both|ios|android]
 
-Sources live in store-assets/listings/in-app/ and use each store's locale codes
+Sources live in store-assets/in-app/ and use each store's locale codes
 (see LOCALES in listings.py). One directory per product, keyed by the store's ID:
 
   ios/products/<product ID>/<locale>/                name.txt, description.txt
@@ -25,7 +25,7 @@ import sys
 from listings import LOCALES, ROOT, read_text
 
 
-SOURCE = Path("store-assets/listings/in-app")
+SOURCE = Path("store-assets/in-app")
 CANONICAL = {"ios": "zh-Hant", "android": "zh-TW"}
 # Directory kinds per store: kind -> directory under SOURCE/<store>.
 KINDS = {
