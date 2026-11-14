@@ -7,6 +7,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.ads)
             implementation(projects.core.data)
             implementation(projects.core.settingsApi)
             implementation(projects.core.ui)

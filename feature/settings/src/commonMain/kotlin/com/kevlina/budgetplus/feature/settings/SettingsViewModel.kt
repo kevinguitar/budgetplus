@@ -7,6 +7,7 @@ import budgetplus.core.common.generated.resources.settings_book_deleted
 import budgetplus.core.common.generated.resources.settings_book_left
 import budgetplus.core.common.generated.resources.settings_rename_book_success
 import budgetplus.core.common.generated.resources.settings_rename_user_success
+import com.kevlina.budgetplus.core.ads.AdsConsentManager
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.VibratorManager
@@ -33,6 +34,7 @@ internal class SettingsViewModel(
     private val authManager: AuthManager,
     private val snackbarSender: SnackbarSender,
     private val tracker: Tracker,
+    private val adsConsentManager: AdsConsentManager,
     val vibrator: VibratorManager,
     val chartModeSettings: ChartModeSettings,
     val calculatorSettings: CalculatorSettings,
@@ -53,6 +55,9 @@ internal class SettingsViewModel(
 
     val isPremium = authManager.isPremium
 
+    // Only the users in the regions which require the consent, e.g. the EEA, get the entry.
+    val isAdPrivacySettingsShown = adsConsentManager.isPrivacyOptionsRequired
+
     val currentUsername get() = authManager.userState.value?.name
     val currentBookName get() = bookRepo.bookState.value?.name
 
@@ -65,6 +70,11 @@ internal class SettingsViewModel(
 
     fun trackRecordWidgetClicked() {
         tracker.logEvent("settings_record_widget_click")
+    }
+
+    fun showAdPrivacySettings() {
+        adsConsentManager.showPrivacyOptionsForm()
+        tracker.logEvent("settings_ad_privacy_settings_click")
     }
 
     fun renameUser(newName: String) {

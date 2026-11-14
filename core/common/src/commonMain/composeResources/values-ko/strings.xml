@@ -219,6 +219,7 @@
     <string name="settings_follow_on_instagram">Instagram 팔로우</string>
     <string name="settings_contact_us">문의하기</string>
     <string name="settings_privacy_policy">개인정보 처리방침</string>
+    <string name="settings_ad_privacy_settings">광고 개인정보 설정</string>
     <string name="settings_no_email_app_found">이메일 앱을 찾을 수 없습니다</string>
     <string name="settings_delete_account">계정 삭제</string>
     <string name="settings_delete_account_description">계정을 삭제하시겠습니까? 삭제 후 모든 가계부와 기록 데이터가 영구적으로 삭제되며 복구할 수 없습니다.</string>

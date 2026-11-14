@@ -4,7 +4,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_widget_book_unavailable
 import budgetplus.core.common.generated.resources.record_widget_switched_book
 import com.kevlina.budgetplus.core.ads.AdUnitId
-import com.kevlina.budgetplus.core.ads.AdmobInitializer
+import com.kevlina.budgetplus.core.ads.fixtures.FakeAdmobInitializer
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
@@ -509,10 +509,6 @@ class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             recordPrefillHolder = recordPrefillHolder,
             tracker = tracker,
         )
-    }
-
-    private class FakeAdmobInitializer : AdmobInitializer {
-        override fun requestTrackingAuthorization() = Unit
     }
 
     /**

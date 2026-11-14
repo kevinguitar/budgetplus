@@ -43,8 +43,15 @@ import org.jetbrains.compose.resources.vectorResource
 // can assert the banner area is present regardless of the ad SDK load state.
 const val BANNER_AD_TEST_TAG = "Banner Ad Area"
 
+/**
+ * @param adsAvailability the banner is only requested when the ads are [AdsAvailability.Available],
+ *  i.e. after the user's consent is resolved.
+ */
 @Composable
-fun BannerAd(bannerId: String) {
+fun BannerAd(
+    bannerId: String,
+    adsAvailability: AdsAvailability,
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -59,13 +66,20 @@ fun BannerAd(bannerId: String) {
             }
     ) {
         var adBannerState by remember { mutableStateOf(AdBannerState.Loading) }
-        NativeBannerAd(
-            adUnitId = bannerId,
-            modifier = Modifier.fillMaxSize(),
-            onStateUpdate = { adBannerState = it }
-        )
+        if (adsAvailability == AdsAvailability.Available) {
+            NativeBannerAd(
+                adUnitId = bannerId,
+                modifier = Modifier.fillMaxSize(),
+                onStateUpdate = { adBannerState = it }
+            )
+        }
 
-        when (adBannerState) {
+        val displayedState = when (adsAvailability) {
+            AdsAvailability.Pending -> AdBannerState.Loading
+            AdsAvailability.Unavailable -> AdBannerState.NotAvailable
+            AdsAvailability.Available -> adBannerState
+        }
+        when (displayedState) {
             AdBannerState.Loading -> AdsBannerLoader()
             AdBannerState.NotAvailable -> AdsBannerNotAvailable()
             AdBannerState.Loaded -> Unit

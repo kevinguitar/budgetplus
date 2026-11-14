@@ -11,9 +11,13 @@ import com.kevlina.budgetplus.core.common.consumeEach
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.collect
 import platform.UIKit.UIApplication
+import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIColor
+import platform.UIKit.UIView
 import platform.darwin.NSObject
 import swiftPMImport.budgetplus.core.core.ads.GADAdSizeBanner
 import swiftPMImport.budgetplus.core.core.ads.GADBannerView
@@ -46,16 +50,45 @@ actual fun NativeBannerAd(
     val bgColor = LocalAppColors.current.light
     UIKitView(
         factory = {
-            GADBannerView(adSize = cValue { GADAdSizeBanner }).apply {
+            val bannerView = GADBannerView(adSize = cValue { GADAdSizeBanner }).apply {
                 this.adUnitID = adUnitId
                 this.rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
                 this.delegate = delegate
                 this.backgroundColor = bgColor.toUIColor()
-                loadRequest(GADRequest())
             }
+            BannerAdContainer(bannerView)
         },
         modifier = modifier
     )
+}
+
+/**
+ * Hosts the [GADBannerView], and only loads the ad once the view is laid out with a size. The
+ * Mobile Ads SDK can already be started when the banner is created, and loading the ad before
+ * Compose sizes the view fails with "Invalid ad width or height".
+ */
+@OptIn(ExperimentalForeignApi::class)
+private class BannerAdContainer(
+    private val bannerView: GADBannerView,
+) : UIView(frame = CGRectZero.readValue()) {
+
+    private var isLoadRequested = false
+
+    init {
+        addSubview(bannerView)
+    }
+
+    override fun layoutSubviews() {
+        super.layoutSubviews()
+        bannerView.setFrame(bounds)
+
+        val hasSize = bounds.useContents { size.width > 0 && size.height > 0 }
+        if (hasSize && !isLoadRequested) {
+            isLoadRequested = true
+            Logger.d("BannerAd: Loading, size=${bounds.useContents { "${size.width}x${size.height}" }}")
+            bannerView.loadRequest(GADRequest())
+        }
+    }
 }
 
 private fun Color.toUIColor(): UIColor {
