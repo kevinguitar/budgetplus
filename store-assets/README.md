@@ -28,7 +28,7 @@ See [LISTINGS.md](LISTINGS.md) for copy rules, validation, and upload details.
 
 ## Uploading
 
-Run [update_store_assets](../.github/workflows/update_store_assets.yml) manually.
+Run [update-store-assets](../.github/workflows/update-store-assets.yml) manually.
 Choose `android`, `ios`, or `both`, then enable `store_listing`, `screenshots`,
 `creative_assets` (App Store header and search results, Google Play
 feature graphic), and/or `in_app_listing` (all off by default). Only selected assets are
