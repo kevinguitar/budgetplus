@@ -1,10 +1,12 @@
 name: Update Store Assets
 
 # Manual only; app release workflows do not use these listing sources or lanes.
-# Listing text, screenshots, and creative art are independently opt-in for the selected stores.
+# Listing text, screenshots, creative art, and in-app product text are independently opt-in for the selected stores.
 # Creative art: the App Store product page header and search results art
-# (store-assets/final/ios/creative/, via the App Store Connect API) and the Google Play
-# feature graphic (store-assets/final/android/creative/, via fastlane).
+# (store-assets/screenshots/ios/creative/, via the App Store Connect API) and the Google Play
+# feature graphic (store-assets/screenshots/android/creative/, via fastlane).
+# In-app text: product, subscription, and subscription group names/descriptions
+# (store-assets/in-app/, via the store APIs; App Store drafts are not submitted).
 on:
   workflow_dispatch:
     inputs:
@@ -25,6 +27,10 @@ on:
         description: Upload the creative art - App Store header + search results, Google Play feature graphic (replaces the current ones)
         type: boolean
         default: false
+      in_app_listing:
+        description: Upload in-app product and subscription names/descriptions (App Store changes become drafts to submit for review)
+        type: boolean
+        default: false
 
 # Serialize manual uploads so two runs cannot create competing iOS versions or
 # invalidate each other's Google Play edits. Do not cancel an in-progress edit.
@@ -35,7 +41,7 @@ concurrency:
 jobs:
   upload:
     # No selected work means no uploads or implicit iOS version bump.
-    if: ${{ inputs.store_listing || inputs.screenshots || inputs.creative_assets }}
+    if: ${{ inputs.store_listing || inputs.screenshots || inputs.creative_assets || inputs.in_app_listing }}
     runs-on: ubuntu-latest
     env:
       UPLOAD_STORE_LISTING: ${{ inputs.store_listing }}
@@ -73,6 +79,12 @@ jobs:
             cp -R "$STORE_LISTINGS_DIR/android/." "$STAGE_DIR/android/"
           fi
 
+      - name: Validate in-app product text
+        if: ${{ inputs.in_app_listing }}
+        env:
+          TARGET: ${{ inputs.target }}
+        run: python3 store-assets/in_app_listings.py --target "$TARGET"
+
       - name: Setup Ruby
         if: ${{ inputs.store_listing || inputs.screenshots || (inputs.target != 'ios' && inputs.creative_assets) }}
         uses: ruby/setup-ruby@v1
@@ -97,8 +109,18 @@ jobs:
           printf '%s' "$SERVICE_ACCOUNT_JSON" > "$PLAY_KEY_PATH"
           fastlane android_assets
 
+      - name: Upload in-app product text to Google Play
+        if: ${{ inputs.target != 'ios' && inputs.in_app_listing }}
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          umask 077
+          export PLAY_KEY_PATH="$RUNNER_TEMP/play-service-account.json"
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > "$PLAY_KEY_PATH"
+          python3 -u store-assets/upload_in_app_listings.py --store android
+
       - name: Write App Store Connect key
-        if: ${{ inputs.target != 'android' && (inputs.store_listing || inputs.screenshots || inputs.creative_assets) }}
+        if: ${{ inputs.target != 'android' && (inputs.store_listing || inputs.screenshots || inputs.creative_assets || inputs.in_app_listing) }}
         env:
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
           ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
@@ -131,6 +153,14 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           IOS_APP_VERSION: ${{ steps.ios_version.outputs.version }}
         run: python3 -u store-assets/upload_creative_assets.py --version "$IOS_APP_VERSION"
+
+      # Not tied to an app version: products/subscriptions have their own metadata versions.
+      - name: Upload in-app product text to App Store Connect
+        if: ${{ inputs.target != 'android' && inputs.in_app_listing }}
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: python3 -u store-assets/upload_in_app_listings.py --store ios
 
       - name: Clean up keys
         if: ${{ always() }}

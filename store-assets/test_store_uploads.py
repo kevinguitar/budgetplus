@@ -146,12 +146,12 @@ class ManualWorkflowTests(unittest.TestCase):
         cls.steps = {step.get("name"): step for step in cls.job["steps"]}
 
     @staticmethod
-    def enabled(node, target="both", listing=False, screenshots=False, creative=False):
+    def enabled(node, target="both", listing=False, screenshots=False, creative=False, in_app=False):
         condition = node.get("if")
         if condition is None:
             return True
         values = {"target": target, "store_listing": listing, "screenshots": screenshots,
-                  "creative_assets": creative}
+                  "creative_assets": creative, "in_app_listing": in_app}
         condition = condition.removeprefix("${{").removesuffix("}}")
         condition = re.sub(r"inputs\.(\w+)", lambda match: repr(values[match[1]]), condition)
         return eval(condition.replace("&&", " and ").replace("||", " or "), {"__builtins__": {}})
@@ -161,10 +161,10 @@ class ManualWorkflowTests(unittest.TestCase):
         triggers = self.workflow.get("on", self.workflow.get("true"))
         self.assertEqual(list(triggers), ["workflow_dispatch"])
         inputs = triggers["workflow_dispatch"]["inputs"]
-        self.assertEqual(list(inputs), ["target", "store_listing", "screenshots", "creative_assets"])
+        self.assertEqual(list(inputs), ["target", "store_listing", "screenshots", "creative_assets", "in_app_listing"])
         self.assertEqual(inputs["target"]["options"], ["both", "ios", "android"])
         self.assertEqual(inputs["target"]["default"], "both")
-        for key in ("store_listing", "screenshots", "creative_assets"):
+        for key in ("store_listing", "screenshots", "creative_assets", "in_app_listing"):
             self.assertIs(inputs[key]["default"], False)
         text = (ROOT / ".github/workflows/update_store_assets.yml").read_text()
         self.assertNotIn("dry_run", text)
@@ -173,12 +173,12 @@ class ManualWorkflowTests(unittest.TestCase):
 
     def test_target_and_option_truth_table(self):
         for target in ("both", "ios", "android"):
-            for listing, screenshots, creative in itertools.product((False, True), repeat=3):
-                options = dict(target=target, listing=listing, screenshots=screenshots, creative=creative)
+            for listing, screenshots, creative, in_app in itertools.product((False, True), repeat=4):
+                options = dict(target=target, listing=listing, screenshots=screenshots, creative=creative, in_app=in_app)
                 with self.subTest(**options):
                     ios = target != "android"
                     android = target != "ios"
-                    self.assertEqual(self.enabled(self.job, **options), listing or screenshots or creative)
+                    self.assertEqual(self.enabled(self.job, **options), listing or screenshots or creative or in_app)
                     self.assertEqual(self.enabled(self.steps["Upload to Google Play"], **options),
                                      android and (listing or screenshots or creative))
                     self.assertEqual(self.enabled(self.steps["Stage and validate selected store listing text"], **options), listing)
@@ -187,12 +187,20 @@ class ManualWorkflowTests(unittest.TestCase):
                     for name in ("Setup Ruby", "Install Fastlane", "Use manual store upload lanes"):
                         self.assertEqual(self.enabled(self.steps[name], **options),
                                          listing or screenshots or (android and creative))
-                    for name in ("Write App Store Connect key", "Resolve or create editable iOS version"):
-                        self.assertEqual(self.enabled(self.steps[name], **options), ios and (listing or screenshots or creative))
+                    self.assertEqual(self.enabled(self.steps["Write App Store Connect key"], **options),
+                                     ios and (listing or screenshots or creative or in_app))
+                    # In-app text has its own metadata versions: never create an app version for it.
+                    self.assertEqual(self.enabled(self.steps["Resolve or create editable iOS version"], **options),
+                                     ios and (listing or screenshots or creative))
                     self.assertEqual(self.enabled(self.steps["Upload listing text and/or screenshots to App Store Connect"], **options),
                                      ios and (listing or screenshots))
                     self.assertEqual(self.enabled(self.steps["Upload header and search results to App Store Connect"], **options),
                                      ios and creative)
+                    self.assertEqual(self.enabled(self.steps["Validate in-app product text"], **options), in_app)
+                    self.assertEqual(self.enabled(self.steps["Upload in-app product text to App Store Connect"], **options),
+                                     ios and in_app)
+                    self.assertEqual(self.enabled(self.steps["Upload in-app product text to Google Play"], **options),
+                                     android and in_app)
 
     def test_listing_only_does_not_validate_images_on_either_store(self):
         for target in ("both", "ios", "android"):
@@ -219,6 +227,16 @@ class ManualWorkflowTests(unittest.TestCase):
         self.assertFalse(self.enabled(self.steps["Install Fastlane"], target="ios", creative=True))
         # The Play feature graphic goes up through supply.
         self.assertTrue(self.enabled(self.steps["Install Fastlane"], target="android", creative=True))
+
+    def test_in_app_uploads_use_store_scripts_not_fastlane(self):
+        ios = self.steps["Upload in-app product text to App Store Connect"]
+        android = self.steps["Upload in-app product text to Google Play"]
+        self.assertIn("upload_in_app_listings.py --store ios", ios["run"])
+        self.assertNotIn("IOS_APP_VERSION", ios.get("env", {}))
+        self.assertIn("upload_in_app_listings.py --store android", android["run"])
+        self.assertIn("umask 077", android["run"])
+        self.assertIn('PLAY_KEY_PATH="$RUNNER_TEMP/play-service-account.json"', android["run"])
+        self.assertNotIn("--dry-run", ios["run"] + android["run"])
 
     def test_all_ios_uploads_use_same_resolved_version(self):
         self.assertEqual(self.steps["Resolve or create editable iOS version"]["id"], "ios_version")

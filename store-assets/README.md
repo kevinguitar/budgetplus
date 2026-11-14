@@ -4,10 +4,11 @@ Localized listing copy and screenshots for the App Store and Google Play.
 See [LISTINGS.md](LISTINGS.md) for copy rules, validation, and upload details.
 
 - `listings/<platform>/<locale>/` — titles, subtitles, and descriptions.
-- `originals/<platform>/<device>/<locale>/` — raw screenshots and editor positions (`anchors.json`).
-- `final/<platform>/<device-class>/<locale>/` — upload-ready screenshots, ordered by `NN-` prefix.
-- `final/ios/creative/<locale>/` — `header.png` (3840×1646) and `search.png` (3840×2560).
-- `final/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic (1024×500).
+- `in-app/<platform>/…` — in-app product and subscription names and descriptions.
+- `original-screenshots/<platform>/<device>/<locale>/` — raw screenshots and editor positions (`anchors.json`).
+- `screenshots/<platform>/<device-class>/<locale>/` — upload-ready screenshots, ordered by `NN-` prefix.
+- `screenshots/ios/creative/<locale>/` — `header.png` (3840×1646) and `search.png` (3840×2560).
+- `screenshots/android/creative/<locale>/featureGraphic.png` — Google Play feature graphic (1024×500).
 
 | Device class | Size | Store slot | Source device |
 |---|---|---|---|
@@ -29,8 +30,8 @@ See [LISTINGS.md](LISTINGS.md) for copy rules, validation, and upload details.
 
 Run [update_store_assets](../.github/workflows/update_store_assets.yml) manually.
 Choose `android`, `ios`, or `both`, then enable `store_listing`, `screenshots`,
-and/or `creative_assets` (App Store header and search results, Google Play
-feature graphic; all off by default). Only selected assets are
+`creative_assets` (App Store header and search results, Google Play
+feature graphic), and/or `in_app_listing` (all off by default). Only selected assets are
 uploaded. iOS reuses an editable version or creates a patch draft; no builds
 are uploaded or submitted for review.
 
