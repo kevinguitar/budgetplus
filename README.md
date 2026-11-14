@@ -3,7 +3,7 @@
 [![CI](https://github.com/kevinguitar/budgetplus/actions/workflows/ci.yml/badge.svg)](https://github.com/kevinguitar/budgetplus/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0)
 
-Budget+ is an easy-to-use co-spending tracker to track expenses together with your friends and family.
+Budget+ is an easy-to-use shared budget tracker. Track spending together with automatic currency conversion.
 
 ### Now available on both Android and iOS!
 
