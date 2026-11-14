@@ -67,34 +67,48 @@ def load_listings(root=ROOT, target="both"):
         for locale in LOCALES if store == "ios" else LOCALES.values():
             for field, (minimum, maximum, single_line) in FIELDS[store].items():
                 path = source / locale / (field + ".txt")
-                try:
-                    # Decode bytes directly so CRLF/BOM are not silently normalized.
-                    raw = (root / path).read_bytes().decode("utf-8")
-                except (OSError, UnicodeError) as error:
-                    errors.append(f"{path}: {error}")
-                    continue
-
-                # Editors may add one terminal LF. Do not upload it, especially
-                # for a Play title already at the 30-character limit (Supply
-                # reads files verbatim, unlike Deliver's whitespace stripping).
-                text = raw[:-1] if raw.endswith("\n") else raw
-                if not minimum <= len(text) <= maximum:
-                    errors.append(f"{path}: {len(text)} characters; expected {minimum}–{maximum}")
-                if text != text.strip() or any(line != line.rstrip() for line in text.split("\n")):
-                    errors.append(f"{path}: leading/trailing whitespace or trailing blank lines")
-                if single_line and "\n" in text:
-                    errors.append(f"{path}: must be a single line")
-                if "\\n" in text:
-                    errors.append(f"{path}: literal \\n; use real line breaks in descriptions")
-                if any(unicodedata.category(char) in {"Cc", "Cs"} and char != "\n" for char in text):
-                    errors.append(f"{path}: control characters are not allowed (use UTF-8 with LF)")
-                if "\ufeff" in text:
-                    errors.append(f"{path}: UTF-8 BOM is not allowed")
-                files.append(ListingFile(store, locale, field, text))
+                text = read_text(root, path, minimum, maximum, single_line, errors)
+                if text is not None:
+                    files.append(ListingFile(store, locale, field, text))
 
     if errors:
         raise ValueError("\n".join(errors))
     return files
+
+
+def read_text(root, path, minimum, maximum, single_line, errors):
+    """Read one UTF-8 source field, appending any problems to errors.
+
+    Returns the text without one optional terminal LF, or None if unreadable.
+    maximum=None means the store documents no limit, so only the minimum is checked.
+    """
+    try:
+        # Decode bytes directly so CRLF/BOM are not silently normalized.
+        raw = (root / path).read_bytes().decode("utf-8")
+    except (OSError, UnicodeError) as error:
+        errors.append(f"{path}: {error}")
+        return None
+
+    # Editors may add one terminal LF. Do not upload it, especially
+    # for a Play title already at the 30-character limit (Supply
+    # reads files verbatim, unlike Deliver's whitespace stripping).
+    text = raw[:-1] if raw.endswith("\n") else raw
+    if maximum is None:
+        if len(text) < minimum:
+            errors.append(f"{path}: {len(text)} characters; expected at least {minimum}")
+    elif not minimum <= len(text) <= maximum:
+        errors.append(f"{path}: {len(text)} characters; expected {minimum}–{maximum}")
+    if text != text.strip() or any(line != line.rstrip() for line in text.split("\n")):
+        errors.append(f"{path}: leading/trailing whitespace or trailing blank lines")
+    if single_line and "\n" in text:
+        errors.append(f"{path}: must be a single line")
+    if "\\n" in text:
+        errors.append(f"{path}: literal \\n; use real line breaks in descriptions")
+    if any(unicodedata.category(char) in {"Cc", "Cs"} and char != "\n" for char in text):
+        errors.append(f"{path}: control characters are not allowed (use UTF-8 with LF)")
+    if "\ufeff" in text:
+        errors.append(f"{path}: UTF-8 BOM is not allowed")
+    return text
 
 
 def stage_listings(files, destination):
