@@ -48,7 +48,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
 
         #if !DEBUG
-        CrashlyticsInitializer.initialize()
+        // Kotlin objects are exposed through `shared`. Calling `CrashlyticsInitializer.initialize()`
+        // on the type resolves to NSObject's `+initialize` instead, which silently does nothing.
+        CrashlyticsInitializer.shared.initialize()
         #endif
 
         // WidgetKit is Swift only, let Kotlin reload the record widgets when their data changes.
