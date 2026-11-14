@@ -175,6 +175,17 @@ class LocalizationTests(unittest.TestCase):
                     entry = catalog[key].get("localizations", {}).get(language)
                     value = entry["stringUnit"]["value"] if entry else key
                     self.assertEqual(value, widget[resource].text)
+        # The sample widget in the widget gallery shows the same items on both platforms.
+        english = self.resources(WIDGET / "values/strings.xml")
+        samples = [name for name in english if name.startswith("record_widget_sample_")]
+        self.assertTrue(samples)
+        for directory, _, language in LOCALES:
+            widget = self.resources(WIDGET / directory / "strings.xml")
+            for name in samples:
+                with self.subTest(locale=language, sample=name):
+                    entry = catalog[english[name].text].get("localizations", {}).get(language)
+                    value = entry["stringUnit"]["value"] if entry else english[name].text
+                    self.assertEqual(widget[name].text, value)
         for filename in ("RecordWidget.swift", "RecordWidgetIntent.swift"):
             self.assertIn(f'"{description}"', (ROOT / "iosApp/RecordWidgetExtension" / filename).read_text())
 

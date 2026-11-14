@@ -177,15 +177,22 @@ struct RecordWidgetView: View {
 }
 
 private extension RecordWidgetConfig {
-    static let placeholder = RecordWidgetConfig(
-        id: "placeholder",
-        bookId: "",
-        bookName: "Budget+",
-        items: [
-            RecordWidgetItem(type: "Expense", category: "Food", name: "Dinner"),
-            RecordWidgetItem(type: "Expense", category: "Transport", name: "Transport"),
-            RecordWidgetItem(type: "Expense", category: "Food", name: "Coffee"),
-        ],
-        createdOn: 0
-    )
+    /// The sample widget in the widget gallery, mirrors `Context.sampleRecordWidgetConfig()` on Android.
+    /// Enough items to fill the large widget, the medium widget shows the first 3.
+    static var placeholder: RecordWidgetConfig {
+        let food = String(localized: "Food")
+        return RecordWidgetConfig(
+            id: "placeholder",
+            bookId: "",
+            bookName: String(localized: "My Budget"),
+            items: [
+                RecordWidgetItem(type: "Expense", category: food, name: String(localized: "Morning Coffee")),
+                RecordWidgetItem(type: "Expense", category: food, name: String(localized: "Lunch")),
+                RecordWidgetItem(type: "Expense", category: String(localized: "Transport"), name: String(localized: "Commute")),
+                RecordWidgetItem(type: "Expense", category: String(localized: "Daily"), name: String(localized: "Groceries")),
+                RecordWidgetItem(type: "Income", category: String(localized: "Salary"), name: String(localized: "Salary")),
+            ],
+            createdOn: 0
+        )
+    }
 }
