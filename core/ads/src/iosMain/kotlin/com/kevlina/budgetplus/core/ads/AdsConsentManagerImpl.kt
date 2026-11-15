@@ -1,6 +1,7 @@
 package com.kevlina.budgetplus.core.ads
 
 import com.kevlina.budgetplus.core.common.Logger
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -13,6 +14,8 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIViewController
 import swiftPMImport.budgetplus.core.core.ads.UMPConsentForm
 import swiftPMImport.budgetplus.core.core.ads.UMPConsentInformation
+import swiftPMImport.budgetplus.core.core.ads.UMPDebugGeographyOther
+import swiftPMImport.budgetplus.core.core.ads.UMPDebugSettings
 import swiftPMImport.budgetplus.core.core.ads.UMPPrivacyOptionsRequirementStatusRequired
 import swiftPMImport.budgetplus.core.core.ads.UMPRequestParameters
 import kotlin.coroutines.resume
@@ -82,7 +85,7 @@ internal class AdsConsentManagerImpl : AdsConsentManager {
      * @return whether the consent info is updated successfully.
      */
     private suspend fun requestConsentInfoUpdate(): Boolean = suspendCancellableCoroutine { cont ->
-        consentInformation.requestConsentInfoUpdateWithParameters(UMPRequestParameters()) { error ->
+        consentInformation.requestConsentInfoUpdateWithParameters(createRequestParameters()) { error ->
             if (error != null) {
                 // The consent gathered in the previous sessions still applies, see canRequestAds.
                 Logger.w("AdsConsent: Failed to update the consent info. ${error.localizedDescription}")
@@ -93,6 +96,19 @@ internal class AdsConsentManagerImpl : AdsConsentManager {
         // session, without waiting for the response. This lets returning users start the
         // Mobile Ads SDK right away.
         refreshState("Consent info update requested")
+    }
+
+    private fun createRequestParameters(): UMPRequestParameters {
+        return UMPRequestParameters().apply {
+            // UI tests must not depend on the runner's location. In a regulated region, UMP
+            // shows or preloads its forms over the app, and their invisible web content
+            // intercepts the test taps. Simulators are test devices, debug settings apply.
+            if (UiTestFlags.enabled) {
+                debugSettings = UMPDebugSettings().apply {
+                    geography = UMPDebugGeographyOther
+                }
+            }
+        }
     }
 
     /**

@@ -2,12 +2,14 @@ package com.kevlina.budgetplus.core.ads
 
 import android.app.Activity
 import android.content.Context
+import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentInformation.PrivacyOptionsRequirementStatus
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 import com.kevlina.budgetplus.core.common.ActivityProvider
 import com.kevlina.budgetplus.core.common.Logger
+import com.kevlina.budgetplus.core.common.UiTestFlags
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -97,7 +99,7 @@ internal class AdsConsentManagerImpl(
     ): Boolean = suspendCancellableCoroutine { cont ->
         consentInformation.requestConsentInfoUpdate(
             activity,
-            ConsentRequestParameters.Builder().build(),
+            createRequestParameters(activity),
             { cont.resume(true) },
             { formError ->
                 // The consent gathered in the previous sessions still applies, see canRequestAds.
@@ -109,6 +111,23 @@ internal class AdsConsentManagerImpl(
         // session, without waiting for the response. This lets returning users start the
         // Mobile Ads SDK right away.
         refreshState("Consent info update requested")
+    }
+
+    private fun createRequestParameters(activity: Activity): ConsentRequestParameters {
+        return ConsentRequestParameters.Builder()
+            .apply {
+                // UI tests must not depend on the runner's location. In a regulated region, UMP
+                // shows or preloads its forms over the app, and their invisible web content
+                // intercepts the test taps. Emulators are test devices, debug settings apply.
+                if (UiTestFlags.enabled) {
+                    setConsentDebugSettings(
+                        ConsentDebugSettings.Builder(activity)
+                            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_OTHER)
+                            .build()
+                    )
+                }
+            }
+            .build()
     }
 
     /**
