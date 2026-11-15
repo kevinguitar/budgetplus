@@ -102,6 +102,7 @@ glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = 
 glance-appwidget-preview = { module = "androidx.glance:glance-appwidget-preview", version.ref = "glance" }
 glance-preview = { module = "androidx.glance:glance-preview", version.ref = "glance" }
 google-ads = "com.google.android.gms:play-services-ads:25.5.0"
+google-ads-ump = "com.google.android.ump:user-messaging-platform:4.0.0"
 google-ads-mediation-meta = "com.google.ads.mediation:facebook:6.22.0.1"
 google-id = "com.google.android.libraries.identity.googleid:googleid:1.2.1"
 google-play-review = "com.google.android.play:review-ktx:2.0.2"

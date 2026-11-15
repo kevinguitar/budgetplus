@@ -22,6 +22,9 @@ Counts describe implemented coverage, not the result of a particular run.
 - **Premium:** `common/seed-premium.yml` opens the test-only
   `budgetplus://uiTestPremium` link, verifies the banner area is absent, and dismisses
   the unlock snackbar.
+- **Ads consent:** UI-test builds pin the UMP debug geography to "Other", so the GDPR
+  and US state forms never show. In a regulated region, iOS UMP preloads an invisible
+  "My data preferences" web dialog whose `0`/`1` elements capture Maestro text taps.
 
 ## Coverage
 

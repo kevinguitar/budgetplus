@@ -219,6 +219,7 @@
     <string name="settings_follow_on_instagram">Instagramでフォロー</string>
     <string name="settings_contact_us">お問い合わせ</string>
     <string name="settings_privacy_policy">プライバシーポリシー</string>
+    <string name="settings_ad_privacy_settings">広告のプライバシー設定</string>
     <string name="settings_no_email_app_found">電子メールアプリが見当たりません</string>
     <string name="settings_delete_account">アカウントを削除</string>
     <string name="settings_delete_account_description">アカウントを削除しますか？アカウントを削除すると、すべての帳簿と取引データが完全に削除され、復元できません。</string>

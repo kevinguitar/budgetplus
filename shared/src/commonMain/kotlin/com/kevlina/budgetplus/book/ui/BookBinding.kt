@@ -254,10 +254,14 @@ private fun BookContent(
 
         if (showBannerAd) {
             LaunchedEffect(vm) {
-                vm.admobInitializer.requestTrackingAuthorization()
+                vm.admobInitializer.requestConsent()
             }
+            val adsAvailability by vm.admobInitializer.adsAvailability.collectAsStateWithLifecycle()
             Box(modifier = Modifier.windowInsetsPadding(WindowInsets.safeHorizontal)) {
-                BannerAd(bannerId = vm.adUnitId.banner)
+                BannerAd(
+                    bannerId = vm.adUnitId.banner,
+                    adsAvailability = adsAvailability,
+                )
             }
         }
     }

@@ -219,6 +219,7 @@
     <string name="settings_follow_on_instagram">关注我们的 Instagram</string>
     <string name="settings_contact_us">与我们联系</string>
     <string name="settings_privacy_policy">隐私政策</string>
+    <string name="settings_ad_privacy_settings">广告隐私设置</string>
     <string name="settings_no_email_app_found">找不到邮件应用程序</string>
     <string name="settings_delete_account">删除账号</string>
     <string name="settings_delete_account_description">确定要删除账号吗？删除账号后，所有账本与账目数据将一并清除，且无法恢复。</string>

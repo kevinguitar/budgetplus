@@ -1,5 +1,7 @@
 package com.kevlina.budgetplus.core.ads.impl
 
+import com.kevlina.budgetplus.core.ads.AdmobInitializer
+import com.kevlina.budgetplus.core.ads.AdsAvailability
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.MutableEventFlow
@@ -14,21 +16,27 @@ import dev.zacsweers.metro.SingleIn
 @ContributesBinding(AppScope::class)
 internal class InterstitialAdsHandlerImpl(
     private val authManager: AuthManager,
+    private val admobInitializer: AdmobInitializer,
     private val tracker: Tracker,
 ) : InterstitialAdsHandler {
 
     override val showAdEvent: EventFlow<() -> Unit>
         field = MutableEventFlow()
 
+    // Ads can't be requested before the user's consent is resolved.
+    private val canShowAd: Boolean
+        get() = !authManager.isPremium.value &&
+            admobInitializer.adsAvailability.value == AdsAvailability.Available
+
     override fun showAd() {
-        if (authManager.isPremium.value) return
+        if (!canShowAd) return
 
         showAdEvent.sendEvent {}
         tracker.logEvent("show_ad_full_screen")
     }
 
     override fun showAdThen(onComplete: () -> Unit) {
-        if (authManager.isPremium.value) {
+        if (!canShowAd) {
             onComplete()
             return
         }

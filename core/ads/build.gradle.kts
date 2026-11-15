@@ -16,6 +16,14 @@ kotlin {
             version = exact("13.12.0"),
             products = listOf(product("GoogleMobileAds")),
         )
+        // User Messaging Platform, for the GDPR consent. GoogleMobileAds already depends on it,
+        // declare it explicitly to import its clang module.
+        swiftPackage(
+            url = url("https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git"),
+            version = exact("3.1.0"),
+            products = listOf(product("GoogleUserMessagingPlatform")),
+            importedClangModules = listOf("UserMessagingPlatform"),
+        )
     }
 
     sourceSets {
@@ -27,6 +35,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.google.ads)
+            implementation(libs.google.ads.ump)
         }
     }
 }

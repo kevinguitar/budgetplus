@@ -29,6 +29,7 @@ import budgetplus.core.common.generated.resources.book_name_title
 import budgetplus.core.common.generated.resources.color_tone_picker_title
 import budgetplus.core.common.generated.resources.cta_rename
 import budgetplus.core.common.generated.resources.ic_account_circle
+import budgetplus.core.common.generated.resources.ic_admin_panel_settings
 import budgetplus.core.common.generated.resources.ic_calculate
 import budgetplus.core.common.generated.resources.ic_color_lens
 import budgetplus.core.common.generated.resources.ic_currency_exchange
@@ -51,6 +52,7 @@ import budgetplus.core.common.generated.resources.ic_vibration
 import budgetplus.core.common.generated.resources.ic_widgets
 import budgetplus.core.common.generated.resources.premium_hide_ads
 import budgetplus.core.common.generated.resources.record_widget_title
+import budgetplus.core.common.generated.resources.settings_ad_privacy_settings
 import budgetplus.core.common.generated.resources.settings_allow_members_edit
 import budgetplus.core.common.generated.resources.settings_allow_members_edit_desc
 import budgetplus.core.common.generated.resources.settings_bar_chart
@@ -116,6 +118,7 @@ internal fun SettingsContent(
     val isBookOwner by vm.isBookOwner.collectAsStateWithLifecycle()
     val allowMembersEdit by vm.allowMembersEdit.collectAsStateWithLifecycle()
     val isPremium by vm.isPremium.collectAsStateWithLifecycle()
+    val isAdPrivacySettingsShown by vm.isAdPrivacySettingsShown.collectAsStateWithLifecycle()
     val vibrateOnInput by vm.vibrator.vibrateOnInput.collectAsStateWithLifecycle()
     val chartMode by vm.chartModeSettings.chartMode.collectAsStateWithLifecycle()
     val calculatorButtonType by vm.calculatorSettings.buttonType.collectAsStateWithLifecycle()
@@ -393,6 +396,14 @@ internal fun SettingsContent(
             icon = vectorResource(Res.drawable.ic_privacy_tip),
             onClick = vm.navigation::viewPrivacyPolicy
         )
+
+        if (isAdPrivacySettingsShown) {
+            SettingsItem(
+                text = stringResource(Res.string.settings_ad_privacy_settings),
+                icon = vectorResource(Res.drawable.ic_admin_panel_settings),
+                onClick = vm::showAdPrivacySettings
+            )
+        }
 
         SettingsItem(
             text = stringResource(Res.string.settings_logout),

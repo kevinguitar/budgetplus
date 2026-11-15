@@ -135,7 +135,7 @@ The dummy configs are only enough to compile. For a working app, create your own
 Native iOS SDKs are declared with Kotlin's [SwiftPM import](https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html), an Alpha feature that requires Kotlin 2.5.0-Beta1 or newer:
 
 - `shared/build.gradle.kts`: Firebase and Google Sign-In
-- `core/ads/build.gradle.kts`: Google Mobile Ads
+- `core/ads/build.gradle.kts`: Google Mobile Ads and the User Messaging Platform (GDPR consent)
 
 The `Shared` framework is still static, and its API is still Objective-C based. SwiftPM import doesn't change either one.
 
