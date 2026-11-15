@@ -1,7 +1,7 @@
 # Store listing text
 
 Listing text is uploaded through the manual
-[update_store_assets](../.github/workflows/update_store_assets.yml) workflow,
+[update-store-assets](../.github/workflows/update-store-assets.yml) workflow,
 not app releases. Validation runs locally or before manual uploads, not in PR CI.
 
 ## Source files
@@ -77,7 +77,7 @@ directory must not already exist. Source files are never modified.
 
 ## Upload
 
-In GitHub Actions, run **update_store_assets** against the desired branch/ref:
+In GitHub Actions, run **update-store-assets** against the desired branch/ref:
 
 | Input | Default | Action |
 |---|---|---|

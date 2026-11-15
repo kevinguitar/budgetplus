@@ -138,7 +138,7 @@ class ManualWorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         result = subprocess.run(
             ["ruby", "-ryaml", "-rjson", "-e", "puts JSON.generate(YAML.load_file(ARGV.fetch(0)))",
-             str(ROOT / ".github/workflows/update_store_assets.yml")],
+             str(ROOT / ".github/workflows/update-store-assets.yml")],
             capture_output=True, text=True, check=True,
         )
         cls.workflow = json.loads(result.stdout)
@@ -166,7 +166,7 @@ class ManualWorkflowTests(unittest.TestCase):
         self.assertEqual(inputs["target"]["default"], "both")
         for key in ("store_listing", "screenshots", "creative_assets", "in_app_listing"):
             self.assertIs(inputs[key]["default"], False)
-        text = (ROOT / ".github/workflows/update_store_assets.yml").read_text()
+        text = (ROOT / ".github/workflows/update-store-assets.yml").read_text()
         self.assertNotIn("dry_run", text)
         self.assertNotIn("inputs.ios_app_version", text)
         self.assertNotIn("ios_screenshots", text)

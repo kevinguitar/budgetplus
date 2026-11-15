@@ -103,6 +103,35 @@ jobs:
       - name: Assemble release AAB
         run: ./gradlew :androidApp:bundleRelease
 
+      # Guard against shipping without the app's Baseline Profile.
+      - name: Verify Baseline Profile is packaged
+        run: |
+          set -euo pipefail
+          GENERATED=androidApp/src/main/generated/baselineProfiles/baseline-prof.txt
+          MERGED=androidApp/build/intermediates/merged_art_profile/release/mergeReleaseArtProfile/baseline-prof.txt
+          AAB=androidApp/build/outputs/bundle/release/androidApp-release.aab
+
+          if [ ! -s "$GENERATED" ]; then
+            echo "::error::Generated Baseline Profile is missing or empty: $GENERATED"
+            exit 1
+          fi
+          if [ ! -s "$MERGED" ]; then
+            echo "::error::Merged release ART profile not found: $MERGED"
+            exit 1
+          fi
+
+          APP_RULES=$(grep -c 'com/kevlina/budgetplus' "$MERGED" || true)
+          echo "App rules in merged release profile: $APP_RULES"
+          if [ "$APP_RULES" -eq 0 ]; then
+            echo "::error::Release ART profile has no rules for com.kevlina.budgetplus; the generated Baseline Profile was not merged."
+            exit 1
+          fi
+
+          if ! unzip -l "$AAB" 'BUNDLE-METADATA/com.android.tools.build.profiles/baseline.prof' > /dev/null; then
+            echo "::error::baseline.prof is missing from $AAB"
+            exit 1
+          fi
+
       - name: Set Release Name
         run: echo "RELEASE_NAME=${REF_NAME%-android}" >> $GITHUB_ENV
         env:
