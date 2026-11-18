@@ -25,6 +25,9 @@ Counts describe implemented coverage, not the result of a particular run.
 - **Ads consent:** UI-test builds pin the UMP debug geography to "Other", so the GDPR
   and US state forms never show. In a regulated region, iOS UMP preloads an invisible
   "My data preferences" web dialog whose `0`/`1` elements capture Maestro text taps.
+  On iOS, UI-test builds also skip the UMP form, which is then only the IDFA explainer
+  ("Our app wants to stay free for you"). The app requests ATT directly, and
+  `dismiss-system-dialogs.yml` declines that system prompt.
 
 ## Coverage
 

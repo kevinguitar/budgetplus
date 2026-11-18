@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.jetbrains.compose.resources.getString
 import kotlin.time.Clock
 
@@ -47,6 +49,7 @@ internal class AuthManagerImpl(
 
     private val currentUserKey = stringPreferencesKey("currentUser")
     private val currentUserFlow = preference.of(currentUserKey, User.serializer())
+    private val updateUserMutex = Mutex()
 
     override val userState: StateFlow<User?> = currentUserFlow.stateIn(
         scope = appScope,
@@ -135,7 +138,16 @@ internal class AuthManagerImpl(
         }
     }
 
+    /**
+     * Runs one update at a time. Each update merges with a remote user fetched mid-way, so an
+     * overlapping one (e.g. the auth state update on app start, parked on a slow network) would
+     * finish with a stale remote name and revert a rename that completed in the meantime.
+     */
     private suspend fun updateUser(user: User?, newName: String? = null) {
+        updateUserMutex.withLock { doUpdateUser(user, newName) }
+    }
+
+    private suspend fun doUpdateUser(user: User?, newName: String?) {
         if (user == null) {
             clearUser()
             return
