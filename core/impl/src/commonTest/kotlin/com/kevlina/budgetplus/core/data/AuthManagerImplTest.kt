@@ -373,6 +373,47 @@ class AuthManagerImplTest {
         assertEquals("user_renamed", tracker.lastEventName)
     }
 
+    /**
+     * Regression for the rename being reverted: the auth-state-driven updateUser on app start is
+     * parked fetching the remote user (still the old name) when the user renames. Once it resumes,
+     * its merge must not write the stale remote name over the new one.
+     */
+    @Test
+    fun `renameUser during in-flight updateUser is not overridden`() = runTest {
+        val preference = FakePreference()
+        val authState = FakeAuthState()
+        val userDbClient = FakeUserDbClient()
+        userDbClient.users["user1"] = User(id = "user1", name = "Alice", createdOn = 1000L)
+        val gate = CompletableDeferred<Unit>()
+        userDbClient.getUserGate = gate
+
+        val manager = createAuthManager(
+            preference = preference,
+            authState = authState,
+            userDbClient = userDbClient,
+        )
+        preference.setUser(User(id = "user1", name = "Alice"))
+        manager.userState.first { it != null }
+
+        // Kick off updateUser via an auth state change; it parks inside getUser (gated) with a
+        // snapshot of the remote user that still has the old name.
+        authState.authStateFlow.emit(User(id = "user1", name = "Alice"))
+        testScheduler.advanceUntilIdle()
+
+        // The rename's own remote fetch is not gated.
+        userDbClient.getUserGate = null
+        val renameJob = launch { manager.renameUser("Bob") }
+        testScheduler.advanceUntilIdle()
+
+        // Let the auth-state updateUser finish its remote merge and final write.
+        gate.complete(Unit)
+        renameJob.join()
+        testScheduler.advanceUntilIdle()
+
+        assertEquals("Bob", manager.userState.value?.name)
+        assertEquals("Bob", userDbClient.users["user1"]?.name)
+    }
+
     // -- auth state changed tests --
 
     @Test

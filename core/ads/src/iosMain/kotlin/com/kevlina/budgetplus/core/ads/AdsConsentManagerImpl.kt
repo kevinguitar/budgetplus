@@ -47,7 +47,11 @@ internal class AdsConsentManagerImpl : AdsConsentManager {
     override suspend fun gatherConsent(): Boolean = mutex.withLock {
         updateConsentInfoIfNeeded()
         if (!isConsentGathered) {
-            isConsentGathered = loadAndPresentConsentFormIfRequired()
+            // UI tests use UMPDebugGeographyOther, so the only form left is the IDFA explainer.
+            // It's web content over the app that tests can't treat as a system dialog, and it
+            // blocks the screen. Skip it; AdmobInitializer then requests ATT directly, and
+            // dismiss-system-dialogs.yml handles that system prompt.
+            isConsentGathered = UiTestFlags.enabled || loadAndPresentConsentFormIfRequired()
             refreshState("Consent form handled=$isConsentGathered")
         }
         canRequestAds.value
