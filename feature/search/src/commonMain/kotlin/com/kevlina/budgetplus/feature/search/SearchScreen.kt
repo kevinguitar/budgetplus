@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetplus.core.common.generated.resources.Res
+import budgetplus.core.common.generated.resources.overview_details_title
 import budgetplus.core.common.generated.resources.search_title
 import com.kevlina.budgetplus.core.theme.LocalAppColors
 import com.kevlina.budgetplus.core.ui.TopBar
@@ -22,13 +25,18 @@ import org.jetbrains.compose.resources.stringResource
 fun SearchScreen(
     vm: SearchViewModel,
 ) {
+    val totalPrice by vm.totalPrice.collectAsStateWithLifecycle()
+    val searchTitle = stringResource(Res.string.search_title)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(LocalAppColors.current.light)
     ) {
         TopBar(
-            title = stringResource(Res.string.search_title),
+            title = totalPrice
+                ?.let { stringResource(Res.string.overview_details_title, searchTitle, it) }
+                ?: searchTitle,
             navigateUp = vm.navController::navigateUp,
         )
 
