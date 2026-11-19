@@ -9,6 +9,9 @@ appId: com.kevlina.budgetplus
 - runFlow: ../../common/open-search.yml
 - assertVisible:
     text: "Search"
+# Without results the title has no sum (no "Search: $0").
+- assertNotVisible:
+    text: "Search: .*"
 # S3 — filter pills present.
 - assertVisible:
     text: "Expense"
@@ -21,5 +24,11 @@ appId: com.kevlina.budgetplus
 - pressKey: Enter
 - assertVisible:
     text: "Food"
+# With results the title shows their sum. The query field also shows "Food", so wait
+# for the sum rather than relying on the assertion above to mean the results loaded.
+- extendedWaitUntil:
+    visible:
+      text: "Search: .*[0-9].*"
+    timeout: 20000
 # Back to Record.
 - runFlow: ../../common/return-to-record.yml

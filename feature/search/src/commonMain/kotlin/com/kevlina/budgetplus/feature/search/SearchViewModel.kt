@@ -36,6 +36,7 @@ import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -97,6 +98,18 @@ class SearchViewModel(
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SearchResult.Empty)
+
+    /**
+     *  The formatted sum of all the search results' prices, or null when there is no result.
+     */
+    val totalPrice: StateFlow<String?> = combine(
+        searchResult,
+        currencyExchangeRepo.displayInPreferredCurrency
+    ) { result, _ ->
+        if (result !is SearchResult.Success) return@combine null
+        val total = result.records.sumOf { currencyExchangeRepo.getDisplayPrice(it.item) }
+        currencyExchangeRepo.formatDisplayPrice(total, alwaysShowSymbol = true)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     private val editRecordEvent = MutableEventFlow<Record>()
     private val deleteRecordEvent = MutableEventFlow<Record>()

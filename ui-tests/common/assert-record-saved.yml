@@ -17,4 +17,7 @@ appId: com.kevlina.budgetplus
     timeout: 20000
 - assertVisible:
     text: ".*record_data_${RECORD_TYPE}_${CATEGORY}_${PRICE}_${NOTE}(,.*)?"
+# The unique NOTE matches only this record, so the top-bar sum equals its PRICE.
+- assertVisible:
+    text: "Search: [^0-9]*${PRICE}([.,]0+)?[^0-9]*"
 - runFlow: return-to-record.yml

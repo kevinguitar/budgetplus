@@ -49,14 +49,14 @@ Flow names below correspond to `.yml` files in each suite directory.
 | Area | Flows | Checks |
 |---|---|---|
 | Calculator | `01-record-digit-entry`, `02-record-decimal`, `03-record-arithmetic` | Digits, reset, decimals, arithmetic. |
-| Add records | `04-add-expense`, `05-add-income` | Save and find the expected type, category, amount, and unique note in Search. |
+| Add records | `04-add-expense`, `05-add-income` | Save and find the expected type, category, amount, and unique note in Search; the Search title sum equals the amount. |
 | Validation | `06-empty-category-guard`, `07-empty-price-guard` | Missing category/price shows the expected snackbar. |
 | Notifications | `09-notification-permission` | Grant permission if prompted after adding a record; prompt is optional. |
 | Books | `10-book-dropdown`, `11-book-limit-paywall`, `12-invite` | Book menu, free-tier book limit, native invitation share sheet. |
 | Categories | `20-category-add`, `21-category-duplicate`, `22-category-unsaved-guard` | Save a category, reject duplicates, confirm leaving unsaved changes. |
 | Overview | `30-overview-basics`, `31-overview-mode-drill`, `32-overview-export` | Totals, period/type controls, category drill-down, CSV confirmation (cancelled). |
 | Records | `40-record-edit`, `41-record-duplicate`, `42-record-delete`, `43-record-sort`, `44-record-multi-select-delete` | Edit, duplicate, delete, sort, check singular/plural delete confirmations, and delete two selected records while leaving a third. |
-| Search | `50-search-basics`, `51-search-period-gate` | Search controls; Past Month allowed, Past 6 Months paywalled. |
+| Search | `50-search-basics`, `51-search-period-gate` | Search controls; title shows no sum before results and a sum after; Past Month allowed, Past 6 Months paywalled. |
 | Members | `60-settings-members`, `61-settings-rename-user` | Owner shown; renamed user verified in Members. |
 | Book settings | `62-settings-rename-book`, `63-settings-book-currency` | Change and restore book name/currency. |
 | Preferences | `64-settings-vibration`, `68-allow-members-edit` | Toggle both ways, verify persistence after re-entry, restore original state. |
