@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest import mock
 import xml.etree.ElementTree as ET
@@ -441,6 +442,29 @@ class AttemptTests(unittest.TestCase):
                     mock.patch.object(sys, "stdout"), mock.patch.object(sys, "stderr"):
                 self.assertEqual(run_maestro.main(), 1)
                 terminate.assert_called_once_with(process)
+
+    def test_terminate_reaps_cli_when_group_has_only_zombies(self):
+        import run_maestro
+
+        # The CLI exited but is not reaped yet, so its group only holds a zombie. macOS
+        # rejects signals to such a group with EPERM; Linux accepts them silently.
+        process = subprocess.Popen([sys.executable, "-c", "pass"], start_new_session=True)
+        for _ in range(100):
+            state = subprocess.run(["ps", "-o", "stat=", "-p", str(process.pid)],
+                                   capture_output=True, text=True).stdout.strip()
+            if state.startswith("Z"):
+                break
+            time.sleep(0.05)
+        else:
+            self.fail(f"process never became a zombie (state {state!r})")
+        run_maestro.terminate(process)
+        self.assertEqual(process.returncode, 0)
+
+        process = mock.Mock(pid=12345)
+        with mock.patch.object(run_maestro.os, "killpg", side_effect=PermissionError) as killpg:
+            run_maestro.terminate(process)
+        killpg.assert_called_once()
+        process.wait.assert_called_once_with()
 
     def attempt(self, code, timeout="5s"):
         temp = tempfile.TemporaryDirectory(prefix="ui-test-attempt-")
