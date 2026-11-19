@@ -286,11 +286,12 @@ class SearchViewModelTest : BaseTest(
             ),
         )
 
-        model.state.filter.allAuthors.test {
-            assertEquals(emptyList(), awaitItem())
-            // Authors that can't be resolved are dropped.
-            assertEquals(listOf(me, someoneElse), awaitItem())
-        }
+        // The authors resolve on Dispatchers.Default, so the initial empty list may be
+        // conflated away before it is collected. Wait for the resolved value instead.
+        val authors = model.state.filter.allAuthors.first { it.isNotEmpty() }
+
+        // Authors that can't be resolved are dropped.
+        assertEquals(listOf(me, someoneElse), authors)
     }
 
     @Test
