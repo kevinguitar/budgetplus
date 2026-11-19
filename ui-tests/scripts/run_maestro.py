@@ -51,20 +51,27 @@ def duration(value):
     return seconds
 
 
+def signal_group(process, sig):
+    """Signal the attempt's process group; False once nothing in it is left to signal."""
+    try:
+        os.killpg(process.pid, sig)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        # macOS returns EPERM, not ESRCH, when only zombies are left in the group,
+        # e.g. the CLI exited but is not reaped yet.
+        return False
+
+
 def terminate(process):
     # Maestro can leave Java/ADB children behind; kill the attempt's entire process group.
-    try:
-        os.killpg(process.pid, signal.SIGTERM)
-        process.wait(timeout=5)
-    except subprocess.TimeoutExpired:
-        pass
-    except ProcessLookupError:
-        return
-    finally:
+    if signal_group(process, signal.SIGTERM):
         try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
             pass
+        signal_group(process, signal.SIGKILL)
     process.wait()
 
 
