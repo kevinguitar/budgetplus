@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-upload:
-    runs-on: macos-latest
+    runs-on: xcode-27
     env:
       # SwiftPM import does not support Gradle build caching yet (KT-84827).
       GRADLE_OPTS: -Dorg.gradle.caching=false

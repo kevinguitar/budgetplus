@@ -8,7 +8,7 @@ jobs:
     # All shards install the exact same simulator app from iOS CI. Build time has
     # its own budget upstream, leaving this deadline entirely for setup/tests.
     name: iOS UI tests (${{ matrix.shard }})
-    runs-on: macos-latest
+    runs-on: xcode-27
     timeout-minutes: ${{ matrix.timeout }}
     strategy:
       fail-fast: false
