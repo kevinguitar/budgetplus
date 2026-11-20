@@ -22,7 +22,11 @@ class AppBenchmarkConventionPlugin : Plugin<Project> {
         project.extensions.configure<TestExtension> {
 
             namespace = "$appId.benchmark"
-            compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
+            compileSdk {
+                version = release(project.libs.versions.compileAndroidSdk.get().toInt()) {
+                    minorApiLevel = project.libs.versions.compileAndroidSdkMinor.get().toInt()
+                }
+            }
 
             compileOptions {
                 val javaVersion = JavaVersion.toVersion(project.libs.versions.jvmTarget.get())
