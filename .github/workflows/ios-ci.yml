@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: xcode-27
     timeout-minutes: 90
 
     steps:
@@ -71,9 +71,9 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ./build
-          key: ${{ runner.os }}-ddata-v3-${{ steps.xcode-cache-keys.outputs.derived-data }}
+          key: ${{ runner.os }}-ddata-v4-${{ steps.xcode-cache-keys.outputs.derived-data }}
           restore-keys: |
-            ${{ runner.os }}-ddata-v3-
+            ${{ runner.os }}-ddata-v4-
 
       - name: Build iOS UI test app (simulator)
         env:
