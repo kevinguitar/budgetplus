@@ -48,6 +48,7 @@ calf = "0.14.0"
 glance = "1.2.0"
 
 compileAndroidSdk = "37"
+compileAndroidSdkMinor = "2"
 minAndroidSdk = "26"
 jvmTarget = "21"
 

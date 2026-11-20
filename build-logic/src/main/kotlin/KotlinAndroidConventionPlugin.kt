@@ -25,7 +25,11 @@ class KotlinAndroidConventionPlugin : Plugin<Project> {
                 .joinToString(".")
 
             namespace = "$appId.$modulePath"
-            compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
+            compileSdk {
+                version = release(project.libs.versions.compileAndroidSdk.get().toInt()) {
+                    minorApiLevel = project.libs.versions.compileAndroidSdkMinor.get().toInt()
+                }
+            }
             defaultConfig.minSdk = project.libs.versions.minAndroidSdk.get().toInt()
 
             val javaVersion = JavaVersion.toVersion(project.libs.versions.jvmTarget.get())

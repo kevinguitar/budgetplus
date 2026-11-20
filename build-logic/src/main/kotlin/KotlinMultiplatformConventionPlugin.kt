@@ -25,7 +25,11 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
         project.extensions.configure<KotlinMultiplatformExtension> {
             extensions.configure<KotlinMultiplatformAndroidLibraryTarget> {
                 namespace = "$appId.$modulePath"
-                compileSdk = project.libs.versions.compileAndroidSdk.get().toInt()
+                compileSdk {
+                    version = release(project.libs.versions.compileAndroidSdk.get().toInt()) {
+                        minorApiLevel = project.libs.versions.compileAndroidSdkMinor.get().toInt()
+                    }
+                }
                 minSdk = project.libs.versions.minAndroidSdk.get().toInt()
                 // I don't want this, but without it, there's a warning that I cannot suppress.
                 withHostTest { }
