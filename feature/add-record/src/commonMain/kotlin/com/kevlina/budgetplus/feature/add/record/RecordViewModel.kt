@@ -17,6 +17,7 @@ import budgetplus.core.common.generated.resources.record_currency_rate_unavailab
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
+import com.kevlina.budgetplus.core.ads.InterstitialPlacement
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.EventTrigger
 import com.kevlina.budgetplus.core.common.Logger
@@ -424,15 +425,16 @@ internal class RecordViewModel(
 
     /**
      *  This callback does several things
-     *  - Show full screen Ad on every [RECORD_COUNT_CYCLE] records
+     *  - Show full screen Ad on every [RECORD_COUNT_CYCLE] records, if the [InterstitialPlacement.RecordSaved]
+     *    placement is enabled
      *  - Request notification permission after the 1st record
      *  - Request in-app review after the 5th record
      */
     private suspend fun onRecordCreated() {
         when ((recordCount.first() ?: 0) % RECORD_COUNT_CYCLE) {
-            RECORD_SHOW_AD -> interstitialAdsHandler.showAd()
+            RECORD_SHOW_AD -> interstitialAdsHandler.showAd(InterstitialPlacement.RecordSaved)
             RECORD_REQUEST_PERMISSION -> requestPermissionEvent.sendEvent()
-            // Request the in-app review when almost reach the next fullscreen ad,
+            // Request the in-app review away from the record saved fullscreen ad slot,
             // just to have a better UX while user reviewing.
             RECORD_REQUEST_REVIEW -> if (inAppReviewManager.isEligibleForReview()) {
                 requestReviewEvent.sendEvent()

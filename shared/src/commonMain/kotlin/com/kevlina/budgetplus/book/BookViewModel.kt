@@ -9,11 +9,11 @@ import budgetplus.core.common.generated.resources.record_widget_switched_book
 import com.kevlina.budgetplus.core.ads.AdUnitId
 import com.kevlina.budgetplus.core.ads.AdmobInitializer
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
+import com.kevlina.budgetplus.core.ads.InterstitialPlacement
 import com.kevlina.budgetplus.core.common.Logger
 import com.kevlina.budgetplus.core.common.SnackbarSender
 import com.kevlina.budgetplus.core.common.Tracker
 import com.kevlina.budgetplus.core.common.UiTestFlags
-import com.kevlina.budgetplus.core.common.mapState
 import com.kevlina.budgetplus.core.common.nav.APP_DEEPLINK_PREFIXES
 import com.kevlina.budgetplus.core.common.nav.BookDest
 import com.kevlina.budgetplus.core.common.nav.NAV_COLORS_PATH
@@ -81,9 +81,12 @@ internal class BookViewModel(
         !isPremium && currentNavKey::class !in hideAdsDestinations
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    // Interstitial ads are shown on a record-count cycle, which makes count-dependent UI
-    // test flows flaky (an ad can pop over the screen mid-flow). Disable them in UI tests.
-    val isEligibleForInterstitialAds = authManager.isPremium.mapState { !it && !UiTestFlags.enabled }
+    val isEligibleForInterstitialAds = interstitialAdsHandler.isEligible
+
+    private var previousNavKey: BookDest? = null
+
+    // Deeplinks open the app on a screen, an interstitial ad must not greet the user right away.
+    private var skipNextInterstitial = false
 
     init {
         // If the user has no active book, navigate them to the welcome screen to create or join a book.
@@ -106,6 +109,15 @@ internal class BookViewModel(
                 if (key is BookDest.Welcome) {
                     handleJoinRequest()
                 }
+
+                val placement = interstitialPlacementFor(from = previousNavKey, to = key)
+                if (skipNextInterstitial) {
+                    // The navigation triggered by the deeplink.
+                    skipNextInterstitial = false
+                } else if (placement != null) {
+                    interstitialAdsHandler.showAd(placement)
+                }
+                previousNavKey = key
             }
             .launchIn(viewModelScope)
     }
@@ -114,6 +126,7 @@ internal class BookViewModel(
         if (url == null) return null
         val prefix = APP_DEEPLINK_PREFIXES.firstOrNull { url.startsWith(it) } ?: return null
         Logger.i("Handle Deeplink: $url")
+        skipNextInterstitial = true
 
         val pathAndQuery = url.removePrefix(prefix).removePrefix("/")
         val path = pathAndQuery.substringBefore("?")
@@ -249,4 +262,19 @@ private val DATA_LOADING_TIMEOUT = 5.seconds
 enum class DeeplinkType {
     Normal,
     JoinRequest
+}
+
+/**
+ * The interstitial ad moments are the natural breaks of the History tab, never during recording:
+ * - [InterstitialPlacement.EnterHistory] when the user switches to History from outside of it.
+ * - [InterstitialPlacement.LeaveDetail] when the user goes back to the overview from the details.
+ */
+internal fun interstitialPlacementFor(from: BookDest?, to: BookDest): InterstitialPlacement? {
+    if (from == null || to !is BookDest.Overview) return null
+    return when (from) {
+        is BookDest.Records, is BookDest.Search -> InterstitialPlacement.LeaveDetail
+        // Already in History, or back from the screens that hide ads, e.g. dismissing the paywall.
+        is BookDest.Overview, is BookDest.Auth, BookDest.Welcome, BookDest.UnlockPremium -> null
+        else -> InterstitialPlacement.EnterHistory
+    }
 }

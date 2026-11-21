@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -53,32 +54,55 @@ actual fun HandleInterstitialAd(
     handler: InterstitialAdsHandler,
 ) {
     val context = LocalContext.current
-    LaunchedEffect(handler) {
-        handler.showAdEvent.consumeEach { onComplete ->
+    val slot = remember(adUnitId) {
+        PreloadedAdSlot<InterstitialAd> { onLoaded, onFailed ->
             InterstitialAd.load(
-                context,
+                context.applicationContext,
                 adUnitId,
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                        interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
-                            override fun onAdDismissedFullScreenContent() {
-                                onComplete()
-                            }
-
-                            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                                onComplete()
-                            }
-                        }
-                        interstitialAd.show(context as Activity)
+                        onLoaded(interstitialAd)
                     }
 
                     override fun onAdFailedToLoad(adError: LoadAdError) {
-                        Logger.e("InterstitialAd failed to load: $adError")
-                        onComplete()
+                        Logger.w("InterstitialAd: Failed to load. $adError")
+                        onFailed()
                     }
                 }
             )
+        }
+    }
+
+    LaunchedEffect(slot, handler) {
+        slot.preload()
+        handler.showAdEvent.consumeEach { request ->
+            val activity = context as? Activity
+            val interstitialAd = slot.take()
+            if (interstitialAd == null || activity == null) {
+                request.onNotReady()
+                request.onFinished()
+                slot.preload()
+                return@consumeEach
+            }
+
+            interstitialAd.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdShowedFullScreenContent() {
+                    request.onShown()
+                }
+
+                override fun onAdDismissedFullScreenContent() {
+                    request.onFinished()
+                    slot.preload()
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    Logger.w("InterstitialAd: Failed to show. $adError")
+                    request.onFinished()
+                    slot.preload()
+                }
+            }
+            interstitialAd.show(activity)
         }.collect()
     }
 }

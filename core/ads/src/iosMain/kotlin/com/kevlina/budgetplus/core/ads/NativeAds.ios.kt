@@ -106,49 +106,66 @@ actual fun HandleInterstitialAd(
     adUnitId: String,
     handler: InterstitialAdsHandler,
 ) {
-    LaunchedEffect(handler) {
-        // Prevent garbage collection of the delegate while the ad is being shown,
-        // since GADInterstitialAd holds a weak reference to it.
-        var currentDelegate: NSObject? = null
-
-        handler.showAdEvent.consumeEach { onComplete ->
+    val slot = remember(adUnitId) {
+        PreloadedAdSlot<GADInterstitialAd> { onLoaded, onFailed ->
             GADInterstitialAd.loadWithAdUnitID(
                 adUnitID = adUnitId,
                 request = GADRequest(),
                 completionHandler = { ad, error ->
                     if (ad != null) {
-                        val delegate = object : NSObject(), GADFullScreenContentDelegateProtocol {
-                            override fun adDidDismissFullScreenContent(ad: GADFullScreenPresentingAdProtocol) {
-                                onComplete()
-                                currentDelegate = null
-                            }
-
-                            override fun ad(
-                                ad: GADFullScreenPresentingAdProtocol,
-                                didFailToPresentFullScreenContentWithError: platform.Foundation.NSError,
-                            ) {
-                                onComplete()
-                                currentDelegate = null
-                            }
-                        }
-                        currentDelegate = delegate
-                        ad.fullScreenContentDelegate = delegate
-
-                        val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
-                        if (rootViewController != null) {
-                            ad.presentFromRootViewController(rootViewController)
-                        } else {
-                            onComplete()
-                            currentDelegate = null
-                        }
+                        onLoaded(ad)
                     } else {
-                        if (error != null) {
-                            Logger.e("InterstitialAd: Load failed with error: $error")
-                        }
-                        onComplete()
+                        Logger.w("InterstitialAd: Failed to load. ${error?.localizedDescription}")
+                        onFailed()
                     }
                 }
             )
+        }
+    }
+
+    LaunchedEffect(slot, handler) {
+        // Prevent garbage collection of the delegate while the ad is being shown,
+        // since GADInterstitialAd holds a weak reference to it.
+        var currentDelegate: NSObject? = null
+
+        slot.preload()
+        handler.showAdEvent.consumeEach { request ->
+            val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+            val ad = slot.take()
+            if (ad == null || rootViewController == null) {
+                request.onNotReady()
+                request.onFinished()
+                slot.preload()
+                return@consumeEach
+            }
+
+            val delegate = object : NSObject(), GADFullScreenContentDelegateProtocol {
+                override fun adWillPresentFullScreenContent(ad: GADFullScreenPresentingAdProtocol) {
+                    request.onShown()
+                }
+
+                override fun adDidDismissFullScreenContent(ad: GADFullScreenPresentingAdProtocol) {
+                    currentDelegate = null
+                    request.onFinished()
+                    slot.preload()
+                }
+
+                override fun ad(
+                    ad: GADFullScreenPresentingAdProtocol,
+                    didFailToPresentFullScreenContentWithError: platform.Foundation.NSError,
+                ) {
+                    Logger.w(
+                        "InterstitialAd: Failed to show. " +
+                            didFailToPresentFullScreenContentWithError.localizedDescription
+                    )
+                    currentDelegate = null
+                    request.onFinished()
+                    slot.preload()
+                }
+            }
+            currentDelegate = delegate
+            ad.fullScreenContentDelegate = delegate
+            ad.presentFromRootViewController(rootViewController)
         }.collect()
     }
 }
