@@ -18,11 +18,19 @@ kotlin {
 
             binaryOption("bundleId", "Shared")
 
-            // Calf requires its artifact to be exported to the iOS framework binary.
-            export(libs.calf.ui)
+            // Don't export() libraries into the framework. Every exported declaration gets an
+            // Objective-C bridge and survives dead code elimination: exporting Calf alone kept
+            // its whole SFSymbol catalog and every Skiko type alive (~6.7 MB of release binary).
+            // Swift only needs the declarations of this module.
 
             if (buildType == NativeBuildType.RELEASE) {
                 binaryOption("sourceInfoType", "noop")
+                // Optimize release code for size (-Oz) and store ASCII string literals as
+                // Latin-1. Together they cut ~7.9 MB from the release binary. Both are
+                // Experimental: if a regression shows up, drop them here first.
+                // https://kotlinlang.org/docs/native-binary-options.html
+                binaryOption("smallBinary", "true")
+                binaryOption("latin1Strings", "true")
             }
         }
     }
@@ -41,7 +49,6 @@ kotlin {
                 "FirebaseCore",
                 "FirebaseCrashlytics",
                 "FirebaseFirestore",
-                "FirebaseFunctions",
                 "FirebaseMessaging",
                 "FirebaseRemoteConfig",
             ).map { product(it) },
@@ -57,13 +64,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compottie)
-            api(libs.calf.ui)
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.config)
             implementation(libs.firebase.crashlytics)
             implementation(libs.firebase.firestore)
-            implementation(libs.firebase.functions)
             implementation(libs.firebase.messaging)
             implementation(libs.navigation3.ui)
             implementation(libs.navigation3.viewmodel)

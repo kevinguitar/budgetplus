@@ -87,6 +87,9 @@ internal expect fun firebaseProjectId(): String?
 
 // The original SDK-based implementation, kept for when the Swift compiler bug is resolved.
 // See the KDoc above and https://github.com/firebase/firebase-ios-sdk/issues/15974
+// Restoring it means re-adding the Functions SDK, which was removed to save app size:
+// `libs.firebase.functions` (dev.gitlive:firebase-functions) here and in :shared, plus the
+// "FirebaseFunctions" product in :shared's swiftPMDependencies.
 //
 // @ContributesBinding(AppScope::class)
 // internal class CloudFunctionsCallerImpl : CloudFunctionsCaller {
