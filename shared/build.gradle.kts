@@ -18,10 +18,21 @@ kotlin {
 
             binaryOption("bundleId", "Shared")
 
-            // Don't export() libraries into the framework. Every exported declaration gets an
-            // Objective-C bridge and survives dead code elimination: exporting Calf alone kept
-            // its whole SFSymbol catalog and every Skiko type alive (~6.7 MB of release binary).
-            // Swift only needs the declarations of this module.
+            // calf-ui is deliberately not export()ed, although Calf's docs say iOS requires it.
+            // An export gives every public declaration an Objective-C bridge that survives dead
+            // code elimination. For Calf that kept its whole SFSymbol catalog and every Skiko
+            // and Compose type its API mentions alive: ~6.7 MB of release binary.
+            //
+            // The export only matters for Calf components whose Kotlin objects receive UIKit
+            // callbacks (@ObjCAction targets or delegate protocols). Without it they crash in
+            // Release with "unrecognized selector sent to instance" (Calf #189, #330). In Calf
+            // 0.14.0 that is every component in the datepicker, dialog, fab, navigation, sheet
+            // and timepicker packages. The ones we use (switches, buttons, dropdown, progress
+            // indicator, adaptiveClickable, UIKitImage) don't need it.
+            //
+            // iosApp/scripts/test_calf_export.py fails CI when code uses one of those packages
+            // while this export is off, and when Calf is upgraded without a re-audit. To adopt
+            // one of them, add `export(libs.calf.ui)` back here and accept the size cost.
 
             if (buildType == NativeBuildType.RELEASE) {
                 binaryOption("sourceInfoType", "noop")
