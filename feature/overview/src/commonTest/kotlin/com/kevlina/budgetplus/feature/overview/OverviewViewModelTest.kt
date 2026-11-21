@@ -1,5 +1,6 @@
 package com.kevlina.budgetplus.feature.overview
 
+import com.kevlina.budgetplus.core.ads.InterstitialPlacement
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.fixtures.FakeSnackbarSender
@@ -114,6 +115,16 @@ class OverviewViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     // displayInPreferredCurrency defaults to true in the fake.
+    @Test
+    fun `export to csv requests the csv export ad`() = runTest {
+        val adsHandler = FakeInterstitialAdsHandler()
+        val model = createModel(interstitialAdsHandler = adsHandler)
+
+        model.exportToCsv()
+
+        assertEquals(listOf(InterstitialPlacement.CsvExport), adsHandler.placements)
+    }
+
     private fun createCurrencyExchangeRepo() = FakeCurrencyExchangeRepo(
         preferredCurrencyCode = "TWD",
         bookCurrencyRate = 2.0,
@@ -121,6 +132,7 @@ class OverviewViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
 
     private fun TestScope.createModel(
         currencyExchangeRepo: FakeCurrencyExchangeRepo = createCurrencyExchangeRepo(),
+        interstitialAdsHandler: FakeInterstitialAdsHandler = FakeInterstitialAdsHandler(),
     ): OverviewViewModel {
         val bookId = "book"
         val bookRepo = FakeBookRepo(currentBookId = bookId, book = Book(id = bookId))
@@ -149,7 +161,7 @@ class OverviewViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
                 currencyExchangeRepo = currencyExchangeRepo,
             ),
             snackbarSender = FakeSnackbarSender(),
-            interstitialAdsHandler = FakeInterstitialAdsHandler(),
+            interstitialAdsHandler = interstitialAdsHandler,
             navController = NavController.preview,
             bookRepo = bookRepo,
             timeModel = OverviewTimeViewModel(

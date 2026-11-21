@@ -7,6 +7,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_currency_rate_unavailable
 import budgetplus.core.common.generated.resources.record_empty_category
 import budgetplus.core.common.generated.resources.record_empty_price
+import com.kevlina.budgetplus.core.ads.InterstitialPlacement
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.EventFlow
 import com.kevlina.budgetplus.core.common.ExpressionEvaluator
@@ -141,12 +142,12 @@ class RecordViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     }
 
     @Test
-    fun `show fullscreen ad on every 7th record`() = runTest {
+    fun `request the record saved fullscreen ad on every 7th record`() = runTest {
         val model = createModel(recordCount = 6)
         model.calculatorVm.input("1")
         model.calculatorVm.evaluate()
 
-        assertEquals(1, interstitialAdsHandler.count)
+        assertEquals(listOf(InterstitialPlacement.RecordSaved), interstitialAdsHandler.placements)
     }
 
     @Test

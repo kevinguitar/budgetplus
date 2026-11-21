@@ -3,7 +3,9 @@ package com.kevlina.budgetplus.book
 import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.record_widget_book_unavailable
 import budgetplus.core.common.generated.resources.record_widget_switched_book
+import androidx.compose.runtime.snapshots.Snapshot
 import com.kevlina.budgetplus.core.ads.AdUnitId
+import com.kevlina.budgetplus.core.ads.InterstitialPlacement
 import com.kevlina.budgetplus.core.ads.fixtures.FakeAdmobInitializer
 import com.kevlina.budgetplus.core.ads.fixtures.FakeInterstitialAdsHandler
 import com.kevlina.budgetplus.core.common.RecordType
@@ -479,6 +481,54 @@ class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
     private val bookB = Book(id = "book_b", name = "Family Book")
     private val dinner = RecordWidgetItem(type = RecordType.Expense, category = "Food", name = "Dinner & Drinks")
 
+    // region Interstitial ads
+
+    @Test
+    fun `switching to the History tab requests the enter history ad`() {
+        val nav = createNavController()
+        val adsHandler = FakeInterstitialAdsHandler()
+        createModel(navController = nav, interstitialAdsHandler = adsHandler)
+
+        nav.selectRoot(BottomNavTab.History.root)
+        Snapshot.sendApplyNotifications()
+
+        assertEquals(listOf(InterstitialPlacement.EnterHistory), adsHandler.placements)
+    }
+
+    @Test
+    fun `going back from the category details requests the leave detail ad`() {
+        val nav = createNavController()
+        val adsHandler = FakeInterstitialAdsHandler()
+        createModel(navController = nav, interstitialAdsHandler = adsHandler)
+
+        nav.selectRoot(BottomNavTab.History.root)
+        Snapshot.sendApplyNotifications()
+        nav.navigate(BookDest.Records(type = RecordType.Expense, category = "Food", authorId = null))
+        Snapshot.sendApplyNotifications()
+        nav.navigateUp()
+        Snapshot.sendApplyNotifications()
+
+        assertEquals(
+            listOf(InterstitialPlacement.EnterHistory, InterstitialPlacement.LeaveDetail),
+            adsHandler.placements
+        )
+    }
+
+    @Test
+    fun `opening the History tab from a deeplink doesn't request an ad`() {
+        val nav = createNavController()
+        val adsHandler = FakeInterstitialAdsHandler()
+        val model = createModel(navController = nav, interstitialAdsHandler = adsHandler)
+
+        model.handleDeeplink("https://budgetplus.cchi.tw/overview")
+        Snapshot.sendApplyNotifications()
+
+        assertEquals(BookDest.Overview, nav.backStack.last())
+        assertEquals(emptyList(), adsHandler.placements)
+    }
+
+    // endregion
+
     private fun createNavController(): NavController<BookDest> =
         NavController(startRoot = BottomNavTab.Add.root)
 
@@ -488,6 +538,7 @@ class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
         snackbarSender: FakeSnackbarSender = FakeSnackbarSender(),
         recordPrefillHolder: RecordPrefillHolder = RecordPrefillHolder(),
         tracker: FakeTracker = FakeTracker(),
+        interstitialAdsHandler: FakeInterstitialAdsHandler = FakeInterstitialAdsHandler(),
     ): BookViewModel {
         val authManager = FakeAuthManager(user = User(id = "user"))
         val themeManager = ThemeManager(
@@ -502,7 +553,7 @@ class BookViewModelTest : BaseTest(useUnconfinedDispatcher = true) {
             themeManager = themeManager,
             bubbleViewModel = BubbleViewModel(FakeBubbleRepo()),
             adUnitId = AdUnitId(banner = "", interstitial = ""),
-            interstitialAdsHandler = FakeInterstitialAdsHandler(),
+            interstitialAdsHandler = interstitialAdsHandler,
             admobInitializer = FakeAdmobInitializer(),
             bookRepo = bookRepo,
             authManager = authManager,

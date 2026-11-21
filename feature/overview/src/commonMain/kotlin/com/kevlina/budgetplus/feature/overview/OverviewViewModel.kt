@@ -7,6 +7,7 @@ import budgetplus.core.common.generated.resources.Res
 import budgetplus.core.common.generated.resources.cta_open_settings
 import budgetplus.core.common.generated.resources.write_storage_permission_hint
 import com.kevlina.budgetplus.core.ads.InterstitialAdsHandler
+import com.kevlina.budgetplus.core.ads.InterstitialPlacement
 import com.kevlina.budgetplus.core.common.OpenAppSettingsAction
 import com.kevlina.budgetplus.core.common.RecordType
 import com.kevlina.budgetplus.core.common.SnackbarSender
@@ -232,7 +233,7 @@ internal class OverviewViewModel(
 
     fun exportToCsv() {
         tracker.logEvent("overview_export_to_csv")
-        interstitialAdsHandler.showAdThen(onComplete = ::performCsvExport)
+        interstitialAdsHandler.showAdThen(InterstitialPlacement.CsvExport, onComplete = ::performCsvExport)
     }
 
     private fun performCsvExport() {
