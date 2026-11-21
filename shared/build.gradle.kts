@@ -18,11 +18,30 @@ kotlin {
 
             binaryOption("bundleId", "Shared")
 
-            // Calf requires its artifact to be exported to the iOS framework binary.
-            export(libs.calf.ui)
+            // calf-ui is deliberately not export()ed, although Calf's docs say iOS requires it.
+            // An export gives every public declaration an Objective-C bridge that survives dead
+            // code elimination. For Calf that kept its whole SFSymbol catalog and every Skiko
+            // and Compose type its API mentions alive: ~6.7 MB of release binary.
+            //
+            // The export only matters for Calf components whose Kotlin objects receive UIKit
+            // callbacks (@ObjCAction targets or delegate protocols). Without it they crash in
+            // Release with "unrecognized selector sent to instance" (Calf #189, #330). In Calf
+            // 0.14.0 that is every component in the datepicker, dialog, fab, navigation, sheet
+            // and timepicker packages. The ones we use (switches, buttons, dropdown, progress
+            // indicator, adaptiveClickable, UIKitImage) don't need it.
+            //
+            // iosApp/scripts/test_calf_export.py fails CI when code uses one of those packages
+            // while this export is off, and when Calf is upgraded without a re-audit. To adopt
+            // one of them, add `export(libs.calf.ui)` back here and accept the size cost.
 
             if (buildType == NativeBuildType.RELEASE) {
                 binaryOption("sourceInfoType", "noop")
+                // Optimize release code for size (-Oz) and store ASCII string literals as
+                // Latin-1. Together they cut ~7.9 MB from the release binary. Both are
+                // Experimental: if a regression shows up, drop them here first.
+                // https://kotlinlang.org/docs/native-binary-options.html
+                binaryOption("smallBinary", "true")
+                binaryOption("latin1Strings", "true")
             }
         }
     }
@@ -41,7 +60,6 @@ kotlin {
                 "FirebaseCore",
                 "FirebaseCrashlytics",
                 "FirebaseFirestore",
-                "FirebaseFunctions",
                 "FirebaseMessaging",
                 "FirebaseRemoteConfig",
             ).map { product(it) },
@@ -57,13 +75,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.compottie)
-            api(libs.calf.ui)
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.config)
             implementation(libs.firebase.crashlytics)
             implementation(libs.firebase.firestore)
-            implementation(libs.firebase.functions)
             implementation(libs.firebase.messaging)
             implementation(libs.navigation3.ui)
             implementation(libs.navigation3.viewmodel)

@@ -23,7 +23,6 @@ kotlin {
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.crashlytics)
             implementation(libs.firebase.firestore)
-            implementation(libs.firebase.functions)
             implementation(libs.firebase.messaging)
             implementation(libs.firebase.config)
         }

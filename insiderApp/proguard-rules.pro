@@ -100,3 +100,8 @@
 -dontwarn org.eclipse.jetty.npn.NextProtoNego$ServerProvider
 -dontwarn org.eclipse.jetty.npn.NextProtoNego
 -dontwarn reactor.blockhound.integration.BlockHoundIntegration
+
+# grpc-netty-shaded (pulled in by google-cloud-translate) can read encrypted PEM keys through
+# BouncyCastle, an optional dependency the app doesn't ship. OkHttp 4's consumer rules used to
+# suppress these warnings, until Firebase Functions (which brought OkHttp in) was removed.
+-dontwarn org.bouncycastle.**

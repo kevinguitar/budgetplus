@@ -12,3 +12,8 @@ FRAMEWORK_SEARCH_PATHS = $(inherited) $(SRCROOT)/../shared/build/xcode-framework
 // AdMob adapter. Do not also force-load its artifact path: SwiftPM links the framework
 // from Build/Products, and loading both copies produces duplicate Objective-C symbols.
 OTHER_LDFLAGS = $(inherited) -ObjC -framework shared
+
+// Release: don't write an export trie into the app executable. Nothing looks up symbols in an
+// app's main executable, and the trie of every global symbol costs ~1.3 MB. The Objective-C
+// runtime finds classes (the Meta adapter included) through class metadata, not exports.
+OTHER_LDFLAGS[config=Release] = $(inherited) -ObjC -framework shared -Xlinker -no_exported_symbols

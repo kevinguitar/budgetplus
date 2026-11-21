@@ -1,4 +1,9 @@
-"""Reject a Release archive if dead stripping removed the Meta mediation adapter."""
+"""Reject a Release build if dead stripping removed the Meta mediation adapter.
+
+Runs as the iosApp target's "Verify Meta adapter (Release)" build phase on the freshly linked
+executable, so a Release build or archive without the adapter fails in Xcode, and again in the
+publish workflow on the final .xcarchive.
+"""
 
 import argparse
 from collections import Counter
@@ -35,13 +40,23 @@ def class_definitions(lines):
     return definitions
 
 
-def verify_archive(archive):
-    apps = list((archive / "Products/Applications").glob("*.app"))
-    if len(apps) != 1:
-        raise ValueError(f"Expected one archived application in {archive}, found {len(apps)}")
-    app = apps[0]
-    with (app / "Info.plist").open("rb") as info:
-        executable = app / plistlib.load(info)["CFBundleExecutable"]
+def resolve_executable(path):
+    """Accept an .xcarchive, an .app bundle or the Mach-O executable itself."""
+    path = Path(path)
+    if path.suffix == ".xcarchive":
+        apps = list((path / "Products/Applications").glob("*.app"))
+        if len(apps) != 1:
+            raise ValueError(f"Expected one archived application in {path}, found {len(apps)}")
+        path = apps[0]
+    if path.suffix == ".app":
+        with (path / "Info.plist").open("rb") as info:
+            return path / plistlib.load(info)["CFBundleExecutable"]
+    if not path.is_file():
+        raise ValueError(f"No executable at {path}")
+    return path
+
+
+def verify_executable(executable):
     # Device archives are stripped: nm/strings alone cannot establish that the
     # Objective-C runtime can discover the class. Inspect its arm64 class metadata.
     result = subprocess.run(
@@ -61,12 +76,17 @@ def verify_archive(archive):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("archive", type=Path, help="Path to the Release .xcarchive")
+    parser.add_argument(
+        "path",
+        type=Path,
+        help="Release .xcarchive, .app bundle, or the app's linked executable",
+    )
     args = parser.parse_args()
     try:
-        verify_archive(args.archive)
+        verify_executable(resolve_executable(args.path))
     except (OSError, KeyError, ValueError, subprocess.CalledProcessError) as error:
-        print(f"Meta adapter verification failed: {error}", file=sys.stderr)
+        # The "error:" prefix makes Xcode list it in the Issue navigator.
+        print(f"error: Meta adapter verification failed: {error}", file=sys.stderr)
         return 1
     return 0
 

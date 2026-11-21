@@ -48,10 +48,6 @@ let package = Package(
           package: "firebase-ios-sdk"
         ),
         .product(
-          name: "FirebaseFunctions",
-          package: "firebase-ios-sdk"
-        ),
-        .product(
           name: "FirebaseMessaging",
           package: "firebase-ios-sdk"
         ),

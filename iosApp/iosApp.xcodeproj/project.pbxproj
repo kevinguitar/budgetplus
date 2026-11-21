@@ -269,6 +269,7 @@
 				606A3F78A1DF210FF623988B /* Compile Kotlin Framework */,
 				1863F0F2EB00B17E5A9BE78C /* Sources */,
 				403AF2F1C76CD538513AA497 /* Frameworks */,
+				0AEA3C6E2F55B93B00481700 /* Verify Meta adapter (Release) */,
 				D26F08481507A91DBA7D9DA3 /* Resources */,
 				0AEA3C6E2F55B93B00481600 /* Configure Stage environment (Debug) */,
 				0A3F62102F48988C008A7161 /* Embed Foundation Extensions */,
@@ -440,6 +441,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# 1. Load the environment file where we stored the JAVA_HOME path\nif [ -f \"$SRCROOT/.xcode.env\" ]; then\n  source \"$SRCROOT/.xcode.env\"\nfi\n\n# 2. Existing IDE check\nif [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\n\n# 3. Run the build\ncd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+		};
+		0AEA3C6E2F55B93B00481700 /* Verify Meta adapter (Release) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+				"$(SRCROOT)/scripts/verify_meta_adapter.py",
+			);
+			name = "Verify Meta adapter (Release)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/meta-adapter-verified.stamp",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n# Fail Release builds and archives when the Meta mediation adapter did not survive linking.\n# AdMob only discovers GADMediationAdapterFacebook at runtime, so nothing else notices when\n# dead stripping drops it: the app just silently stops serving Meta demand.\nSTAMP=\"${DERIVED_FILE_DIR}/meta-adapter-verified.stamp\"\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n  python3 \"${SRCROOT}/scripts/verify_meta_adapter.py\" \"${TARGET_BUILD_DIR}/${EXECUTABLE_PATH}\"\nelse\n  echo \"Skipping Meta adapter verification for ${CONFIGURATION} builds\"\nfi\nmkdir -p \"${DERIVED_FILE_DIR}\"\ntouch \"${STAMP}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
