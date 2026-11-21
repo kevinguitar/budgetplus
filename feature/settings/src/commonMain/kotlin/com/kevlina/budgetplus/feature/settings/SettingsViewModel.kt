@@ -39,7 +39,7 @@ internal class SettingsViewModel(
     val chartModeSettings: ChartModeSettings,
     val calculatorSettings: CalculatorSettings,
     val navController: NavController<BookDest>,
-    internal val navigation: SettingsNavigationViewModel,
+    val navigation: SettingsNavigationViewModel,
 ) : ViewModel() {
 
     val bookName = bookRepo.bookState.mapState { it?.name }
