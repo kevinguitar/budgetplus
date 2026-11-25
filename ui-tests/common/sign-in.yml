@@ -4,6 +4,23 @@ appId: com.kevlina.budgetplus
 - retry:
     maxRetries: 3
     commands:
+      # A sign-in request to the Auth emulator can time out on a loaded CI runner. The
+      # app then shows a network-error snackbar, which UI-test builds keep on screen
+      # until tapped. It covers "Continue with Google", so without dismissing it every
+      # retry skips the tap and fails at once. The message differs per platform
+      # (iOS: "Network error (such as timeout, ...)", Android: "A network error ..."),
+      # hence the case-insensitive, multi-line pattern.
+      - runFlow:
+          when:
+            visible:
+              text: "(?is).*network error.*"
+          commands:
+            - tapOn:
+                text: "(?is).*network error.*"
+            - extendedWaitUntil:
+                notVisible:
+                  text: "(?is).*network error.*"
+                timeout: 8000
       # A slow successful attempt may have navigated before this retry starts.
       - runFlow:
           when:
