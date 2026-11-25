@@ -2,6 +2,7 @@ package com.kevlina.budgetplus.core.data
 
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObjects
 import com.kevlina.budgetplus.core.data.remote.User
 import com.kevlina.budgetplus.core.data.remote.UsersDb
 import dev.gitlive.firebase.firestore.CollectionReference
@@ -64,7 +65,7 @@ internal class InsiderRepoImpl(
             .limit(count.toLong())
             .get()
             .await()
-            .toObjects(User::class.java)
+            .toObjects<User>()
     }
 
     override suspend fun getActivePremiumUsers(count: Int): List<User> {
@@ -74,6 +75,6 @@ internal class InsiderRepoImpl(
             .limit(count.toLong())
             .get()
             .await()
-            .toObjects(User::class.java)
+            .toObjects<User>()
     }
 }
