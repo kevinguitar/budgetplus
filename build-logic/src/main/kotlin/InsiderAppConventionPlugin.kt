@@ -50,9 +50,6 @@ class InsiderAppConventionPlugin : Plugin<Project> {
             }
 
             signingConfigs {
-                named("debug") {
-                    storeFile = project.rootProject.file("misc/debug.keystore")
-                }
                 create("release") {
                     storeFile = project.localProperty("KEYSTORE_PATH")?.let { project.rootProject.file(it) }
                     storePassword = project.localProperty("KEYSTORE_PASSWORD")
@@ -62,6 +59,9 @@ class InsiderAppConventionPlugin : Plugin<Project> {
             }
 
             buildTypes {
+                getByName("debug") {
+                    signingConfig = signingConfigs.getByName("release")
+                }
                 getByName("release") {
                     isMinifyEnabled = true
                     isShrinkResources = true

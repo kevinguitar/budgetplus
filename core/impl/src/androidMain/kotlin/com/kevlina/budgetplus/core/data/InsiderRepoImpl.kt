@@ -69,8 +69,6 @@ internal class InsiderRepoImpl(
 
     override suspend fun getActivePremiumUsers(count: Int): List<User> {
         return usersDb
-            // Exclude internal users
-            .whereEqualTo("internal", false)
             .whereEqualTo("premium", true)
             .orderBy("lastActiveOn", Query.Direction.DESCENDING)
             .limit(count.toLong())
