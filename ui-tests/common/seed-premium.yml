@@ -33,11 +33,31 @@ appId: com.kevlina.budgetplus
       - retry:
           maxRetries: 3
           commands:
+            # A confirmation from the previous pass may have shown up late. Accept it
+            # so that pass's link is delivered too.
+            - runFlow:
+                when:
+                  visible:
+                    text: "Open in .*Budget\\+.*"
+                commands:
+                  - tapOn:
+                      text: "Open"
             - openLink: "budgetplus://uiTestPremium"
-            # iOS may show an "Open in Budget+?" confirmation.
-            - tapOn:
-                text: "Open"
-                optional: true
+            # iOS may show an "Open in Budget+?" confirmation, sometimes well after
+            # openLink returns (observed: an immediate optional tap gave up and the
+            # prompt appeared seconds later). Wait for it explicitly.
+            - runFlow:
+                when:
+                  platform: iOS
+                commands:
+                  - extendedWaitUntil:
+                      visible:
+                        text: "Open in .*Budget\\+.*"
+                      timeout: 10000
+                      optional: true
+                  - tapOn:
+                      text: "Open"
+                      optional: true
             - runFlow: assert-on-record.yml
             - extendedWaitUntil:
                 notVisible:
@@ -45,6 +65,11 @@ appId: com.kevlina.budgetplus
                 timeout: 20000
             - assertNotVisible:
                 text: "Banner Ad Area"
+            # While a system prompt is up the app's hierarchy is hidden, so the banner
+            # check above passes falsely. Fail this pass if a late prompt is showing;
+            # the next pass accepts it and re-verifies.
+            - assertNotVisible:
+                text: "Open in .*Budget\\+.*"
 - runFlow: assert-on-record.yml
 - assertNotVisible:
     text: "Banner Ad Area"
