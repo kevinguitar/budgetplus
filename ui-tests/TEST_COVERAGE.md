@@ -221,7 +221,8 @@ Prefer existing setup, navigation, record, picker, and cleanup subflows over cop
 
 - Use `return-to-record.yml` for Back/tab navigation and
   `dismiss-share-sheet.yml` for native sharing UI. Avoid system Back on iOS;
-  shared Compose dialogs may need a scrim tap.
+  shared Compose dialogs may need a scrim tap. Assert the iOS share sheet by
+  `ActivityListView`: its content is out of process and often missing from the tree.
 - Use Enter or a neutral label tap to dismiss keyboards. Dismiss persistent
   snackbars before tapping controls they could cover.
 - Wait for actionable controls, not just screen titles: category-editor Add animates
