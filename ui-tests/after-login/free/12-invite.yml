@@ -14,11 +14,18 @@ appId: com.kevlina.budgetplus
     when:
       platform: iOS
     commands:
-      # The share text is "<message>\n<link>", and `.` doesn't match the newline. The sheet's
-      # content can also render a few seconds after the sheet itself.
+      - extendedWaitUntil:
+          visible:
+            id: "ActivityListView"
+          timeout: 15000
+      # The sheet's content renders out of process (ShareSheet.RemoteContainerView), and on
+      # CI simulators it can stay blank or be missing from the hierarchy even when drawn, so
+      # this check doesn't fail the flow. The share text is "<message>\n<link>", and `.`
+      # doesn't match the newline.
       - extendedWaitUntil:
           visible:
             text: 'Click the link to track expenses with me![\s\S]*'
-          timeout: 15000
+          timeout: 10000
+          optional: true
 - runFlow: ../../common/dismiss-share-sheet.yml
 - runFlow: ../../common/return-to-record.yml
